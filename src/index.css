@@ -1,0 +1,22 @@
+#root, body {
+    width: 100vw;
+    height: 100vh;
+
+    margin: 0;
+
+    overflow: hidden;
+}
+
+.img {
+    position: absolute;
+
+    image-rendering: pixelated;
+
+    background-image: var(--image);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: 50% 50%;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}

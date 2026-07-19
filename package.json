@@ -1,0 +1,20 @@
+{
+  "name": "nissy-girl",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "svelte": "^5.56.4",
+    "vite": "^8.1.1"
+  },
+  "dependencies": {
+    "xstate": "^5.32.5",
+    "xstate-component-tree": "^9.1.3"
+  }
+}
