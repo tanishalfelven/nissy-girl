@@ -20,3 +20,10 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
