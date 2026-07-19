@@ -4,6 +4,8 @@ import NissyGirlSidePng from "./assets/nissygirl-side.png";
 import PowerShroomPng from "./assets/power-shroom.png";
 import NissyGirlBackUpperPng from "./assets/nissygirl-back-upper.png";
 import NissyGirlBackLowerPng from "./assets/nissygirl-back-lower.png";
+import NissyGirlScreenBevelHorzPng from "./assets/screen-bevel-horz.png";
+import NissyGirlScreenBevelVertPng from "./assets/screen-bevel-vert.png";
 import NissyGirlCartridgeBackPng from "./assets/nissygirl-cartridge-back.png";
 import NissyGirlButtonBPng from "./assets/button-b.png";
 import NissyGirlButtonAPng from "./assets/button-a.png";
@@ -34,7 +36,11 @@ const handleRotate = (rotate) => () => {
         <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
             <div class="img mushroom" data-power={power} style:--image={`url(${PowerShroomPng})`}></div>
         </div>
-        
+
+        <div class="img screen-bevel-horz" style:--image={`url(${NissyGirlScreenBevelHorzPng})`}></div>
+        <div class="img screen-bevel-vert" style:--image={`url(${NissyGirlScreenBevelVertPng})`}></div>
+        <div class="img screen-bevel-vert left" style:--image={`url(${NissyGirlScreenBevelVertPng})`}></div>
+
         <div class="screen">
             {#if power}
                 <StartupScreen />
@@ -191,6 +197,40 @@ const handleRotate = (rotate) => () => {
     transform: rotateY(var(--rotation));
 
     transition: transform 300ms;
+}
+
+.screen-bevel-vert {
+    --rotate: 90deg;
+    aspect-ratio: 2 / 100;
+
+    height: 44.8%;
+
+    position: absolute;
+
+    left: 5.6%;
+    top: 3%;
+
+    transform: translateZ(calc(var(--depth-w) / 2.09)) rotateY(var(--rotate));
+}
+
+.screen-bevel-vert.left {
+    --rotate: -90deg;
+
+    left: auto !important;
+
+    right: 4.8%;
+}
+
+.screen-bevel-horz {
+    aspect-ratio: 125 / 2;
+
+    top: 2.6%;
+
+    left: 50%;
+
+    width: 90%;
+
+    transform: translateX(-50%) translateZ(calc(var(--depth-w) / 2.09)) rotateX(-90deg);
 }
 
 .powerswitch {
