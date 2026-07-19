@@ -11,6 +11,8 @@ import NissyGirlButtonRoundSidePng from "./assets/button-round-side.png";
 import NissyGirlPowerSwitchSidePng from "./assets/power-switch-side.png";
 import NissyGirlPowerSwitchTopPng from "./assets/power-switch-top.png";
 
+import StartupScreen from "./startup-screen/startup-screen.svelte";
+
 import Dpad from "./dpad/dpad.svelte";
 
 let power = false;
@@ -34,7 +36,9 @@ const handleRotate = (rotate) => () => {
         </div>
         
         <div class="screen">
-            <div class="display" data-power={power}></div>
+            {#if power}
+                <StartupScreen />
+            {/if}
         </div>
 
         <div class="img button a" style:--image={`url(${NissyGirlButtonAPng})`}>
@@ -161,10 +165,10 @@ const handleRotate = (rotate) => () => {
 .rotate {
     position: absolute;
 
-    top: 0;
     bottom: 0;
 
-    width: 40%;
+    width: 50%;
+    height: 35%;
 }
 
 .rotateleft {
@@ -269,7 +273,7 @@ const handleRotate = (rotate) => () => {
 
     flex-direction: row;
 
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
 
     width: 100%;
@@ -293,11 +297,6 @@ const handleRotate = (rotate) => () => {
 
     transition: background-color 300ms ease-in-out;
     transition-delay: 250ms;
-}
-
-.display[data-power="true"] {
-
-    background-color: gray;
 }
 
 .mushroom {

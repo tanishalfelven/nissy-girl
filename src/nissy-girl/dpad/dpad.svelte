@@ -2,7 +2,7 @@
 import NissyGirlButtonDpadPng from "../assets/dpad.png";
 import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
-const MAX_TILT = 3;
+const MAX_TILT = 4;
 
 export let rotation = 0;
 
