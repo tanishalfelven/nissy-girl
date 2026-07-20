@@ -25,10 +25,65 @@ const powerToggle = () => {
     power = !power;
 }
 
-const ROTATE_STEP = 45;
+const ROTATE_STEP = 220;
 
-const handleRotate = (rotate) => () => {
-    rotation += rotate;
+let rotateEl;
+let rotateElWidth = 0;
+
+$: if(rotateEl) {
+    rotateElWidth = rotateEl.getBoundingClientRect().width;
+}
+
+let isRotate = false;
+let startX = 0;
+
+const startRotate = (e) => {
+    isRotate = true;
+    startX = e.clientX;
+}
+
+const continuousRotate = (e) => {
+    if(!isRotate) {
+        return;
+    }
+
+    const distX = e.clientX - startX;
+
+    rotation += (distX / rotateElWidth) * ROTATE_STEP;
+
+    console.log("continuousRotate", rotation, distX);
+
+    startX = e.clientX;
+}
+
+const endRotate = (e) => {
+    if(!isRotate) {
+        return;
+    }
+
+    isRotate = false;
+
+    const distX = e.clientX - startX;
+
+    if(distX === 0) {
+        return;
+    }
+
+    console.log("endRotate", (distX / rotateElWidth) * ROTATE_STEP);
+
+    rotation += (distX / rotateElWidth) * ROTATE_STEP;
+}
+
+function throttle(func, delay) {
+  let inThrottle = false;
+  
+  return function(...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, delay);
+    }
+  };
 }
 </script>
 
@@ -72,8 +127,19 @@ const handleRotate = (rotate) => () => {
     </div>
 </div>
 
-<div on:click={handleRotate(ROTATE_STEP)} class="rotate rotateleft"></div>
-<div on:click={handleRotate(-ROTATE_STEP)}  class="rotate rotateright"></div>
+<div
+    on:pointermove={throttle(continuousRotate, 100)}
+    on:pointerup={endRotate}
+    on:pointercancel={endRotate}
+    on:pointerleave={endRotate}
+    class="rotatecontainer"
+>
+    <div
+        on:pointerdown={startRotate}
+        class="rotate"
+        bind:this={rotateEl}
+    ></div>
+</div>
 
 <style>
 @keyframes rotate360 {
@@ -145,12 +211,14 @@ const handleRotate = (rotate) => () => {
     }
 }
 
-.camera {
+:root {
     --h: 50vh;
     --front-w: calc(var(--h) * 142 / 224);
     --depth-w: calc(var(--h) * 46 / 224);
     --round-button-w: calc(0.082 * var(--h));
+}
 
+.camera {
     position: absolute;
 
     width: var(--front-w);
@@ -171,21 +239,28 @@ const handleRotate = (rotate) => () => {
     animation-direction: alternate;
 }
 
+.rotatecontainer {
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 35%;
+}
+
 .rotate {
     position: absolute;
 
     bottom: 0;
-
-    width: 50%;
-    height: 35%;
-}
-
-.rotateleft {
     left: 0;
-}
-
-.rotateright {
     right: 0;
+
+    margin: auto;
+
+    width: calc(var(--front-w) + 10rem);
+
+    height: 100%;
 }
 
 .nissygirl {
@@ -281,7 +356,7 @@ const handleRotate = (rotate) => () => {
 }
 
 .button-side {
-    aspect-ratio: 1 / 9;
+    aspect-ratio: 3 / 9;
 
     height: 100%;
 
@@ -327,19 +402,6 @@ const handleRotate = (rotate) => () => {
     background-color: black;
 
     transform: translateZ(calc(var(--depth-w) / 2.3));
-}
-
-.display {
-    aspect-ratio: 5 / 4;
-
-    width: 80%;
-
-    transform: translateY(12%);
-
-    background-color: black;
-
-    transition: background-color 300ms ease-in-out;
-    transition-delay: 250ms;
 }
 
 .mushroom {

@@ -82,7 +82,7 @@ const mouseleave = (e) => {
 }
 
 .dpad-center-side {
-    aspect-ratio: 2 / 32;
+    aspect-ratio: 3 / 32;
 
     height: 100%;
 
