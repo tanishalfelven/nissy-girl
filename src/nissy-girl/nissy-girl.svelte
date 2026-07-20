@@ -258,7 +258,7 @@ function throttle(func, delay) {
 
     margin: auto;
 
-    width: calc(var(--front-w) + 10rem);
+    max-width: calc(var(--front-w) + 10rem);
 
     height: 100%;
 }
