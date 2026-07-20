@@ -18,6 +18,9 @@ import StartupScreen from "./startup-screen/startup-screen.svelte";
 
 import Dpad from "./dpad/dpad.svelte";
 
+import { roundHundredths } from "./util/math";
+import { rafThrottle } from "./util/throttle";
+
 let power = false;
 let rotation = 0;
 
@@ -25,14 +28,10 @@ const powerToggle = () => {
     power = !power;
 }
 
-const ROTATE_STEP = 220;
+const ROTATE_STEP = 280;
 
 let rotateEl;
 let rotateElWidth = 0;
-
-$: if(rotateEl) {
-    rotateElWidth = rotateEl.getBoundingClientRect().width;
-}
 
 let isRotate = false;
 let startX = 0;
@@ -40,6 +39,9 @@ let startX = 0;
 const startRotate = (e) => {
     isRotate = true;
     startX = e.clientX;
+
+
+    rotateElWidth = rotateEl.getBoundingClientRect().width;
 }
 
 const continuousRotate = (e) => {
@@ -50,8 +52,6 @@ const continuousRotate = (e) => {
     const distX = e.clientX - startX;
 
     rotation += (distX / rotateElWidth) * ROTATE_STEP;
-
-    console.log("continuousRotate", rotation, distX);
 
     startX = e.clientX;
 }
@@ -69,26 +69,16 @@ const endRotate = (e) => {
         return;
     }
 
-    console.log("endRotate", (distX / rotateElWidth) * ROTATE_STEP);
-
     rotation += (distX / rotateElWidth) * ROTATE_STEP;
-}
-
-function throttle(func, delay) {
-  let inThrottle = false;
-  
-  return function(...args) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, delay);
-    }
-  };
 }
 </script>
 
 <div class="camera">
-    <div class="nissygirl" style:--rotation={`${rotation}deg`}>
+    <div
+        class="nissygirl"
+        style:--rotation={`${roundHundredths(rotation)}deg`}
+        data-dragging={isRotate}
+    >
         <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
             <div class="img mushroom" data-power={power} style:--image={`url(${PowerShroomPng})`}></div>
         </div>
@@ -128,7 +118,7 @@ function throttle(func, delay) {
 </div>
 
 <div
-    on:pointermove={throttle(continuousRotate, 100)}
+    on:pointermove={rafThrottle(continuousRotate)}
     on:pointerup={endRotate}
     on:pointercancel={endRotate}
     on:pointerleave={endRotate}
@@ -273,8 +263,6 @@ function throttle(func, delay) {
     transform-style: preserve-3d;
 
     transform: rotateY(var(--rotation));
-
-    transition: transform 300ms;
 }
 
 .screen-bevel-vert {
@@ -360,7 +348,7 @@ function throttle(func, delay) {
 
     height: 100%;
 
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 2));
+    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 3.2));
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;

@@ -2,13 +2,13 @@
 import NissyGirlButtonDpadPng from "../assets/dpad.png";
 import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
+import { roundHundredths } from "../util/math";
+
 const MAX_TILT = 4;
 
 export let rotation = 0;
 
 let dpadElement = false;
-
-const roundHundredths = (n) => Math.floor(n * 100) / 100; 
 
 const mousemove = (e) => {
     if(!dpadElement) {
