@@ -3,6 +3,7 @@ import NissyGirlFrontPng from "./assets/nissygirl-front.png";
 import NissyGirlSidePng from "./assets/nissygirl-side.png";
 import PowerShroomPng from "./assets/power-shroom.png";
 import NissyGirlBackUpperPng from "./assets/nissygirl-back-upper.png";
+import NissyGirlBackVentPng from "./assets/nissygirl-vent-decal.png";
 import NissyGirlBackLowerPng from "./assets/nissygirl-back-lower.png";
 import NissyGirlBackEdgePng from "./assets/nissy-girl-back-edge.png";
 import NissyGirlScreenBevelHorzPng from "./assets/screen-bevel-horz.png";
@@ -110,6 +111,7 @@ const endRotate = (e) => {
         <div class="img panelside" style:--image={`url(${NissyGirlSidePng})`}></div>
         <div class="img panelside left" style:--image={`url(${NissyGirlSidePng})`}></div>
         <div class="img backupper" style:--image={`url(${NissyGirlBackUpperPng})`}></div>
+        <div class="img vent" style:--image={`url(${NissyGirlBackVentPng})`}></div>
         <div class="img backlower" style:--image={`url(${NissyGirlBackLowerPng})`}></div>
         <div class="img backloweredge" style:--image={`url(${NissyGirlBackEdgePng})`}></div>
         <div class="img backloweredgeinner" style:--image={`url(${NissyGirlBackEdgePng})`}></div>
@@ -452,6 +454,20 @@ const endRotate = (e) => {
     width: 100%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.02));
+}
+
+.vent {
+    aspect-ratio: 142 / 36;
+
+    top: 2.1%;
+
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    width: 100%;
+
+    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.055));
 }
 
 .backlower {
