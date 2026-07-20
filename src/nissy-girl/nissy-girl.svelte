@@ -134,7 +134,7 @@ let rotation = 0;
 }
 
 :root {
-    --h: 80vh;
+    --h: 65vh;
     --front-w: calc(var(--h) * 142 / 224);
     --depth-w: calc(var(--h) * 46 / 224);
     --round-button-w: calc(0.082 * var(--h));

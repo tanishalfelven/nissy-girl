@@ -15,7 +15,6 @@ const startRotate = (e) => {
     isRotate = true;
     startX = e.clientX;
 
-
     rotateElWidth = rotateEl.getBoundingClientRect().width;
 }
 
