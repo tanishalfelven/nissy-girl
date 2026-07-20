@@ -9,76 +9,25 @@ import NissyGirlBackEdgePng from "./assets/nissy-girl-back-edge.png";
 import NissyGirlScreenBevelHorzPng from "./assets/screen-bevel-horz.png";
 import NissyGirlScreenBevelVertPng from "./assets/screen-bevel-vert.png";
 import NissyGirlCartridgeBackPng from "./assets/nissygirl-cartridge-back.png";
-import NissyGirlButtonBPng from "./assets/button-b.png";
-import NissyGirlButtonAPng from "./assets/button-a.png";
-import NissyGirlButtonRoundSidePng from "./assets/button-round-side.png";
-import NissyGirlPowerSwitchSidePng from "./assets/power-switch-side.png";
-import NissyGirlPowerSwitchTopPng from "./assets/power-switch-top.png";
 
 import StartupScreen from "./startup-screen/startup-screen.svelte";
+import PowerSwitch from "./power-switch/power-switch.svelte";
+
+import RotateControls from "./rotate-controls/rotate-controls.svelte";
 
 import Dpad from "./dpad/dpad.svelte";
+import Button from "./button/button.svelte";
 
 import { roundHundredths } from "./util/math";
-import { rafThrottle } from "./util/throttle";
 
 let power = false;
 let rotation = 0;
-
-const powerToggle = () => {
-    power = !power;
-}
-
-const ROTATE_STEP = 280;
-
-let rotateEl;
-let rotateElWidth = 0;
-
-let isRotate = false;
-let startX = 0;
-
-const startRotate = (e) => {
-    isRotate = true;
-    startX = e.clientX;
-
-
-    rotateElWidth = rotateEl.getBoundingClientRect().width;
-}
-
-const continuousRotate = (e) => {
-    if(!isRotate) {
-        return;
-    }
-
-    const distX = e.clientX - startX;
-
-    rotation += (distX / rotateElWidth) * ROTATE_STEP;
-
-    startX = e.clientX;
-}
-
-const endRotate = (e) => {
-    if(!isRotate) {
-        return;
-    }
-
-    isRotate = false;
-
-    const distX = e.clientX - startX;
-
-    if(distX === 0) {
-        return;
-    }
-
-    rotation += (distX / rotateElWidth) * ROTATE_STEP;
-}
 </script>
 
 <div class="camera">
     <div
         class="nissygirl"
         style:--rotation={`${roundHundredths(rotation)}deg`}
-        data-dragging={isRotate}
     >
         <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
             <div class="img mushroom" data-power={power} style:--image={`url(${PowerShroomPng})`}></div>
@@ -94,19 +43,12 @@ const endRotate = (e) => {
             {/if}
         </div>
 
-        <div class="img button a" style:--image={`url(${NissyGirlButtonAPng})`}>
-            <div class="img button-side" style:--image={`url(${NissyGirlButtonRoundSidePng})`}></div>
-        </div>
+        <PowerSwitch bind:power />
 
-        <div class="img button b" style:--image={`url(${NissyGirlButtonBPng})`}>
-            <div class="img button-side" style:--image={`url(${NissyGirlButtonRoundSidePng})`}></div>
-        </div>
+        <Button type="a"></Button>
+        <Button type="b"></Button>
 
         <Dpad {rotation} />
-
-        <div on:click={powerToggle} class="img powerswitch powerswitchside" data-power={power} style:--image={`url(${NissyGirlPowerSwitchSidePng})`}></div>
-        <div on:click={powerToggle} class="img powerswitch powerswitchside powerswitchsideback" data-power={power} style:--image={`url(${NissyGirlPowerSwitchSidePng})`}></div>
-        <div on:click={powerToggle} class="img powerswitch powerswitchtop" data-power={power} style:--image={`url(${NissyGirlPowerSwitchTopPng})`}></div>
 
         <div class="img panelside" style:--image={`url(${NissyGirlSidePng})`}></div>
         <div class="img panelside left" style:--image={`url(${NissyGirlSidePng})`}></div>
@@ -119,19 +61,7 @@ const endRotate = (e) => {
     </div>
 </div>
 
-<div
-    on:pointermove={rafThrottle(continuousRotate)}
-    on:pointerup={endRotate}
-    on:pointercancel={endRotate}
-    on:pointerleave={endRotate}
-    class="rotatecontainer"
->
-    <div
-        on:pointerdown={startRotate}
-        class="rotate"
-        bind:this={rotateEl}
-    ></div>
-</div>
+<RotateControls bind:rotation />
 
 <style>
 @keyframes rotate360 {
@@ -204,7 +134,7 @@ const endRotate = (e) => {
 }
 
 :root {
-    --h: 50vh;
+    --h: 80vh;
     --front-w: calc(var(--h) * 142 / 224);
     --depth-w: calc(var(--h) * 46 / 224);
     --round-button-w: calc(0.082 * var(--h));
@@ -229,30 +159,6 @@ const endRotate = (e) => {
     animation-timing-function: ease-in-out;
     animation-duration: 3000ms;
     animation-direction: alternate;
-}
-
-.rotatecontainer {
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    height: 35%;
-}
-
-.rotate {
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    margin: auto;
-
-    max-width: calc(var(--front-w) + 10rem);
-
-    height: 100%;
 }
 
 .nissygirl {
@@ -299,81 +205,6 @@ const endRotate = (e) => {
     width: 90%;
 
     transform: translateX(-50%) translateZ(calc(var(--depth-w) / 2.09)) rotateX(-90deg);
-}
-
-.powerswitch {
-    --position: 0%;
-
-    aspect-ratio: 5 / 24;
-
-    position: absolute;
-
-    top: 23%;
-
-    width: 3%;
-
-    transition: transform 300ms ease-in-out;
-}
-
-.powerswitch[data-power="false"] {
-    --position: 80%;
-}
-
-.powerswitchtop {
-    transform: rotateY(90deg) translateZ(calc(var(--front-w) * 1.003)) translateX(-220%) translateY(var(--position));
-}
-
-.powerswitchside {
-    transform: translateZ(calc(var(--depth-w) * 0.25)) translateY(var(--position));
-
-    right: -2%;
-}
-
-.powerswitchsideback {
-    transform: translateZ(calc(var(--depth-w) * 0.15)) scaleX(-1) rotateY(180deg) translateY(var(--position));
-
-    right: -2%;
-}
-
-.button {
-    position: absolute;
-
-    aspect-ratio: 1 / 1;
-
-    width: var(--round-button-w);
-
-    transform-style: preserve-3d;
-}
-
-.button-side {
-    aspect-ratio: 3 / 9;
-
-    height: 100%;
-
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 3.2));
-
-    backface-visibility: visible !important;
-    -webkit-backface-visibility: visible !important;
-}
-
-.button {
-    transform: translateZ(calc(var(--depth-w) / 1.8));
-
-    transition: transform 80ms;
-}
-
-.button:hover {
-    transform: translateZ(calc(var(--depth-w) / 1.94)) scale(0.95);
-}
-
-.a {
-    right: 9%;
-    bottom: 31%;
-}
-
-.b {
-    right: 26.75%;
-    bottom: 26%;
 }
 
 .screen {

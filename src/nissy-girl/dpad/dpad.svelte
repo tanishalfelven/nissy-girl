@@ -1,16 +1,23 @@
 <script>
 import NissyGirlButtonDpadPng from "../assets/dpad.png";
+import NissyGirlButtonDpadBackfacePng from "../assets/dpad-backface.png";
 import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
 import { roundHundredths } from "../util/math";
 
-const MAX_TILT = 4;
+import { rafThrottle } from "../util/throttle";
 
-export let rotation = 0;
+const MAX_TILT = 4;
 
 let dpadElement = false;
 
-const mousemove = (e) => {
+let pressed = false;
+
+const pointerDown = (e) => {
+    pressed = true;
+};
+
+const pointerMove = (e) => {
     if(!dpadElement) {
         return false;
     }
@@ -33,12 +40,16 @@ const mousemove = (e) => {
 
     dpadElement.style.setProperty('--rotate-x', `${roundHundredths(rotateX)}deg`);
     dpadElement.style.setProperty('--rotate-y', `${roundHundredths(rotateY)}deg`);
+
+
 }
 
-const mouseleave = (e) => {
+const pointerExit = (e) => {
     if(!dpadElement) {
         return;
     }
+
+    pressed = false;
 
     dpadElement.style.setProperty('--rotate-x', '0deg');
     dpadElement.style.setProperty('--rotate-y', '0deg');
@@ -46,13 +57,21 @@ const mouseleave = (e) => {
 </script>
 
 <div
-    class="img dpad"
-    style:--image={`url(${NissyGirlButtonDpadPng})`}
-    on:mousemove={mousemove}
-    on:mouseleave={mouseleave}
+    class="dpad"
+    on:pointerdown={pointerDown}
+    on:pointermove={rafThrottle(pointerMove)}
+    on:pointerup={pointerExit}
+    on:pointercancel={pointerExit}
+
     bind:this={dpadElement}
+
+    data-pressed={pressed}
 >
+    <div class="img dpad-face" style:--image={`url(${NissyGirlButtonDpadPng})`}></div>
+    <div class="img dpad-backface" style:--image={`url(${NissyGirlButtonDpadBackfacePng})`}></div>
+
     <div class="img dpad-center-side" style:--image={`url(${NissyGirlButtonDpadSidePng})`}></div>
+    <div class="img dpad-center-side left" style:--image={`url(${NissyGirlButtonDpadSidePng})`}></div>
 </div>
 
 <style>
@@ -62,6 +81,13 @@ const mouseleave = (e) => {
     --z-plane: calc(var(--depth-w) / 1.8);
 
     position: absolute;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
 
     aspect-ratio: 31 / 32;
 
@@ -74,21 +100,53 @@ const mouseleave = (e) => {
     transform: translateZ(var(--z-plane));
     transform-origin: center center 4px;
 
-    transition: transform 80ms;
+    transition: transform 30ms;
 }
 
-.dpad:hover {
+.dpad-face {
+    width: 95%;
+    height: 95%;
+}
+
+.dpad-backface {
+    width: 100%;
+    height: 99%;
+
+    margin: auto;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    transform: translateZ(calc(var(--depth-w) * -0.0175));
+}
+
+.dpad[data-pressed="true"] {
     transform: translateZ(var(--z-plane)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(0.98);
 }
 
 .dpad-center-side {
-    aspect-ratio: 3 / 32;
+    aspect-ratio: 9 / 32;
 
-    height: 100%;
+    height: 99%;
+
+    position: absolute;
+
+    top: -0.5%;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
     transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;
+}
+
+.dpad-center-side.left {
+    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.4));
 }
 </style>
