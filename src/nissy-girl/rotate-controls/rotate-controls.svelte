@@ -16,19 +16,22 @@ const startRotate = (e) => {
     startX = e.clientX;
 
     rotateElWidth = rotateEl.getBoundingClientRect().width;
+
+    document.body.setPointerCapture(e.pointerId);
 }
 
-const continuousRotate = (e) => {
+const continuousRotate = rafThrottle((e) => {
     if(!isRotate) {
         return;
     }
 
-    const distX = e.clientX - startX;
+    const newX = e.clientX;
+    const distX = newX - startX;
 
     rotation += (distX / rotateElWidth) * ROTATE_STEP;
 
-    startX = e.clientX;
-}
+    startX = newX;
+});
 
 const endRotate = (e) => {
     if(!isRotate) {
@@ -42,16 +45,15 @@ const endRotate = (e) => {
     if(distX === 0) {
         return;
     }
-
-    rotation += (distX / rotateElWidth) * ROTATE_STEP;
 }
 </script>
 
-<div
-    on:pointermove={rafThrottle(continuousRotate)}
+<svelte:body 
     on:pointerup={endRotate}
-    on:pointercancel={endRotate}
-    on:pointerleave={endRotate}
+    on:pointermove={continuousRotate}
+/>
+
+<div
     class="rotatecontainer"
 >
     <div

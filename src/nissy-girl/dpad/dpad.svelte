@@ -3,25 +3,17 @@ import NissyGirlButtonDpadPng from "../assets/dpad.png";
 import NissyGirlButtonDpadBackfacePng from "../assets/dpad-backface.png";
 import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
-import { roundHundredths } from "../util/math";
+import { roundHundredths, clamp } from "../util/math";
 
 import { rafThrottle } from "../util/throttle";
 
 const MAX_TILT = 4;
 
 let dpadElement = false;
-
 let pressed = false;
+let hitCounter = 0;
 
-const pointerDown = (e) => {
-    pressed = true;
-};
-
-const pointerMove = (e) => {
-    if(!dpadElement) {
-        return false;
-    }
-
+const setRotation = (e) => {
     const {
         left : dpadLeft,
         top : dpadTop,
@@ -35,21 +27,48 @@ const pointerMove = (e) => {
     const normalizedY =
       ((e.clientY - dpadTop) / dpadHeight) * 2 - 1;
 
-    const rotateX = -normalizedY * MAX_TILT;
-    const rotateY = normalizedX * MAX_TILT;
+    const rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
+    const rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
 
     dpadElement.style.setProperty('--rotate-x', `${roundHundredths(rotateX)}deg`);
     dpadElement.style.setProperty('--rotate-y', `${roundHundredths(rotateY)}deg`);
-
-
 }
 
-const pointerExit = (e) => {
+const pointerDown = (e) => {
+    pressed = true;
+
+    dpadElement.releasePointerCapture(e.pointerId);
+
+    setRotation(e);
+};
+
+const pointerMove = rafThrottle((e) => {
+    if(!pressed) {
+        if(e.buttons === 1) {
+            if(hitCounter >= 3) {
+                pressed = true;
+            }
+
+            hitCounter++;
+        } else {
+            hitCounter = 0;
+        }
+    }
+
     if(!dpadElement) {
+        return false;
+    }
+
+    setRotation(e);
+});
+
+const pointerExit = () => {
+    if(!dpadElement || !pressed) {
         return;
     }
 
     pressed = false;
+    hitCounter = 0;
 
     dpadElement.style.setProperty('--rotate-x', '0deg');
     dpadElement.style.setProperty('--rotate-y', '0deg');
@@ -58,13 +77,11 @@ const pointerExit = (e) => {
 
 <div
     class="dpad"
+    on:pointermove={pointerMove}
     on:pointerdown={pointerDown}
-    on:pointermove={rafThrottle(pointerMove)}
     on:pointerup={pointerExit}
-    on:pointercancel={pointerExit}
-
+    on:pointerleave={pointerExit}
     bind:this={dpadElement}
-
     data-pressed={pressed}
 >
     <div class="img dpad-face" style:--image={`url(${NissyGirlButtonDpadPng})`}></div>
@@ -99,8 +116,14 @@ const pointerExit = (e) => {
     transform-style: preserve-3d;
     transform: translateZ(var(--z-plane));
     transform-origin: center center 4px;
+}
 
-    transition: transform 30ms;
+.dpad[data-pressed="true"] {
+    transform: translateZ(var(--z-plane)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(0.98);
+}
+
+.dpad[data-pressed="false"] {
+    transition: transform 80ms;
 }
 
 .dpad-face {
@@ -122,10 +145,6 @@ const pointerExit = (e) => {
     bottom: 0;
 
     transform: translateZ(calc(var(--depth-w) * -0.0175));
-}
-
-.dpad[data-pressed="true"] {
-    transform: translateZ(var(--z-plane)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(0.98);
 }
 
 .dpad-center-side {

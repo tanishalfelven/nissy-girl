@@ -9,9 +9,28 @@ const TYPE_BUTTON_B = "b";
 export let type = TYPE_BUTTON_A;
 
 let isPressed = false;
+let hitCounter = 0;
 
-const startPress = () => {
+const continuePress = (e) => {
+    if(isPressed) {
+        return;
+    }
+
+    if(e.buttons === 1) {
+        if(hitCounter >= 3) {
+            isPressed = true;
+        } else {
+            hitCounter++;
+        }
+    } else {
+        hitCounter = 0;
+    }
+};
+
+const startPress = (e) => {
     isPressed = true;
+
+    e.target.releasePointerCapture(e.pointerId);
 };
 
 const stopPress = () => {
@@ -23,10 +42,9 @@ const stopPress = () => {
     class="img button {type}"
     style:--image={`url(${type === TYPE_BUTTON_A ? NissyGirlButtonAPng : NissyGirlButtonBPng})`}
     on:pointerdown={startPress}
+    on:pointermove={continuePress}
     on:pointerup={stopPress}
-    on:pointercancel={stopPress}
     on:pointerleave={stopPress}
-
     data-pressed="{isPressed}"
 >
     <div class="img button-side" style:--image={`url(${NissyGirlButtonRoundSidePng})`}></div>
