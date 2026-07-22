@@ -131,12 +131,6 @@ onMount(() => {
     }
 }
 
-@property --float {
-    syntax: '<percent>';
-    initial-value: 0%;
-    inherits: false;
-}
-
 @keyframes animateframes {
     0% {
         --frame-index: 0;
