@@ -2,16 +2,32 @@
 import NissyGirlPowerSwitchSidePng from "../assets/power-switch-side.png";
 import NissyGirlPowerSwitchTopPng from "../assets/power-switch-top.png";
 
-export let power;
-
-const powerToggle = () => {
-    power = !power;
-}
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte";
 </script>
 
-<div on:click={powerToggle} class="img powerswitch powerswitchside" data-power={power} style:--image={`url(${NissyGirlPowerSwitchSidePng})`}></div>
-<div on:click={powerToggle} class="img powerswitch powerswitchside powerswitchsideback" data-power={power} style:--image={`url(${NissyGirlPowerSwitchSidePng})`}></div>
-<div on:click={powerToggle} class="img powerswitch powerswitchtop" data-power={power} style:--image={`url(${NissyGirlPowerSwitchTopPng})`}></div>
+<div
+    on:click={nissyGirl.togglePower}
+    class="img powerswitch powerswitchside"
+    data-power={nissyGirl.isPowered}
+    style:--image={`url(${NissyGirlPowerSwitchSidePng})`}
+>
+</div>
+
+<div
+    on:click={nissyGirl.togglePower}
+    class="img powerswitch powerswitchside powerswitchsideback"
+    data-power={nissyGirl.isPowered}
+    style:--image={`url(${NissyGirlPowerSwitchSidePng})`}
+>
+</div>
+
+<div
+    on:click={nissyGirl.togglePower}
+    class="img powerswitch powerswitchtop"
+    data-power={nissyGirl.isPowered}
+    style:--image={`url(${NissyGirlPowerSwitchTopPng})`}
+>
+</div>
 
 <style>
 .powerswitch {

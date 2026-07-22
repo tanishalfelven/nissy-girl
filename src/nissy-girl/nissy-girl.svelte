@@ -1,4 +1,6 @@
 <script>
+import { onMount } from "svelte";
+
 import NissyGirlFrontPng from "./assets/nissygirl-front.png";
 import NissyGirlSidePng from "./assets/nissygirl-side.png";
 import PowerShroomPng from "./assets/power-shroom.png";
@@ -18,19 +20,30 @@ import RotateControls from "./rotate-controls/rotate-controls.svelte";
 import Dpad from "./dpad/dpad.svelte";
 import Button from "./button/button.svelte";
 
-import { roundHundredths } from "./util/math";
+import Cartridges from "./cartridges/cartridges.svelte";
 
-let power = false;
-let rotation = 0;
+import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
+import { nissyGirlMachine } from "./nissy-girl.machine";
+
+onMount(() => {
+    nissyGirlMachine.start();
+})
 </script>
 
 <div class="camera">
+    <Cartridges />
+
     <div
         class="nissygirl"
-        style:--rotation={`${roundHundredths(rotation)}deg`}
+        style:--rotation={`${nissyGirl.rotation}deg`}
+        style:--zoom={`${nissyGirl.zoom}`}
     >
         <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
-            <div class="img mushroom" data-power={power} style:--image={`url(${PowerShroomPng})`}></div>
+            <div 
+                class="img mushroom" 
+                data-power={nissyGirl.isPowered} 
+                style:--image={`url(${PowerShroomPng})`}
+            ></div>
         </div>
 
         <div class="img screen-bevel-horz" style:--image={`url(${NissyGirlScreenBevelHorzPng})`}></div>
@@ -38,17 +51,17 @@ let rotation = 0;
         <div class="img screen-bevel-vert left" style:--image={`url(${NissyGirlScreenBevelVertPng})`}></div>
 
         <div class="screen">
-            {#if power}
+            {#if nissyGirl.isPowered}
                 <StartupScreen />
             {/if}
         </div>
 
-        <PowerSwitch bind:power />
+        <PowerSwitch />
 
         <Button type="a"></Button>
         <Button type="b"></Button>
 
-        <Dpad {rotation} />
+        <Dpad />
 
         <div class="img panelside" style:--image={`url(${NissyGirlSidePng})`}></div>
         <div class="img panelside left" style:--image={`url(${NissyGirlSidePng})`}></div>
@@ -61,7 +74,7 @@ let rotation = 0;
     </div>
 </div>
 
-<RotateControls bind:rotation />
+<RotateControls />
 
 <style>
 @keyframes rotate360 {
@@ -94,21 +107,6 @@ let rotation = 0;
     }
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(0%);
-    }
-
-    50% {
-        transform: translateY(-2.5%);
-    }
-    
-
-    100% {
-        transform: translateY(0%);
-    }
-}
-
 @keyframes glow {
     0% {
         filter: brightness(1.3);
@@ -133,6 +131,22 @@ let rotation = 0;
     }
 }
 
+@property --float {
+    syntax: '<percent>';
+    initial-value: 0%;
+    inherits: false;
+}
+
+@keyframes animateframes {
+    0% {
+        --frame-index: 0;
+    }
+
+    100% {
+        --frame-index: 15;
+    }
+}
+
 :root {
     --h: 65vh;
     --front-w: calc(var(--h) * 142 / 224);
@@ -143,8 +157,8 @@ let rotation = 0;
 .camera {
     position: absolute;
 
-    width: var(--front-w);
-    height: var(--h);
+    width: 100%;
+    height: 100%;
 
     perspective: calc(var(--h) * 3);
 
@@ -153,24 +167,27 @@ let rotation = 0;
     right: 0;
     bottom: 0;
     margin: auto;
-
-    animation-name: float;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-    animation-duration: 3000ms;
-    animation-direction: alternate;
 }
 
 .nissygirl {
     --rotation: 0;
+    --zoom: 1;
 
-    width: 100%;
-    height: 100%;
-    position: relative;
+    width: var(--front-w);
+    height: var(--h);
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    margin: auto;
 
     transform-style: preserve-3d;
 
-    transform: rotateY(var(--rotation));
+    transform: rotateY(var(--rotation)) translateZ(calc(var(--zoom) * 3vw)) translateY(calc(var(--zoom) * 2.7vh));
 }
 
 .screen-bevel-vert {

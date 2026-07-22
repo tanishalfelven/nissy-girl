@@ -1,9 +1,8 @@
 <script>
 import { rafThrottle } from "../util/throttle";
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 
-const ROTATE_STEP = 280;
-
-export let rotation = false;
+import { nissyGirlMachine } from "../nissy-girl.machine";
 
 let rotateEl;
 let rotateElWidth = 0;
@@ -27,24 +26,22 @@ const continuousRotate = rafThrottle((e) => {
 
     const newX = e.clientX;
     const distX = newX - startX;
-
-    rotation += (distX / rotateElWidth) * ROTATE_STEP;
-
     startX = newX;
+
+    const delta = distX / rotateElWidth;
+
+    nissyGirlMachine.send({
+        type : "DRAG_DELTA",
+        delta,
+    });
 });
 
-const endRotate = (e) => {
+const endRotate = () => {
     if(!isRotate) {
         return;
     }
 
     isRotate = false;
-
-    const distX = e.clientX - startX;
-
-    if(distX === 0) {
-        return;
-    }
 }
 </script>
 
@@ -55,9 +52,9 @@ const endRotate = (e) => {
 
 <div
     class="rotatecontainer"
+    on:pointerdown={startRotate}
 >
     <div
-        on:pointerdown={startRotate}
         class="rotate"
         bind:this={rotateEl}
     ></div>
