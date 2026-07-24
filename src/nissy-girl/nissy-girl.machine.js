@@ -72,12 +72,8 @@ const nissyGirlMachine = createMachine({
                                 return false;
                             }
 
-                            const dir = nissyGirl.hasFinishedCartridgeScroll ?
-                                -nissyGirl.animDir :
-                                nissyGirl.animDir;
-
                             // if we rotate away from the entry zoom, we can go back to rotating
-                            return Math.sign(delta) !== Math.sign(dir);
+                            return Math.sign(delta) !== nissyGirl.zoomDir;
                         },
 
                         actions : [
@@ -88,26 +84,17 @@ const nissyGirlMachine = createMachine({
                         target : "playing",
                     },
                     {
-                        guard : ({ event }) => {
-                            const dir = nissyGirl.hasFinishedCartridgeScroll ?
-                                -nissyGirl.animDir :
-                                nissyGirl.animDir;
-
-                            return Math.sign(event.delta) === dir &&
-                                nissyGirl.zoom === MAX_ZOOM;
-                        },
+                        // only advance once dragging continues in the same direction that finished the zoom
+                        guard : ({ event }) =>
+                            Math.sign(event.delta) === nissyGirl.zoomDir &&
+                                nissyGirl.zoom === MAX_ZOOM,
                         target : "cartridge select",
                     },
-                    {
-                        actions : ({ event }) => {
-                            const dir = nissyGirl.hasFinishedCartridgeScroll ?
-                                -nissyGirl.animDir :
-                                nissyGirl.animDir;
-
+                    { 
+                        actions : ({ event }) =>
                             nissyGirl.addZoom(
-                                event.delta * dir * ZOOM_STEP
-                            );
-                        },
+                                event.delta * nissyGirl.zoomDir * ZOOM_STEP
+                            ),
                     }
                 ]
             }
@@ -128,13 +115,14 @@ const nissyGirlMachine = createMachine({
                                 return false;
                             }
 
-                            return (-delta < 0 && nissyGirl.cartridgeScrollPos === MIN_CARTRIDGE_POS) ||
-                                (-delta > 0 && nissyGirl.cartridgeScrollPos === MAX_CARTRIDGE_POS);
+                            // past a cartridge boundary, hand back to zooming
+                            return (delta > 0 && nissyGirl.cartridgeScrollPos === MIN_CARTRIDGE_POS) ||
+                                (delta < 0 && nissyGirl.cartridgeScrollPos === MAX_CARTRIDGE_POS);
                         },
                         target : "zooming",
                         actions : ({ event }) =>
                             nissyGirl.addZoom(
-                                -event.delta * Math.sign(nissyGirl.animDir) * ZOOM_STEP
+                                -event.delta * nissyGirl.animDir * ZOOM_STEP
                             ),
                     },
                     {

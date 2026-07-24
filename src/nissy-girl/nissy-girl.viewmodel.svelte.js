@@ -19,6 +19,9 @@ let hasFinishedCartridgeScroll = $derived(
     cartridgeScrollPos ===
         (animDir === 1 ? MIN_CARTRIDGE_POS : MAX_CARTRIDGE_POS)
 );
+let zoomDir = $derived(
+    hasFinishedCartridgeScroll ? -animDir : animDir
+);
 
 export const nissyGirl = {
     get rotation() {
@@ -47,6 +50,10 @@ export const nissyGirl = {
 
     get hasFinishedCartridgeScroll() {
         return hasFinishedCartridgeScroll;
+    },
+
+    get zoomDir() {
+        return zoomDir;
     },
 
     setAnimationDirection(newAnimDir) {

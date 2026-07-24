@@ -1,5 +1,7 @@
 <script>
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
+
+import PaintPng from "./assets/paint.png";
 </script>
 
 <div
@@ -7,7 +9,7 @@ import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
     style:--x-pos={`${nissyGirl.cartridgeScrollPos}%`}
     data-show="{nissyGirl.displayCartridges}"
 >
-    <div class="cartridge"></div>
+    <div class="img cartridge" style:--image={`url(${PaintPng})`}></div>
 </div>
 
 <style>
@@ -35,10 +37,8 @@ import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 }
 
 .cartridge {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 112 / 105;
 
-    height: 90%;
-
-    background-color: gray;
+    height: 100%;
 }
 </style>
