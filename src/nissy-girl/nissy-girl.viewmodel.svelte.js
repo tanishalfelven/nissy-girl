@@ -14,30 +14,21 @@ import {
     ZOOM_SPEED,
 } from "./nissy-girl.consts.js";
 
-import { getProgress } from "./util/progress.svelte.js";
+import { createProgress } from "./util/progress.svelte.js";
 
-const rotation = getProgress({
+const rotation = createProgress({
     start : 0,
-    update : (delta) => wrap(
-        rotation.progress + delta * ROTATE_SPEED,
+    update : (cur, delta) => wrap(
+        cur + delta * ROTATE_SPEED,
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
 });
 
-const zoom = getProgress({
+const cartridge = createProgress({
     start : 0,
-    update : (delta) => clamp(
-        roundHundredths(zoom.progress + delta * ZOOM_SPEED),
-        MIN_PROGRESS,
-        MAX_PROGRESS,
-    )
-});
-
-const cartridge = getProgress({
-    start : 0,
-    update : (delta) => clamp(
-        cartridge.progress + delta * CARTRIDGE_SPEED,
+    update : (cur, delta) => clamp(
+        cur + delta * CARTRIDGE_SPEED,
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
@@ -46,6 +37,7 @@ const cartridge = getProgress({
 let isPowered = $state(false);
 let animDir = $state(0);
 let displayCartridges = $state(false);
+
 let hasFinishedCartridgeScroll = $derived(
     cartridge.progress ===
         (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
@@ -54,6 +46,18 @@ let hasFinishedCartridgeScroll = $derived(
 let zoomDir = $derived(
     hasFinishedCartridgeScroll ? -animDir : animDir
 );
+
+const zoom = createProgress({
+    start : 0,
+    update : (cur, delta) => !console.log({
+        cur, delta, zoomDir, hasFinishedCartridgeScroll,
+        cartProg : cartridge.progress
+    }) && clamp(
+        roundHundredths(cur + delta * ZOOM_SPEED * zoomDir),
+        MIN_PROGRESS,
+        MAX_PROGRESS,
+    )
+});
 
 export const nissyGirl = {
     get rotation() {
@@ -79,11 +83,6 @@ export const nissyGirl = {
     get animDir() {
         return animDir;
     },
-
-    get hasFinishedCartridgeScroll() {
-        return hasFinishedCartridgeScroll;
-    },
-
 
     get zoomDir() {
         return zoomDir;

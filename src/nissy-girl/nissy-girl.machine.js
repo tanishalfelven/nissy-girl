@@ -2,7 +2,9 @@ import { createMachine, createActor } from "xstate";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte";
 
-import { inRange } from "./util/math";
+import { crossedThreshold, crossedWrap } from "./util/math";
+
+import { invokeObserveProgress } from "./util/progress.svelte";
 
 import {
     ZOOM_ROTATION_THRESHOLD,
@@ -29,16 +31,12 @@ const nissyGirlMachine = createMachine({
 
                             const targetRot = nissyGirl.rotation.project(delta);
 
-                            const lower = Math.min(nissyGirl.rotation.progress, targetRot);
-                            const upper = Math.max(nissyGirl.rotation.progress, targetRot);
-
-                            const didWrap = lower < 0.1 && upper > 0.9;
-
-                            return !didWrap && inRange(
-                                ZOOM_ROTATION_THRESHOLD,
-                                lower,
-                                upper,
-                            );
+                            return !crossedWrap(nissyGirl.rotation.progress, targetRot) &&
+                                crossedThreshold(
+                                    nissyGirl.rotation.progress,
+                                    targetRot,
+                                    ZOOM_ROTATION_THRESHOLD,
+                                );
                         },
 
                         actions : [
@@ -76,23 +74,17 @@ const nissyGirlMachine = createMachine({
                             return Math.sign(delta) !== nissyGirl.zoomDir;
                         },
 
-                        actions : [
-                            () => nissyGirl.clearAnimationDirection(),
-                            ({ event }) => nissyGirl.rotation.update(event.delta ),
-                        ],
+                        actions : () => nissyGirl.clearAnimationDirection(),
 
                         target : "playing",
                     },
                     {
                         // only advance once dragging continues in the same direction that finished the zoom
-                        guard : ({ event }) =>
-                            Math.sign(event.delta) === nissyGirl.zoomDir &&
-                                nissyGirl.zoom.progress === MAX_PROGRESS,
+                        guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MAX_PROGRESS,
                         target : "cartridge select",
                     },
                     { 
-                        actions : ({ event }) =>
-                            nissyGirl.zoom.update(event.delta * nissyGirl.zoomDir),
+                        actions : ({ event }) => nissyGirl.zoom.update(event.delta),
                     }
                 ]
             }
@@ -113,18 +105,19 @@ const nissyGirlMachine = createMachine({
                                 return false;
                             }
 
+                            const nextProgress = nissyGirl.cartridge.project(delta);
+
                             // past a cartridge boundary, hand back to zooming
-                            return (delta > 0 && nissyGirl.cartridge.progress === MIN_PROGRESS) ||
-                                (delta < 0 && nissyGirl.cartridge.progress === MAX_PROGRESS);
+                            return nextProgress === MAX_PROGRESS || nextProgress == MIN_PROGRESS;
                         },
                         target : "zooming",
-                        actions : ({ event }) =>
-                            nissyGirl.zoom.update(-event.delta * nissyGirl.animDir),
+                        actions : [
+                            ({ event }) => nissyGirl.zoom.update(event.delta),
+                            () => nissyGirl.cartridge.round(),
+                        ],
                     },
                     {
-                        actions : ({ event }) => {
-                            nissyGirl.cartridge.update(-event.delta);
-                        }
+                        actions : ({ event }) => nissyGirl.cartridge.update(event.delta),
                     }
                 ],
             },
