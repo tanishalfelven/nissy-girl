@@ -79,7 +79,6 @@ const nissyGirlMachine = createMachine({
                         target : "playing",
                     },
                     {
-                        // only advance once dragging continues in the same direction that finished the zoom
                         guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MAX_PROGRESS,
                         target : "cartridge select",
                     },
@@ -101,15 +100,12 @@ const nissyGirlMachine = createMachine({
                 DRAG_DELTA : [
                     {
                         guard : ({ event }) => {
-                            const { delta } = event;
-
-                            if(delta === 0) {
+                            if(event.delta === 0) {
                                 return false;
                             }
 
-                            const nextProgress = nissyGirl.cartridge.project(delta);
+                            const nextProgress = nissyGirl.cartridge.project(event.delta);
 
-                            // past a cartridge boundary, hand back to zooming
                             return nextProgress === MAX_PROGRESS || nextProgress === MIN_PROGRESS;
                         },
                         target : "zooming",
