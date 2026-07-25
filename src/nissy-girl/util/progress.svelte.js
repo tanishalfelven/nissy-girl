@@ -1,5 +1,13 @@
+/**
+ * @param {object} options
+ * @param {number} options.start
+ * @param {number} options.speed
+ * @param {(cur: number, movement: number) => number} options.update 
+ * @returns 
+ */
 export const createProgress = ({
     start,
+    speed,
     update : updateFunc,
 }) => {
     if(start < 0 || start > 1) {
@@ -7,6 +15,8 @@ export const createProgress = ({
     }
 
     let _progress = $state(start);
+    /** @type {number|false} */
+    let projection = false;
 
     const progress = {
         get progress() {
@@ -14,13 +24,15 @@ export const createProgress = ({
         },
 
         update(delta) {
-            _progress = updateFunc(_progress, delta);
+            _progress = updateFunc(_progress, delta * speed);
 
             return _progress;
         },
 
         project(delta) {
-            return updateFunc(_progress, delta);
+            projection = updateFunc(_progress, delta * speed);
+
+            return projection;
         },
 
         set(value) {
@@ -29,10 +41,15 @@ export const createProgress = ({
             }
 
             _progress = value;
+            projection = false;
         },
 
-        round() {
-            _progress = Math.round(_progress);
+        applyProjection() {
+            if(projection === false) {
+                return;
+            }
+
+            _progress = projection;
         }
     };
 

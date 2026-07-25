@@ -9,17 +9,15 @@ import { fromCallback } from "xstate";
 import {
     MIN_PROGRESS,
     MAX_PROGRESS,
-    ROTATE_SPEED,
-    CARTRIDGE_SPEED,
-    ZOOM_SPEED,
 } from "./nissy-girl.consts.js";
 
 import { createProgress } from "./util/progress.svelte.js";
 
 const rotation = createProgress({
     start : 0,
-    update : (cur, delta) => wrap(
-        cur + delta * ROTATE_SPEED,
+    speed : 1,
+    update : (cur, movement) => wrap(
+        cur + movement,
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
@@ -27,8 +25,9 @@ const rotation = createProgress({
 
 const cartridge = createProgress({
     start : 0,
-    update : (cur, delta) => clamp(
-        cur + delta * CARTRIDGE_SPEED,
+    speed : -0.9,
+    update : (cur, movement) => clamp(
+        cur + movement,
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
@@ -45,11 +44,13 @@ let hasFinishedCartridgeScroll = $derived(
 
 const zoom = createProgress({
     start : 0,
-    update : (cur, delta) => {
+    speed : 1.8,
+    update : (cur, movement) => {
+        // flip zoom input after cartridge has gone
         const zoomDir = hasFinishedCartridgeScroll ? -animDir : animDir;
 
         return clamp(
-            roundHundredths(cur + delta * ZOOM_SPEED * zoomDir),
+            roundHundredths(cur + movement * zoomDir),
             MIN_PROGRESS,
             MAX_PROGRESS,
         );
