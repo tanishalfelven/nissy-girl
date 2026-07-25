@@ -56,21 +56,7 @@ const nissyGirlMachine = createMachine({
             on : {
                 DRAG_DELTA : [
                     {
-                        guard : ({ event }) => {
-                            if(nissyGirl.zoom.progress > MIN_PROGRESS) {
-                                // zoom must be cleared to go back to rotation
-                                return false;
-                            }
-
-                            const { delta } = event;
-
-                            if(delta === 0) {
-                                return false;
-                            }
-
-                            // if we rotate away from the entry zoom, we can go back to rotating
-                            return Math.sign(delta) !== nissyGirl.zoomDir;
-                        },
+                        guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MIN_PROGRESS,
 
                         actions : () => nissyGirl.clearAnimationDirection(),
 

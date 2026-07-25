@@ -43,17 +43,17 @@ let hasFinishedCartridgeScroll = $derived(
         (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
 );
 
-let zoomDir = $derived(
-    hasFinishedCartridgeScroll ? -animDir : animDir
-);
-
 const zoom = createProgress({
     start : 0,
-    update : (cur, delta) => clamp(
-        roundHundredths(cur + delta * ZOOM_SPEED * zoomDir),
-        MIN_PROGRESS,
-        MAX_PROGRESS,
-    )
+    update : (cur, delta) => {
+        const zoomDir = hasFinishedCartridgeScroll ? -animDir : animDir;
+
+        return clamp(
+            roundHundredths(cur + delta * ZOOM_SPEED * zoomDir),
+            MIN_PROGRESS,
+            MAX_PROGRESS,
+        );
+    }
 });
 
 export const nissyGirl = {
@@ -79,10 +79,6 @@ export const nissyGirl = {
 
     get animDir() {
         return animDir;
-    },
-
-    get zoomDir() {
-        return zoomDir;
     },
 
     setAnimationDirection(newAnimDir) {
