@@ -81,7 +81,7 @@ $: console.log(nissyGirl.cartridgeX);
 
     margin: auto;
 
-    transform: translateX(calc(50vw + var(--x-pos))) translateY(-50vh) translateZ(4vw) rotateY(var(--rot)) ;
+    transform: translateX(calc(50vw + var(--x-pos))) translateY(-40vh) translateZ(4vw) rotateY(var(--rot)) ;
 
     transition: transform 80ms linear;
 }
