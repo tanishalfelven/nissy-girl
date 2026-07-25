@@ -18,6 +18,10 @@ export const crossedThreshold = (from, to, threshold) =>
   (from < threshold && to > threshold) ||
   (from > threshold && to < threshold);
 
+export const crossedThresholdInclusive = (from, to, threshold) =>
+  (from <= threshold && to >= threshold) ||
+  (from >= threshold && to <= threshold);
+
 export const crossedWrap = (from, to) =>
     Math.abs(to - from) > 0.5;
 

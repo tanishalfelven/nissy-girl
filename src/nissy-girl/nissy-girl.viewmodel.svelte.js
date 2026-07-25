@@ -21,6 +21,10 @@ const rotation = createProgress({
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
+    velocityAnchors : [ 0.99, 0.01, 0.49, 0.51 ],
+    velocityCfg : {
+        smoothing : 0.9,
+    }
 });
 
 const cartridge = createProgress({
@@ -31,6 +35,11 @@ const cartridge = createProgress({
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
+    velocityAnchors : [ 0.5 ],
+    velocityCfg : {
+        smoothing : 0.6,
+        decay : 1.01,
+    }
 });
 
 let isPowered = $state(false);
@@ -54,6 +63,9 @@ const zoom = createProgress({
             MIN_PROGRESS,
             MAX_PROGRESS,
         );
+    },
+    velocityCfg : {
+        smoothing : 0.9,
     }
 });
 

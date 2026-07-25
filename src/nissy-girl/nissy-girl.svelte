@@ -111,16 +111,6 @@ onMount(() => {
     }
 }
 
-@keyframes glow {
-    0% {
-        filter: brightness(1.3);
-    }
-    
-    100% {
-        filter: brightness(0.8);
-    }
-}
-
 @keyframes depress {
     0% {
         transform: translateZ(calc(var(--depth-w) / 1.9));
@@ -251,12 +241,6 @@ onMount(() => {
     top: 50%;
 
     transform: translate(-75%, -40%);
-
-    /* animation-name: glow; */
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-    animation-duration: 600ms;
-    animation-direction: alternate;
 
     transition: filter 300ms ease-in-out;
 }

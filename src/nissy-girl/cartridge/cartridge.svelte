@@ -15,7 +15,7 @@ import CartridgeBottom from "./assets/cartridge-bottom.png";
 import PcbFace from "./assets/pcb-face.png";
 import PcbUnder from "./assets/pcb-under.png";
 
-import { nissyGirl } from "../nissy-girl.viewmodel.svelte";
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 
 import { roundHundredths, lerp } from "../util/math";
 
@@ -52,8 +52,8 @@ let cartridgeX = $derived(
     <div class="img cartridgefaceartside" style:--image={`url(${CartridgeFaceArtSide})`}></div>
     <div class="img cartridgefaceartside right" style:--image={`url(${CartridgeFaceArtSide})`}></div>
 
-    <div class="img cartridgeface back" style:--image="url({CartridgeBack})"></div>
-    <div class="img cartridgebottom" style:--image="url({CartridgeBottom})"></div>
+    <div class="img cartridgeface back" style:--image={`url(${CartridgeBack})`}></div>
+    <div class="img cartridgebottom" style:--image={`url(${CartridgeBottom})`}></div>
 
     <div class="img cartridgeslattop" style:--image={`url(${CartridgeSlatTop})`}></div>
     <div class="img cartridgeslattop right" style:--image={`url(${CartridgeSlatTop})`}></div>
@@ -91,9 +91,7 @@ let cartridgeX = $derived(
 
     margin: auto;
 
-    transform: translateX(calc(50vw + var(--x-pos))) translateY(-40vh) translateZ(4vw) rotateY(var(--rot)) ;
-
-    transition: transform 80ms linear;
+    transform: translateX(calc(50vw + var(--x-pos))) translateY(-40vh) translateZ(4vw) rotateY(var(--rot));
 }
 
 .cartridge[data-visibility="false"] {

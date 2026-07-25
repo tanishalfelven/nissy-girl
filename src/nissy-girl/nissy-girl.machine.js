@@ -1,8 +1,10 @@
-import { createMachine, createActor } from "xstate";
+import { createMachine, createActor, sendTo } from "xstate";
 
-import { nissyGirl } from "./nissy-girl.viewmodel.svelte";
+import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 import { crossedThreshold, crossedWrap } from "./util/math";
+
+import { releaseVelocity, RELEASE_VELOCITYID } from "./util/velocity";
 
 import {
     ZOOM_ROTATION_THRESHOLD,
@@ -10,13 +12,32 @@ import {
     MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
 
+const updateVelocityTarget = (progress) =>
+    sendTo(RELEASE_VELOCITYID, { type : "TRACK_PROGRESS", progress });
+
 const nissyGirlMachine = createMachine({
     id : "nissy-girl",
 
     initial : "playing",
 
+    invoke : [
+        releaseVelocity,
+    ],
+
+    on : {
+        START_DRAG : {
+            actions : sendTo(RELEASE_VELOCITYID, { type : "START_DRAG" }),
+        },
+
+        END_DRAG : {
+            actions : sendTo(RELEASE_VELOCITYID, { type : "END_DRAG" }),
+        },
+    },
+
     states : {
         playing : {
+            entry : updateVelocityTarget(nissyGirl.rotation),
+
             on : {
                 DRAG_DELTA : [
                     {
@@ -48,6 +69,7 @@ const nissyGirlMachine = createMachine({
         },
 
         zooming : {
+            entry : updateVelocityTarget(nissyGirl.zoom),
             exit : () => nissyGirl.zoom.applyProjection(),
 
             on : {
@@ -72,6 +94,8 @@ const nissyGirlMachine = createMachine({
             invoke : [
                 nissyGirl.invokeDisplayCartridges(),
             ],
+
+            entry : updateVelocityTarget(nissyGirl.cartridge),
 
             on : {
                 DRAG_DELTA : [

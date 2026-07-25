@@ -1,3 +1,9 @@
+import { createVelocity } from "./velocity";
+
+import { crossedThresholdInclusive, crossedWrap } from "./math";
+
+import { MIN_PROGRESS, MAX_PROGRESS } from "../nissy-girl.consts";
+
 /**
  * @param {object} options
  * @param {number} options.start
@@ -8,6 +14,8 @@
 export const createProgress = ({
     start,
     speed,
+    velocityCfg = false,
+    velocityAnchors = [],
     update : updateFunc,
 }) => {
     if(start < 0 || start > 1) {
@@ -15,16 +23,24 @@ export const createProgress = ({
     }
 
     let _progress = $state(start);
-    /** @type {number|false} */
     let projection = false;
+    const velocity = createVelocity(velocityCfg);
 
     const progress = {
         get progress() {
             return _progress;
         },
 
+        isMoving() {
+            return velocity.value !== 0;
+        },
+
         update(delta) {
             _progress = updateFunc(_progress, delta * speed);
+
+            velocity.sample(delta * Math.abs(speed));
+
+            projection = false;
 
             return _progress;
         },
@@ -44,12 +60,50 @@ export const createProgress = ({
             projection = false;
         },
 
+        stepVelocity() {
+            const movement = velocity.step();
+
+            if(!this.isMoving() || !movement) {
+                return _progress;
+            }
+
+            const previous = _progress;
+
+            const next = this.project(movement);
+
+            if(progress === MIN_PROGRESS ||
+                progress === MAX_PROGRESS
+            ) {
+                velocity.stop();
+            }
+
+            for(const boundary of velocityAnchors) {
+                if(!crossedWrap(previous, next) &&
+                crossedThresholdInclusive(previous, next, boundary)) {
+                    velocity.stop();
+                    this.set(boundary);
+
+                    break;
+                }
+            }
+
+            this.applyProjection();
+
+            return _progress;
+        },
+
+        stop() {
+            velocity.stop();
+            projection = false;
+        },
+
         applyProjection() {
             if(projection === false) {
                 return;
             }
 
             _progress = projection;
+            projection = false;
         }
     };
 

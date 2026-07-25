@@ -17,6 +17,10 @@ const startRotate = (e) => {
     rotateElWidth = rotateEl.getBoundingClientRect().width;
 
     document.body.setPointerCapture(e.pointerId);
+
+    nissyGirlMachine.send({
+        type : "START_DRAG",
+    });
 }
 
 const continuousRotate = rafThrottle((e) => {
@@ -42,6 +46,10 @@ const endRotate = () => {
     }
 
     isRotate = false;
+
+    nissyGirlMachine.send({
+        type : "END_DRAG",
+    });
 }
 </script>
 

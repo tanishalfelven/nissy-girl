@@ -2,7 +2,7 @@
 import NissyGirlPowerSwitchSidePng from "../assets/power-switch-side.png";
 import NissyGirlPowerSwitchTopPng from "../assets/power-switch-top.png";
 
-import { nissyGirl } from "../nissy-girl.viewmodel.svelte";
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 </script>
 
 <div
