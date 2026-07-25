@@ -11,8 +11,8 @@ import {
     MAX_ZOOM,
     ZOOM_STEP,
     CARTRIDGE_STEP,
-    MIN_CARTRIDGE_POS,
-    MAX_CARTRIDGE_POS,
+    MIN_PROGRESS,
+    MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
 
 const nissyGirlMachine = createMachine({
@@ -116,8 +116,8 @@ const nissyGirlMachine = createMachine({
                             }
 
                             // past a cartridge boundary, hand back to zooming
-                            return (delta > 0 && nissyGirl.cartridgeScrollPos === MIN_CARTRIDGE_POS) ||
-                                (delta < 0 && nissyGirl.cartridgeScrollPos === MAX_CARTRIDGE_POS);
+                            return (delta > 0 && nissyGirl.cartridgeProgress === MIN_PROGRESS) ||
+                                (delta < 0 && nissyGirl.cartridgeProgress === MAX_PROGRESS);
                         },
                         target : "zooming",
                         actions : ({ event }) =>
@@ -127,7 +127,7 @@ const nissyGirlMachine = createMachine({
                     },
                     {
                         actions : ({ event }) => {
-                            nissyGirl.addCartridgeScroll(
+                            nissyGirl.addCartridgeProgress(
                                 -event.delta * CARTRIDGE_STEP
                             );
                         }

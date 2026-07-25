@@ -20,7 +20,7 @@ import RotateControls from "./rotate-controls/rotate-controls.svelte";
 import Dpad from "./dpad/dpad.svelte";
 import Button from "./button/button.svelte";
 
-import Cartridges from "./cartridges/cartridges.svelte";
+import Cartridge from "./cartridge/cartridge.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine";
@@ -31,13 +31,13 @@ onMount(() => {
 </script>
 
 <div class="camera">
-    <Cartridges />
-
     <div
         class="nissygirl"
         style:--rotation={`${nissyGirl.rotation}deg`}
         style:--zoom={`${nissyGirl.zoom}`}
     >
+        <Cartridge />
+
         <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
             <div 
                 class="img mushroom" 

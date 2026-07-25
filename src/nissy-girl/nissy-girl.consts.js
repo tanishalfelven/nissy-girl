@@ -6,6 +6,9 @@ export const MIN_ZOOM = 0;
 export const MAX_ZOOM = 10;
 export const ZOOM_STEP = 18;
 
-export const MIN_CARTRIDGE_POS = -100;
-export const MAX_CARTRIDGE_POS = 150;
-export const CARTRIDGE_STEP = 250;
+export const MIN_PROGRESS = 0;
+export const MAX_PROGRESS = 1;
+
+export const MIN_CARTRIDGE_POS = 0;
+export const MAX_CARTRIDGE_POS = 1;
+export const CARTRIDGE_STEP = 0.9;

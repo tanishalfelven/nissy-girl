@@ -1,26 +1,41 @@
-import { roundHundredths, wrap, clamp } from "./util/math";
+import {
+    roundHundredths,
+    wrap,
+    clamp,
+    lerp,
+} from "./util/math";
 
 import { fromCallback } from "xstate";
 
 import {
     MIN_ZOOM,
     MAX_ZOOM,
-    MIN_CARTRIDGE_POS,
-    MAX_CARTRIDGE_POS,
+    MIN_PROGRESS,
+    MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
 
 let rotation = $state(0);
 let isPowered = $state(false);
 let zoom = $state(MIN_ZOOM);
 let animDir = $state(0);
-let cartridgeScrollPos = $state(0);
+let cartridgeProgress = $state(0);
 let displayCartridges = $state(false);
 let hasFinishedCartridgeScroll = $derived(
-    cartridgeScrollPos ===
-        (animDir === 1 ? MIN_CARTRIDGE_POS : MAX_CARTRIDGE_POS)
+    cartridgeProgress ===
+        (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
 );
 let zoomDir = $derived(
     hasFinishedCartridgeScroll ? -animDir : animDir
+);
+
+let cartridgeX = $derived(
+    `${roundHundredths(lerp(-150, 50, cartridgeProgress))}vw`
+);
+
+let cartridgeRot = $derived(
+    `${roundHundredths(
+        ((Math.cos(cartridgeProgress * Math.PI)) / 4) * 720 + 180
+    )}deg`
 );
 
 export const nissyGirl = {
@@ -36,8 +51,8 @@ export const nissyGirl = {
         return zoom;
     },
 
-    get cartridgeScrollPos() {
-        return cartridgeScrollPos;
+    get cartridgeProgress() {
+        return cartridgeProgress;
     },
 
     get displayCartridges() {
@@ -52,6 +67,14 @@ export const nissyGirl = {
         return hasFinishedCartridgeScroll;
     },
 
+    get cartridgeX() {
+        return cartridgeX;
+    },
+
+    get cartridgeRot() {
+        return cartridgeRot;
+    },
+
     get zoomDir() {
         return zoomDir;
     },
@@ -59,7 +82,7 @@ export const nissyGirl = {
     setAnimationDirection(newAnimDir) {
         animDir = newAnimDir;
 
-        cartridgeScrollPos = newAnimDir < 0 ? MIN_CARTRIDGE_POS : MAX_CARTRIDGE_POS;
+        cartridgeProgress = newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS;
     },
 
     clearAnimationDirection() {
@@ -79,11 +102,11 @@ export const nissyGirl = {
         })
     },
 
-    addCartridgeScroll(scrollDelta) {
-        cartridgeScrollPos = clamp(
-            roundHundredths(cartridgeScrollPos + scrollDelta),
-            MIN_CARTRIDGE_POS,
-            MAX_CARTRIDGE_POS,
+    addCartridgeProgress(delta) {
+        cartridgeProgress = clamp(
+            cartridgeProgress + delta,
+            MIN_PROGRESS,
+            MAX_PROGRESS,
         );
     },
 
