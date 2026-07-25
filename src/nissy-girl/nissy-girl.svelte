@@ -24,6 +24,27 @@ import Cartridge from "./cartridge/cartridge.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine";
+import { ZOOM_ROTATION_THRESHOLD } from "./nissy-girl.consts";
+import { inRange, roundHundredths } from "./util/math";
+
+let rotation = $derived(`${roundHundredths(nissyGirl.rotation.progress * 360)}deg`);
+let zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
+
+let prevRotation = 0;
+
+$effect(() => {
+    prevRotation = nissyGirl.rotation.progress;
+});
+
+// This is so absurd but wrapping 0-360 with a transition makes it jump.. so we detect that and disable transition
+// for basically just that frame...
+let isWrapping = $derived.by(() => {
+    return inRange(
+        ZOOM_ROTATION_THRESHOLD,
+        Math.min(nissyGirl.rotation.progress, prevRotation),
+        Math.max(nissyGirl.rotation.progress, prevRotation)
+    );
+});
 
 onMount(() => {
     nissyGirlMachine.start();
@@ -33,8 +54,9 @@ onMount(() => {
 <div class="camera">
     <div
         class="nissygirl"
-        style:--rotation={`${nissyGirl.rotation}deg`}
-        style:--zoom={`${nissyGirl.zoom}`}
+        style:--rotation={rotation}
+        style:--zoom={zoom}
+        data-wrap={isWrapping}
     >
         <Cartridge />
 
@@ -182,6 +204,12 @@ onMount(() => {
     transform-style: preserve-3d;
 
     transform: rotateY(var(--rotation)) translateZ(calc(var(--zoom) * 3vw)) translateY(calc(var(--zoom) * 2.7vh));
+
+    transition: transform 20ms linear;
+}
+
+.nissygirl[data-wrap="true"] {
+    transition: none;
 }
 
 .screen-bevel-vert {

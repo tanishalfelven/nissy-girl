@@ -6,11 +6,6 @@ import { inRange } from "./util/math";
 
 import {
     ZOOM_ROTATION_THRESHOLD,
-    ROTATE_STEP,
-    MIN_ZOOM,
-    MAX_ZOOM,
-    ZOOM_STEP,
-    CARTRIDGE_STEP,
     MIN_PROGRESS,
     MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
@@ -32,17 +27,22 @@ const nissyGirlMachine = createMachine({
                                 return false;
                             }
 
-                            const targetRot = nissyGirl.rotation + delta * ROTATE_STEP;
+                            const targetRot = nissyGirl.rotation.project(delta);
 
-                            return inRange(
+                            const lower = Math.min(nissyGirl.rotation.progress, targetRot);
+                            const upper = Math.max(nissyGirl.rotation.progress, targetRot);
+
+                            const didWrap = lower < 0.1 && upper > 0.9;
+
+                            return !didWrap && inRange(
                                 ZOOM_ROTATION_THRESHOLD,
-                                Math.min(nissyGirl.rotation, targetRot),
-                                Math.max(nissyGirl.rotation, targetRot)
+                                lower,
+                                upper,
                             );
                         },
 
                         actions : [
-                            () => nissyGirl.setRotation(ZOOM_ROTATION_THRESHOLD),
+                            () => nissyGirl.rotation.set(ZOOM_ROTATION_THRESHOLD),
                             ({ event }) => nissyGirl.setAnimationDirection(Math.sign(event.delta)),
                         ],
                         
@@ -50,7 +50,7 @@ const nissyGirlMachine = createMachine({
                     },
 
                     {
-                        actions : ({ event }) => nissyGirl.addRotation(event.delta * ROTATE_STEP),
+                        actions : ({ event }) => nissyGirl.rotation.update(event.delta),
                     }
                 ]
             }
@@ -61,7 +61,7 @@ const nissyGirlMachine = createMachine({
                 DRAG_DELTA : [
                     {
                         guard : ({ event }) => {
-                            if(nissyGirl.zoom > MIN_ZOOM) {
+                            if(nissyGirl.zoom.progress > MIN_PROGRESS) {
                                 // zoom must be cleared to go back to rotation
                                 return false;
                             }
@@ -78,7 +78,7 @@ const nissyGirlMachine = createMachine({
 
                         actions : [
                             () => nissyGirl.clearAnimationDirection(),
-                            ({ event }) => nissyGirl.addRotation(event.delta * ROTATE_STEP),
+                            ({ event }) => nissyGirl.rotation.update(event.delta ),
                         ],
 
                         target : "playing",
@@ -87,14 +87,12 @@ const nissyGirlMachine = createMachine({
                         // only advance once dragging continues in the same direction that finished the zoom
                         guard : ({ event }) =>
                             Math.sign(event.delta) === nissyGirl.zoomDir &&
-                                nissyGirl.zoom === MAX_ZOOM,
+                                nissyGirl.zoom.progress === MAX_PROGRESS,
                         target : "cartridge select",
                     },
                     { 
                         actions : ({ event }) =>
-                            nissyGirl.addZoom(
-                                event.delta * nissyGirl.zoomDir * ZOOM_STEP
-                            ),
+                            nissyGirl.zoom.update(event.delta * nissyGirl.zoomDir),
                     }
                 ]
             }
@@ -116,20 +114,16 @@ const nissyGirlMachine = createMachine({
                             }
 
                             // past a cartridge boundary, hand back to zooming
-                            return (delta > 0 && nissyGirl.cartridgeProgress === MIN_PROGRESS) ||
-                                (delta < 0 && nissyGirl.cartridgeProgress === MAX_PROGRESS);
+                            return (delta > 0 && nissyGirl.cartridge.progress === MIN_PROGRESS) ||
+                                (delta < 0 && nissyGirl.cartridge.progress === MAX_PROGRESS);
                         },
                         target : "zooming",
                         actions : ({ event }) =>
-                            nissyGirl.addZoom(
-                                -event.delta * nissyGirl.animDir * ZOOM_STEP
-                            ),
+                            nissyGirl.zoom.update(-event.delta * nissyGirl.animDir),
                     },
                     {
                         actions : ({ event }) => {
-                            nissyGirl.addCartridgeProgress(
-                                -event.delta * CARTRIDGE_STEP
-                            );
+                            nissyGirl.cartridge.update(-event.delta);
                         }
                     }
                 ],

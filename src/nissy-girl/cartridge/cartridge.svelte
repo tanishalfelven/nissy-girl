@@ -1,6 +1,4 @@
 <script>
-import { nissyGirl } from "../nissy-girl.viewmodel.svelte";
-
 import PaintPng from "./assets/paint-art.png";
 import CartridgeFace from "./assets/cartridge-face.png";
 import CartridgeTop from "./assets/cartridge-top.png";
@@ -17,15 +15,27 @@ import CartridgeBottom from "./assets/cartridge-bottom.png";
 import PcbFace from "./assets/pcb-face.png";
 import PcbUnder from "./assets/pcb-under.png";
 
-export let cartridge = PaintPng;
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte";
 
-$: console.log(nissyGirl.cartridgeX);
+import { roundHundredths, lerp } from "../util/math";
+
+let { cartridge = PaintPng } = $props();
+
+let cartridgeRot = $derived(
+    `${roundHundredths(
+        ((Math.cos(nissyGirl.cartridge.progress * Math.PI)) / 4) * 720 + 180
+    )}deg`
+);
+
+let cartridgeX = $derived(
+    `${roundHundredths(lerp(-150, 50, nissyGirl.cartridge.progress))}vw`
+);
 </script>
 
 <div
     class="cartridge"
-    style:--x-pos={nissyGirl.cartridgeX}
-    style:--rot={nissyGirl.cartridgeRot}
+    style:--x-pos={cartridgeX}
+    style:--rot={cartridgeRot}
     data-visibility="{nissyGirl.displayCartridges}"
 >
     <div class="img cartridgeface" style:--image={`url(${CartridgeFace})`}></div>

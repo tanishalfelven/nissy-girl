@@ -2,40 +2,57 @@ import {
     roundHundredths,
     wrap,
     clamp,
-    lerp,
 } from "./util/math";
 
 import { fromCallback } from "xstate";
 
 import {
-    MIN_ZOOM,
-    MAX_ZOOM,
     MIN_PROGRESS,
     MAX_PROGRESS,
+    ROTATE_SPEED,
+    CARTRIDGE_SPEED,
+    ZOOM_SPEED,
 } from "./nissy-girl.consts.js";
 
-let rotation = $state(0);
+import { getProgress } from "./util/progress.svelte.js";
+
+const rotation = getProgress({
+    start : 0,
+    update : (delta) => wrap(
+        rotation.progress + delta * ROTATE_SPEED,
+        MIN_PROGRESS,
+        MAX_PROGRESS,
+    ),
+});
+
+const zoom = getProgress({
+    start : 0,
+    update : (delta) => clamp(
+        roundHundredths(zoom.progress + delta * ZOOM_SPEED),
+        MIN_PROGRESS,
+        MAX_PROGRESS,
+    )
+});
+
+const cartridge = getProgress({
+    start : 0,
+    update : (delta) => clamp(
+        cartridge.progress + delta * CARTRIDGE_SPEED,
+        MIN_PROGRESS,
+        MAX_PROGRESS,
+    ),
+});
+
 let isPowered = $state(false);
-let zoom = $state(MIN_ZOOM);
 let animDir = $state(0);
-let cartridgeProgress = $state(0);
 let displayCartridges = $state(false);
 let hasFinishedCartridgeScroll = $derived(
-    cartridgeProgress ===
+    cartridge.progress ===
         (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
 );
+
 let zoomDir = $derived(
     hasFinishedCartridgeScroll ? -animDir : animDir
-);
-
-let cartridgeX = $derived(
-    `${roundHundredths(lerp(-150, 50, cartridgeProgress))}vw`
-);
-
-let cartridgeRot = $derived(
-    `${roundHundredths(
-        ((Math.cos(cartridgeProgress * Math.PI)) / 4) * 720 + 180
-    )}deg`
 );
 
 export const nissyGirl = {
@@ -51,8 +68,8 @@ export const nissyGirl = {
         return zoom;
     },
 
-    get cartridgeProgress() {
-        return cartridgeProgress;
+    get cartridge() {
+        return cartridge;
     },
 
     get displayCartridges() {
@@ -67,13 +84,6 @@ export const nissyGirl = {
         return hasFinishedCartridgeScroll;
     },
 
-    get cartridgeX() {
-        return cartridgeX;
-    },
-
-    get cartridgeRot() {
-        return cartridgeRot;
-    },
 
     get zoomDir() {
         return zoomDir;
@@ -82,7 +92,7 @@ export const nissyGirl = {
     setAnimationDirection(newAnimDir) {
         animDir = newAnimDir;
 
-        cartridgeProgress = newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS;
+        cartridge.set(newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
     },
 
     clearAnimationDirection() {
@@ -100,34 +110,6 @@ export const nissyGirl = {
                 }
             })
         })
-    },
-
-    addCartridgeProgress(delta) {
-        cartridgeProgress = clamp(
-            cartridgeProgress + delta,
-            MIN_PROGRESS,
-            MAX_PROGRESS,
-        );
-    },
-
-    addZoom(zoomDelta) {
-        zoom = clamp(
-            roundHundredths(zoom + zoomDelta),
-            MIN_ZOOM,
-            MAX_ZOOM,
-        );
-    },
-
-    addRotation(rotDelta) {
-        rotation = wrap(
-            roundHundredths(rotation + rotDelta),
-            0,
-            360
-        );
-    },
-
-    setRotation(newRot) {
-        rotation = newRot;
     },
 
     togglePower() {
