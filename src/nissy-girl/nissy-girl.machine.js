@@ -4,8 +4,6 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte";
 
 import { crossedThreshold, crossedWrap } from "./util/math";
 
-import { invokeObserveProgress } from "./util/progress.svelte";
-
 import {
     ZOOM_ROTATION_THRESHOLD,
     MIN_PROGRESS,
@@ -108,7 +106,7 @@ const nissyGirlMachine = createMachine({
                             const nextProgress = nissyGirl.cartridge.project(delta);
 
                             // past a cartridge boundary, hand back to zooming
-                            return nextProgress === MAX_PROGRESS || nextProgress == MIN_PROGRESS;
+                            return nextProgress === MAX_PROGRESS || nextProgress === MIN_PROGRESS;
                         },
                         target : "zooming",
                         actions : [

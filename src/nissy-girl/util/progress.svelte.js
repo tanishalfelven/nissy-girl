@@ -1,5 +1,3 @@
-import { fromCallback } from "xstate";
-
 export const createProgress = ({
     start,
     update : updateFunc,
@@ -40,12 +38,3 @@ export const createProgress = ({
 
     return progress;
 };
-
-export const invokeObserveProgress = (id, progress) => ({
-    id,
-    src : fromCallback(() => {
-        progress.round();
-
-        return () => progress.round();
-    }),
-});

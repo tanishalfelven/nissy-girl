@@ -29,12 +29,6 @@ import { roundHundredths } from "./util/math";
 let rotation = $derived(`${roundHundredths(nissyGirl.rotation.progress * 360)}deg`);
 let zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
 
-let prevRotation = 0;
-
-$effect(() => {
-    prevRotation = nissyGirl.rotation.progress;
-});
-
 onMount(() => {
     nissyGirlMachine.start();
 })

@@ -49,10 +49,7 @@ let zoomDir = $derived(
 
 const zoom = createProgress({
     start : 0,
-    update : (cur, delta) => !console.log({
-        cur, delta, zoomDir, hasFinishedCartridgeScroll,
-        cartProg : cartridge.progress
-    }) && clamp(
+    update : (cur, delta) => clamp(
         roundHundredths(cur + delta * ZOOM_SPEED * zoomDir),
         MIN_PROGRESS,
         MAX_PROGRESS,
