@@ -1,4 +1,5 @@
 import { MIN_PROGRESS, MAX_PROGRESS } from "../nissy-girl.consts";
+import { crossedThresholdWrapInclusive } from "./math.js";
 
 /**
  * @param {object} options
@@ -10,6 +11,7 @@ import { MIN_PROGRESS, MAX_PROGRESS } from "../nissy-girl.consts";
 export const createProgress = ({
     start,
     speed,
+    anchors : anchorInput = [],
     update : updateFunc,
     velocity,
 }) => {
@@ -17,9 +19,26 @@ export const createProgress = ({
         throw new Error(`Cannot create progress with start value ${start}`);
     }
 
+    const anchors = new Set(anchorInput);
+
     let _progress = $state(start);
 
-    const calc = (delta) => updateFunc(_progress, delta * speed);
+    const calc = (delta) => {
+        const val = updateFunc(_progress, delta * speed);
+
+
+        for(const boundary of anchors) {
+            if(boundary === _progress) {
+                continue;
+            }
+
+            if(crossedThresholdWrapInclusive(_progress, val, boundary)) {
+                return boundary;
+            }
+        }
+
+        return val;
+    };
 
     const progress = {
         get progress() {
@@ -38,6 +57,10 @@ export const createProgress = ({
 
         project(delta) {
             return calc(delta);
+        },
+
+        isAnchor(position) {
+            return anchors.has(position);
         },
 
         set(value) {

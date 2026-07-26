@@ -2,10 +2,6 @@ import { fromCallback } from "xstate";
 
 import { createVelocity } from "./velocity.js";
 
-import { crossedThresholdWrapInclusive } from "./math.js";
-
-import { MIN_PROGRESS, MAX_PROGRESS } from "../nissy-girl.consts.js";
-
 import { rafLooper } from "./time.js";
 
 export const RELEASE_VELOCITYID = "release-velocity";
@@ -24,21 +20,15 @@ export const releaseVelocity = ({
 
             const next = progress.project(movement);
 
-            let executeMove = movement !== 0;
-
-            for(const boundary of velocity.getAnchors()) {
-                if(crossedThresholdWrapInclusive(previous, next, boundary)) {
-                    velocity.stop();
-                    progress.set(boundary);
-
-                    executeMove = false;
-
-                    break;
-                }
-            }
+            let executeMove = movement !== 0 &&
+                next !== previous;
 
             if(executeMove) {
                 sendBack({ type : "MOVE", delta : movement });
+            }
+
+            if(progress.isAnchor(next)) {
+                velocity.stop();
             }
 
             return velocity.isMoving();

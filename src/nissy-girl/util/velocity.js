@@ -8,7 +8,6 @@ export const createVelocity = ({
     smoothing = DEFAULT_SMOOTHING,
     decay = DEFAULT_DECAY,
     min = DEFAULT_MIN,
-    anchors = [],
 } = false) => {
     let value = 0;
     let lastTime = false;
@@ -22,20 +21,14 @@ export const createVelocity = ({
             return value !== 0;
         },
 
-        getAnchors() {
-            return anchors;
-        },
-
         init({
             smoothing : updateSmoothing = DEFAULT_SMOOTHING,
             decay : updateDecay = DEFAULT_DECAY,
             min : updateMin = DEFAULT_MIN,
-            anchors : updateAnchors = [],
         } = false) {
             smoothing = updateSmoothing;
             decay = updateDecay;
             min = updateMin;
-            anchors = updateAnchors;
 
             lastTime = false;
         },

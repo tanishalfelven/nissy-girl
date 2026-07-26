@@ -16,6 +16,7 @@ import { createProgress } from "./util/progress.svelte.js";
 const rotation = createProgress({
     start : 0,
     speed : 1,
+    anchors : [ 1 ],
     update : (cur, movement) => wrap(
         cur + movement,
         MIN_PROGRESS,
@@ -23,13 +24,13 @@ const rotation = createProgress({
     ),
     velocity : {
         smoothing : 0.75,
-        anchors : [ 1 ],
     }
 });
 
 const cartridge = createProgress({
     start : 0,
     speed : -0.9,
+    anchors : [ 0.5 ],
     update : (cur, movement) => clamp(
         cur + movement,
         MIN_PROGRESS,
@@ -38,7 +39,6 @@ const cartridge = createProgress({
     velocity : {
         smoothing : 0.6,
         decay : 0.98,
-        anchors : [ 0.5 ],
     }
 });
 
