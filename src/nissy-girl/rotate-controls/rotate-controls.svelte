@@ -1,5 +1,5 @@
 <script>
-import { rafThrottle } from "../util/throttle";
+import { rafThrottle } from "../util/time.js";
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 
 import { nissyGirlMachine } from "../nissy-girl.machine";

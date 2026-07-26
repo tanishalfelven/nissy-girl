@@ -21,9 +21,9 @@ const rotation = createProgress({
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
-    velocityAnchors : [ 0.99, 0.01, 0.49, 0.51 ],
-    velocityCfg : {
-        smoothing : 0.9,
+    velocity : {
+        smoothing : 0.75,
+        anchors : [ 1 ],
     }
 });
 
@@ -35,10 +35,10 @@ const cartridge = createProgress({
         MIN_PROGRESS,
         MAX_PROGRESS,
     ),
-    velocityAnchors : [ 0.5 ],
-    velocityCfg : {
+    velocity : {
         smoothing : 0.6,
-        decay : 1.01,
+        decay : 0.98,
+        anchors : [ 0.5 ],
     }
 });
 
@@ -51,22 +51,24 @@ let hasFinishedCartridgeScroll = $derived(
         (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
 );
 
+// zoom / rotation play backwards when we return
+let effectiveDir = $derived(
+    hasFinishedCartridgeScroll ? -animDir : animDir
+);
+
 const zoom = createProgress({
     start : 0,
     speed : 1.8,
-    update : (cur, movement) => {
-        // flip zoom input after cartridge has gone
-        const zoomDir = hasFinishedCartridgeScroll ? -animDir : animDir;
-
-        return clamp(
-            roundHundredths(cur + movement * zoomDir),
+    update : (cur, movement) =>
+        clamp(
+            cur + movement * effectiveDir,
             MIN_PROGRESS,
             MAX_PROGRESS,
-        );
-    },
-    velocityCfg : {
+        ),
+    velocity : {
+        decay : 0.9,
         smoothing : 0.9,
-    }
+    },
 });
 
 export const nissyGirl = {
@@ -90,8 +92,8 @@ export const nissyGirl = {
         return displayCartridges;
     },
 
-    get animDir() {
-        return animDir;
+    get effectiveDir() {
+        return effectiveDir;
     },
 
     setAnimationDirection(newAnimDir) {

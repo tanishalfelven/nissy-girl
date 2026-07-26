@@ -5,7 +5,7 @@ import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
 import { roundHundredths, clamp } from "../util/math";
 
-import { rafThrottle } from "../util/throttle";
+import { rafThrottle } from "../util/time.js";
 
 const MAX_TILT = 4;
 
