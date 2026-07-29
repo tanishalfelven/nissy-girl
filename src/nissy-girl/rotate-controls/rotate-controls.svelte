@@ -1,66 +1,43 @@
 <script>
-import { rafThrottle } from "../util/time.js";
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 
 import { nissyGirlMachine } from "../nissy-girl.machine";
 
+import { touch } from "../util/touch-action.svelte.js";
+
 let rotateEl;
 let rotateElWidth = 0;
-
-let isRotate = false;
-let startX = 0;
-
-const startRotate = (e) => {
-    isRotate = true;
-    startX = e.clientX;
-
-    rotateElWidth = rotateEl.getBoundingClientRect().width;
-
-    document.body.setPointerCapture(e.pointerId);
-
-    nissyGirlMachine.send({
-        type : "START_DRAG",
-    });
-}
-
-const continuousRotate = rafThrottle((e) => {
-    if(!isRotate) {
-        return;
-    }
-
-    const newX = e.clientX;
-    const distX = newX - startX;
-    startX = newX;
-
-    const delta = distX / rotateElWidth;
-
-    nissyGirlMachine.send({
-        type : "DRAG_DELTA",
-        delta,
-    });
-});
-
-const endRotate = () => {
-    if(!isRotate) {
-        return;
-    }
-
-    isRotate = false;
-
-    nissyGirlMachine.send({
-        type : "END_DRAG",
-    });
-}
+let lastX = 0;
 </script>
-
-<svelte:body 
-    on:pointerup={endRotate}
-    on:pointermove={continuousRotate}
-/>
 
 <div
     class="rotatecontainer"
-    on:pointerdown={startRotate}
+    use:touch={{
+        start : (e) => {
+            lastX = e.clientX;
+
+            rotateElWidth = rotateEl.getBoundingClientRect().width;
+
+            nissyGirlMachine.send({
+                type : "START_DRAG",
+            });
+        },
+        move : (e) => {
+            const newX = e.clientX;
+            const distX = newX - lastX;
+
+            lastX = newX;
+
+            nissyGirlMachine.send({
+                type : "DRAG_DELTA",
+                delta : distX / rotateElWidth,
+            });
+        },
+        end : () => 
+            nissyGirlMachine.send({
+                type : "END_DRAG",
+            }),
+    }}
 >
     <div
         class="rotate"
@@ -77,6 +54,8 @@ const endRotate = () => {
     right: 0;
 
     height: 25%;
+
+    touch-action: none;
 }
 
 .rotate {

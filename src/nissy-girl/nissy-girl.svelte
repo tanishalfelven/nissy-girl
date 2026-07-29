@@ -243,6 +243,7 @@ onMount(() => {
     transform: translate(-75%, -40%);
 
     transition: filter 300ms ease-in-out;
+    transition-delay: 150ms;
 }
 
 .mushroom[data-power="false"] {

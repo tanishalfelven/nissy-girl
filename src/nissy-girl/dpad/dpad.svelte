@@ -5,15 +5,26 @@ import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
 import { roundHundredths, clamp } from "../util/math";
 
-import { rafThrottle } from "../util/time.js";
+import { controls } from "../util/touch-action.svelte.js";
 
 const MAX_TILT = 4;
 
 let dpadElement = false;
-let pressed = false;
-let hitCounter = 0;
+let isPressed = $state(false);
+
+let rotateX = $state(0);
+let rotateY = $state(0);
+
+const xDeg = $derived(`${roundHundredths(rotateX)}deg`);
+const yDeg = $derived(`${roundHundredths(rotateY)}deg`);
 
 const setRotation = (e) => {
+    if(!dpadElement) {
+        return false;
+    }
+
+    isPressed = true;
+
     const {
         left : dpadLeft,
         top : dpadTop,
@@ -27,62 +38,25 @@ const setRotation = (e) => {
     const normalizedY =
       ((e.clientY - dpadTop) / dpadHeight) * 2 - 1;
 
-    const rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
-    const rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
-
-    dpadElement.style.setProperty('--rotate-x', `${roundHundredths(rotateX)}deg`);
-    dpadElement.style.setProperty('--rotate-y', `${roundHundredths(rotateY)}deg`);
-}
-
-const pointerDown = (e) => {
-    pressed = true;
-
-    dpadElement.releasePointerCapture(e.pointerId);
-
-    setRotation(e);
-};
-
-const pointerMove = rafThrottle((e) => {
-    if(!pressed) {
-        if(e.buttons === 1) {
-            if(hitCounter >= 3) {
-                pressed = true;
-            }
-
-            hitCounter++;
-        } else {
-            hitCounter = 0;
-        }
-    }
-
-    if(!dpadElement) {
-        return false;
-    }
-
-    setRotation(e);
-});
-
-const pointerExit = () => {
-    if(!dpadElement || !pressed) {
-        return;
-    }
-
-    pressed = false;
-    hitCounter = 0;
-
-    dpadElement.style.setProperty('--rotate-x', '0deg');
-    dpadElement.style.setProperty('--rotate-y', '0deg');
+    rotateX = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
+    rotateY = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
 }
 </script>
 
 <div
     class="dpad"
-    on:pointermove={pointerMove}
-    on:pointerdown={pointerDown}
-    on:pointerup={pointerExit}
-    on:pointerleave={pointerExit}
+    use:controls={{
+        fire : (e) => setRotation(e),
+        end : (e) => {
+            isPressed = false;
+            rotateX = 0;
+            rotateY = 0;
+        }
+    }}
     bind:this={dpadElement}
-    data-pressed={pressed}
+    data-pressed={isPressed}
+    style:--rotate-x={xDeg}
+    style:--rotate-y={yDeg}
 >
     <div class="img dpad-face" style:--image={`url(${NissyGirlButtonDpadPng})`}></div>
     <div class="img dpad-backface" style:--image={`url(${NissyGirlButtonDpadBackfacePng})`}></div>
