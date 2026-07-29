@@ -8,4 +8,6 @@ Built with Svelte, XState, and CSS.
 
 No WebGL, Canvas, or generated art here.
 
-<img width="571" height="751" alt="image" src="https://github.com/user-attachments/assets/6c641112-9460-41e0-ae91-aaab19ff569f" />
+Video of output for branch below.
+
+https://github.com/user-attachments/assets/45385cac-6166-4611-8883-3899dbf5c99e
