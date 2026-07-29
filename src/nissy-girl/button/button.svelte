@@ -69,7 +69,7 @@ const stopPress = () => {
     width: var(--round-button-w);
 
     transform-style: preserve-3d;
-    transform: translateZ(calc(var(--depth-w) / 1.8));
+    transform: translateZ(calc(var(--depth-w) / 1.8 * var(--3d))) scale(var(--scale));
 
     transition: transform 80ms;
 }
@@ -83,7 +83,7 @@ const stopPress = () => {
 
     height: 100%;
 
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 3.2));
+    transform: rotateY(calc(90deg * var(--3d))) translateX(calc(50% * var(--3d))) translateZ(calc(var(--round-button-w) / 3.2 * var(--3d))) scale(var(--scale));
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;

@@ -6,6 +6,8 @@ import { crossedThresholdWrapInclusive } from "./util/math.js";
 
 import { releaseVelocity, RELEASE_VELOCITYID } from "./util/release-velocity.actor.js";
 
+import { invokeTweenProgress } from "./util/invoke-threeDify.js";
+
 import {
     ZOOM_ROTATION_THRESHOLD,
     MIN_PROGRESS,
@@ -18,7 +20,7 @@ const updateVelocityTarget = (progress) =>
 const nissyGirlMachine = createMachine({
     id : "nissy-girl",
 
-    initial : "playing",
+    initial : "intro",
 
     invoke : [
         releaseVelocity,
@@ -39,6 +41,22 @@ const nissyGirlMachine = createMachine({
     },
 
     states : {
+        intro : {
+            after : {
+                500 : "threeDify",
+            },
+        },
+
+        threeDify : {
+            invoke : [
+                invokeTweenProgress(nissyGirl.threeDify, 0, 1, 180),
+            ],
+
+            on : {
+                "FINISH_TWEEN" : "playing",
+            },
+        },
+
         playing : {
             entry : updateVelocityTarget(nissyGirl.rotation),
 

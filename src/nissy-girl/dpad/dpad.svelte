@@ -95,7 +95,7 @@ const pointerExit = () => {
 .dpad {
     --rotate-x: 0deg;
     --rotate-y: 0deg;
-    --z-plane: calc(var(--depth-w) / 1.8);
+    --z-plane: calc(var(--depth-w) / 1.8 * var(--3d));
 
     position: absolute;
 
@@ -114,7 +114,7 @@ const pointerExit = () => {
     bottom: 26.5%;
 
     transform-style: preserve-3d;
-    transform: translateZ(var(--z-plane));
+    transform: translateZ(var(--z-plane)) scale(var(--scale));
     transform-origin: center center 4px;
 }
 
@@ -144,7 +144,7 @@ const pointerExit = () => {
     right: 0;
     bottom: 0;
 
-    transform: translateZ(calc(var(--depth-w) * -0.0175));
+    transform: translateZ(calc(var(--depth-w) * -0.0175 * var(--3d) * var(--3d))) scale(var(--scale));
 }
 
 .dpad-center-side {
@@ -159,13 +159,13 @@ const pointerExit = () => {
     left: 0;
     right: 0;
 
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
+    transform: rotateY(calc(90deg * var(--3d))) translateX(calc(50% * var(--3d))) translateZ(calc(var(--round-button-w) * 0.8 * var(--3d))) scale(var(--scale));
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;
 }
 
 .dpad-center-side.left {
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.4));
+    transform: rotateY(calc(90deg * var(--3d))) translateX(calc(50% * var(--3d))) translateZ(calc(var(--round-button-w) * 0.4 * var(--3d))) scale(var(--scale));
 }
 </style>

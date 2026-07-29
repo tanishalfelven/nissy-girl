@@ -40,8 +40,6 @@ import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
     top: 23%;
 
     width: 3%;
-
-    transition: transform 300ms ease-in-out;
 }
 
 .powerswitch[data-power="false"] {
@@ -49,17 +47,17 @@ import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 }
 
 .powerswitchtop {
-    transform: rotateY(90deg) translateZ(calc(var(--front-w) * 1.003)) translateX(-220%) translateY(var(--position));
+    transform: rotateY(calc(90deg * var(--3d))) translateZ(calc(var(--front-w) * 1.003 * var(--3d))) translateX(calc(-220% * var(--3d))) translateY(calc(var(--position) * var(--3d))) scale(var(--scale));
 }
 
 .powerswitchside {
-    transform: translateZ(calc(var(--depth-w) * 0.25)) translateY(var(--position));
+    transform: translateZ(calc(var(--depth-w) * 0.25 * var(--3d))) translateY(calc(var(--position) * var(--3d))) scale(var(--scale));
 
     right: -2%;
 }
 
 .powerswitchsideback {
-    transform: translateZ(calc(var(--depth-w) * 0.15)) scaleX(-1) rotateY(180deg) translateY(var(--position));
+    transform: translateZ(calc(var(--depth-w) * 0.15 * var(--3d))) scaleX(calc(-1 * var(--3d))) rotateY(calc(180deg * var(--3d))) translateY(calc(var(--position) * var(--3d))) scale(var(--scale));
 
     right: -2%;
 }

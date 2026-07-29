@@ -13,6 +13,17 @@ import {
 
 import { createProgress } from "./util/progress.svelte.js";
 
+const threeDify = createProgress({
+    start : 0,
+    speed : 1,
+    update : (cur, movement) =>
+        clamp(
+            cur + movement,
+            MIN_PROGRESS,
+            MAX_PROGRESS,
+        ),
+});
+
 const rotation = createProgress({
     start : 0,
     speed : 1,
@@ -82,6 +93,10 @@ export const nissyGirl = {
 
     get zoom() {
         return zoom;
+    },
+
+    get threeDify() {
+        return threeDify;
     },
 
     get cartridge() {

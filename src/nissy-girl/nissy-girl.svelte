@@ -24,17 +24,32 @@ import Cartridge from "./cartridge/cartridge.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine";
-import { roundHundredths } from "./util/math";
+import { roundHundredths, lerp } from "./util/math";
 
-let rotation = $derived(`${roundHundredths(nissyGirl.rotation.progress * 360)}deg`);
-let zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
+const zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
+const threeDify = $derived(roundHundredths(nissyGirl.threeDify.progress));
+const rotation = $derived.by(() => {
+    if(threeDify !== 1)  {
+        return `${threeDify * 360}deg`;
+    }
+
+    return `${roundHundredths(nissyGirl.rotation.progress * 360)}deg`;
+});
+const scale = $derived(lerp(0.2, 1, threeDify));
+const bounds = $derived(lerp(1.5, 1, threeDify));
 
 onMount(() => {
     nissyGirlMachine.start();
 })
 </script>
 
-<div class="camera">
+<div
+    class="camera"
+    style:--3d={threeDify}
+    style:--scale={scale}
+    style:--bounds={bounds}
+    data-threeDover="{threeDify === 1}"
+>
     <div
         class="nissygirl"
         style:--rotation={rotation}
@@ -86,9 +101,31 @@ onMount(() => {
         transform: rotateY(0deg);
     }
 
-    100% {
-        transform: rotateY(360deg);
+    10% {
+        transform: rotateY(-45deg);
     }
+
+    25% {
+        transform: rotateY(-45deg);
+    }
+
+    75% {
+        transform: rotateY(-315deg);
+    }
+
+    90% {
+        transform: rotateY(-315deg);
+    }
+
+    100% {
+        transform: rotateY(-360deg);
+    }
+}
+
+.camera[data-threeDover="false"] .img {
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    transition: none !important;
 }
 
 @keyframes rotate45front {
@@ -101,7 +138,7 @@ onMount(() => {
     }
 }
 
-@keyframes rotateRightSide {
+@keyframes rotateRightSide { 
     0% {
         transform: rotateY(-45deg);
     }
@@ -135,14 +172,12 @@ onMount(() => {
     }
 }
 
-:root {
+.camera {
     --h: 65vh;
     --front-w: calc(var(--h) * 142 / 224);
     --depth-w: calc(var(--h) * 46 / 224);
     --round-button-w: calc(0.082 * var(--h));
-}
 
-.camera {
     position: absolute;
 
     width: 100%;
@@ -150,11 +185,15 @@ onMount(() => {
 
     perspective: calc(var(--h) * 3);
 
+    transform: rotateZ(calc(360 * var(--3d)));
+
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     margin: auto;
+
+    background-color: rgba(255, 255, 255, 1);
 }
 
 .nissygirl {
@@ -175,7 +214,14 @@ onMount(() => {
 
     transform-style: preserve-3d;
 
-    transform: rotateY(var(--rotation)) translateZ(calc(var(--zoom) * 3vw)) translateY(calc(var(--zoom) * 2.7vh));
+    transform: rotateY(calc(var(--rotation))) translateZ(calc(var(--zoom) * 3vw * var(--3d))) translateY(calc(var(--zoom) * 2.7vh * var(--3d)));
+}
+
+.camera[data-threeDover="true"] .nissygirl {
+    animation-name: rotate360;
+    animation-delay: 300ms;
+    animation-duration: 2000ms;
+    animation-fill-mode: both;
 }
 
 .screen-bevel-vert {
@@ -189,7 +235,7 @@ onMount(() => {
     left: 5.6%;
     top: 3%;
 
-    transform: translateZ(calc(var(--depth-w) / 2.09)) rotateY(var(--rotate));
+    transform: translateZ(calc(var(--depth-w) / 2.09 * var(--3d))) rotateY(calc(var(--scale) * var(--rotate))) scale(var(--scale));
 }
 
 .screen-bevel-vert.left {
@@ -209,7 +255,7 @@ onMount(() => {
 
     width: 90%;
 
-    transform: translateX(-50%) translateZ(calc(var(--depth-w) / 2.09)) rotateX(-90deg);
+    transform: translateX(calc(-50% * var(--3d))) translateZ(calc(var(--depth-w) / 2.09 * var(--3d))) rotateX(calc(-90deg * var(--scale))) scale(var(--scale));
 }
 
 .screen {
@@ -227,7 +273,7 @@ onMount(() => {
 
     background-color: black;
 
-    transform: translateZ(calc(var(--depth-w) / 2.3));
+    transform: translateZ(calc(var(--depth-w) / 2.3 * var(--3d))) scale(var(--scale));
 }
 
 .mushroom {
@@ -240,7 +286,7 @@ onMount(() => {
     left: 50%;
     top: 50%;
 
-    transform: translate(-75%, -40%);
+    transform: translate(calc(-75% * var(--3d)), calc(-40% * var(--3d)));
 
     transition: filter 300ms ease-in-out;
 }
@@ -258,7 +304,7 @@ onMount(() => {
 
     height: 100%;
 
-    transform: translateZ(calc(var(--depth-w) / 2));
+    transform: translateZ(calc(var(--depth-w) / 2 * var(--3d))) scale(var(--scale));
 }
 
 .panelside {
@@ -266,14 +312,14 @@ onMount(() => {
 
     height: 100%;
 
-    transform: rotateY(90deg) translateZ(calc(var(--front-w) - var(--depth-w) / 2));
+    transform: rotateY(calc(var(--scale) * 90deg)) translateZ(calc(var(--front-w) * var(--3d) - var(--depth-w) / 2)) scale(var(--scale));
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;
 }
 
 .panelside.left {
-    transform: rotateY(-90deg) scaleX(-1) translateZ(calc(var(--depth-w) / 2));
+    transform: rotateY(calc(var(--scale) * -90deg)) scaleX(-1) translateZ(calc(var(--depth-w) * var(--3d) / 2)) scale(var(--scale));
 }
 
 .backupper {
@@ -283,7 +329,7 @@ onMount(() => {
 
     width: 100%;
 
-    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.02));
+    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.02 * var(--3d))) scale(var(--scale));
 }
 
 .vent {
@@ -297,7 +343,7 @@ onMount(() => {
 
     width: 100%;
 
-    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.055));
+    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.055 * var(--3d))) scale(var(--scale));
 }
 
 .backlower {
@@ -309,7 +355,7 @@ onMount(() => {
 
     bottom: 0.4%;
 
-    transform: rotateY(180deg) translateY(-4%) translateZ(calc(var(--front-w) / 7.395));
+    transform: rotateY(180deg) translateY(calc(-4% * var(--3d))) translateZ(calc(var(--front-w) / 7.395 * var(--3d))) scale(var(--scale));
 }
 
 .backloweredge {
@@ -321,7 +367,7 @@ onMount(() => {
 
     bottom: 1.256%;
 
-    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.07));
+    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.07 * var(--3d))) scale(var(--scale));
 }
 
 .backloweredgeinner {
@@ -333,7 +379,7 @@ onMount(() => {
 
     bottom: 0.4%;
 
-    transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.023));
+    transform: rotateY(calc(180deg)) translateZ(calc(var(--front-w) * 0.023 * var(--3d))) scale(var(--scale));
 }
 
 .cartridgeback {
@@ -345,6 +391,6 @@ onMount(() => {
 
     top: 21.5%;
 
-    transform: rotateY(180deg) translateZ(calc(var(--front-w) / 6.2));
+    transform: rotateY(calc(180deg)) translateZ(calc(var(--front-w) / 6.2 * var(--3d))) scale(var(--scale));
 }
 </style>
