@@ -3,8 +3,7 @@ import NissyGirlPowerSwitchSidePng from "../assets/power-switch-side.png";
 import NissyGirlPowerSwitchTopPng from "../assets/power-switch-top.png";
 
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
-
-import { touch } from "../util/touch-action.svelte";
+import { touch } from "../util/touch-action.svelte.js";
 
 const MIN_CLICK_DIST = .02;
 const MIN_VERT_DIST = .2;
@@ -41,7 +40,6 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
             const { height } = e.target.getBoundingClientRect();
 
             const percentY = (e.clientY - startY) / height;
-            const absY = Math.abs(percentY);
 
             if(Math.abs(percentY) < MIN_CLICK_DIST || inToggleBounds(percentY)) {
                 nissyGirl.togglePower();

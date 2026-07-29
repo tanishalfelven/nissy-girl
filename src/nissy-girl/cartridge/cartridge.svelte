@@ -16,27 +16,67 @@ import PcbFace from "./assets/pcb-face.png";
 import PcbUnder from "./assets/pcb-under.png";
 
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
-
 import { roundHundredths, lerp } from "../util/math";
+import { CARTRIDGE_THRESHOLD } from "../nissy-girl.consts";
+import { nissyGirlMachine } from "../nissy-girl.machine.js";
+import { touch } from "../util/touch-action.svelte.js";
 
 let { cartridge = PaintPng } = $props();
 
-let cartridgeRot = $derived(
+const cartridgeRot = $derived(
     `${roundHundredths(
         ((Math.cos(nissyGirl.cartridge.progress * Math.PI)) / 4) * 720 + 180
     )}deg`
 );
 
-let cartridgeX = $derived(
+const cartridgeX = $derived(
     `${roundHundredths(lerp(-150, 50, nissyGirl.cartridge.progress))}vw`
 );
+
+const cartridgeY = $derived(
+    `${roundHundredths(nissyGirl.cartridgeY.progress)}`
+);
+
+let cartridgeEl;
+let cartridgeHeight = 0;
+let lastY = 0;
 </script>
 
 <div
     class="cartridge"
     style:--x-pos={cartridgeX}
+    style:--y-pos={cartridgeY}
     style:--rot={cartridgeRot}
     data-visibility="{nissyGirl.displayCartridges}"
+    bind:this={cartridgeEl}
+    use:touch={{
+        start : (e) => {
+            nissyGirlMachine.send({ type : "SELECT_CARTRIDGE" });
+
+            lastY = e.clientY;
+
+            cartridgeHeight = cartridgeEl.getBoundingClientRect().height;
+
+            nissyGirlMachine.send({
+                type : "START_CARTDRAG",
+            });
+        },
+        move : (e) => {
+            const newY = e.clientY;
+            const distY = newY - lastY;
+
+            lastY = newY;
+
+            nissyGirlMachine.send({
+                type : "CARTDRAG_DELTA",
+                delta : distY / cartridgeHeight,
+            });
+        },
+        end : () => 
+            nissyGirlMachine.send({
+                type : "END_CARTDRAG",
+            }),
+    }}
 >
     <div class="img cartridgeface" style:--image={`url(${CartridgeFace})`}></div>
     <div class="img cartridgefaceartback" style:--image={`url(${CartridgeFaceArtBack})`}>
@@ -91,7 +131,11 @@ let cartridgeX = $derived(
 
     margin: auto;
 
-    transform: translateX(calc(50vw + var(--x-pos))) translateY(-40vh) translateZ(4vw) rotateY(var(--rot));
+    transform:
+        translateX(calc(50vw + var(--x-pos)))
+        translateY(calc(-40vh + var(--y-pos) * 40vh))
+        translateZ(-4.15vh)
+        rotateY(var(--rot));
 }
 
 .cartridge[data-visibility="false"] {

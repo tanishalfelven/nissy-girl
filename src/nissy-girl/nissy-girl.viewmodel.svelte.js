@@ -9,6 +9,7 @@ import { fromCallback } from "xstate";
 import {
     MIN_PROGRESS,
     MAX_PROGRESS,
+    CARTRIDGE_THRESHOLD,
 } from "./nissy-girl.consts.js";
 
 import { createProgress } from "./util/progress.svelte.js";
@@ -30,7 +31,7 @@ const rotation = createProgress({
 const cartridge = createProgress({
     start : 0,
     speed : -0.9,
-    anchors : [ 0.5 ],
+    anchors : [ CARTRIDGE_THRESHOLD ],
     update : (cur, movement) => clamp(
         cur + movement,
         MIN_PROGRESS,
@@ -42,13 +43,26 @@ const cartridge = createProgress({
     }
 });
 
+const cartridgeY = createProgress({
+    start : 0,
+    speed : 0.6,
+    update : (cur, movement) => clamp(
+        cur + movement,
+        MIN_PROGRESS,
+        MAX_PROGRESS,
+    ),
+});
+
 let isPowered = $state(false);
 let animDir = $state(0);
 let displayCartridges = $state(false);
+let selectedCartridge = $state(false);
+let isReturning = $state(false);
 
 let hasFinishedCartridgeScroll = $derived(
     cartridge.progress ===
-        (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS)
+        (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS) ||
+    isReturning
 );
 
 // zoom / rotation play backwards when we return
@@ -59,6 +73,7 @@ let effectiveDir = $derived(
 const zoom = createProgress({
     start : 0,
     speed : 1.8,
+    anchors : [ 1 ],
     update : (cur, movement) =>
         clamp(
             cur + movement * effectiveDir,
@@ -88,6 +103,10 @@ export const nissyGirl = {
         return cartridge;
     },
 
+    get cartridgeY() {
+        return cartridgeY;
+    },
+
     get displayCartridges() {
         return displayCartridges;
     },
@@ -96,27 +115,56 @@ export const nissyGirl = {
         return effectiveDir;
     },
 
+    get animDir() {
+        return animDir;
+    },
+
+    get isReturning() {
+        return isReturning;
+    },
+
+    get hasFinishedCartridgeScroll() {
+        return hasFinishedCartridgeScroll;
+    },
+
     setAnimationDirection(newAnimDir) {
         animDir = newAnimDir;
+        isReturning = false;
 
-        cartridge.set(newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+        if(!selectedCartridge) {
+            cartridge.set(newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+        }
     },
 
     clearAnimationDirection() {
         animDir = 0;
     },
 
-    invokeDisplayCartridges() {
-        return ({
-            id : "display-cartridges",
-            src : fromCallback(() => {
-                displayCartridges = true;
+    setCartridgeVisible() {
+        displayCartridges = true;
+    },
 
-                return () => {
-                    displayCartridges = false;
-                }
-            })
-        })
+    setCartridgeHidden() {
+        displayCartridges = false;
+        isReturning = false;
+    },
+
+    setNotReturning() {
+        isReturning = false;
+    },
+
+    selectCartridge() {
+        selectedCartridge = true;
+        isReturning = true;
+    },
+
+    deselectCartridge() {
+        selectedCartridge = false;
+        isReturning = false;
+    },
+
+    hasSelectedCartridge() {
+        return selectedCartridge;
     },
 
     togglePower() {

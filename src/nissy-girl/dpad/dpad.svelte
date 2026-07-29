@@ -3,8 +3,7 @@ import NissyGirlButtonDpadPng from "../assets/dpad.png";
 import NissyGirlButtonDpadBackfacePng from "../assets/dpad-backface.png";
 import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
 
-import { roundHundredths, clamp } from "../util/math";
-
+import { roundHundredths, clamp } from "../util/math.js";
 import { controls } from "../util/touch-action.svelte.js";
 
 const MAX_TILT = 4;
@@ -38,8 +37,8 @@ const setRotation = (e) => {
     const normalizedY =
       ((e.clientY - dpadTop) / dpadHeight) * 2 - 1;
 
-    rotateX = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
-    rotateY = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
+    rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
+    rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
 }
 </script>
 

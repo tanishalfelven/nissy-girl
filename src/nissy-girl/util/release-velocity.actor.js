@@ -14,6 +14,10 @@ export const releaseVelocity = ({
         let progress = false;
 
         const velocityLoop = rafLooper((dt) => {
+            if(!progress) {
+                return;
+            }
+
             const movement = velocity.step(dt);
 
             const previous = progress.progress;
@@ -27,7 +31,7 @@ export const releaseVelocity = ({
                 sendBack({ type : "MOVE", delta : movement });
             }
 
-            if(progress.isAnchor(next)) {
+            if(progress?.isAnchor?.(next)) {
                 velocity.stop();
             }
 
@@ -38,24 +42,40 @@ export const releaseVelocity = ({
             if(event.type === "NEW_TARGET") {
                 progress = event.progress;
 
+                if(!progress) {
+                    return;
+                }
+
                 velocity.init(progress.getVelocityConfig());
 
                 return;
             }
 
             if(event.type === "END_DRAG" && progress) {
+                if(!progress) {
+                    return;
+                }
+
                 velocityLoop.start();
 
                 return;
             }
 
             if(event.type === "START_DRAG" && progress) {
+                if(!progress) {
+                    return;
+                }
+
                 velocityLoop.stop();
 
                 return;
             }
 
             if(event.type === "DRAG_DELTA") {
+                if(!progress) {
+                    return;
+                }
+
                 if(event.delta === 0) {
                     return;
                 }

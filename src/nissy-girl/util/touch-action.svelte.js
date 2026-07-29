@@ -1,21 +1,20 @@
-import { rafThrottle } from "./time";
+import { rafThrottle } from "./time.js";
 
 const eventSub = (node, id, func) => {
     node.addEventListener(id, func);
 
     return () => {
         if(node) {
-            node.removeEventListener(id, func);;
+            node.removeEventListener(id, func);
         }
     }
 };
 
 const subcribers = () => {
     const all = new Map();
-    let idx = 0;
 
     return {
-        add : (id = idx++, remove) => {
+        add : (id, remove) => {
             all.set(id, remove);
 
             return id;
@@ -23,6 +22,8 @@ const subcribers = () => {
 
         remove : (id) => {
             all.get(id)?.();
+
+            all.remove(id);
         },
 
         removeAll : () => {
@@ -36,32 +37,49 @@ const subcribers = () => {
 };
 
 export const touch = (node, options = false) => {
+    let activePointerId = false;
     let isDown = false;
 
     const sub = subcribers();
 
     const handleEnd = (e) => {
-        sub.removeAll();
+        if(activePointerId !== false && activePointerId !== e.pointerId) {
+            return;
+        }
 
         if(!isDown) {
             return;
         }
+
+        activePointerId = false;
 
         isDown = false;
 
-        options?.end?.(e);
+        options.end(e);
+
+        sub.removeAll();
     };
 
     const handleMove = rafThrottle((e) => {
+        if(activePointerId !== false && activePointerId !== e.pointerId) {
+            return;
+        }
+
         if(!isDown) {
             return;
         }
 
-        options?.move?.(e);
+        options.move(e);
     });
 
     const handlerDown = (e) => {
+        if(activePointerId !== false && activePointerId !== e.pointerId) {
+            return;
+        }
+
         isDown = true;
+
+        activePointerId = e.pointerId;
 
         e.preventDefault();
 
@@ -70,9 +88,8 @@ export const touch = (node, options = false) => {
         sub.add("pointermove", eventSub(node, "pointermove", handleMove));
         sub.add("pointerup", eventSub(node, "pointerup", handleEnd));
         sub.add("pointercancel", eventSub(node, "pointercancel", handleEnd));
-        sub.add("pointerleave", eventSub(node, "pointerleave", handleEnd));
 
-        (options?.start || options?.move)?.(e);
+        (options?.start || options.move)(e);
     };
 
     $effect(() => {
