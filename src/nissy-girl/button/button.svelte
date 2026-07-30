@@ -1,8 +1,4 @@
 <script>
-import NissyGirlButtonBPng from "../assets/button-b.png";
-import NissyGirlButtonAPng from "../assets/button-a.png";
-import NissyGirlButtonRoundSidePng from "../assets/button-round-side.png";
-
 import { controls } from "../util/touch-action.svelte";
 
 const TYPE_BUTTON_A = "a";
@@ -11,6 +7,14 @@ const TYPE_BUTTON_B = "b";
 let { type = TYPE_BUTTON_A } = $props();
 
 let isPressed = $state(false);
+
+const getTransform = (isPressed) => {
+    if(isPressed) {
+        return `translateZ(calc(var(--depth-w) / 1.94)) scale(0.95)`;
+    }
+
+    return `translateZ(calc(var(--depth-w) / 1.8))`;
+}
 </script>
 
 <div
@@ -22,22 +26,25 @@ let isPressed = $state(false);
             isPressed = false;
         }
     }}
-    class="img button {type}"
-    style:--image={`url(${type === TYPE_BUTTON_A ? NissyGirlButtonAPng : NissyGirlButtonBPng})`}
-    data-pressed="{isPressed}"
+    class="face button {type}"
+    style="transform: {getTransform(isPressed)};"
 >
-    <div class="img button-side" style:--image={`url(${NissyGirlButtonRoundSidePng})`}></div>
+    <div class="face button-side"></div>
 </div>
 
 <style>
 .a {
     right: 9%;
     bottom: 31%;
+
+    background-image: url("../assets/button-a.png");
 }
 
 .b {
     right: 26.75%;
     bottom: 26%;
+
+    background-image: url("../assets/button-b.png");
 }
 
 .button {
@@ -48,13 +55,7 @@ let isPressed = $state(false);
     width: var(--round-button-w);
 
     transform-style: preserve-3d;
-    transform: translateZ(calc(var(--depth-w) / 1.8));
-
-    transition: transform 80ms;
-}
-
-.button[data-pressed="true"] {
-    transform: translateZ(calc(var(--depth-w) / 1.94)) scale(0.95);
+    will-change: transform;
 }
 
 .button-side {
@@ -63,6 +64,8 @@ let isPressed = $state(false);
     height: 100%;
 
     transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 3.2));
+
+    background-image: url("../assets/button-round-side.png");
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;

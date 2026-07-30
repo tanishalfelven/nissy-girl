@@ -7,15 +7,16 @@
     overflow: hidden;
 }
 
-.img {
+.face {
     position: absolute;
 
     image-rendering: pixelated;
 
-    background-image: var(--image);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: 50% 50%;
+
+    will-change: transform;
 
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;

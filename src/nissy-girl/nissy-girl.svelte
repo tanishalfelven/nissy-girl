@@ -1,17 +1,6 @@
 <script>
 import { onMount } from "svelte";
 
-import NissyGirlFrontPng from "./assets/nissygirl-front.png";
-import NissyGirlSidePng from "./assets/nissygirl-side.png";
-import PowerShroomPng from "./assets/power-shroom.png";
-import NissyGirlBackUpperPng from "./assets/nissygirl-back-upper.png";
-import NissyGirlBackVentPng from "./assets/nissygirl-vent-decal.png";
-import NissyGirlBackLowerPng from "./assets/nissygirl-back-lower.png";
-import NissyGirlBackEdgePng from "./assets/nissy-girl-back-edge.png";
-import NissyGirlScreenBevelHorzPng from "./assets/screen-bevel-horz.png";
-import NissyGirlScreenBevelVertPng from "./assets/screen-bevel-vert.png";
-import NissyGirlCartridgeBackPng from "./assets/nissygirl-cartridge-back.png";
-
 import StartupScreen from "./startup-screen/startup-screen.svelte";
 import PowerSwitch from "./power-switch/power-switch.svelte";
 
@@ -26,7 +15,7 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine";
 import { roundHundredths } from "./util/math";
 
-let rotation = $derived(`${roundHundredths(nissyGirl.rotation.progress * 360)}deg`);
+let rotation = $derived(roundHundredths(nissyGirl.rotation.progress * 360));
 let zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
 
 onMount(() => {
@@ -37,27 +26,27 @@ onMount(() => {
 <div class="camera">
     <div
         class="nissygirl"
-        style:--rotation={rotation}
-        style:--zoom={zoom}
+        style="transform: rotateY({rotation}deg) translateZ(calc({zoom} * 3vw)) translateY(calc({zoom} * 2.7vh));"
     >
         <Cartridge />
 
-        <div class="img front" style:--image={`url(${NissyGirlFrontPng})`}>
+        <div class="face front">
             <div 
-                class="img mushroom" 
+                class="face mushroom" 
                 data-power={nissyGirl.isPowered} 
-                style:--image={`url(${PowerShroomPng})`}
             ></div>
         </div>
 
-        <div class="img screen-bevel-horz" style:--image={`url(${NissyGirlScreenBevelHorzPng})`}></div>
-        <div class="img screen-bevel-vert" style:--image={`url(${NissyGirlScreenBevelVertPng})`}></div>
-        <div class="img screen-bevel-vert left" style:--image={`url(${NissyGirlScreenBevelVertPng})`}></div>
+        <div class="face screen-bevel-horz"></div>
+        <div class="face screen-bevel-vert"></div>
+        <div class="face screen-bevel-vert left"></div>
 
-        <div class="screen">
-            {#if nissyGirl.isPowered}
-                <StartupScreen />
-            {/if}
+        <div class="screen-container">
+            <div class="screen">
+                {#if nissyGirl.isPowered}
+                    <StartupScreen />
+                {/if}
+            </div>
         </div>
 
         <PowerSwitch />
@@ -67,14 +56,14 @@ onMount(() => {
 
         <Dpad />
 
-        <div class="img panelside" style:--image={`url(${NissyGirlSidePng})`}></div>
-        <div class="img panelside left" style:--image={`url(${NissyGirlSidePng})`}></div>
-        <div class="img backupper" style:--image={`url(${NissyGirlBackUpperPng})`}></div>
-        <div class="img vent" style:--image={`url(${NissyGirlBackVentPng})`}></div>
-        <div class="img backlower" style:--image={`url(${NissyGirlBackLowerPng})`}></div>
-        <div class="img backloweredge" style:--image={`url(${NissyGirlBackEdgePng})`}></div>
-        <div class="img backloweredgeinner" style:--image={`url(${NissyGirlBackEdgePng})`}></div>
-        <div class="img cartridgeback" style:--image={`url(${NissyGirlCartridgeBackPng})`}></div>
+        <div class="face panelside"></div>
+        <div class="face panelside left"></div>
+        <div class="face backupper"></div>
+        <div class="face vent"></div>
+        <div class="face backlower"></div>
+        <div class="face backloweredge"></div>
+        <div class="face backloweredge inner"></div>
+        <div class="face cartridgeback"></div>
     </div>
 </div>
 
@@ -175,7 +164,7 @@ onMount(() => {
 
     transform-style: preserve-3d;
 
-    transform: rotateY(var(--rotation)) translateZ(calc(var(--zoom) * 3vw)) translateY(calc(var(--zoom) * 2.7vh));
+    will-change: transform;
 }
 
 .screen-bevel-vert {
@@ -190,6 +179,8 @@ onMount(() => {
     top: 3%;
 
     transform: translateZ(calc(var(--depth-w) / 2.09)) rotateY(var(--rotate));
+
+    background-image: url("./assets/screen-bevel-vert.png");
 }
 
 .screen-bevel-vert.left {
@@ -210,9 +201,11 @@ onMount(() => {
     width: 90%;
 
     transform: translateX(-50%) translateZ(calc(var(--depth-w) / 2.09)) rotateX(-90deg);
+
+    background-image: url("./assets/screen-bevel-horz.png");
 }
 
-.screen {
+.screen-container {
     display: flex;
 
     flex-direction: row;
@@ -225,9 +218,20 @@ onMount(() => {
 
     position: absolute;
 
+    will-change: transform;
+
     background-color: black;
 
     transform: translateZ(calc(var(--depth-w) / 2.3));
+}
+
+.screen {
+    aspect-ratio: 5 / 4;
+
+    margin-top: 1%;
+    width: 85%;
+
+    overflow: hidden;
 }
 
 .mushroom {
@@ -241,6 +245,10 @@ onMount(() => {
     top: 50%;
 
     transform: translate(-75%, -40%);
+
+    will-change: filter;
+
+    background-image: url("./assets/power-shroom.png");
 
     transition: filter 300ms ease-in-out;
     transition-delay: 150ms;
@@ -260,6 +268,8 @@ onMount(() => {
     height: 100%;
 
     transform: translateZ(calc(var(--depth-w) / 2));
+
+    background-image: url("./assets/nissygirl-front.png");
 }
 
 .panelside {
@@ -268,6 +278,8 @@ onMount(() => {
     height: 100%;
 
     transform: rotateY(90deg) translateZ(calc(var(--front-w) - var(--depth-w) / 2));
+
+    background-image: url("./assets/nissygirl-side.png");
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;
@@ -285,6 +297,8 @@ onMount(() => {
     width: 100%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.02));
+
+    background-image: url("./assets/nissygirl-back-upper.png");
 }
 
 .vent {
@@ -299,6 +313,8 @@ onMount(() => {
     width: 100%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.055));
+
+    background-image: url("./assets/nissygirl-vent-decal.png");
 }
 
 .backlower {
@@ -311,6 +327,8 @@ onMount(() => {
     bottom: 0.4%;
 
     transform: rotateY(180deg) translateY(-4%) translateZ(calc(var(--front-w) / 7.395));
+
+    background-image: url("./assets/nissygirl-back-lower.png");
 }
 
 .backloweredge {
@@ -323,15 +341,11 @@ onMount(() => {
     bottom: 1.256%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.07));
+
+    background-image: url("./assets/nissy-girl-back-edge.png");
 }
 
-.backloweredgeinner {
-    aspect-ratio: 149 / 9;
-
-    width: 100%;
-
-    position: absolute;
-
+.backloweredge.inner {
     bottom: 0.4%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) * 0.023));
@@ -347,5 +361,7 @@ onMount(() => {
     top: 21.5%;
 
     transform: rotateY(180deg) translateZ(calc(var(--front-w) / 6.2));
+
+    background-image: url("./assets/nissygirl-cartridge-back.png");
 }
 </style>

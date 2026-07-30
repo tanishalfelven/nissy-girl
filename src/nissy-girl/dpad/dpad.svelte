@@ -1,8 +1,4 @@
 <script>
-import NissyGirlButtonDpadPng from "../assets/dpad.png";
-import NissyGirlButtonDpadBackfacePng from "../assets/dpad-backface.png";
-import NissyGirlButtonDpadSidePng from "../assets/dpad-side.png";
-
 import { roundHundredths, clamp } from "../util/math.js";
 import { controls } from "../util/touch-action.svelte.js";
 
@@ -40,6 +36,14 @@ const setRotation = (e) => {
     rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
     rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
 }
+
+const getTransform = (x, y) => {
+    if(!isPressed) {
+        return "var(--z-plane))";
+    }
+
+    return `translateZ(var(--z-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
+};
 </script>
 
 <div
@@ -53,15 +57,13 @@ const setRotation = (e) => {
         }
     }}
     bind:this={dpadElement}
-    data-pressed={isPressed}
-    style:--rotate-x={xDeg}
-    style:--rotate-y={yDeg}
+    style="transform: {getTransform(xDeg, yDeg)};"
 >
-    <div class="img dpad-face" style:--image={`url(${NissyGirlButtonDpadPng})`}></div>
-    <div class="img dpad-backface" style:--image={`url(${NissyGirlButtonDpadBackfacePng})`}></div>
+    <div class="face dpad-face"></div>
+    <div class="face dpad-backface"></div>
 
-    <div class="img dpad-center-side" style:--image={`url(${NissyGirlButtonDpadSidePng})`}></div>
-    <div class="img dpad-center-side left" style:--image={`url(${NissyGirlButtonDpadSidePng})`}></div>
+    <div class="face dpad-center-side"></div>
+    <div class="face dpad-center-side left"></div>
 </div>
 
 <style>
@@ -87,21 +89,17 @@ const setRotation = (e) => {
     bottom: 26.5%;
 
     transform-style: preserve-3d;
+    will-change: transform;
+
     transform: translateZ(var(--z-plane));
     transform-origin: center center 4px;
-}
-
-.dpad[data-pressed="true"] {
-    transform: translateZ(var(--z-plane)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(0.98);
-}
-
-.dpad[data-pressed="false"] {
-    transition: transform 80ms;
 }
 
 .dpad-face {
     width: 95%;
     height: 95%;
+
+    background-image: url("../assets/dpad.png");
 }
 
 .dpad-backface {
@@ -118,6 +116,8 @@ const setRotation = (e) => {
     bottom: 0;
 
     transform: translateZ(calc(var(--depth-w) * -0.0175));
+
+    background-image: url("../assets/dpad-backface.png");
 }
 
 .dpad-center-side {
@@ -133,6 +133,8 @@ const setRotation = (e) => {
     right: 0;
 
     transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
+
+    background-image: url("../assets/dpad-side.png");
 
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;

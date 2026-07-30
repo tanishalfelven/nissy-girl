@@ -1,7 +1,4 @@
 <script>
-import NissyGirlPowerSwitchSidePng from "../assets/power-switch-side.png";
-import NissyGirlPowerSwitchTopPng from "../assets/power-switch-top.png";
-
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 import { touch } from "../util/touch-action.svelte.js";
 
@@ -49,30 +46,22 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
             candidateY = 0;
         },
     }}
-    class="img powerswitch parent"
+    class="face powerswitch parent"
     data-power={nissyGirl.isPowered}
     data-willtoggle={doesTriggerToggle}
-    style:--image={`url(${NissyGirlPowerSwitchSidePng})`}
 >
-    <div
-        class="img powerswitch back"
-        style:--image={`url(${NissyGirlPowerSwitchSidePng})`}
-    >
-    </div>
-
-    <div
-        class="img powerswitch top"
-        style:--image={`url(${NissyGirlPowerSwitchTopPng})`}
-    >
-    </div>
+    <div class="face powerswitch back"></div>
+    <div class="face powerswitch top"></div>
 </div>
 
 <style>
 .powerswitch {
     aspect-ratio: 5 / 24;
-    touch-action: inherit;
 
+    touch-action: inherit;
     backface-visibility: visible;
+
+    background-image: url("../assets/power-switch-side.png");
 }
 
 .powerswitch.parent {
@@ -109,6 +98,8 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
     height: 100%;
 
     transform: rotateY(90deg) translateZ(0.6vh) translateX(50%);
+
+    background-image: url("../assets/power-switch-top.png");
 }
 
 .powerswitch.back {

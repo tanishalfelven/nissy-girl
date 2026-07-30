@@ -1,19 +1,5 @@
 <script>
 import PaintPng from "./assets/paint-art.png";
-import CartridgeFace from "./assets/cartridge-face.png";
-import CartridgeTop from "./assets/cartridge-top.png";
-import CartridgeFaceArtBack from "./assets/cartridge-face-art-back.png";
-import CartridgeFaceArtTop from "./assets/cartridge-art-top.png";
-import CartridgeFaceArtSide from "./assets/cartridge-art-side.png";
-import CartridgeSlatBottom from "./assets/cartridge-slat-bottom.png";
-import CartridgeHeader from "./assets/cartridge-header.png";
-import CartridgeHeaderOverlay from "./assets/cartridge-header-overlay.png";
-import CartridgeBack from "./assets/cartridge-back.png";
-import CartridgeSlatTop from "./assets/cartridge-slat-top.png";
-import CartridgeSlatUnder from "./assets/cartridge-slat-under.png";
-import CartridgeBottom from "./assets/cartridge-bottom.png";
-import PcbFace from "./assets/pcb-face.png";
-import PcbUnder from "./assets/pcb-under.png";
 
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 import { roundHundredths, lerp } from "../util/math";
@@ -44,9 +30,10 @@ let lastY = 0;
 
 <div
     class="cartridge"
-    style:--x-pos={cartridgeX}
-    style:--y-pos={cartridgeY}
-    style:--rot={cartridgeRot}
+    style="transform: translateX(calc(50vw + {cartridgeX}))
+        translateY(calc(-40vh + {cartridgeY} * 42vh))
+        translateZ(-4.18vh)
+        rotateY({cartridgeRot});"
     data-visibility="{nissyGirl.displayCartridges}"
     bind:this={cartridgeEl}
     use:touch={{
@@ -76,35 +63,35 @@ let lastY = 0;
             }),
     }}
 >
-    <div class="img cartridgeface" style:--image={`url(${CartridgeFace})`}></div>
-    <div class="img cartridgefaceartback" style:--image={`url(${CartridgeFaceArtBack})`}>
-        <div class="img cartridgefaceart" style:--image={`url(${cartridge})`}></div>
+    <div class="face cartridgeface"></div>
+    <div class="face cartridgefaceartback">
+        <div class="face cartridgefaceart" style:--image={`url(${cartridge})`}></div>
     </div>
 
-    <div class="img cartridgeheader" style:--image={`url(${CartridgeHeader})`}></div>
-    <div class="img cartridgeheaderoverlay" style:--image={`url(${CartridgeHeaderOverlay})`}></div>
+    <div class="face cartridgeheader"></div>
+    <div class="face cartridgeheaderoverlay"></div>
 
-    <div class="img cartridgetop" style:--image={`url(${CartridgeTop})`}></div>
+    <div class="face cartridgetop"></div>
 
-    <div class="img cartridgefacearttop" style:--image={`url(${CartridgeFaceArtTop})`}></div>
-    <div class="img cartridgefaceartside" style:--image={`url(${CartridgeFaceArtSide})`}></div>
-    <div class="img cartridgefaceartside right" style:--image={`url(${CartridgeFaceArtSide})`}></div>
+    <div class="face cartridgefacearttop"></div>
+    <div class="face cartridgefaceartside"></div>
+    <div class="face cartridgefaceartside right"></div>
 
-    <div class="img cartridgeface back" style:--image={`url(${CartridgeBack})`}></div>
-    <div class="img cartridgebottom" style:--image={`url(${CartridgeBottom})`}></div>
+    <div class="face cartridgeface back"></div>
+    <div class="face cartridgebottom"></div>
 
-    <div class="img cartridgeslattop" style:--image={`url(${CartridgeSlatTop})`}></div>
-    <div class="img cartridgeslattop right" style:--image={`url(${CartridgeSlatTop})`}></div>
+    <div class="face cartridgeslattop"></div>
+    <div class="face cartridgeslattop right"></div>
     
-    <div class="img cartridgeslatbottom" style:--image={`url(${CartridgeSlatBottom})`}></div>
-    <div class="img cartridgeslatbottom right" style:--image={`url(${CartridgeSlatBottom})`}></div>
+    <div class="face cartridgeslatbottom"></div>
+    <div class="face cartridgeslatbottom right"></div>
     
-    <div class="img cartridgeslatunder" style:--image={`url(${CartridgeSlatUnder})`}></div>
-    <div class="img cartridgeslatunder right" style:--image={`url(${CartridgeSlatUnder})`}></div>
+    <div class="face cartridgeslatunder"></div>
+    <div class="face cartridgeslatunder right"></div>
 
-    <div class="img pcbface" style:--image={`url(${PcbFace})`}></div>
-    <div class="img pcbface back" style:--image="url({PcbFace})"></div>
-    <div class="img pcbunder" style:--image="url({PcbUnder})"></div>
+    <div class="face pcbface"></div>
+    <div class="face pcbface back"></div>
+    <div class="face pcbunder"></div>
 </div>
 
 <style>
@@ -121,6 +108,8 @@ let lastY = 0;
 
     transform-style: preserve-3d;
 
+    will-change: transform;
+
     position: absolute;
 
     top: 0;
@@ -128,12 +117,6 @@ let lastY = 0;
     right: 0;
 
     margin: auto;
-
-    transform:
-        translateX(calc(50vw + var(--x-pos)))
-        translateY(calc(-40vh + var(--y-pos) * 42vh))
-        translateZ(-4.18vh)
-        rotateY(var(--rot));
 
     touch-action: none;
     -ms-touch-action: none;
@@ -156,7 +139,9 @@ let lastY = 0;
 
     margin: auto;
 
-    transform: translateZ(calc(var(--depth-w) * -0.15))
+    transform: translateZ(calc(var(--depth-w) * -0.15));
+
+    background-image: url("./assets/cartridge-header.png");
 }
 
 .cartridgeheaderoverlay {
@@ -172,7 +157,9 @@ let lastY = 0;
 
     margin: auto;
 
-    transform: translateZ(calc(var(--depth-w) * -0.099))
+    transform: translateZ(calc(var(--depth-w) * -0.099));
+
+    background-image: url("./assets/cartridge-header-overlay.png");
 }
 
 .cartridgeface {
@@ -185,6 +172,8 @@ let lastY = 0;
     top: 0;
     left: 0;
     right: 0;
+
+    background-image: url("./assets/cartridge-face.png");
 }
 
 .cartridgeface.back {
@@ -192,6 +181,8 @@ let lastY = 0;
     height: 100%;
 
     transform: rotateY(180deg) translateZ(var(--depth-w));
+
+    background-image: url("./assets/cartridge-back.png");
 }
 
 .cartridgefaceartback {
@@ -207,7 +198,9 @@ let lastY = 0;
 
     margin: auto;
 
-    transform: translateZ(calc(var(--depth-w) * -0.2))
+    transform: translateZ(calc(var(--depth-w) * -0.2));
+
+    background-image: url("./assets/cartridge-face-art-back.png");
 }
 
 .cartridgefaceart {
@@ -221,6 +214,8 @@ let lastY = 0;
     left: 0;
     right: 0;
 
+    background-image: var(--image);
+
     margin: auto;
 }
 
@@ -230,6 +225,8 @@ let lastY = 0;
     width: 100%;
 
     transform: translateZ(calc(var(--depth-w) * -0.5)) rotateY(-90deg) rotateX(-90deg) rotateZ(90deg);
+
+    background-image: url("./assets/cartridge-top.png");
 }
 
 .cartridgefacearttop {
@@ -246,6 +243,8 @@ let lastY = 0;
     margin: auto;
 
     transform: translateZ(calc(var(--depth-w) * -0.06)) rotateY(-90deg) rotateX(-90deg) rotateZ(90deg);
+
+    background-image: url("./assets/cartridge-art-top.png");
 }
 
 .cartridgefaceartside {
@@ -261,6 +260,8 @@ let lastY = 0;
     margin: auto;
 
     transform: translateZ(calc(var(--depth-w) * -0.07)) rotateY(90deg);
+
+    background-image: url("./assets/cartridge-art-side.png");
 }
 
 .cartridgefaceartside.right {
@@ -283,6 +284,8 @@ let lastY = 0;
     backface-visibility: visible;
 
     transform: translateZ(calc(var(--depth-w) / -2)) translateX(-50%) rotateY(-90deg) scaleX(1.05);
+
+    background-image: url("./assets/cartridge-slat-top.png");
 }
 
 .cartridgeslattop.right {
@@ -305,6 +308,8 @@ let lastY = 0;
     backface-visibility: visible;
 
     transform: translateZ(calc(var(--depth-w) * -0.5)) translateX(90%) rotateY(-90deg) scaleX(1.05);
+
+    background-image: url("./assets/cartridge-slat-bottom.png");
 }
 
 .cartridgeslatbottom.right {
@@ -323,6 +328,8 @@ let lastY = 0;
 
     bottom: 17.2%;
     left: -0.05%;
+
+    background-image: url("./assets/cartridge-slat-under.png");
 
     transform: translateZ(calc(var(--depth-w) * -0.5)) rotateY(-90deg) rotateX(-90deg) rotateZ(90deg) scaleX(1.03);
 }
@@ -344,7 +351,10 @@ let lastY = 0;
     left: 0;
     right: 0;
     bottom: 0;
+
     margin: auto;
+
+    background-image: url("./assets/pcb-face.png");
 
     transform: translateY(var(--pcb-y)) translateZ(calc(var(--depth-w) * -.48));
 }
@@ -365,6 +375,8 @@ let lastY = 0;
     bottom: 0;
     margin: auto;
 
+    background-image: url("./assets/pcb-under.png");
+
     transform: translateZ(calc(var(--depth-w) * -.53)) translateY(calc(var(--pcb-y) - 50%)) rotateX(-90deg);
 }
 
@@ -380,6 +392,8 @@ let lastY = 0;
     right: 0;;
 
     margin: auto;
+
+    background-image: url("./assets/cartridge-bottom.png");
 
     transform: translateZ(calc(var(--depth-w) * -0.5)) rotateY(-90deg) rotateX(-90deg) rotateZ(90deg) translateZ(0.86vh) scaleY(1.05);
 }
