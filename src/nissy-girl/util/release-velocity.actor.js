@@ -4,10 +4,11 @@ import { createVelocity } from "./velocity.js";
 
 import { rafLooper } from "./time.js";
 
-export const RELEASE_VELOCITYID = "release-velocity";
+export const ROTATE_VELOCITYID = "rotate-velocity";
+export const VERT_VELOCITYID = "vert-velocity";
 
-export const releaseVelocity = ({
-    id : RELEASE_VELOCITYID,
+export const createReleaseVelocity = (id, eventName = "MOVE") => ({
+    id,
     src : fromCallback(({ sendBack, receive }) => {
         const velocity = createVelocity();
 
@@ -28,7 +29,7 @@ export const releaseVelocity = ({
                 next !== previous;
 
             if(executeMove) {
-                sendBack({ type : "MOVE", delta : movement });
+                sendBack({ type : eventName, delta : movement });
             }
 
             if(progress?.isAnchor?.(next)) {
@@ -53,7 +54,7 @@ export const releaseVelocity = ({
                 return;
             }
 
-            if(event.type === "END_DRAG" && progress) {
+            if(event.type === "DRAG_END" && progress) {
                 if(!progress) {
                     return;
                 }
@@ -63,7 +64,7 @@ export const releaseVelocity = ({
                 return;
             }
 
-            if(event.type === "START_DRAG" && progress) {
+            if(event.type === "DRAG_START" && progress) {
                 if(!progress) {
                     return;
                 }
@@ -84,7 +85,7 @@ export const releaseVelocity = ({
 
                 velocity.sample(event.delta);
 
-                sendBack({ type : "MOVE", delta : event.delta });
+                sendBack({ type : eventName, delta : event.delta });
 
                 return;
             }

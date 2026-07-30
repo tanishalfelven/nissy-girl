@@ -25,12 +25,12 @@ let { cartridge = PaintPng } = $props();
 
 const cartridgeRot = $derived(
     `${roundHundredths(
-        ((Math.cos(nissyGirl.cartridge.progress * Math.PI)) / 4) * 720 + 180
+        ((Math.cos(nissyGirl.cartridgeX.progress * Math.PI)) / 4) * 720 + 180
     )}deg`
 );
 
 const cartridgeX = $derived(
-    `${roundHundredths(lerp(-150, 50, nissyGirl.cartridge.progress))}vw`
+    `${roundHundredths(lerp(-150, 50, nissyGirl.cartridgeX.progress))}vw`
 );
 
 const cartridgeY = $derived(
@@ -51,14 +51,12 @@ let lastY = 0;
     bind:this={cartridgeEl}
     use:touch={{
         start : (e) => {
-            nissyGirlMachine.send({ type : "SELECT_CARTRIDGE" });
-
             lastY = e.clientY;
 
             cartridgeHeight = cartridgeEl.getBoundingClientRect().height;
 
             nissyGirlMachine.send({
-                type : "START_CARTDRAG",
+                type : "CART_DRAG_START",
             });
         },
         move : (e) => {
@@ -68,13 +66,13 @@ let lastY = 0;
             lastY = newY;
 
             nissyGirlMachine.send({
-                type : "CARTDRAG_DELTA",
+                type : "CART_DRAG_DELTA",
                 delta : distY / cartridgeHeight,
             });
         },
         end : () => 
             nissyGirlMachine.send({
-                type : "END_CARTDRAG",
+                type : "CART_DRAG_END",
             }),
     }}
 >
@@ -133,8 +131,8 @@ let lastY = 0;
 
     transform:
         translateX(calc(50vw + var(--x-pos)))
-        translateY(calc(-40vh + var(--y-pos) * 40vh))
-        translateZ(-4.15vh)
+        translateY(calc(-40vh + var(--y-pos) * 42vh))
+        translateZ(-4.18vh)
         rotateY(var(--rot));
 
     touch-action: none;

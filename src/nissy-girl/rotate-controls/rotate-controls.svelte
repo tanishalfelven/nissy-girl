@@ -19,7 +19,7 @@ let lastX = 0;
             rotateElWidth = rotateEl.getBoundingClientRect().width;
 
             nissyGirlMachine.send({
-                type : "START_DRAG",
+                type : "DRAG_START",
             });
         },
         move : (e) => {
@@ -35,7 +35,7 @@ let lastX = 0;
         },
         end : () => 
             nissyGirlMachine.send({
-                type : "END_DRAG",
+                type : "DRAG_END",
             }),
     }}
 >

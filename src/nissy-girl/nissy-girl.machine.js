@@ -9,7 +9,11 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 import { crossedThresholdWrapInclusive } from "./util/math.js";
 
-import { releaseVelocity, RELEASE_VELOCITYID } from "./util/release-velocity.actor.js";
+import {
+    createReleaseVelocity,
+    ROTATE_VELOCITYID,
+    VERT_VELOCITYID,
+} from "./util/release-velocity.actor.js";
 
 import {
     ZOOM_ROTATION_THRESHOLD,
@@ -18,8 +22,8 @@ import {
     MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
 
-const updateVelocityTarget = (progress) =>
-    sendTo(RELEASE_VELOCITYID, { type : "NEW_TARGET", progress });
+const updateVelocityTarget = (target, progress) =>
+    sendTo(target, { type : "NEW_TARGET", progress });
 
 const nissyGirlMachine = createMachine({
     id : "nissy-girl",
@@ -27,29 +31,31 @@ const nissyGirlMachine = createMachine({
     initial : "playing",
 
     invoke : [
-        releaseVelocity,
+        createReleaseVelocity(ROTATE_VELOCITYID, "ROTATE_SWIPE"),
     ],
 
     on : {
-        START_DRAG : {
-            actions : sendTo(RELEASE_VELOCITYID, { type : "START_DRAG" }),
+        DRAG_START : {
+            actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_START" }),
         },
 
-        END_DRAG : {
-            actions : sendTo(RELEASE_VELOCITYID, { type : "END_DRAG" }),
+        DRAG_END : {
+            actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_END" }),
         },
 
         DRAG_DELTA : {
-            actions : sendTo(RELEASE_VELOCITYID, ({ event }) => ({ type : "DRAG_DELTA", delta : event.delta })),
+            actions : sendTo(ROTATE_VELOCITYID, ({ event }) => ({ type : "DRAG_DELTA", delta : event.delta })),
         },
     },
 
     states : {
         playing : {
-            entry : updateVelocityTarget(nissyGirl.rotation),
+            entry : [
+                updateVelocityTarget(ROTATE_VELOCITYID, nissyGirl.rotation),
+            ],
 
             on : {
-                MOVE : [
+                ROTATE_SWIPE : [
                     {
                         // This is a bit odd but we don't bother creating an anchor for our
                         // rotation threshold BECAUSE we want to preserve momentum
@@ -76,6 +82,8 @@ const nissyGirlMachine = createMachine({
                     {
                         actions : ({ event }) => {
                             nissyGirl.rotation.update(event.delta);
+
+                            // prepares us to re-enter cartridge scroll
                             nissyGirl.clearHasFinishedCartridgeScroll();
 
                             if(nissyGirl.hasSelectedCartridge) {
@@ -83,7 +91,7 @@ const nissyGirlMachine = createMachine({
                             }
 
                             // agressively resetting cartridge carousel so it comes from the correct direction
-                            nissyGirl.cartridge.set(event.delta < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+                            nissyGirl.cartridgeX.set(event.delta < 0 ? MIN_PROGRESS : MAX_PROGRESS);
                         },
                     }
                 ]
@@ -91,26 +99,22 @@ const nissyGirlMachine = createMachine({
         },
 
         zooming : {
-            entry : updateVelocityTarget(nissyGirl.zoom),
+            entry : updateVelocityTarget(ROTATE_VELOCITYID, nissyGirl.zoom),
 
             on : {
-                START_CARTDRAG : {
-                    actions : raise({ type : "HANDLE_CART_DRAG" }),
+                CART_DRAG_START : {
+                    actions : raise({ type : "TEST_ZOOM_BOUNDS" }),
                 },
 
-                CARTDRAG_DELTA : {
-                    actions : raise({ type : "HANDLE_CART_DRAG" }),
+                CART_DRAG_DELTA : {
+                    actions: raise(({ event }) => ({ type : "HANDLE_DRAG", delta: event.delta })),
                 },
 
-                HANDLE_CART_DRAG : [
-                    {
-                        guard : () => nissyGirl.zoom.progress === MAX_PROGRESS &&
-                            nissyGirl.cartridgeY.progress === MAX_PROGRESS,
-                        target : "cartridge select.vertical cartridge manipulate",
-                    }
-                ],
+                ROTATE_SWIPE : {
+                    actions: raise(({ event }) => ({ type : "HANDLE_DRAG", delta: event.delta })),
+                },
 
-                MOVE : {
+                HANDLE_DRAG : {
                     actions: [
                         ({ event }) => nissyGirl.zoom.update(event.delta),
                         raise({ type : "TEST_ZOOM_BOUNDS" }),
@@ -131,10 +135,10 @@ const nissyGirlMachine = createMachine({
                 SCROLL_AT_MAX_CARTRIDGE_SELECT : [
                     {
                         guard : () => nissyGirl.hasSelectedCartridge,
-                        target : "cartridge select.vertical cartridge manipulate",
+                        target : "cartridge select.cartridge manipulate",
                     },
                     {
-                        guard : () => !nissyGirl.hasFinishedCartridgeScroll && !nissyGirl.hasSelectedCartridge,
+                        guard : () => !nissyGirl.hasFinishedCartridgeScroll,
                         target : "cartridge select",
                     }
                 ],
@@ -162,61 +166,75 @@ const nissyGirlMachine = createMachine({
             states : {
                 // Horizontal carousel through cartridges!
                 carousel : {
-                    entry : updateVelocityTarget(nissyGirl.cartridge),
+                    entry : updateVelocityTarget(ROTATE_VELOCITYID, nissyGirl.cartridgeX),
 
                     on : {
-                        CARTDRAG_DELTA : {
+                        CART_DRAG_DELTA : {
                             guard : ({ event }) => event.delta > 0,
                             actions : raise((event) => ({ type : "SELECT_CARTRIDGE" })),
                         },
 
-                        MOVE : {
+                        ROTATE_SWIPE : {
                             actions : [
-                                ({ event }) => nissyGirl.cartridge.update(event.delta),
-                                raise({ type : "CARTRIDGE_AT_MAX_BOUNDS" }),
+                                ({ event }) => nissyGirl.cartridgeX.update(event.delta),
+                                raise({ type : "TEST_CARTRIDGE_X_BOUNDS" }),
                             ],
                         },
 
-                        CARTRIDGE_AT_MAX_BOUNDS : {
-                            guard : () => nissyGirl.cartridge.progress === MAX_PROGRESS ||
-                                nissyGirl.cartridge.progress === MIN_PROGRESS,
+                        TEST_CARTRIDGE_X_BOUNDS : {
+                            guard : () => nissyGirl.cartridgeX.progress === MAX_PROGRESS ||
+                                nissyGirl.cartridgeX.progress === MIN_PROGRESS,
                             actions : raise({ type : "BACK_TO_ZOOM" }),
                         },
 
                         SELECT_CARTRIDGE : {
                             guard : () =>
-                                nissyGirl.cartridge.progress === CARTRIDGE_SELECTION_THRESHOLD,
-                            target : "vertical cartridge manipulate",
+                                nissyGirl.cartridgeX.progress === CARTRIDGE_SELECTION_THRESHOLD,
+                            target : "cartridge manipulate",
                         },
                     }
                 },
 
                 // Vertically move cartridge (selection is maximum progress, deselect is minimum!)
-                "vertical cartridge manipulate" : {
-                    entry : updateVelocityTarget(false),
+                "cartridge manipulate" : {
+                    invoke : createReleaseVelocity(VERT_VELOCITYID, "CART_SWIPE"),
+
+                    entry : [
+                        updateVelocityTarget(VERT_VELOCITYID, nissyGirl.cartridgeY),
+                        updateVelocityTarget(ROTATE_VELOCITYID, nissyGirl.cartridgeY),
+                    ],
 
                     on : {
-                        START_CARTDRAG : {
-                            actions : raise({ type : "HANDLE_CART_DRAG" }),
+                        CART_DRAG_START : {
+                            actions : sendTo(VERT_VELOCITYID, { type : "DRAG_START" }),
                         },
 
-                        END_CARTDRAG : {
-                            actions : raise({ type : "HANDLE_CART_DRAG" }),
+                        CART_DRAG_END : {
+                            actions : sendTo(VERT_VELOCITYID, { type : "DRAG_END" }),
                         },
 
-                        CARTDRAG_DELTA : {
-                            actions : raise(({ event }) => ({ type : "HANDLE_CART_DRAG", delta : event.delta })),
+                        CART_DRAG_DELTA : {
+                            actions : sendTo(
+                                VERT_VELOCITYID,
+                                ({ event }) => ({
+                                    type : "DRAG_DELTA",
+                                    delta : event.delta,
+                                }
+                            )),
                         },
 
-                        HANDLE_CART_DRAG : {
+                        CART_SWIPE : {
                             actions : [
-                                ({ event}) => nissyGirl.cartridgeY.update(event?.delta ?? 0),
-                                raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
+                                ({ event }) => nissyGirl.cartridgeY.update(event.delta),
                             ],
                         },
 
-                        DRAG_DELTA : {
-                            actions : raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
+                        // proxying horizontal swipe to cartridge progress is tough
+                        // I dislike canonical entry direction as "yes" or opposite as "no"
+                        ROTATE_SWIPE : {
+                            actions : [
+                                raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
+                            ],
                         },
 
                         TEST_CARTRIDGE_Y_BOUNDS : [

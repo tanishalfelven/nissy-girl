@@ -28,7 +28,7 @@ const rotation = createProgress({
     }
 });
 
-const cartridge = createProgress({
+const cartridgeX = createProgress({
     start : 0,
     speed : -0.9,
     anchors : [ CARTRIDGE_SELECTION_THRESHOLD ],
@@ -39,18 +39,25 @@ const cartridge = createProgress({
     ),
     velocity : {
         smoothing : 0.6,
-        decay : 0.98,
+        decay : 0.92,
     }
 });
 
 const cartridgeY = createProgress({
     start : 0,
-    speed : 0.6,
-    update : (cur, movement) => clamp(
-        cur + movement,
-        MIN_PROGRESS,
-        MAX_PROGRESS,
-    ),
+    speed : 0.7,
+    anchors : [ 0, 1 ],
+    update : (cur, movement) =>
+        clamp(
+            cur + movement,
+            MIN_PROGRESS,
+            MAX_PROGRESS,
+        ),
+    velocity : {
+        smoothing : 0.7,
+        decay : 0.9,
+        min : 0.0001,
+    }
 });
 
 let isPowered = $state(false);
@@ -87,8 +94,8 @@ export const nissyGirl = {
         return zoom;
     },
 
-    get cartridge() {
-        return cartridge;
+    get cartridgeX() {
+        return cartridgeX;
     },
 
     get cartridgeY() {
