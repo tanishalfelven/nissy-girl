@@ -9,7 +9,7 @@ import { fromCallback } from "xstate";
 import {
     MIN_PROGRESS,
     MAX_PROGRESS,
-    CARTRIDGE_THRESHOLD,
+    CARTRIDGE_SELECTION_THRESHOLD,
 } from "./nissy-girl.consts.js";
 
 import { createProgress } from "./util/progress.svelte.js";
@@ -31,7 +31,7 @@ const rotation = createProgress({
 const cartridge = createProgress({
     start : 0,
     speed : -0.9,
-    anchors : [ CARTRIDGE_THRESHOLD ],
+    anchors : [ CARTRIDGE_SELECTION_THRESHOLD ],
     update : (cur, movement) => clamp(
         cur + movement,
         MIN_PROGRESS,
@@ -54,21 +54,9 @@ const cartridgeY = createProgress({
 });
 
 let isPowered = $state(false);
-let animDir = $state(0);
 let displayCartridges = $state(false);
 let selectedCartridge = $state(false);
-let isReturning = $state(false);
-
-let hasFinishedCartridgeScroll = $derived(
-    cartridge.progress ===
-        (animDir === 1 ? MIN_PROGRESS : MAX_PROGRESS) ||
-    isReturning
-);
-
-// zoom / rotation play backwards when we return
-let effectiveDir = $derived(
-    hasFinishedCartridgeScroll ? -animDir : animDir
-);
+let hasFinishedCartridgeScroll = $state(false);
 
 const zoom = createProgress({
     start : 0,
@@ -76,7 +64,7 @@ const zoom = createProgress({
     anchors : [ 1 ],
     update : (cur, movement) =>
         clamp(
-            cur + movement * effectiveDir,
+            cur + Math.abs(movement) * (hasFinishedCartridgeScroll ? -1 : 1),
             MIN_PROGRESS,
             MAX_PROGRESS,
         ),
@@ -111,33 +99,12 @@ export const nissyGirl = {
         return displayCartridges;
     },
 
-    get effectiveDir() {
-        return effectiveDir;
-    },
-
-    get animDir() {
-        return animDir;
-    },
-
-    get isReturning() {
-        return isReturning;
-    },
-
     get hasFinishedCartridgeScroll() {
         return hasFinishedCartridgeScroll;
     },
 
-    setAnimationDirection(newAnimDir) {
-        animDir = newAnimDir;
-        isReturning = false;
-
-        if(!selectedCartridge) {
-            cartridge.set(newAnimDir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
-        }
-    },
-
-    clearAnimationDirection() {
-        animDir = 0;
+    get hasSelectedCartridge() {
+        return selectedCartridge;
     },
 
     setCartridgeVisible() {
@@ -146,25 +113,22 @@ export const nissyGirl = {
 
     setCartridgeHidden() {
         displayCartridges = false;
-        isReturning = false;
     },
 
-    setNotReturning() {
-        isReturning = false;
+    setHasFinishedCartridgeScroll() {
+        hasFinishedCartridgeScroll = true;
+    },
+
+    clearHasFinishedCartridgeScroll() {
+        hasFinishedCartridgeScroll = false;
     },
 
     selectCartridge() {
         selectedCartridge = true;
-        isReturning = true;
     },
 
     deselectCartridge() {
         selectedCartridge = false;
-        isReturning = false;
-    },
-
-    hasSelectedCartridge() {
-        return selectedCartridge;
     },
 
     togglePower() {

@@ -17,7 +17,7 @@ import PcbUnder from "./assets/pcb-under.png";
 
 import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
 import { roundHundredths, lerp } from "../util/math";
-import { CARTRIDGE_THRESHOLD } from "../nissy-girl.consts";
+import { CARTRIDGE_SELECTION_THRESHOLD } from "../nissy-girl.consts";
 import { nissyGirlMachine } from "../nissy-girl.machine.js";
 import { touch } from "../util/touch-action.svelte.js";
 

@@ -13,7 +13,7 @@ import { releaseVelocity, RELEASE_VELOCITYID } from "./util/release-velocity.act
 
 import {
     ZOOM_ROTATION_THRESHOLD,
-    CARTRIDGE_THRESHOLD,
+    CARTRIDGE_SELECTION_THRESHOLD,
     MIN_PROGRESS,
     MAX_PROGRESS,
 } from "./nissy-girl.consts.js";
@@ -42,8 +42,6 @@ const nissyGirlMachine = createMachine({
         DRAG_DELTA : {
             actions : sendTo(RELEASE_VELOCITYID, ({ event }) => ({ type : "DRAG_DELTA", delta : event.delta })),
         },
-
-        BACK_TO_ZOOM : ".zooming",
     },
 
     states : {
@@ -53,11 +51,15 @@ const nissyGirlMachine = createMachine({
             on : {
                 MOVE : [
                     {
+                        // This is a bit odd but we don't bother creating an anchor for our
+                        // rotation threshold BECAUSE we want to preserve momentum
                         guard : ({ event }) => {
                             const targetRot = nissyGirl.rotation.project(event.delta);
 
+                            // Replicating anchor logic here - this lets us continue reotation
+                            // upon return
                             if(nissyGirl.rotation.progress === ZOOM_ROTATION_THRESHOLD &&
-                                Math.sign(event.delta) !== nissyGirl.effectiveDir
+                                nissyGirl.hasFinishedCartridgeScroll
                             ) {
                                 return false;
                             }
@@ -72,10 +74,17 @@ const nissyGirlMachine = createMachine({
                         target : "zooming",
                     },
                     {
-                        actions : [
-                            ({ event }) => nissyGirl.rotation.update(event.delta),
-                            ({ event }) => nissyGirl.setAnimationDirection(Math.sign(event.delta)),
-                        ],
+                        actions : ({ event }) => {
+                            nissyGirl.rotation.update(event.delta);
+                            nissyGirl.clearHasFinishedCartridgeScroll();
+
+                            if(nissyGirl.hasSelectedCartridge) {
+                                return;
+                            }
+
+                            // agressively resetting cartridge carousel so it comes from the correct direction
+                            nissyGirl.cartridge.set(event.delta < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+                        },
                     }
                 ]
             }
@@ -85,108 +94,144 @@ const nissyGirlMachine = createMachine({
             entry : updateVelocityTarget(nissyGirl.zoom),
 
             on : {
-                MOVE : [
+                START_CARTDRAG : {
+                    actions : raise({ type : "HANDLE_CART_DRAG" }),
+                },
+
+                CARTDRAG_DELTA : {
+                    actions : raise({ type : "HANDLE_CART_DRAG" }),
+                },
+
+                HANDLE_CART_DRAG : [
                     {
-                        guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MIN_PROGRESS,
-                        target : "playing",
-                        actions : ({ event }) => nissyGirl.zoom.update(event.delta),
-                    },
-                    {
-                        guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MAX_PROGRESS &&
-                            !nissyGirl.hasFinishedCartridgeScroll,
-                        target : "cartridge select.move selection",
-                        actions : ({ event }) => nissyGirl.zoom.update(event.delta),
-                    },
-                    {
-                        guard : ({ event }) => nissyGirl.zoom.project(event.delta) === MAX_PROGRESS &&
-                            !nissyGirl.hasFinishedCartridgeScroll,
-                        target : "cartridge select",
-                        actions : ({ event }) => nissyGirl.zoom.update(event.delta),
-                    },
-                    { 
-                        actions : ({ event }) => nissyGirl.zoom.update(event.delta),
+                        guard : () => nissyGirl.zoom.progress === MAX_PROGRESS &&
+                            nissyGirl.cartridgeY.progress === MAX_PROGRESS,
+                        target : "cartridge select.vertical cartridge manipulate",
                     }
-                ]
-            }
+                ],
+
+                MOVE : {
+                    actions: [
+                        ({ event }) => nissyGirl.zoom.update(event.delta),
+                        raise({ type : "TEST_ZOOM_BOUNDS" }),
+                    ],
+                },
+
+                TEST_ZOOM_BOUNDS : [
+                    {
+                        guard : () => nissyGirl.zoom.progress === MAX_PROGRESS,
+                        actions : raise({ type : "SCROLL_AT_MAX_CARTRIDGE_SELECT" }),
+                    },
+                    {
+                        guard : () => nissyGirl.zoom.progress === MIN_PROGRESS,
+                        target : "playing",
+                    }
+                ],
+
+                SCROLL_AT_MAX_CARTRIDGE_SELECT : [
+                    {
+                        guard : () => nissyGirl.hasSelectedCartridge,
+                        target : "cartridge select.vertical cartridge manipulate",
+                    },
+                    {
+                        guard : () => !nissyGirl.hasFinishedCartridgeScroll && !nissyGirl.hasSelectedCartridge,
+                        target : "cartridge select",
+                    }
+                ],
+            },
         },
 
         "cartridge select" : {
             entry : () => nissyGirl.setCartridgeVisible(),
 
-            exit : () => {
-                if(!nissyGirl.hasSelectedCartridge()) {
-                    nissyGirl.setCartridgeHidden();
+            on : {
+                BACK_TO_ZOOM : {
+                    target : "zooming",
+                    actions : () => {
+                        if(!nissyGirl.hasSelectedCartridge) {
+                            nissyGirl.setCartridgeHidden();
+                        }
+
+                        nissyGirl.setHasFinishedCartridgeScroll()
+                    }, 
                 }
             },
 
-            initial : "selecting",
+            initial : "carousel",
 
             states : {
-                selecting : {
+                // Horizontal carousel through cartridges!
+                carousel : {
                     entry : updateVelocityTarget(nissyGirl.cartridge),
 
                     on : {
-                        MOVE : [
-                            {
-                                guard : ({ event }) => {
-                                    const nextProgress = nissyGirl.cartridge.project(event.delta);
+                        CARTDRAG_DELTA : {
+                            guard : ({ event }) => event.delta > 0,
+                            actions : raise((event) => ({ type : "SELECT_CARTRIDGE" })),
+                        },
 
-                                    return nextProgress === MAX_PROGRESS || nextProgress === MIN_PROGRESS;
-                                },
-                                actions : [
-                                    ({ event }) => nissyGirl.cartridge.update(event.delta),
-                                    () => nissyGirl.setCartridgeHidden(),
-                                    raise({ type : "BACK_TO_ZOOM" }),
-                                ],
-                            },
-                            {
-                                actions : ({ event }) => nissyGirl.cartridge.update(event.delta),
-                            }
-                        ],
+                        MOVE : {
+                            actions : [
+                                ({ event }) => nissyGirl.cartridge.update(event.delta),
+                                raise({ type : "CARTRIDGE_AT_MAX_BOUNDS" }),
+                            ],
+                        },
+
+                        CARTRIDGE_AT_MAX_BOUNDS : {
+                            guard : () => nissyGirl.cartridge.progress === MAX_PROGRESS ||
+                                nissyGirl.cartridge.progress === MIN_PROGRESS,
+                            actions : raise({ type : "BACK_TO_ZOOM" }),
+                        },
 
                         SELECT_CARTRIDGE : {
-                            guard : () => nissyGirl.cartridge.progress === CARTRIDGE_THRESHOLD,
-                            target : "move selection",
+                            guard : () =>
+                                nissyGirl.cartridge.progress === CARTRIDGE_SELECTION_THRESHOLD,
+                            target : "vertical cartridge manipulate",
                         },
                     }
                 },
 
-                "move selection" : {
+                // Vertically move cartridge (selection is maximum progress, deselect is minimum!)
+                "vertical cartridge manipulate" : {
                     entry : updateVelocityTarget(false),
 
                     on : {
                         START_CARTDRAG : {
-                            actions : sendTo(RELEASE_VELOCITYID, { type : "START_DRAG" }),
+                            actions : raise({ type : "HANDLE_CART_DRAG" }),
                         },
 
                         END_CARTDRAG : {
-                            actions : sendTo(RELEASE_VELOCITYID, { type : "END_DRAG" }),
+                            actions : raise({ type : "HANDLE_CART_DRAG" }),
                         },
 
                         CARTDRAG_DELTA : {
-                            actions : ({ event }) => nissyGirl.cartridgeY.update(event.delta),
+                            actions : raise(({ event }) => ({ type : "HANDLE_CART_DRAG", delta : event.delta })),
+                        },
+
+                        HANDLE_CART_DRAG : {
+                            actions : [
+                                ({ event}) => nissyGirl.cartridgeY.update(event?.delta ?? 0),
+                                raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
+                            ],
                         },
 
                         DRAG_DELTA : {
-                            actions : raise(({ event }) => ({ type : "ROTATE_DRAG", delta : event.delta })),
+                            actions : raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
                         },
 
-                        ROTATE_DRAG : [
+                        TEST_CARTRIDGE_Y_BOUNDS : [
                             {
-                                guard : ({ event }) => nissyGirl.cartridgeY.progress === MIN_PROGRESS,
+                                guard : () => nissyGirl.cartridgeY.progress === MIN_PROGRESS,
                                 actions : () => nissyGirl.deselectCartridge(),
-                                target : "selecting",
+                                target : "carousel",
                             },
                             {
-                                guard : ({ event }) => nissyGirl.cartridgeY.progress === MAX_PROGRESS,
+                                guard : () => nissyGirl.cartridgeY.progress === MAX_PROGRESS,
                                 actions : [
                                     () => nissyGirl.selectCartridge(),
                                     raise({ type : "BACK_TO_ZOOM" }),
                                 ],
                             },
-                            {
-                                actions : ({ event }) => nissyGirl.cartridgeY.update(event.delta),
-                            }
                         ],
                     }
                 },

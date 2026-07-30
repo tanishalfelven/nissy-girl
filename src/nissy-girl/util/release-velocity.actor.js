@@ -43,6 +43,8 @@ export const releaseVelocity = ({
                 progress = event.progress;
 
                 if(!progress) {
+                    velocity.stop();
+
                     return;
                 }
 
