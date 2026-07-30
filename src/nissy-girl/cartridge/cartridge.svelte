@@ -136,6 +136,9 @@ let lastY = 0;
         translateY(calc(-40vh + var(--y-pos) * 40vh))
         translateZ(-4.15vh)
         rotateY(var(--rot));
+
+    touch-action: none;
+    -ms-touch-action: none;
 }
 
 .cartridge[data-visibility="false"] {
