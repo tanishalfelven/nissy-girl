@@ -2,22 +2,27 @@ import js from "@eslint/js";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
 import svelte from "eslint-plugin-svelte";
+import svelteParser from "svelte-eslint-parser";
 import svelteConfig from "./svelte.config.js";
 import stylistic from "@stylistic/eslint-plugin";
 import { jsdoc } from "eslint-plugin-jsdoc";
 import unusedImports from "eslint-plugin-unused-imports";
+import { importX } from "eslint-plugin-import-x";
+
+const plugins = {
+	js,
+	"@stylistic" : stylistic,
+	"unused-imports" : unusedImports,
+};
 
 export default defineConfig([
 	stylistic.configs.recommended,
 	svelte.configs.recommended,
+	importX.flatConfigs.recommended,
 	jsdoc({ config : "flat/recommended" }),
 	{
 		files : [ "**/*.{js,mjs,cjs}" ],
-		plugins : {
-			js,
-			"@stylistic" : stylistic,
-			"unused-imports" : unusedImports,
-		},
+		plugins,
 		extends : [ "js/recommended" ],
 		languageOptions : {
 			globals : globals.browser,
@@ -25,12 +30,10 @@ export default defineConfig([
 	},
 	{
 		files : [ "**/*.svelte", "**/*.svelte.js" ],
-		plugins : {
-			js,
-			"@stylistic" : stylistic,
-			"unused-imports" : unusedImports,
-		},
+		plugins,
 		languageOptions : {
+			globals : globals.browser,
+			parser : svelteParser,
 			parserOptions : {
 				svelteConfig,
 			},
@@ -76,6 +79,14 @@ export default defineConfig([
 					argsIgnorePattern : "^_",
 				},
 			],
+		},
+	},
+	{
+		settings : {
+			"import-x/parsers" : {
+				"espree" : [ ".js" ],
+				"svelte-eslint-parser" : [ ".svelte", ".svelte.js" ],
+			},
 		},
 	},
 ]);
