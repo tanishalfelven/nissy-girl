@@ -7,7 +7,7 @@ import PowerSwitch from "./power-switch/power-switch.svelte";
 import RotateControls from "./rotate-controls/rotate-controls.svelte";
 
 import Dpad from "./dpad/dpad.svelte";
-import Button, { TYPE_BUTTON_A, TYPE_BUTTON_B } from "./button/button.svelte";
+import Button, { BUTTON_A, BUTTON_B, BUTTON_SELECT, BUTTON_START } from "./button/button.svelte";
 
 import Cartridge from "./cartridge/cartridge.svelte";
 
@@ -49,8 +49,11 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
         <PowerSwitch />
 
-        <Button type={TYPE_BUTTON_A}></Button>
-        <Button type={TYPE_BUTTON_B}></Button>
+        <Button button={BUTTON_SELECT}></Button>
+        <Button button={BUTTON_START}></Button>
+
+        <Button button={BUTTON_A}></Button>
+        <Button button={BUTTON_B}></Button>
 
         <Dpad />
 

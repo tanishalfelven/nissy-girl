@@ -65,6 +65,8 @@ export default defineConfig([
 						import : { after : true },
 						from : { after : true },
 						export : { after : true },
+						const : { after : true },
+						let : { after : true },
 					},
 				},
 			],

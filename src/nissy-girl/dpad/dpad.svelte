@@ -96,7 +96,7 @@ const getTransform = (x, y) => {
 	width: 95%;
 	height: 95%;
 
-	background-image: url("../assets/dpad.png");
+	background-image: url("./assets/dpad.png");
 }
 
 .dpad-backface {
@@ -114,7 +114,7 @@ const getTransform = (x, y) => {
 
 	transform: translateZ(calc(var(--depth-w) * -0.0175));
 
-	background-image: url("../assets/dpad-backface.png");
+	background-image: url("./assets/dpad-backface.png");
 }
 
 .dpad-center-side {
@@ -131,7 +131,7 @@ const getTransform = (x, y) => {
 
 	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
 
-	background-image: url("../assets/dpad-side.png");
+	background-image: url("./assets/dpad-side.png");
 
 	backface-visibility: visible !important;
 	-webkit-backface-visibility: visible !important;
