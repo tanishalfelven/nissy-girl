@@ -4,11 +4,11 @@ import PaintPng from "./assets/paint-art.png";
 import { roundHundredths, lerp } from "../util/math.js";
 import { touch } from "../util/touch-action.svelte.js";
 
-import { nissyGirlMachine } from "../nissy-girl.machine.js";
+import { cameraService } from "../statechart-actors.svelte.js";
 
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
 
-let{ cartridge = PaintPng } = $props();
+let { cartridge = PaintPng } = $props();
 
 const displayCartridgeRot = $derived(
 	roundHundredths(
@@ -43,7 +43,7 @@ let lastY = 0;
 
 			cartridgeHeight = cartridgeEl.getBoundingClientRect().height;
 
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "CART_DRAG_START",
 			});
 		},
@@ -53,13 +53,13 @@ let lastY = 0;
 
 			lastY = newY;
 
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "CART_DRAG_DELTA",
 				delta : distY / cartridgeHeight,
 			});
 		},
 		end : () =>
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "CART_DRAG_END",
 			}),
 	}}

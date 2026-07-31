@@ -1,5 +1,5 @@
 <script>
-import { nissyGirlMachine } from "../nissy-girl.machine.js";
+import { cameraService } from "../statechart-actors.svelte.js";
 
 import { touch } from "../util/touch-action.svelte.js";
 
@@ -16,7 +16,7 @@ let lastX = 0;
 
 			rotateElWidth = rotateEl.getBoundingClientRect().width;
 
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "DRAG_START",
 			});
 		},
@@ -26,13 +26,13 @@ let lastX = 0;
 
 			lastX = newX;
 
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "DRAG_DELTA",
 				delta : distX / rotateElWidth,
 			});
 		},
 		end : () =>
-			nissyGirlMachine.send({
+			cameraService.send({
 				type : "DRAG_END",
 			}),
 	}}

@@ -5,7 +5,7 @@ export const TYPE_BUTTON_B = "b";
 <script>
 import { controls } from "../util/touch-action.svelte.js";
 
-let{ type = TYPE_BUTTON_A } = $props();
+let { type = TYPE_BUTTON_A } = $props();
 
 let isPressed = $state(false);
 

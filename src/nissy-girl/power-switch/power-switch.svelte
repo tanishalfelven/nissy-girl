@@ -35,7 +35,7 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
 				return;
 			}
 
-			const{ height } = powerEl.getBoundingClientRect();
+			const { height } = powerEl.getBoundingClientRect();
 
 			candidateY = (e.clientY - startY) / height;
 		},
@@ -44,7 +44,7 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
 				return;
 			}
 
-			const{ height } = powerEl.getBoundingClientRect();
+			const { height } = powerEl.getBoundingClientRect();
 
 			const percentY = (e.clientY - startY) / height;
 

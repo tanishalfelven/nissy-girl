@@ -1,6 +1,4 @@
 <script>
-import { onMount } from "svelte";
-
 import { roundHundredths } from "./util/math.js";
 
 import StartupScreen from "./startup-screen/startup-screen.svelte";
@@ -13,17 +11,11 @@ import Button, { TYPE_BUTTON_A, TYPE_BUTTON_B } from "./button/button.svelte";
 
 import Cartridge from "./cartridge/cartridge.svelte";
 
-import { nissyGirlMachine } from "./nissy-girl.machine.js";
-
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
 
 const displayRot = $derived(roundHundredths(rotation.progress * 360));
 const displayZoom = $derived(roundHundredths(zoom.progress * 10));
-
-onMount(() => {
-	nissyGirlMachine.start();
-});
 </script>
 
 <div class="camera">

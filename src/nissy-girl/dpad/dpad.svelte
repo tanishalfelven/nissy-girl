@@ -20,7 +20,7 @@ const setRotation = (e) => {
 
 	isPressed = true;
 
-	const{
+	const {
 		left : dpadLeft,
 		top : dpadTop,
 		width : dpadWidth,
