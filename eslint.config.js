@@ -1,0 +1,81 @@
+import js from "@eslint/js";
+import globals from "globals";
+import { defineConfig } from "eslint/config";
+import svelte from "eslint-plugin-svelte";
+import svelteConfig from "./svelte.config.js";
+import stylistic from "@stylistic/eslint-plugin";
+import { jsdoc } from "eslint-plugin-jsdoc";
+import unusedImports from "eslint-plugin-unused-imports";
+
+export default defineConfig([
+	stylistic.configs.recommended,
+	svelte.configs.recommended,
+	jsdoc({ config : "flat/recommended" }),
+	{
+		files : [ "**/*.{js,mjs,cjs}" ],
+		plugins : {
+			js,
+			"@stylistic" : stylistic,
+			"unused-imports" : unusedImports,
+		},
+		extends : [ "js/recommended" ],
+		languageOptions : {
+			globals : globals.browser,
+		},
+	},
+	{
+		files : [ "**/*.svelte", "**/*.svelte.js" ],
+		plugins : {
+			js,
+			"@stylistic" : stylistic,
+			"unused-imports" : unusedImports,
+		},
+		languageOptions : {
+			parserOptions : {
+				svelteConfig,
+			},
+		},
+	},
+	{
+		rules : {
+			"@stylistic/linebreak-style" : [ "error", "unix" ],
+			"svelte/prefer-svelte-reactivity" : "off",
+			"@stylistic/no-tabs" : "off",
+			"@stylistic/indent" : [ "error", "tab" ],
+			"@stylistic/indent-binary-ops" : [ "error", "tab" ],
+			"@stylistic/operator-linebreak" : [ "error", "before", { overrides : { "=" : "after" } }],
+			"@stylistic/quotes" : [ "error", "double" ],
+			"@stylistic/semi" : [ "error", "always" ],
+			"@stylistic/key-spacing" : [ "error", { beforeColon : true, afterColon : true }],
+			"@stylistic/array-bracket-spacing" : [
+				"error", "always",
+				{ arraysInArrays : false, objectsInArrays : false },
+			],
+			"@stylistic/eol-last" : [ "error", "always" ],
+			"@stylistic/keyword-spacing" : [
+				"error",
+				{
+					before : true,
+					after : false,
+					overrides : {
+						return : { after : true },
+						import : { after : true },
+						from : { after : true },
+						export : { after : true },
+					},
+				},
+			],
+			"no-unused-vars" : "off",
+			"unused-imports/no-unused-imports" : "error",
+			"unused-imports/no-unused-vars" : [
+				"warn",
+				{
+					vars : "all",
+					varsIgnorePattern : "^_",
+					args : "after-used",
+					argsIgnorePattern : "^_",
+				},
+			],
+		},
+	},
+]);

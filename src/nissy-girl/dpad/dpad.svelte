@@ -14,133 +14,130 @@ const xDeg = $derived(`${roundHundredths(rotateX)}deg`);
 const yDeg = $derived(`${roundHundredths(rotateY)}deg`);
 
 const setRotation = (e) => {
-    if(!dpadElement) {
-        return false;
-    }
+	if(!dpadElement) {
+		return false;
+	}
 
-    isPressed = true;
+	isPressed = true;
 
-    const {
-        left : dpadLeft,
-        top : dpadTop,
-        width : dpadWidth,
-        height : dpadHeight,
-    } = dpadElement.getBoundingClientRect();
+	const{
+		left : dpadLeft,
+		top : dpadTop,
+		width : dpadWidth,
+		height : dpadHeight,
+	} = dpadElement.getBoundingClientRect();
 
-    const normalizedX =
-      ((e.clientX - dpadLeft) / dpadWidth) * 2 - 1;
+	const normalizedX = ((e.clientX - dpadLeft) / dpadWidth) * 2 - 1;
+	const normalizedY = ((e.clientY - dpadTop) / dpadHeight) * 2 - 1;
 
-    const normalizedY =
-      ((e.clientY - dpadTop) / dpadHeight) * 2 - 1;
-
-    rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
-    rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
-}
+	rotateX = clamp(-normalizedY * MAX_TILT, -MAX_TILT, MAX_TILT);
+	rotateY = clamp(normalizedX * MAX_TILT, -MAX_TILT, MAX_TILT);
+};
 
 const getTransform = (x, y) => {
-    if(!isPressed) {
-        return "var(--z-plane))";
-    }
+	if(!isPressed) {
+		return "";
+	}
 
-    return `translateZ(var(--z-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
+	return `translateZ(var(--z-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
 };
 </script>
 
 <div
-    class="dpad"
-    use:controls={{
-        fire : (e) => setRotation(e),
-        end : (e) => {
-            isPressed = false;
-            rotateX = 0;
-            rotateY = 0;
-        }
-    }}
-    bind:this={dpadElement}
-    style="transform: {getTransform(xDeg, yDeg)};"
+	class="dpad touch-interactive"
+	use:controls={{
+		fire : e => setRotation(e),
+		end : () => {
+			isPressed = false;
+			rotateX = 0;
+			rotateY = 0;
+		},
+	}}
+	bind:this={dpadElement}
+	style="transform: {getTransform(xDeg, yDeg)};"
 >
-    <div class="face dpad-face"></div>
-    <div class="face dpad-backface"></div>
+	<div class="face dpad-face"></div>
+	<div class="face dpad-backface"></div>
 
-    <div class="face dpad-center-side"></div>
-    <div class="face dpad-center-side left"></div>
+	<div class="face dpad-center-side"></div>
+	<div class="face dpad-center-side left"></div>
 </div>
 
 <style>
 .dpad {
-    --rotate-x: 0deg;
-    --rotate-y: 0deg;
-    --z-plane: calc(var(--depth-w) / 1.8);
+	--rotate-x: 0deg;
+	--rotate-y: 0deg;
+	--z-plane: calc(var(--depth-w) / 1.8);
 
-    position: absolute;
+	position: absolute;
 
-    display: flex;
+	display: flex;
 
-    flex-direction: column;
+	flex-direction: column;
 
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	justify-content: center;
 
-    aspect-ratio: 31 / 32;
+	aspect-ratio: 31 / 32;
 
-    height: 14%;
+	height: 14%;
 
-    left: 6.5%;
-    bottom: 26.5%;
+	left: 6.5%;
+	bottom: 26.5%;
 
-    transform-style: preserve-3d;
-    will-change: transform;
+	transform-style: preserve-3d;
+	will-change: transform;
 
-    transform: translateZ(var(--z-plane));
-    transform-origin: center center 4px;
+	transform: translateZ(var(--z-plane));
+	transform-origin: center center 4px;
 }
 
 .dpad-face {
-    width: 95%;
-    height: 95%;
+	width: 95%;
+	height: 95%;
 
-    background-image: url("../assets/dpad.png");
+	background-image: url("../assets/dpad.png");
 }
 
 .dpad-backface {
-    width: 100%;
-    height: 99%;
+	width: 100%;
+	height: 99%;
 
-    margin: auto;
+	margin: auto;
 
-    position: absolute;
+	position: absolute;
 
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 
-    transform: translateZ(calc(var(--depth-w) * -0.0175));
+	transform: translateZ(calc(var(--depth-w) * -0.0175));
 
-    background-image: url("../assets/dpad-backface.png");
+	background-image: url("../assets/dpad-backface.png");
 }
 
 .dpad-center-side {
-    aspect-ratio: 9 / 32;
+	aspect-ratio: 9 / 32;
 
-    height: 99%;
+	height: 99%;
 
-    position: absolute;
+	position: absolute;
 
-    top: -0.5%;
-    bottom: 0;
-    left: 0;
-    right: 0;
+	top: -0.5%;
+	bottom: 0;
+	left: 0;
+	right: 0;
 
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
+	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
 
-    background-image: url("../assets/dpad-side.png");
+	background-image: url("../assets/dpad-side.png");
 
-    backface-visibility: visible !important;
-    -webkit-backface-visibility: visible !important;
+	backface-visibility: visible !important;
+	-webkit-backface-visibility: visible !important;
 }
 
 .dpad-center-side.left {
-    transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.4));
+	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.4));
 }
 </style>

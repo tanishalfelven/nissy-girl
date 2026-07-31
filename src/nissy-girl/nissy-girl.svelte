@@ -1,39 +1,45 @@
 <script>
 import { onMount } from "svelte";
 
+import { roundHundredths } from "./util/math";
+
 import StartupScreen from "./startup-screen/startup-screen.svelte";
 import PowerSwitch from "./power-switch/power-switch.svelte";
 
 import RotateControls from "./rotate-controls/rotate-controls.svelte";
 
 import Dpad from "./dpad/dpad.svelte";
-import Button from "./button/button.svelte";
+import Button, { TYPE_BUTTON_A, TYPE_BUTTON_B } from "./button/button.svelte";
 
 import Cartridge from "./cartridge/cartridge.svelte";
 
-import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine";
-import { roundHundredths } from "./util/math";
 
-let rotation = $derived(roundHundredths(nissyGirl.rotation.progress * 360));
-let zoom = $derived(roundHundredths(nissyGirl.zoom.progress * 10));
+import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
+import { rotation, zoom } from "./camera.viewmodel.svelte.js";
+
+const displayRot = $derived(roundHundredths(rotation.progress * 360));
+const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 onMount(() => {
-    nissyGirlMachine.start();
-})
+	nissyGirlMachine.start();
+});
 </script>
 
 <div class="camera">
     <div
         class="nissygirl"
-        style="transform: rotateY({rotation}deg) translateZ(calc({zoom} * 3vw)) translateY(calc({zoom} * 2.7vh));"
+        style="transform:
+            rotateY({displayRot}deg)
+            translateZ(calc({displayZoom} * 3vw))
+            translateY(calc({displayZoom} * 2.7vh));"
     >
         <Cartridge />
 
         <div class="face front">
-            <div 
-                class="face mushroom" 
-                data-power={nissyGirl.isPowered} 
+            <div
+                class="face mushroom"
+                data-power={nissyGirl.isPowered}
             ></div>
         </div>
 
@@ -51,8 +57,8 @@ onMount(() => {
 
         <PowerSwitch />
 
-        <Button type="a"></Button>
-        <Button type="b"></Button>
+        <Button type={TYPE_BUTTON_A}></Button>
+        <Button type={TYPE_BUTTON_B}></Button>
 
         <Dpad />
 
@@ -70,60 +76,6 @@ onMount(() => {
 <RotateControls />
 
 <style>
-@keyframes rotate360 {
-    0% {
-        transform: rotateY(0deg);
-    }
-
-    100% {
-        transform: rotateY(360deg);
-    }
-}
-
-@keyframes rotate45front {
-    0% {
-        transform: rotateY(-45deg);
-    }
-
-    100% {
-        transform: rotateY(45deg);
-    }
-}
-
-@keyframes rotateRightSide {
-    0% {
-        transform: rotateY(-45deg);
-    }
-
-    100% {
-        transform: rotateY(-135deg);
-    }
-}
-
-@keyframes depress {
-    0% {
-        transform: translateZ(calc(var(--depth-w) / 1.9));
-    }
-
-    50% {
-        transform: translateZ(calc(var(--depth-w) / 2));
-    }
-
-    100% {
-        transform: translateZ(calc(var(--depth-w) / 1.9));
-    }
-}
-
-@keyframes animateframes {
-    0% {
-        --frame-index: 0;
-    }
-
-    100% {
-        --frame-index: 15;
-    }
-}
-
 :root {
     --h: 65vh;
     --front-w: calc(var(--h) * 142 / 224);

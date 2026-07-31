@@ -4,7 +4,7 @@ import Index from "./index.svelte";
 import "./index.css";
 
 const app = mount(Index, {
-    target: document.getElementById("root"),
-})
+	target : document.getElementById("root"),
+});
 
-export default app
+export default app;

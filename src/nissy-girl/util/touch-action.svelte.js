@@ -1,146 +1,166 @@
 import { rafThrottle } from "./time.js";
 
-const eventSub = (node, id, func) => {
-    node.addEventListener(id, func);
+const domListenerSub = (node, id, func) => {
+	node.addEventListener(id, func);
 
-    return () => {
-        if(node) {
-            node.removeEventListener(id, func);
-        }
-    }
+	return () => {
+		if(node) {
+			node.removeEventListener(id, func);
+		}
+	};
 };
 
-const subcribers = () => {
-    const all = new Map();
+const subscribers = () => {
+	const all = new Map();
 
-    return {
-        add : (id, remove) => {
-            all.set(id, remove);
+	return {
+		add : (id, remove) => {
+			all.set(id, remove);
 
-            return id;
-        },
+			return id;
+		},
 
-        remove : (id) => {
-            all.get(id)?.();
+		remove : (id) => {
+			all.get(id)?.();
 
-            all.remove(id);
-        },
+			all.delete(id);
+		},
 
-        removeAll : () => {
-            for(const remove of all.values()) {
-                remove();
-            }
+		removeAll : () => {
+			for(const remove of all.values()) {
+				remove();
+			}
 
-            all.clear();
-        }
-    }
+			all.clear();
+		},
+	};
 };
 
-export const touch = (node, options = false) => {
-    let activePointerId = false;
-    let isDown = false;
+/**
+ * Svelte action for touch delta controls
+ * @param {HTMLElement} node svelte action node
+ * @param {object} options handlers for touch actions
+ * @param {(e: PointerEvent) => void} options.move triggered on move
+ * @param {(e: PointerEvent) => void} [options.start] triggerd on pointerdown
+ * @param {(e: PointerEvent) => void} options.end triggered on cancel/up
+ */
+export const touch = (node, {
+	move,
+	start = move,
+	end,
+}) => {
+	let activePointerId = false;
+	let isDown = false;
 
-    const sub = subcribers();
+	const sub = subscribers();
 
-    const handleEnd = (e) => {
-        if(activePointerId !== false && activePointerId !== e.pointerId) {
-            return;
-        }
+	const handleEnd = (e) => {
+		if(activePointerId !== false && activePointerId !== e.pointerId) {
+			return;
+		}
 
-        if(!isDown) {
-            return;
-        }
+		if(!isDown) {
+			return;
+		}
 
-        activePointerId = false;
+		activePointerId = false;
 
-        isDown = false;
+		isDown = false;
 
-        options.end(e);
+		end(e);
 
-        sub.removeAll();
-    };
+		sub.removeAll();
+	};
 
-    const handleMove = rafThrottle((e) => {
-        if(activePointerId !== false && activePointerId !== e.pointerId) {
-            return;
-        }
+	const handleMove = rafThrottle((e) => {
+		if(activePointerId !== false && activePointerId !== e.pointerId) {
+			return;
+		}
 
-        if(!isDown) {
-            return;
-        }
+		if(!isDown) {
+			return;
+		}
 
-        options.move(e);
-    });
+		move(e);
+	});
 
-    const handlerDown = (e) => {
-        if(activePointerId !== false && activePointerId !== e.pointerId) {
-            return;
-        }
+	const handlerDown = (e) => {
+		if(activePointerId !== false && activePointerId !== e.pointerId) {
+			return;
+		}
 
-        isDown = true;
+		isDown = true;
 
-        activePointerId = e.pointerId;
+		activePointerId = e.pointerId;
 
-        e.preventDefault();
+		e.preventDefault();
 
-        node.setPointerCapture(e.pointerId);
+		node.setPointerCapture(e.pointerId);
 
-        sub.add("pointermove", eventSub(node, "pointermove", handleMove));
-        sub.add("pointerup", eventSub(node, "pointerup", handleEnd));
-        sub.add("pointercancel", eventSub(node, "pointercancel", handleEnd));
+		sub.add("pointermove", domListenerSub(node, "pointermove", handleMove));
+		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
+		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
 
-        (options?.start || options.move)(e);
-    };
+		start(e);
+	};
 
-    $effect(() => {
-        const unsubDown = eventSub(node, "pointerdown", handlerDown);
+	$effect(() => {
+		const unsubDown = domListenerSub(node, "pointerdown", handlerDown);
 
-        return () => {
-            unsubDown();
-            sub.removeAll();
-        }
-    });
+		return () => {
+			unsubDown();
+			sub.removeAll();
+		};
+	});
 };
 
-export const controls = (node, options = false) => {
-    const sub = subcribers();
+/**
+ * Svelte action for physical buttons that only have an on/off state
+ * @param {HTMLElement} node svelte action node
+ * @param {object} options event handlers for action
+ * @param {(e: PointerEvent) => void} options.fire triggers on move/down
+ * @param {(e: PointerEvent) => void} options.end triggers on up/cancel/leave
+ */
+export const controls = (node, {
+	fire,
+	end,
+}) => {
+	const sub = subscribers();
 
-    let canTrigger = $state(true);
+	let canTrigger = $state(true);
 
-    const handleEnd = (e) => {
-        canTrigger = false;
+	const handleEnd = (e) => {
+		canTrigger = false;
 
-        requestAnimationFrame(() => {
-            canTrigger = true;
-        });
+		// A small bounded timeout for trigger end - this solves drag off triggering controls
+		requestAnimationFrame(() => {
+			canTrigger = true;
+		});
 
-        options.end(e);
-    };
+		end(e);
+	};
 
-    const handleMove = rafThrottle((e) => {
-        if(e.buttons === 1 && canTrigger) {
-            options.fire(e);
-        }
-    });
+	const handleMove = rafThrottle((e) => {
+		if(e.buttons === 1 && canTrigger) {
+			fire(e);
+		}
+	});
 
-    const handlerDown = (e) => {
-        e.preventDefault();
+	const handlerDown = (e) => {
+		e.preventDefault();
 
-        node.releasePointerCapture(e.pointerId);
+		fire(e);
+	};
 
-        options.fire(e);
-    };
+	$effect(() => {
+		sub.add("pointerdown", domListenerSub(node, "pointerdown", handlerDown));
+		sub.add("pointermove", domListenerSub(node, "pointermove", handleMove));
+		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
+		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
+		sub.add("pointerleave", domListenerSub(node, "pointerleave", handleEnd));
 
-
-    $effect(() => {
-        sub.add("pointerdown", eventSub(node, "pointerdown", handlerDown));
-        sub.add("pointermove", eventSub(node, "pointermove", handleMove));
-        sub.add("pointerup", eventSub(node, "pointerup", handleEnd));
-        sub.add("pointercancel", eventSub(node, "pointercancel", handleEnd));
-        sub.add("pointerleave", eventSub(node, "pointerleave", handleEnd));
-
-        return () => {
-            sub.removeAll();
-        }
-    });
+		return () => {
+			sub.removeAll();
+		};
+	});
 };
