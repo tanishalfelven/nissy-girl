@@ -111,16 +111,19 @@ const getTransform = (isPressed) => {
 	top: 0;
 	left: 0;
 
-	transform: rotateY(90deg) translateX(50%);
+	transform: rotateY(-90deg) translateX(-50%);
 
 	background-image: url("./assets/button-bean-side.png");
+
+	backface-visibility: visible !important;
+	-webkit-backface-visibility: visible !important;
 }
 
 .bean-side.right {
 	left: auto;
 	right: 0;
 
-	transform: rotateY(-90deg) translateX(-50%);
+	transform: rotateY(90deg) translateX(50%);
 }
 
 .round {
