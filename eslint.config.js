@@ -79,6 +79,7 @@ export default defineConfig([
 					argsIgnorePattern : "^_",
 				},
 			],
+			"import-x/extensions" : [ "error", "ignorePackages", { fix : true }],
 		},
 	},
 	{

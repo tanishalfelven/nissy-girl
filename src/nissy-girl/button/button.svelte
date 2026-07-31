@@ -3,7 +3,7 @@ export const TYPE_BUTTON_A = "a";
 export const TYPE_BUTTON_B = "b";
 </script>
 <script>
-import { controls } from "../util/touch-action.svelte";
+import { controls } from "../util/touch-action.svelte.js";
 
 let{ type = TYPE_BUTTON_A } = $props();
 

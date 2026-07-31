@@ -1,5 +1,5 @@
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "../util/progress.svelte.js";
-import { clamp } from "../util/math";
+import { clamp } from "../util/math.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 

@@ -1,4 +1,4 @@
-import { wrap, clamp } from "./util/math";
+import { wrap, clamp } from "./util/math.js";
 
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "./util/progress.svelte.js";
 
