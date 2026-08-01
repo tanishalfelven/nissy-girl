@@ -1,11 +1,11 @@
 <script>
-	import { cameraService } from "../statechart-actors.svelte.js";
+import { cameraService } from "../statechart-actors.svelte.js";
 
-	import { touch } from "../util/touch-action.svelte.js";
+import { touch } from "../util/touch-action.svelte.js";
 
-	let rotateEl;
-	let rotateElWidth = 0;
-	let lastX = 0;
+let rotateEl;
+let rotateElWidth = 0;
+let lastX = 0;
 </script>
 
 <div

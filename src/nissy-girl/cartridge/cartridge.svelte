@@ -1,32 +1,32 @@
 <script>
-	import PaintPng from "./assets/paint-art.png";
+import PaintPng from "./assets/paint-art.png";
 
-	import { roundHundredths, lerp } from "../util/math.js";
-	import { touch } from "../util/touch-action.svelte.js";
+import { roundHundredths, lerp } from "../util/math.js";
+import { touch } from "../util/touch-action.svelte.js";
 
-	import { cameraService } from "../statechart-actors.svelte.js";
+import { cameraService } from "../statechart-actors.svelte.js";
 
-	import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
+import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
 
-	let { cartridge = PaintPng } = $props();
+let { cartridge = PaintPng } = $props();
 
-	const displayCartridgeRot = $derived(
-		roundHundredths(
-			((Math.cos(cartridgeX.progress * Math.PI)) / 4) * 720 + 180,
-		),
-	);
+const displayCartridgeRot = $derived(
+	roundHundredths(
+		((Math.cos(cartridgeX.progress * Math.PI)) / 4) * 720 + 180,
+	),
+);
 
-	const displayCartridgeX = $derived(
-		roundHundredths(lerp(-150, 50, cartridgeX.progress)),
-	);
+const displayCartridgeX = $derived(
+	roundHundredths(lerp(-150, 50, cartridgeX.progress)),
+);
 
-	const displayCartridgeY = $derived(
-		roundHundredths(cartridgeY.progress),
-	);
+const displayCartridgeY = $derived(
+	roundHundredths(cartridgeY.progress),
+);
 
-	let cartridgeEl;
-	let cartridgeHeight = 0;
-	let lastY = 0;
+let cartridgeEl;
+let cartridgeHeight = 0;
+let lastY = 0;
 </script>
 
 <div

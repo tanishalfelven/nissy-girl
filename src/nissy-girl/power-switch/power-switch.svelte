@@ -1,27 +1,27 @@
 <script>
-	import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
-	import { touch } from "../util/touch-action.svelte.js";
+import { nissyGirl } from "../nissy-girl.viewmodel.svelte.js";
+import { touch } from "../util/touch-action.svelte.js";
 
-	const MIN_CLICK_DIST = 0.02;
-	const MIN_VERT_DIST = 0.2;
-	const MAX_VERT_DIST = 6;
+const MIN_CLICK_DIST = 0.02;
+const MIN_VERT_DIST = 0.2;
+const MAX_VERT_DIST = 6;
 
-	// negative is up, positive is down
-	const moveDir = $derived(nissyGirl.isPowered ? 1 : -1);
+// negative is up, positive is down
+const moveDir = $derived(nissyGirl.isPowered ? 1 : -1);
 
-	let startY = $state(0);
-	let candidateY = $state(0);
-	let powerEl = false;
+let startY = $state(0);
+let candidateY = $state(0);
+let powerEl = false;
 
-	const inToggleBounds = (percentY) => {
-		const absY = Math.abs(percentY);
+const inToggleBounds = (percentY) => {
+	const absY = Math.abs(percentY);
 
-		return Math.sign(percentY) === moveDir
-			&& absY > MIN_VERT_DIST
-			&& absY < MAX_VERT_DIST;
-	};
+	return Math.sign(percentY) === moveDir
+		&& absY > MIN_VERT_DIST
+		&& absY < MAX_VERT_DIST;
+};
 
-	const doesTriggerToggle = $derived(inToggleBounds(candidateY));
+const doesTriggerToggle = $derived(inToggleBounds(candidateY));
 </script>
 
 <div

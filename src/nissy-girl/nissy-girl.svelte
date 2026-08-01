@@ -1,26 +1,27 @@
 <script>
-	import { roundHundredths } from "./util/math.js";
+import { roundHundredths } from "./util/math.js";
 
-	import StartupScreen from "./startup-screen/startup-screen.svelte";
-	import PowerSwitch from "./power-switch/power-switch.svelte";
+import StartupScreen from "./startup-screen/startup-screen.svelte";
+import PowerSwitch from "./power-switch/power-switch.svelte";
 
-	import RotateControls from "./rotate-controls/rotate-controls.svelte";
+import RotateControls from "./rotate-controls/rotate-controls.svelte";
 
-	import Dpad from "./dpad/dpad.svelte";
-	import Button, { BUTTON_A, BUTTON_B, BUTTON_SELECT, BUTTON_START } from "./button/button.svelte";
+import Dpad from "./dpad/dpad.svelte";
+import Button, { BUTTON_A, BUTTON_B, BUTTON_SELECT, BUTTON_START } from "./button/button.svelte";
 
-	import Cartridge from "./cartridge/cartridge.svelte";
+import Cartridge from "./cartridge/cartridge.svelte";
 
-	import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
-	import { rotation, zoom } from "./camera.viewmodel.svelte.js";
+import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
+import { rotation, zoom } from "./camera.viewmodel.svelte.js";
 
-	const displayRot = $derived(roundHundredths(rotation.progress * 360));
-	const displayZoom = $derived(roundHundredths(zoom.progress * 10));
+const displayRot = $derived(roundHundredths(rotation.progress * 360));
+const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 </script>
 
 <div class="camera">
 	<div
 		class="nissygirl"
+		bind:this={nissyGirlEl}
 		style="transform:
 			rotateY({displayRot}deg)
 				translateZ(calc({displayZoom} * 3vw))
