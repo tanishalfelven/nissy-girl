@@ -1,9 +1,9 @@
 <script>
-import NissyGirl from "./nissy-girl/nissy-girl.svelte";
+	import NissyGirl from "./nissy-girl/nissy-girl.svelte";
 </script>
 
 <div class="page">
-    <NissyGirl />
+	<NissyGirl />
 </div>
 
 <style>

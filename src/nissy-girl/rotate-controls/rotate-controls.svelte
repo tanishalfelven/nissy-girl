@@ -1,11 +1,11 @@
 <script>
-import { cameraService } from "../statechart-actors.svelte.js";
+	import { cameraService } from "../statechart-actors.svelte.js";
 
-import { touch } from "../util/touch-action.svelte.js";
+	import { touch } from "../util/touch-action.svelte.js";
 
-let rotateEl;
-let rotateElWidth = 0;
-let lastX = 0;
+	let rotateEl;
+	let rotateElWidth = 0;
+	let lastX = 0;
 </script>
 
 <div
@@ -37,34 +37,34 @@ let lastX = 0;
 			}),
 	}}
 >
-    <div
-        class="rotate"
-        bind:this={rotateEl}
-    ></div>
+	<div
+		class="rotate"
+		bind:this={rotateEl}
+	></div>
 </div>
 
 <style>
 .rotatecontainer {
-    position: absolute;
+	position: absolute;
 
-    height: 25%;
+	height: 25%;
 
-    bottom: 0;
-    left: 0;
-    right: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 
 .rotate {
-    position: absolute;
+	position: absolute;
 
-    bottom: 0;
-    left: 0;
-    right: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 
-    margin: auto;
+	margin: auto;
 
-    max-width: calc(var(--front-w) + 10rem);
+	max-width: calc(var(--front-w) + 10rem);
 
-    height: 100%;
+	height: 100%;
 }
 </style>

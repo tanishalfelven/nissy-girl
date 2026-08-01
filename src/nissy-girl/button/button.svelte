@@ -1,47 +1,47 @@
 <script module>
-export const BUTTON_A = "a";
-export const BUTTON_B = "b";
-export const BUTTON_START = "start";
-export const BUTTON_SELECT = "select";
+	export const BUTTON_A = "a";
+	export const BUTTON_B = "b";
+	export const BUTTON_START = "start";
+	export const BUTTON_SELECT = "select";
 
-const BUTTONS_BEAN = new Set([ BUTTON_START, BUTTON_SELECT ]);
-const BUTTONS_ROUND = new Set([ BUTTON_A, BUTTON_B ]);
+	const BUTTONS_BEAN = new Set([ BUTTON_START, BUTTON_SELECT ]);
+	const BUTTONS_ROUND = new Set([ BUTTON_A, BUTTON_B ]);
 
-const TYPE_BEAN = "bean";
-const TYPE_ROUND = "round";
+	const TYPE_BEAN = "bean";
+	const TYPE_ROUND = "round";
 
-const getButtonType = (button) => {
-	console.log(button, BUTTONS_BEAN);
+	const getButtonType = (button) => {
+		console.log(button, BUTTONS_BEAN);
 
-	if(BUTTONS_BEAN.has(button)) {
-		return TYPE_BEAN;
-	}
+		if(BUTTONS_BEAN.has(button)) {
+			return TYPE_BEAN;
+		}
 
-	if(BUTTONS_ROUND.has(button)) {
-		return TYPE_ROUND;
-	}
-};
+		if(BUTTONS_ROUND.has(button)) {
+			return TYPE_ROUND;
+		}
+	};
 </script>
 <script>
-import { controls } from "../util/touch-action.svelte.js";
+	import { controls } from "../util/touch-action.svelte.js";
 
-let { button } = $props();
+	let { button } = $props();
 
-let isPressed = $state(false);
+	let isPressed = $state(false);
 
-const type = $derived(getButtonType(button));
+	const type = $derived(getButtonType(button));
 
-const getTransform = (isPressed) => {
-	if(isPressed) {
-		return "translateZ(calc(var(--depth-w) / 1.94)) scale(0.95)";
-	}
+	const getTransform = (isPressed) => {
+		if(isPressed) {
+			return "translateZ(calc(var(--depth-w) / 1.94)) scale(0.95)";
+		}
 
-	if(type === TYPE_BEAN) {
-		return "translateZ(calc(var(--depth-w) / 1.88))";
-	}
+		if(type === TYPE_BEAN) {
+			return "translateZ(calc(var(--depth-w) / 1.88))";
+		}
 
-	return "translateZ(calc(var(--depth-w) / 1.8))";
-};
+		return "translateZ(calc(var(--depth-w) / 1.8))";
+	};
 </script>
 
 <div

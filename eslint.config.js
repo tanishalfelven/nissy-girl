@@ -13,11 +13,11 @@ const plugins = {
 	js,
 	"@stylistic" : stylistic,
 	"unused-imports" : unusedImports,
+	svelte,
 };
 
 export default defineConfig([
 	stylistic.configs.recommended,
-	svelte.configs.recommended,
 	importX.flatConfigs.recommended,
 	jsdoc({ config : "flat/recommended" }),
 	{
@@ -43,6 +43,7 @@ export default defineConfig([
 		rules : {
 			"@stylistic/linebreak-style" : [ "error", "unix" ],
 			"svelte/prefer-svelte-reactivity" : "off",
+			"svelte/indent" : [ "error", { indent : "tab" }],
 			"@stylistic/no-tabs" : "off",
 			"@stylistic/indent" : [ "error", "tab" ],
 			"@stylistic/indent-binary-ops" : [ "error", "tab" ],
