@@ -1,6 +1,6 @@
 <script>
 import { nissyGirl } from "../../nissy-girl.viewmodel.svelte.js";
-import { touch } from "../../util/touch-action.svelte.js";
+import { touch } from "../../../util/touch-action.svelte.js";
 
 import { nissyGirlMachine } from "../../nissy-girl.machine.js";
 

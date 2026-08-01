@@ -4,15 +4,19 @@ import {
 	sendParent,
 	raise,
 } from "xstate";
-import { crossedThresholdWrapInclusive } from "./util/math.js";
-
+import { crossedThresholdWrapInclusive } from "../util/math.js";
 import {
 	createReleaseVelocity,
 	ROTATE_VELOCITYID,
 	VERT_VELOCITYID,
-} from "./util/release-velocity.actor.js";
-
-import { MIN_PROGRESS, MAX_PROGRESS } from "./util/progress.svelte.js";
+} from "../util/release-velocity.actor.js";
+import { MIN_PROGRESS, MAX_PROGRESS } from "../util/progress.svelte.js";
+import {
+	cartridges,
+	cartridgeX,
+	cartridgeY,
+	CARTRIDGE_SELECTION_THRESHOLD,
+} from "../cartridge/cartridge.viewmodel.svelte.js";
 
 import {
 	camera,
@@ -20,14 +24,6 @@ import {
 	zoom,
 	ZOOM_ROTATION_THRESHOLD,
 } from "./camera.viewmodel.svelte.js";
-
-import {
-	cartridges,
-	cartridgeX,
-	cartridgeY,
-	CARTRIDGE_SELECTION_THRESHOLD,
-} from "./cartridge/cartridge.viewmodel.svelte.js";
-
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 const updateVelocityTarget = (target, progress) =>

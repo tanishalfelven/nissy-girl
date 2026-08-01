@@ -1,7 +1,6 @@
 import { fromCallback } from "xstate";
 
 import { createVelocity } from "./velocity.js";
-
 import { rafLooper } from "./time.js";
 
 /** @import { Actor } from "xstate" */

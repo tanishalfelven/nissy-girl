@@ -1,15 +1,14 @@
 <script>
-import { roundHundredths } from "./util/math.js";
+import { touch } from "../util/touch-action.svelte.js";
+import { statechart } from "../util/statechart-actors.svelte.js";
+import { roundHundredths } from "../util/math.js";
+import Cartridge from "../cartridge/cartridge.svelte";
 
-import Cartridge from "./cartridge/cartridge.svelte";
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
-import { statechart } from "./statechart-actors.svelte.js";
-
-import { touch } from "./util/touch-action.svelte.js";
 
 import css from "./nissy-girl.mcss";
 

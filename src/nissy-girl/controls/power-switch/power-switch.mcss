@@ -7,7 +7,7 @@
 .powerswitch {
 	--position: 0%;
 
-	composes: face, touchinteractive from "../../util/util.mcss";
+	composes: face, touchinteractive from "../../../util/util.mcss";
 
 	position: absolute;
 

@@ -5,7 +5,7 @@
 	--rotate-x: 0deg;
 	--rotate-y: 0deg;
 
-	composes: touchinteractive from "../../util/util.mcss";
+	composes: touchinteractive from "../../../util/util.mcss";
 
 	will-change: transform;
 
@@ -28,14 +28,14 @@
 }
 
 .dpadface {
-	composes: face from "../../util/util.mcss";
+	composes: face from "../../../util/util.mcss";
 	aspect-ratio: 1 / 1;
 	width: 80%;
 	background-image: url("./assets/dpad.png");
 }
 
 .dpadbackface {
-	composes: face from "../../util/util.mcss";
+	composes: face from "../../../util/util.mcss";
 
 	position: absolute;
 	inset: 0;
@@ -49,7 +49,7 @@
 }
 
 .dpadcenterside {
-	composes: face from "../../util/util.mcss";
+	composes: face from "../../../util/util.mcss";
 
 	position: absolute;
 	top: calc(3.2 * px1);

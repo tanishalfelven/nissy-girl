@@ -1,8 +1,7 @@
 <script>
 import { roundHundredths, lerp } from "../util/math.js";
 import { touch } from "../util/touch-action.svelte.js";
-
-import { statechart } from "../statechart-actors.svelte.js";
+import { statechart } from "../util/statechart-actors.svelte.js";
 
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
 

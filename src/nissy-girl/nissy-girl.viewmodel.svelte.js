@@ -1,4 +1,4 @@
-import { games } from "./games/games.js";
+import { games } from "../games/games.js";
 
 let isPowered = $state(false);
 let insertedCartridge = $state(false);

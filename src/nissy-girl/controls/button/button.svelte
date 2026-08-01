@@ -1,5 +1,5 @@
 <script module>
-import { controls } from "../../util/touch-action.svelte.js";
+import { controls } from "../../../util/touch-action.svelte.js";
 
 import css from "./button.mcss";
 
