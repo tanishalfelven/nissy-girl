@@ -24,9 +24,7 @@ const displayCartridgeY = $derived(
 	roundHundredths(cartridgeY.progress),
 );
 
-let cartridgeEl;
-let cartridgeHeight = 0;
-let lastY = 0;
+let cartridgeHeight = $state(0);
 </script>
 
 <div
@@ -36,28 +34,17 @@ let lastY = 0;
 			translateZ(-4.18vh)
 			rotateY({displayCartridgeRot}deg);"
 	data-visibility="{cartridges.isVisible}"
-	bind:this={cartridgeEl}
+	bind:clientWidth={cartridgeHeight}
 	use:touch={{
-		start : (e) => {
-			lastY = e.clientY;
-
-			cartridgeHeight = cartridgeEl.getBoundingClientRect().height;
-
+		start : () =>
 			cameraService.send({
 				type : "CART_DRAG_START",
-			});
-		},
-		move : (e) => {
-			const newY = e.clientY;
-			const distY = newY - lastY;
-
-			lastY = newY;
-
+			}),
+		move : (_distX, distY) =>
 			cameraService.send({
 				type : "CART_DRAG_DELTA",
 				delta : distY / cartridgeHeight,
-			});
-		},
+			}),
 		end : () =>
 			cameraService.send({
 				type : "CART_DRAG_END",

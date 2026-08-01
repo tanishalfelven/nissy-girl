@@ -3,7 +3,7 @@ import {
 	MAX_PROGRESS,
 } from "./progress.svelte.js";
 
-export const roundHundredths = n => Math.floor(n * 100) / 100;
+export const roundHundredths = (n) => Math.floor(n * 100) / 100;
 
 export const clamp = (value, min, max) => Math.min(max, Math.max(value, min));
 

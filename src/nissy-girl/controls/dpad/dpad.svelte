@@ -1,6 +1,6 @@
 <script>
-import { roundHundredths, clamp } from "../util/math.js";
-import { controls } from "../util/touch-action.svelte.js";
+import { roundHundredths, clamp } from "../../util/math.js";
+import { controls } from "../../util/touch-action.svelte.js";
 
 const MAX_TILT = 4;
 
@@ -39,14 +39,14 @@ const getTransform = (x, y) => {
 		return "";
 	}
 
-	return `translateZ(var(--z-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
+	return `translateZ(var(--button-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
 };
 </script>
 
 <div
 	class="dpad touch-interactive"
 	use:controls={{
-		fire : e => setRotation(e),
+		fire : (e) => setRotation(e),
 		end : () => {
 			isPressed = false;
 			rotateX = 0;
@@ -67,7 +67,6 @@ const getTransform = (x, y) => {
 .dpad {
 	--rotate-x: 0deg;
 	--rotate-y: 0deg;
-	--z-plane: calc(var(--depth-w) / 1.8);
 
 	position: absolute;
 
@@ -78,30 +77,34 @@ const getTransform = (x, y) => {
 	align-items: center;
 	justify-content: center;
 
-	aspect-ratio: 31 / 32;
+	aspect-ratio: 31 / 30;
 
-	height: 14%;
+	height: calc(32 * var(--1px));
 
-	left: 6.5%;
-	bottom: 26.5%;
+	left: calc(7 * var(--1px));
+	bottom: calc(57.5 * var(--1px));
+
+	padding: calc(2 * var(--1px));
 
 	transform-style: preserve-3d;
 	will-change: transform;
 
-	transform: translateZ(var(--z-plane));
+	transform: translateZ(var(--button-plane));
 	transform-origin: center center 4px;
 }
 
 .dpad-face {
-	width: 95%;
-	height: 95%;
+	aspect-ratio: 1 / 1;
+
+	width: 80%;
 
 	background-image: url("./assets/dpad.png");
 }
 
 .dpad-backface {
-	width: 100%;
-	height: 99%;
+	aspect-ratio: 33 / 32;
+
+	width: calc(31 * var(--1px));
 
 	margin: auto;
 
@@ -118,26 +121,25 @@ const getTransform = (x, y) => {
 }
 
 .dpad-center-side {
-	aspect-ratio: 9 / 32;
+	aspect-ratio: 5 / 32;
 
-	height: 99%;
+	height: calc(30 * var(--1px));
 
 	position: absolute;
 
-	top: -0.5%;
+	top: calc(3.2 * var(--1px));
 	bottom: 0;
 	left: 0;
-	right: 0;
 
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.8));
+	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-12 * var(--1px)));
 
 	background-image: url("./assets/dpad-side.png");
-
-	backface-visibility: visible !important;
-	-webkit-backface-visibility: visible !important;
 }
 
 .dpad-center-side.left {
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) * 0.4));
+	left: auto;
+	right: 0;
+
+	transform: rotateY(90deg) translateX(50%) translateZ(calc(-12 * var(--1px)));
 }
 </style>

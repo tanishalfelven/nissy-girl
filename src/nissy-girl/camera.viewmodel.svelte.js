@@ -8,7 +8,7 @@ let returnFromCartridgeFlow = $state(false);
 
 export const rotation = createProgress({
 	start : 0,
-	speed : 1,
+	speed : 0.6,
 	anchors : [ 1 ],
 	update : (cur, movement) => wrap(
 		cur + movement,
@@ -22,7 +22,7 @@ export const rotation = createProgress({
 
 export const zoom = createProgress({
 	start : 0,
-	speed : 1.8,
+	speed : 0.8,
 	anchors : [ 1 ],
 	update : (cur, movement) =>
 		clamp(

@@ -2,43 +2,61 @@
 import { roundHundredths } from "./util/math.js";
 
 import StartupScreen from "./startup-screen/startup-screen.svelte";
-import PowerSwitch from "./power-switch/power-switch.svelte";
-
-import RotateControls from "./rotate-controls/rotate-controls.svelte";
-
-import Dpad from "./dpad/dpad.svelte";
-import Button, { BUTTON_A, BUTTON_B, BUTTON_SELECT, BUTTON_START } from "./button/button.svelte";
 
 import Cartridge from "./cartridge/cartridge.svelte";
+import FaceControls from "./controls/front-controls.svelte";
+import PowerSwitch from "./controls/power-switch/power-switch.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
+import { cameraService } from "./statechart-actors.svelte.js";
+
+import { touch } from "./util/touch-action.svelte.js";
 
 const displayRot = $derived(roundHundredths(rotation.progress * 360));
 const displayZoom = $derived(roundHundredths(zoom.progress * 10));
+
+let nissyGirlWidth = $state(false);
 </script>
 
-<div class="camera">
+<div
+	class="camera touch-interactive"
+	use:touch={{
+		start : () =>
+			cameraService.send({
+				type : "DRAG_START",
+			}),
+		move : (distX) =>
+			cameraService.send({
+				type : "DRAG_DELTA",
+				delta : distX / nissyGirlWidth,
+			}),
+		end : () =>
+			cameraService.send({
+				type : "DRAG_END",
+			}),
+	}}
+>
 	<div
 		class="nissygirl"
-		bind:this={nissyGirlEl}
+		bind:clientWidth={nissyGirlWidth}
 		style="transform:
 			rotateY({displayRot}deg)
 				translateZ(calc({displayZoom} * 3vw))
 				translateY(calc({displayZoom} * 2.7vh));"
 	>
-		<Cartridge />
 
 		<div class="face front">
 			<div
 				class="face mushroom"
 				data-power={nissyGirl.isPowered}
 			></div>
+
+			<FaceControls />
 		</div>
 
-		<div class="face screen-bevel-horz"></div>
-		<div class="face screen-bevel-vert"></div>
-		<div class="face screen-bevel-vert left"></div>
+		<Cartridge />
+		<PowerSwitch />
 
 		<div class="screen-container">
 			<div class="screen">
@@ -48,16 +66,9 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 			</div>
 		</div>
 
-		<PowerSwitch />
-
-		<Button button={BUTTON_SELECT}></Button>
-		<Button button={BUTTON_START}></Button>
-
-		<Button button={BUTTON_A}></Button>
-		<Button button={BUTTON_B}></Button>
-
-		<Dpad />
-
+		<div class="face screen-bevel-horz"></div>
+		<div class="face screen-bevel-vert"></div>
+		<div class="face screen-bevel-vert left"></div>
 		<div class="face panelside"></div>
 		<div class="face panelside left"></div>
 		<div class="face backupper"></div>
@@ -69,14 +80,11 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 	</div>
 </div>
 
-<RotateControls />
-
 <style>
 :root {
 	--h: 65vh;
 	--front-w: calc(var(--h) * 142 / 224);
 	--depth-w: calc(var(--h) * 46 / 224);
-	--round-button-w: calc(0.082 * var(--h));
 }
 
 .camera {
@@ -97,6 +105,9 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 .nissygirl {
 	--rotation: 0;
 	--zoom: 1;
+	/* 1px of shell definition */
+	--1px: calc(var(--h) / 224);
+	--button-plane: calc(3 * var(--1px));
 
 	width: var(--front-w);
 	height: var(--h);
@@ -105,14 +116,11 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 	left: 0;
 	right: 0;
-	top: 0;
-	bottom: 0;
+	bottom: 8%;
 
 	margin: auto;
 
 	transform-style: preserve-3d;
-
-	will-change: transform;
 }
 
 .screen-bevel-vert {
@@ -218,6 +226,8 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 	transform: translateZ(calc(var(--depth-w) / 2));
 
 	background-image: url("./assets/nissygirl-front.png");
+
+	transform-style: preserve-3d;
 }
 
 .panelside {

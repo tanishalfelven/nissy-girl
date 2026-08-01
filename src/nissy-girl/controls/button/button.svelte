@@ -1,4 +1,6 @@
 <script module>
+import { controls } from "../../util/touch-action.svelte.js";
+
 export const BUTTON_A = "a";
 export const BUTTON_B = "b";
 export const BUTTON_START = "start";
@@ -11,8 +13,6 @@ const TYPE_BEAN = "bean";
 const TYPE_ROUND = "round";
 
 const getButtonType = (button) => {
-	console.log(button, BUTTONS_BEAN);
-
 	if(BUTTONS_BEAN.has(button)) {
 		return TYPE_BEAN;
 	}
@@ -23,8 +23,6 @@ const getButtonType = (button) => {
 };
 </script>
 <script>
-import { controls } from "../util/touch-action.svelte.js";
-
 let { button } = $props();
 
 let isPressed = $state(false);
@@ -33,14 +31,14 @@ const type = $derived(getButtonType(button));
 
 const getTransform = (isPressed) => {
 	if(isPressed) {
-		return "translateZ(calc(var(--depth-w) / 1.94)) scale(0.95)";
+		return "translateZ(calc(var(--button-plane) * 0.4)) scale(0.92)";
 	}
 
 	if(type === TYPE_BEAN) {
-		return "translateZ(calc(var(--depth-w) / 1.88))";
+		return "translateZ(calc(var(--button-plane) * 0.6))";
 	}
 
-	return "translateZ(calc(var(--depth-w) / 1.8))";
+	return "translateZ(var(--button-plane))";
 };
 </script>
 
@@ -53,7 +51,7 @@ const getTransform = (isPressed) => {
 			isPressed = false;
 		},
 	}}
-	class="face {type} {button}"
+	class="face touch-interactive button {type} {button}"
 	style="transform: {getTransform(isPressed)};"
 >
 	{#if type === TYPE_ROUND}
@@ -66,35 +64,47 @@ const getTransform = (isPressed) => {
 
 <style>
 .a {
-	right: 9%;
-	bottom: 31%;
+	right: calc(8 * var(--1px));
+	bottom: calc(65 * var(--1px));
+
+	padding-left: calc(3.5 * var(--1px)) !important;
 
 	background-image: url("./assets/button-a.png");
 }
 
 .b {
-	right: 26.75%;
-	bottom: 26%;
+	right: calc(34.5 * var(--1px));
+	bottom: calc(54 * var(--1px));
+
+	padding-right: calc(3.5 * var(--1px)) !important;
 
 	background-image: url("./assets/button-b.png");
 }
 
 .start {
-	right: calc(48.8 / 142 * 100%);
+	right: calc(47 * var(--1px));
 }
 
 .select {
-	left: calc(47 / 142 * 100%);
+	left: calc(45 * var(--1px));
+}
+
+.button {
+	padding: calc(2 * var(--1px));
+
+	background-origin: content-box;
 }
 
 .bean {
-	position: absolute;
-
-	bottom: calc(94 / 224 * 100%);
-
 	aspect-ratio: 17 / 5;
 
-	width: calc(17 / 142 * 100%);
+	position: absolute;
+
+	padding-bottom: calc(8 * var(--1px));
+
+	bottom: calc(86 * var(--1px));
+
+	width: calc(17 * var(--1px));
 
 	transform-style: preserve-3d;
 
@@ -104,12 +114,14 @@ const getTransform = (isPressed) => {
 .bean-side {
 	aspect-ratio: 3 / 5;
 
-	height: 100%;
+	height: calc(5 * var(--1px));
 
 	position: absolute;
 
-	top: 0;
-	left: 0;
+	top: calc(2 * var(--1px));
+	left: calc(2 * var(--1px));
+
+	margin: auto;
 
 	transform: rotateY(-90deg) translateX(-50%);
 
@@ -121,17 +133,19 @@ const getTransform = (isPressed) => {
 
 .bean-side.right {
 	left: auto;
-	right: 0;
+	right: calc(2 * var(--1px));
 
 	transform: rotateY(90deg) translateX(50%);
 }
 
 .round {
-	position: absolute;
-
 	aspect-ratio: 1 / 1;
 
-	width: var(--round-button-w);
+	padding: calc(5 * var(--1px));
+
+	position: absolute;
+
+	width: calc(18 * var(--1px));
 
 	transform-style: preserve-3d;
 }
@@ -139,9 +153,9 @@ const getTransform = (isPressed) => {
 .round-side {
 	aspect-ratio: 3 / 9;
 
-	height: 100%;
+	height: calc(18 * var(--1px));
 
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(var(--round-button-w) / 3.2));
+	transform: rotateY(90deg) translateX(50%) translateZ(calc(8 * var(--1px)));
 
 	background-image: url("./assets/button-round-side.png");
 

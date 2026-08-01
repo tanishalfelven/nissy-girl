@@ -52,12 +52,17 @@ export const touch = (node, {
 	let activePointerId = false;
 	let isDown = false;
 
+	let lastX = 0;
+	let lastY = 0;
+
 	const sub = subscribers();
 
 	const handleEnd = (e) => {
 		if(activePointerId !== false && activePointerId !== e.pointerId) {
 			return;
 		}
+		e.preventDefault();
+		e.stopPropagation();
 
 		if(!isDown) {
 			return;
@@ -73,21 +78,30 @@ export const touch = (node, {
 	};
 
 	const handleMove = rafThrottle((e) => {
-		if(activePointerId !== false && activePointerId !== e.pointerId) {
-			return;
-		}
-
 		if(!isDown) {
 			return;
 		}
 
-		move(e);
+		const newX = e.clientX;
+		const newY = e.clientY;
+
+		move(
+			newX - lastX,
+			newY - lastY,
+			e,
+		);
+
+		lastX = newX;
+		lastY = newY;
 	});
 
 	const handlerDown = (e) => {
 		if(activePointerId !== false && activePointerId !== e.pointerId) {
 			return;
 		}
+
+		e.preventDefault();
+		e.stopPropagation();
 
 		isDown = true;
 
@@ -97,9 +111,21 @@ export const touch = (node, {
 
 		node.setPointerCapture(e.pointerId);
 
-		sub.add("pointermove", domListenerSub(node, "pointermove", handleMove));
+		sub.add("pointermove", domListenerSub(node, "pointermove", (e) => {
+			if(activePointerId !== false && activePointerId !== e.pointerId) {
+				return;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+
+			handleMove(e);
+		}));
 		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
 		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
+
+		lastX = e.clientX;
+		lastY = e.clientY;
 
 		start(e);
 	};
@@ -130,6 +156,8 @@ export const controls = (node, {
 	let canTrigger = $state(true);
 
 	const handleEnd = (e) => {
+		e.stopPropagation();
+
 		canTrigger = false;
 
 		// A small bounded timeout for trigger end - this solves drag off triggering controls
@@ -148,13 +176,20 @@ export const controls = (node, {
 
 	const handlerDown = (e) => {
 		e.preventDefault();
+		e.stopPropagation();
+		node.setPointerCapture(e.pointerId);
 
 		fire(e);
 	};
 
 	$effect(() => {
 		sub.add("pointerdown", domListenerSub(node, "pointerdown", handlerDown));
-		sub.add("pointermove", domListenerSub(node, "pointermove", handleMove));
+		sub.add("pointermove", domListenerSub(node, "pointermove", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			handleMove(e);
+		}));
 		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
 		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
 		sub.add("pointerleave", domListenerSub(node, "pointerleave", handleEnd));
