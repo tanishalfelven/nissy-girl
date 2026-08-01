@@ -1,0 +1,17 @@
+.img {
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 100% 100%;
+	image-rendering: pixelated;
+}
+
+.face {
+	composes: img;
+	will-change: transform;
+	position: absolute;
+	backface-visibility: hidden;
+}
+
+.touchinteractive {
+	touch-action: none;
+}

@@ -1,35 +1,20 @@
-#root, body {
-    width: 100vw;
-    height: 100vh;
+#root,
+body {
+	overflow: hidden;
 
-    margin: 0;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
 
-    overflow: hidden;
-}
-
-.face {
-    position: absolute;
-
-    image-rendering: pixelated;
-
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: 50% 50%;
-
-    will-change: transform;
-
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-.touch-interactive {
-    touch-action: none;
-    -ms-touch-action: none;
+	background-color: black;
 }
 
 * {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+	user-select: none;
+	box-sizing: border-box;
+}
+
+*::after,
+*::before {
+	box-sizing: inherit;
 }

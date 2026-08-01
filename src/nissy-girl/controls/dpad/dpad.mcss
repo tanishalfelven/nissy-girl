@@ -1,0 +1,70 @@
+@value px1 from "../../nissy-girl.mcss";
+@value depth from "../../nissy-girl.mcss";
+
+.dpad {
+	--rotate-x: 0deg;
+	--rotate-y: 0deg;
+
+	composes: touchinteractive from "../../util/util.mcss";
+
+	will-change: transform;
+
+	position: absolute;
+	bottom: calc(57.5 * px1);
+	left: calc(7 * px1);
+	transform-origin: center center 4px;
+	transform-style: preserve-3d;
+	transform: translateZ(var(--button-plane));
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	box-sizing: content-box;
+	aspect-ratio: 31 / 30;
+	height: calc(32 * px1);
+	padding: calc(2 * px1);
+}
+
+.dpadface {
+	composes: face from "../../util/util.mcss";
+	aspect-ratio: 1 / 1;
+	width: 80%;
+	background-image: url("./assets/dpad.png");
+}
+
+.dpadbackface {
+	composes: face from "../../util/util.mcss";
+
+	position: absolute;
+	inset: 0;
+	transform: translateZ(calc(depth * -0.0175));
+
+	aspect-ratio: 33 / 32;
+	width: calc(31 * px1);
+	margin: auto;
+
+	background-image: url("./assets/dpad-backface.png");
+}
+
+.dpadcenterside {
+	composes: face from "../../util/util.mcss";
+
+	position: absolute;
+	top: calc(3.2 * px1);
+	bottom: 0;
+	left: 0;
+	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-12 * px1));
+
+	aspect-ratio: 5 / 32;
+	height: calc(30 * px1);
+
+	background-image: url("./assets/dpad-side.png");
+
+	&[data-left="true"] {
+		right: 0;
+		left: auto;
+		transform: rotateY(90deg) translateX(50%) translateZ(calc(-12 * px1));
+	}
+}

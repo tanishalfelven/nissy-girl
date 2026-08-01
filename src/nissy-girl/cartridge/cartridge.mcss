@@ -1,0 +1,322 @@
+@value height: 32vh;
+@value width: calc(height * 112 / 105);
+@value depth: calc(height * 6 / 105);
+
+.cartridge {
+	--pcb-y: -9%;
+
+	composes: touchinteractive from "../util/util.mcss";
+
+	will-change: transform;
+
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	transform-style: preserve-3d;
+
+	aspect-ratio: 112 / 105;
+	width: width;
+	height: height;
+	margin: auto;
+
+	opacity: 1;
+
+	&[data-visibility="false"] {
+		opacity: 0;
+	}
+}
+
+.cartridgeheader {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 2.8%;
+	right: 0;
+	left: 0;
+	transform: translateZ(calc(depth * -0.15));
+
+	aspect-ratio: 106 / 14;
+	width: 95%;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-header.png");
+}
+
+.cartridgeheaderoverlay {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 4%;
+	right: 0;
+	left: 0;
+	transform: translateZ(calc(depth * -0.099));
+
+	aspect-ratio: 80 / 9;
+	width: 72%;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-header-overlay.png");
+}
+
+.cartridgeface {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+
+	aspect-ratio: 112 / 105;
+
+	backface-visibility: visible;
+	background-image: url("./assets/cartridge-face.png");
+
+	&[data-back="true"] {
+		transform: rotateY(180deg) translateZ(depth);
+		width: 100%;
+		height: 100%;
+		background-image: url("./assets/cartridge-back.png");
+	}
+}
+
+.cartridgefaceartback {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 17%;
+	right: 0;
+	left: 0;
+	transform: translateZ(calc(depth * -0.2));
+
+	aspect-ratio: 76 / 73;
+	width: 68%;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-face-art-back.png");
+}
+
+.cartridgefaceart {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	aspect-ratio: 74 / 72;
+	width: 97%;
+	margin: auto;
+
+	background-image: var(--image);
+}
+
+.cartridgetop {
+	composes: face from "../util/util.mcss";
+
+	transform:
+		translateZ(calc(depth * -0.5))
+		rotateY(-90deg)
+		rotateX(-90deg)
+		rotateZ(90deg);
+
+	aspect-ratio: 112 / 6;
+	width: 100%;
+
+	background-image: url("./assets/cartridge-top.png");
+}
+
+.cartridgefacearttop {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 17%;
+	right: 0;
+	left: 0;
+	transform:
+		translateZ(calc(depth * -0.06))
+		rotateY(-90deg)
+		rotateX(-90deg)
+		rotateZ(90deg);
+
+	aspect-ratio: 76 / 1;
+	width: 68%;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-art-top.png");
+}
+
+.cartridgefaceartside {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 17%;
+	left: 16.2%;
+	transform: translateZ(calc(depth * -0.07)) rotateY(90deg);
+
+	aspect-ratio: 1 / 72;
+	width: 0.31vh;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-art-side.png");
+
+	&[data-right="true"] {
+		right: 16.2%;
+		left: auto;
+		transform: translateZ(calc(depth * -0.07)) rotateY(-90deg);
+	}
+}
+
+.cartridgeslattop {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform:
+		translateZ(calc(depth / -2))
+		translateX(-50%)
+		rotateY(-90deg)
+		scaleX(1.05);
+
+	aspect-ratio: 6 / 84;
+	width: depth;
+
+	backface-visibility: visible;
+	background-image: url("./assets/cartridge-slat-top.png");
+
+	&[data-right="true"] {
+		right: 0;
+		left: auto;
+		transform:
+			translateZ(calc(depth * -0.5))
+			translateX(50%)
+			rotateY(90deg)
+			scaleX(1.05);
+	}
+}
+
+.cartridgeslatbottom {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	bottom: 0.12%;
+	left: 0;
+	transform:
+		translateZ(calc(depth * -0.5))
+		translateX(90%)
+		rotateY(-90deg)
+		scaleX(1.05);
+
+	aspect-ratio: 6 / 21;
+	width: depth;
+
+	backface-visibility: visible;
+	background-image: url("./assets/cartridge-slat-bottom.png");
+
+	&[data-right="true"] {
+		right: 0;
+		left: auto;
+		transform:
+			translateZ(calc(depth * -0.5))
+			translateX(-90%)
+			rotateY(90deg)
+			scaleX(1.05);
+	}
+}
+
+.cartridgeslatunder {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	bottom: 17.2%;
+	left: -0.05%;
+	transform:
+		translateZ(calc(depth * -0.5))
+		rotateY(-90deg)
+		rotateX(-90deg)
+		rotateZ(90deg)
+		scaleX(1.03);
+
+	aspect-ratio: 9 / 6;
+	height: depth;
+
+	background-image: url("./assets/cartridge-slat-under.png");
+
+	&[data-right="true"] {
+		right: -0.05%;
+		left: auto;
+		transform:
+			translateZ(calc(depth * -0.5))
+			rotateY(90deg)
+			rotateX(-90deg)
+			rotateZ(90deg)
+			scaleX(1.03);
+	}
+}
+
+.pcbface {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	transform:
+		translateY(var(--pcb-y))
+		translateZ(calc(depth * -0.48));
+
+	aspect-ratio: 88 / 10;
+	width: 80%;
+	margin: auto;
+
+	background-image: url("./assets/pcb-face.png");
+
+	&[data-back="true"] {
+		transform:
+			translateY(var(--pcb-y))
+			rotateY(180deg)
+			translateZ(calc(depth * 0.53));
+	}
+}
+
+.pcbunder {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	transform:
+		translateZ(calc(depth * -0.53))
+		translateY(calc(var(--pcb-y) - 50%))
+		rotateX(-90deg);
+
+	aspect-ratio: 88 / 1;
+	width: 80%;
+	margin: auto;
+
+	background-image: url("./assets/pcb-under.png");
+}
+
+.cartridgebottom {
+	composes: face from "../util/util.mcss";
+
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	transform:
+		translateZ(calc(depth * -0.5))
+		rotateY(-90deg)
+		rotateX(-90deg)
+		rotateZ(90deg)
+		translateZ(0.86vh)
+		scaleY(1.05);
+
+	aspect-ratio: 96 / 6;
+	height: depth;
+	margin: auto;
+
+	background-image: url("./assets/cartridge-bottom.png");
+}

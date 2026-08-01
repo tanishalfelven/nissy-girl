@@ -1,0 +1,85 @@
+@value px1 from "../../nissy-girl.mcss";
+
+.button {
+	composes: face, touchinteractive from "../../util/util.mcss";
+	box-sizing: content-box;
+	padding: calc(2 * px1);
+	background-origin: content-box;
+
+	&[data-type="round"] {
+		position: absolute;
+		transform-style: preserve-3d;
+
+		aspect-ratio: 1 / 1;
+		width: calc(18 * px1);
+		padding: calc(5 * px1);
+
+		&[data-button="a"] {
+			right: calc(8 * px1);
+			bottom: calc(65 * px1);
+			padding-left: calc(3.5 * px1) !important;
+			background-image: url("./assets/button-a.png");
+		}
+
+		&[data-button="b"] {
+			right: calc(34.5 * px1);
+			bottom: calc(54 * px1);
+			padding-right: calc(3.5 * px1) !important;
+			background-image: url("./assets/button-b.png");
+		}
+	}
+
+	&[data-type="bean"] {
+		position: absolute;
+		bottom: calc(10 * px1);
+		transform-style: preserve-3d;
+
+		aspect-ratio: 17 / 5;
+		width: calc(17 * px1);
+		padding-bottom: calc(8 * px1);
+
+		background-image: url("./assets/button-bean.png");
+
+		&[data-button="start"] {
+			right: calc(47 * px1);
+		}
+
+		&[data-button="select"] {
+			left: calc(45 * px1);
+		}
+	}
+}
+
+.beanside {
+	composes: face from "../../util/util.mcss";
+
+	position: absolute;
+	top: calc(2 * px1);
+	left: calc(2 * px1);
+	transform: rotateY(-90deg) translateX(-50%);
+
+	aspect-ratio: 3 / 5;
+	height: calc(5 * px1);
+	margin: auto;
+
+	backface-visibility: visible !important;
+	background-image: url("./assets/button-bean-side.png");
+
+	&[data-right="true"] {
+		right: calc(2 * px1);
+		left: auto;
+		transform: rotateY(90deg) translateX(50%);
+	}
+}
+
+.roundside {
+	composes: face from "../../util/util.mcss";
+
+	transform: rotateY(90deg) translateX(50%) translateZ(calc(8 * px1));
+
+	aspect-ratio: 3 / 9;
+	height: calc(18 * px1);
+
+	backface-visibility: visible !important;
+	background-image: url("./assets/button-round-side.png");
+}

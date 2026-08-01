@@ -1,0 +1,70 @@
+@value px1 from "../../nissy-girl.mcss";
+
+@value switchdepth: calc(4 * px1);
+@value hitpadding: calc(3 * px1);
+@value quarterhitpadding: calc(0.25 * hitPadding);
+
+.powerswitch {
+	--position: 0%;
+
+	composes: face, touchinteractive from "../../util/util.mcss";
+
+	position: absolute;
+
+	aspect-ratio: 5 / 24;
+	width: calc(4 * px1);
+	padding: hitpadding;
+
+	background-image: url("./assets/power-switch-side.png");
+
+	&[data-top="true"] {
+		top: 21.8%;
+		left: calc(9 * px1);
+		transform-style: preserve-3d;
+		transform:
+			translateZ(switchdepth)
+			translateY(var(--position));
+
+		box-sizing: content-box;
+
+		background-image: url("./assets/power-switch-top.png");
+		background-origin: content-box;
+
+		transition: transform 300ms ease-in-out;
+	}
+
+	&[data-left="true"],
+	&[data-right="true"] {
+		width: switchdepth;
+		padding: 0;
+		backface-visibility: visible;
+	}
+
+	&[data-left="true"] {
+		left: quarterhitpadding;
+		transform:
+			translateX(-50%)
+			rotateY(-90deg)
+			translateX(-50%);
+	}
+
+	&[data-right="true"] {
+		right: quarterhitpadding;
+		transform:
+			translateX(50%)
+			rotateY(90deg)
+			translateX(50%);
+	}
+
+	&[data-willtoggle="true"] {
+		--position: 10%;
+	}
+
+	&[data-power="false"] {
+		--position: 70%;
+	}
+
+	&[data-power="false"][data-willtoggle="true"] {
+		--position: 55%;
+	}
+}

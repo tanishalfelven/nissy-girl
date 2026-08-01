@@ -49,11 +49,11 @@ export const touch = (node, {
 	start = move,
 	end,
 }) => {
-	let activePointerId = false;
-	let isDown = false;
+	let activePointerId = $state(false);
+	let isDown = $state(false);
 
-	let lastX = 0;
-	let lastY = 0;
+	let lastX = $state(0);
+	let lastY = $state(0);
 
 	const sub = subscribers();
 
@@ -61,6 +61,8 @@ export const touch = (node, {
 		if(activePointerId !== false && activePointerId !== e.pointerId) {
 			return;
 		}
+
+		node.releasePointerCapture(e.pointerId);
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -106,8 +108,6 @@ export const touch = (node, {
 		isDown = true;
 
 		activePointerId = e.pointerId;
-
-		e.preventDefault();
 
 		node.setPointerCapture(e.pointerId);
 

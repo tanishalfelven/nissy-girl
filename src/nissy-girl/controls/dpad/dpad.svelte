@@ -2,6 +2,8 @@
 import { roundHundredths, clamp } from "../../util/math.js";
 import { controls } from "../../util/touch-action.svelte.js";
 
+import css from "./dpad.mcss";
+
 const MAX_TILT = 4;
 
 let dpadElement = false;
@@ -44,7 +46,7 @@ const getTransform = (x, y) => {
 </script>
 
 <div
-	class="dpad touch-interactive"
+	class={css.dpad}
 	use:controls={{
 		fire : (e) => setRotation(e),
 		end : () => {
@@ -56,90 +58,9 @@ const getTransform = (x, y) => {
 	bind:this={dpadElement}
 	style="transform: {getTransform(xDeg, yDeg)};"
 >
-	<div class="face dpad-face"></div>
-	<div class="face dpad-backface"></div>
+	<div class={css.dpadface}></div>
+	<div class={css.dpadbackface}></div>
 
-	<div class="face dpad-center-side"></div>
-	<div class="face dpad-center-side left"></div>
+	<div class={css.dpadcenterside}></div>
+	<div class={css.dpaccenterside} data-left="true"></div>
 </div>
-
-<style>
-.dpad {
-	--rotate-x: 0deg;
-	--rotate-y: 0deg;
-
-	position: absolute;
-
-	display: flex;
-
-	flex-direction: column;
-
-	align-items: center;
-	justify-content: center;
-
-	aspect-ratio: 31 / 30;
-
-	height: calc(32 * var(--1px));
-
-	left: calc(7 * var(--1px));
-	bottom: calc(57.5 * var(--1px));
-
-	padding: calc(2 * var(--1px));
-
-	transform-style: preserve-3d;
-	will-change: transform;
-
-	transform: translateZ(var(--button-plane));
-	transform-origin: center center 4px;
-}
-
-.dpad-face {
-	aspect-ratio: 1 / 1;
-
-	width: 80%;
-
-	background-image: url("./assets/dpad.png");
-}
-
-.dpad-backface {
-	aspect-ratio: 33 / 32;
-
-	width: calc(31 * var(--1px));
-
-	margin: auto;
-
-	position: absolute;
-
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-
-	transform: translateZ(calc(var(--depth-w) * -0.0175));
-
-	background-image: url("./assets/dpad-backface.png");
-}
-
-.dpad-center-side {
-	aspect-ratio: 5 / 32;
-
-	height: calc(30 * var(--1px));
-
-	position: absolute;
-
-	top: calc(3.2 * var(--1px));
-	bottom: 0;
-	left: 0;
-
-	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-12 * var(--1px)));
-
-	background-image: url("./assets/dpad-side.png");
-}
-
-.dpad-center-side.left {
-	left: auto;
-	right: 0;
-
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(-12 * var(--1px)));
-}
-</style>

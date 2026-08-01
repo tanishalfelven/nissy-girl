@@ -1,10 +1,5 @@
-<div class="paint"></div>
+<script>
+import css from "./paint.mcss";
+</script>
 
-<style>
-.paint {
-	width: 100%;
-	height: 100%;
-
-	background-color: white;
-}
-</style>
+<div class={css.paint}></div>

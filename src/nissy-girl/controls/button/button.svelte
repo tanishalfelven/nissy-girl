@@ -1,6 +1,8 @@
 <script module>
 import { controls } from "../../util/touch-action.svelte.js";
 
+import css from "./button.mcss";
+
 export const BUTTON_A = "a";
 export const BUTTON_B = "b";
 export const BUTTON_START = "start";
@@ -51,115 +53,15 @@ const getTransform = (isPressed) => {
 			isPressed = false;
 		},
 	}}
-	class="face touch-interactive button {type} {button}"
+	class={css.button}
+	data-type={type}
+	data-button={button}
 	style="transform: {getTransform(isPressed)};"
 >
 	{#if type === TYPE_ROUND}
-		<div class="face round-side"></div>
+		<div class={css.roundside}></div>
 	{:else if type === TYPE_BEAN}
-		<div class="face bean-side left"></div>
-		<div class="face bean-side right"></div>
+		<div class={css.beanside}></div>
+		<div class={css.beanside} data-right="true"></div>
 	{/if}
 </div>
-
-<style>
-.a {
-	right: calc(8 * var(--1px));
-	bottom: calc(65 * var(--1px));
-
-	padding-left: calc(3.5 * var(--1px)) !important;
-
-	background-image: url("./assets/button-a.png");
-}
-
-.b {
-	right: calc(34.5 * var(--1px));
-	bottom: calc(54 * var(--1px));
-
-	padding-right: calc(3.5 * var(--1px)) !important;
-
-	background-image: url("./assets/button-b.png");
-}
-
-.start {
-	right: calc(47 * var(--1px));
-}
-
-.select {
-	left: calc(45 * var(--1px));
-}
-
-.button {
-	padding: calc(2 * var(--1px));
-
-	background-origin: content-box;
-}
-
-.bean {
-	aspect-ratio: 17 / 5;
-
-	position: absolute;
-
-	padding-bottom: calc(8 * var(--1px));
-
-	bottom: calc(10 * var(--1px));
-
-	width: calc(17 * var(--1px));
-
-	transform-style: preserve-3d;
-
-	background-image: url("./assets/button-bean.png");
-}
-
-.bean-side {
-	aspect-ratio: 3 / 5;
-
-	height: calc(5 * var(--1px));
-
-	position: absolute;
-
-	top: calc(2 * var(--1px));
-	left: calc(2 * var(--1px));
-
-	margin: auto;
-
-	transform: rotateY(-90deg) translateX(-50%);
-
-	background-image: url("./assets/button-bean-side.png");
-
-	backface-visibility: visible !important;
-	-webkit-backface-visibility: visible !important;
-}
-
-.bean-side.right {
-	left: auto;
-	right: calc(2 * var(--1px));
-
-	transform: rotateY(90deg) translateX(50%);
-}
-
-.round {
-	aspect-ratio: 1 / 1;
-
-	padding: calc(5 * var(--1px));
-
-	position: absolute;
-
-	width: calc(18 * var(--1px));
-
-	transform-style: preserve-3d;
-}
-
-.round-side {
-	aspect-ratio: 3 / 9;
-
-	height: calc(18 * var(--1px));
-
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(8 * var(--1px)));
-
-	background-image: url("./assets/button-round-side.png");
-
-	backface-visibility: visible !important;
-	-webkit-backface-visibility: visible !important;
-}
-</style>
