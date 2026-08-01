@@ -50,6 +50,8 @@ export default defineConfig([
 					indentScript : false,
 				},
 			],
+			"@stylistic/arrow-parens" : [ "error", "always" ],
+			"no-console" : "warn",
 			"@stylistic/no-tabs" : "off",
 			"@stylistic/indent" : [ "error", "tab" ],
 			"@stylistic/indent-binary-ops" : [ "error", "tab" ],
