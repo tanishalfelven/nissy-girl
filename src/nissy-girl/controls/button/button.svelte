@@ -102,7 +102,7 @@ const getTransform = (isPressed) => {
 
 	padding-bottom: calc(8 * var(--1px));
 
-	bottom: calc(86 * var(--1px));
+	bottom: calc(10 * var(--1px));
 
 	width: calc(17 * var(--1px));
 

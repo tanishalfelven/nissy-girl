@@ -6,7 +6,9 @@ import { nissyGirlMachine } from "../nissy-girl.machine.js";
 <div
 	class="startup-screen"
 	on:animationend={() => {
-		nissyGirlMachine.send({ type : "BOOT_FINISH" });
+		setTimeout(() => {
+			nissyGirlMachine.send({ type : "BOOT_FINISH" });
+		}, 3000);
 	}}
 ></div>
 

@@ -93,8 +93,8 @@ export const cartridges = {
 		finishedIteratingCartridge = false;
 	},
 
-	step(dir = 0) {
-		if(dir === 0) {
+	step(stepDir = 0) {
+		if(stepDir === 0) {
 			/* eslint-disable-next-line */
 			console.warn("[cartridges.step]: Received direction 0 for cartridge step.");
 
@@ -103,7 +103,7 @@ export const cartridges = {
 
 		this.resetCartridgePosition();
 
-		index += dir;
+		index += stepDir;
 
 		if(index === -1 || index === gameOrder.length) {
 			index = 0;

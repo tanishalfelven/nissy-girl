@@ -1,14 +1,22 @@
 import {
 	createMachine,
 	createActor,
+	raise,
 } from "xstate";
 
+import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
-import { cameraService } from "./statechart-actors.svelte.js";
+import { statechart } from "./statechart-actors.svelte.js";
 import { cameraMachine } from "./camera.machine.js";
+import { fromMachine } from "xstate-component-tree/from-machine";
+import { ComponentTree } from "xstate-component-tree";
 
 import tracker from "xstate-state-tracker";
+
+import StartupScreenComponent from "./screens/startup-screen.svelte";
+import ErrorScreen from "./screens/error-screen.svelte";
+import NissyGirlComponent from "./nissy-girl.svelte";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -16,6 +24,10 @@ const nissyGirlMachine = createMachine({
 	invoke : {
 		id : "camera",
 		src : cameraMachine,
+	},
+
+	meta : {
+		component : NissyGirlComponent,
 	},
 
 	initial : "off",
@@ -36,18 +48,61 @@ const nissyGirlMachine = createMachine({
 					actions : () => nissyGirl.togglePower(),
 					target : "off",
 				},
+
+				CARTRIDGE_EJECTED : ".errant",
 			},
 
 			initial : "booting",
 
 			states : {
 				booting : {
+					meta : {
+						component : StartupScreenComponent,
+					},
+
 					on : {
-						BOOT_FINISH : "game",
+						START_GAME : "game",
+					},
+
+					initial : "nogame",
+
+					states : {
+						// I *love* that we just get wedged here if theres no game in.
+						// ux. be damned.
+						nogame : {
+							entry : raise({ type : "GAME_ON_BOOT" }),
+
+							on : {
+								GAME_ON_BOOT : {
+									guard : () => nissyGirl.hasInsertedCartridge,
+									target : "hasgame",
+								},
+							},
+						},
+
+						hasgame : {
+							on : {
+								BOOT_FINISH : {
+									guard : () => nissyGirl.hasInsertedCartridge,
+									actions : raise({ type : "START_GAME" }),
+								},
+							},
+						},
 					},
 				},
 
-				game : {},
+				game : {
+					invoke : {
+						id : "game",
+						src : fromMachine(() => cartridges.getCurrentCartridgeGame().machine),
+					},
+				},
+
+				errant : {
+					meta : {
+						component : ErrorScreen,
+					},
+				},
 			},
 		},
 	},
@@ -55,14 +110,13 @@ const nissyGirlMachine = createMachine({
 
 const service = createActor(nissyGirlMachine);
 
-const { unsubscribe } = service.subscribe((snapshot) => {
-	if(snapshot.children.camera) {
-		cameraService.set(snapshot.children.camera);
+statechart.set(
+	new ComponentTree(service, (tree) => {
+		statechart.setTree(tree);
+	}),
+);
 
-		unsubscribe();
-	}
-});
-
+/* eslint-disable-next-line -- this is nice for dev, whatever for now */
 tracker(service, (machine, state) => console.log(`${machine}:${JSON.stringify(state)}`));
 
 service.start();

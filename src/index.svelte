@@ -1,15 +1,15 @@
 <script>
-import NissyGirl from "./nissy-girl/nissy-girl.svelte";
+import Self from "./index.svelte";
+
+import { statechart } from "./nissy-girl/statechart-actors.svelte.js";
+
+let { children = statechart.getTree(), depth = 0 } = $props();
 </script>
 
-<div class="page">
-	<NissyGirl />
-</div>
-
-<style>
-.page {
-    width: 100%;
-    height: 100%;
-    background-color: black;
-}
-</style>
+{#each children as { machine, path, component : Component, props, children : _children } (`${machine}-${path}-${depth}`)}
+	<Component {...props}>
+		{#if _children?.length}
+			<Self children={_children} depth={depth + 1} />
+		{/if}
+	</Component>
+{/each}

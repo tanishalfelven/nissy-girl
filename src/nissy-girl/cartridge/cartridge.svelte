@@ -2,7 +2,7 @@
 import { roundHundredths, lerp } from "../util/math.js";
 import { touch } from "../util/touch-action.svelte.js";
 
-import { cameraService } from "../statechart-actors.svelte.js";
+import { statechart } from "../statechart-actors.svelte.js";
 
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
 
@@ -37,12 +37,12 @@ const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 	bind:clientWidth={cartridgeWidth}
 	use:touch={{
 		start : () => {
-			cameraService.send({
+			statechart.send({
 				type : "CART_DRAG_START",
 			});
 
-			cameraService.send({
-				type : "DRAG_START",
+			statechart.send({
+				type : "CART_XDRAG_START",
 			});
 		},
 		move : (distX, distY) => {
@@ -51,26 +51,26 @@ const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 			}
 
 			if(distY !== 0) {
-				cameraService.send({
+				statechart.send({
 					type : "CART_DRAG_DELTA",
 					delta : distY / cartridgeHeight,
 				});
 			}
 
 			if(distX !== 0) {
-				cameraService.send({
-					type : "DRAG_DELTA",
+				statechart.send({
+					type : "CART_XDRAG_DELTA",
 					delta : distX / cartridgeWidth,
 				});
 			}
 		},
 		end : () => {
-			cameraService.send({
+			statechart.send({
 				type : "CART_DRAG_END",
 			});
 
-			cameraService.send({
-				type : "DRAG_END",
+			statechart.send({
+				type : "CART_XDRAG_END",
 			});
 		},
 	}}

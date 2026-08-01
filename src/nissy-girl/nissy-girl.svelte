@@ -1,15 +1,13 @@
 <script>
 import { roundHundredths } from "./util/math.js";
 
-import StartupScreen from "./startup-screen/startup-screen.svelte";
-
 import Cartridge from "./cartridge/cartridge.svelte";
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
-import { cameraService } from "./statechart-actors.svelte.js";
+import { statechart } from "./statechart-actors.svelte.js";
 
 import { touch } from "./util/touch-action.svelte.js";
 
@@ -17,13 +15,15 @@ const displayRot = $derived(roundHundredths(rotation.progress * 360));
 const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 let nissyGirlWidth = $state(false);
+
+let { children } = $props();
 </script>
 
 <div
 	class="camera touch-interactive"
 	use:touch={{
 		start : () =>
-			cameraService.send({
+			statechart.send({
 				type : "DRAG_START",
 			}),
 		move : (distX) => {
@@ -31,13 +31,13 @@ let nissyGirlWidth = $state(false);
 				return;
 			}
 
-			cameraService.send({
+			statechart.send({
 				type : "DRAG_DELTA",
 				delta : distX / nissyGirlWidth,
 			});
 		},
 		end : () =>
-			cameraService.send({
+			statechart.send({
 				type : "DRAG_END",
 			}),
 	}}
@@ -50,6 +50,11 @@ let nissyGirlWidth = $state(false);
 				translateZ(calc({displayZoom} * 3vw))
 				translateY(calc({displayZoom} * 2.7vh));"
 	>
+		<div class="screen-container">
+			<div class="screen">
+				{@render children?.()}
+			</div>
+		</div>
 
 		<div class="face front">
 			<div
@@ -62,14 +67,6 @@ let nissyGirlWidth = $state(false);
 
 		<Cartridge />
 		<PowerSwitch />
-
-		<div class="screen-container">
-			<div class="screen">
-				{#if nissyGirl.isPowered}
-					<StartupScreen />
-				{/if}
-			</div>
-		</div>
 
 		<div class="face screen-bevel-horz"></div>
 		<div class="face screen-bevel-vert"></div>
@@ -105,6 +102,8 @@ let nissyGirlWidth = $state(false);
 	right: 0;
 	bottom: 0;
 	margin: auto;
+
+	background-color: black;
 }
 
 .nissygirl {
@@ -253,7 +252,7 @@ let nissyGirlWidth = $state(false);
 }
 
 .backupper {
-	aspect-ratio: 142 / 49;
+	aspect-ratio: 142 / 54;
 
 	top: 0;
 

@@ -1,6 +1,7 @@
 import {
 	createMachine,
 	sendTo,
+	sendParent,
 	raise,
 } from "xstate";
 import { crossedThresholdWrapInclusive } from "./util/math.js";
@@ -176,6 +177,10 @@ export const cameraMachine = createMachine({
 							actions : raise(() => ({ type : "SELECT_CARTRIDGE" })),
 						},
 
+						CART_XDRAG_DELTA : {
+							actions : raise(({ event }) => ({ type : "ROTATE_SWIPE", delta : event.delta })),
+						},
+
 						ROTATE_SWIPE : {
 							actions : [
 								({ event }) => cartridgeX.update(event.delta),
@@ -255,7 +260,10 @@ export const cameraMachine = createMachine({
 						TEST_CARTRIDGE_Y_BOUNDS : [
 							{
 								guard : () => cartridgeY.progress === MIN_PROGRESS,
-								actions : () => nissyGirl.ejectCartridge(),
+								actions : [
+									() => nissyGirl.ejectCartridge(),
+									sendParent({ type : "CARTRIDGE_EJECTED" }),
+								],
 								target : "carousel",
 							},
 							{
