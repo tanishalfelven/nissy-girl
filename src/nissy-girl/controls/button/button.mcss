@@ -1,7 +1,7 @@
-@value px1 from "../../nissy-girl.mcss";
+@value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .button {
-	composes: face, touchinteractive from "../../../util/util.mcss";
+	composes: face, touchinteractive from "$util/util.mcss";
 	box-sizing: content-box;
 	padding: calc(2 * px1);
 	background-origin: content-box;
@@ -51,7 +51,7 @@
 }
 
 .beanside {
-	composes: face from "../../../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: calc(2 * px1);
@@ -73,7 +73,7 @@
 }
 
 .roundside {
-	composes: face from "../../../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	transform: rotateY(90deg) translateX(50%) translateZ(calc(8 * px1));
 

@@ -1,7 +1,7 @@
 import { mount } from "svelte";
 import Index from "./index.svelte";
 
-import "./nissy-girl/nissy-girl.machine.js";
+import "$nissy-girl/nissy-girl.machine.js";
 
 import "./index.css";
 

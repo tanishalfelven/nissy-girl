@@ -1,13 +1,12 @@
-@value px1 from "../../nissy-girl.mcss";
+@value px1 from "$nissy-girl/nissy-girl.mcss";
 
 @value switchdepth: calc(4 * px1);
 @value hitpadding: calc(3 * px1);
-@value quarterhitpadding: calc(0.25 * hitPadding);
 
 .powerswitch {
 	--position: 0%;
 
-	composes: face, touchinteractive from "../../../util/util.mcss";
+	composes: face, touchinteractive from "$util/util.mcss";
 
 	position: absolute;
 
@@ -41,7 +40,7 @@
 	}
 
 	&[data-left="true"] {
-		left: quarterhitpadding;
+		left: auto;
 		transform:
 			translateX(-50%)
 			rotateY(-90deg)
@@ -49,7 +48,7 @@
 	}
 
 	&[data-right="true"] {
-		right: quarterhitpadding;
+		right: auto;
 		transform:
 			translateX(50%)
 			rotateY(90deg)

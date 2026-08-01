@@ -5,7 +5,7 @@
 .cartridge {
 	--pcb-y: -9%;
 
-	composes: touchinteractive from "../util/util.mcss";
+	composes: touchinteractive from "$util/util.mcss";
 
 	will-change: transform;
 
@@ -28,7 +28,7 @@
 }
 
 .cartridgeheader {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 2.8%;
@@ -44,7 +44,7 @@
 }
 
 .cartridgeheaderoverlay {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 4%;
@@ -60,7 +60,7 @@
 }
 
 .cartridgeface {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 0;
@@ -81,7 +81,7 @@
 }
 
 .cartridgefaceartback {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 17%;
@@ -97,7 +97,7 @@
 }
 
 .cartridgefaceart {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;
@@ -112,7 +112,7 @@
 }
 
 .cartridgetop {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	transform:
 		translateZ(calc(depth * -0.5))
@@ -127,7 +127,7 @@
 }
 
 .cartridgefacearttop {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 17%;
@@ -147,7 +147,7 @@
 }
 
 .cartridgefaceartside {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 17%;
@@ -168,7 +168,7 @@
 }
 
 .cartridgeslattop {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	top: 0;
@@ -197,7 +197,7 @@
 }
 
 .cartridgeslatbottom {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	bottom: 0.12%;
@@ -226,7 +226,7 @@
 }
 
 .cartridgeslatunder {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	bottom: 17.2%;
@@ -256,7 +256,7 @@
 }
 
 .pcbface {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;
@@ -281,7 +281,7 @@
 }
 
 .pcbunder {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;
@@ -300,7 +300,7 @@
 }
 
 .cartridgebottom {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;

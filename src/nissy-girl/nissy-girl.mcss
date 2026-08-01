@@ -4,7 +4,7 @@
 @value px1: calc(height / 224);
 
 .camera {
-	composes: touchinteractive from "../util/util.mcss";
+	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
 	inset: 0;
@@ -35,7 +35,7 @@
 .screenbevelvert {
 	--rotate: 90deg;
 
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	top: 3%;
 	left: 5.6%;
@@ -55,7 +55,7 @@
 }
 
 .screenbevelhorz {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	top: 2.6%;
 	left: 50%;
@@ -90,7 +90,7 @@
 }
 
 .mushroom {
-	composes: img from "../util/util.mcss";
+	composes: img from "$util/util.mcss";
 
 	will-change: filter;
 
@@ -114,7 +114,7 @@
 }
 
 .front {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	transform-style: preserve-3d;
 	transform: translateZ(calc(depth / 2));
@@ -126,7 +126,7 @@
 }
 
 .panelside {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	transform: rotateY(90deg) translateZ(calc(width - depth / 2));
 
@@ -147,7 +147,7 @@
 }
 
 .backupper {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	top: 0;
 	transform: rotateY(180deg) translateZ(calc(width * 0.02));
@@ -159,7 +159,7 @@
 }
 
 .vent {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	top: 2.1%;
 	right: 0;
@@ -174,7 +174,7 @@
 }
 
 .backlower {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	bottom: 0.4%;
 	transform: rotateY(180deg) translateY(-4%) translateZ(calc(width / 7.395));
@@ -186,7 +186,7 @@
 }
 
 .backloweredge {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	bottom: 1.256%;
 	transform: rotateY(180deg) translateZ(calc(width * 0.07));
@@ -203,7 +203,7 @@
 }
 
 .cartridgeback {
-	composes: face from "../util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	top: 21.5%;
 	transform: rotateY(180deg) translateZ(calc(width / 6.2));

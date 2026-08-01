@@ -3,11 +3,11 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 import svelte from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
-import svelteConfig from "./svelte.config.js";
 import stylistic from "@stylistic/eslint-plugin";
 import { jsdoc } from "eslint-plugin-jsdoc";
 import unusedImports from "eslint-plugin-unused-imports";
 import { importX } from "eslint-plugin-import-x";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 
 const plugins = {
 	js,
@@ -34,9 +34,6 @@ export default defineConfig([
 		languageOptions : {
 			globals : globals.browser,
 			parser : svelteParser,
-			parserOptions : {
-				svelteConfig,
-			},
 		},
 	},
 	{
@@ -99,6 +96,11 @@ export default defineConfig([
 				"espree" : [ ".js" ],
 				"svelte-eslint-parser" : [ ".svelte", ".svelte.js" ],
 			},
+			"import-x/resolver-next" : [
+				createTypeScriptImportResolver({
+					project : "jsconfig.json",
+				}),
+			],
 		},
 	},
 ]);

@@ -1,5 +1,5 @@
 <script>
-import { nissyGirlMachine } from "../nissy-girl.machine.js";
+import { nissyGirlMachine } from "$nissy-girl/nissy-girl.machine.js";
 import css from "./screens.mcss";
 </script>
 

@@ -1,8 +1,8 @@
 <script>
-import { touch } from "../util/touch-action.svelte.js";
-import { statechart } from "../util/statechart-actors.svelte.js";
-import { roundHundredths } from "../util/math.js";
-import Cartridge from "../cartridge/cartridge.svelte";
+import { touch } from "$util/touch-action.svelte.js";
+import { statechart } from "$util/statechart-actors.svelte.js";
+import { roundHundredths } from "$util/math.js";
+import Cartridge from "$cartridge/cartridge.svelte";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";

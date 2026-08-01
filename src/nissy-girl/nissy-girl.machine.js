@@ -9,14 +9,14 @@ import tracker from "xstate-state-tracker";
 import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
 
-import { cartridges } from "../cartridge/cartridge.viewmodel.svelte.js";
-import { statechart } from "../util/statechart-actors.svelte.js";
+import { cartridges } from "$cartridge/cartridge.viewmodel.svelte.js";
+import { statechart } from "$util/statechart-actors.svelte.js";
 
 import { cameraMachine } from "./camera.machine.js";
-import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import StartupScreenComponent from "./screens/startup-screen.svelte";
 import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
+import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",

@@ -1,6 +1,6 @@
 <script>
-import { roundHundredths, clamp } from "../../../util/math.js";
-import { controls } from "../../../util/touch-action.svelte.js";
+import { roundHundredths, clamp } from "$util/math.js";
+import { controls } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
 

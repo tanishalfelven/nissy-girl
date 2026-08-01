@@ -1,4 +1,4 @@
-@value px1 from "../nissy-girl.mcss";
+@value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .errorscreen {
 	width: 100%;

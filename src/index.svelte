@@ -1,7 +1,7 @@
 <script>
 import Self from "./index.svelte";
 
-import { statechart } from "./util/statechart-actors.svelte.js";
+import { statechart } from "$util/statechart-actors.svelte.js";
 
 let { children = statechart.getTree(), depth = 0 } = $props();
 </script>
