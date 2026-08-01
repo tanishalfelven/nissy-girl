@@ -178,7 +178,7 @@ export const cameraMachine = createMachine({
 
 						ROTATE_SWIPE : {
 							actions : [
-								({ event }) => !cartridgeX.update(event.delta),
+								({ event }) => cartridgeX.update(event.delta),
 								raise(({ event }) => ({
 									type : "TEST_CARTRIDGE_X_BOUNDS",
 									dir : Math.sign(event.delta),

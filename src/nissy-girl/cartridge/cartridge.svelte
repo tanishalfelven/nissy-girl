@@ -21,6 +21,7 @@ const displayCartridgeY = $derived(
 );
 
 let cartridgeHeight = $state(0);
+let cartridgeWidth = $state(0);
 
 const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 </script>
@@ -33,25 +34,45 @@ const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 			rotateY({displayCartridgeRot}deg);"
 	data-visibility="{cartridges.isVisible}"
 	bind:clientHeight={cartridgeHeight}
+	bind:clientWidth={cartridgeWidth}
 	use:touch={{
-		start : () =>
+		start : () => {
 			cameraService.send({
 				type : "CART_DRAG_START",
-			}),
-		move : (_distX, distY) => {
-			if(distY === 0 || cartridgeHeight <= 0) {
+			});
+
+			cameraService.send({
+				type : "DRAG_START",
+			});
+		},
+		move : (distX, distY) => {
+			if(cartridgeHeight <= 0) {
 				return;
 			}
 
-			cameraService.send({
-				type : "CART_DRAG_DELTA",
-				delta : distY / cartridgeHeight,
-			});
+			if(distY !== 0) {
+				cameraService.send({
+					type : "CART_DRAG_DELTA",
+					delta : distY / cartridgeHeight,
+				});
+			}
+
+			if(distX !== 0) {
+				cameraService.send({
+					type : "DRAG_DELTA",
+					delta : distX / cartridgeWidth,
+				});
+			}
 		},
-		end : () =>
+		end : () => {
 			cameraService.send({
 				type : "CART_DRAG_END",
-			}),
+			});
+
+			cameraService.send({
+				type : "DRAG_END",
+			});
+		},
 	}}
 >
 	<div class="face cartridgeface"></div>
