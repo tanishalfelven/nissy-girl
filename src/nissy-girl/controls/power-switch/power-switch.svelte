@@ -2,6 +2,8 @@
 import { nissyGirl } from "../../nissy-girl.viewmodel.svelte.js";
 import { touch } from "../../util/touch-action.svelte.js";
 
+import { nissyGirlMachine } from "../../nissy-girl.machine.js";
+
 const MIN_CLICK_DIST = 0.02;
 const MIN_VERT_DIST = 0.2;
 
@@ -10,7 +12,6 @@ const moveDir = $derived(nissyGirl.isPowered ? 1 : -1);
 
 let startY = $state(0);
 let candidateY = $state(0);
-let powerEl = false;
 
 const inToggleBounds = (percentY) => {
 	const absY = Math.abs(percentY);
@@ -38,7 +39,9 @@ let switchHeight = $state(0);
 			const percentY = (e.clientY - startY) / switchHeight;
 
 			if(Math.abs(percentY) < MIN_CLICK_DIST || inToggleBounds(percentY)) {
-				nissyGirl.togglePower();
+				nissyGirlMachine.send({
+					type : "POWER_TOGGLE",
+				});
 			}
 
 			startY = 0;
@@ -47,7 +50,6 @@ let switchHeight = $state(0);
 	}}
 	data-power={nissyGirl.isPowered}
 	data-willtoggle={doesTriggerToggle}
-	bind:this={powerEl}
 >
 	<div class="face powerswitch left"></div>
 	<div class="face powerswitch right"></div>

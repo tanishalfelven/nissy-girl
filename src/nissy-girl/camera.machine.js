@@ -92,8 +92,7 @@ export const cameraMachine = createMachine({
 							camera.clearReturningFromCartridgeFlow();
 
 							if(!nissyGirl.hasInsertedCartridge) {
-								// aggressively resetting cartridge carousel so it comes from the correct direction
-								cartridgeX.set(event.delta < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+								cartridges.setDirection(Math.sign(event.delta));
 							}
 						},
 					},
@@ -179,14 +178,27 @@ export const cameraMachine = createMachine({
 
 						ROTATE_SWIPE : {
 							actions : [
-								({ event }) => cartridgeX.update(event.delta),
-								raise({ type : "TEST_CARTRIDGE_X_BOUNDS" }),
+								({ event }) => !cartridgeX.update(event.delta),
+								raise(({ event }) => ({
+									type : "TEST_CARTRIDGE_X_BOUNDS",
+									dir : Math.sign(event.delta),
+								})),
 							],
 						},
 
 						TEST_CARTRIDGE_X_BOUNDS : {
-							guard : () => cartridgeX.progress === MAX_PROGRESS
-								|| cartridgeX.progress === MIN_PROGRESS,
+							guard : () =>
+								(cartridgeX.progress === MAX_PROGRESS
+									|| cartridgeX.progress === MIN_PROGRESS),
+
+							actions : [
+								({ event }) => cartridges.step(event.dir),
+								raise({ type : "NEXT_GAME_OR_BACK_TO_ZOOM" }),
+							],
+						},
+
+						NEXT_GAME_OR_BACK_TO_ZOOM : {
+							guard : () => cartridges.isFinishedIterating(),
 							actions : raise({ type : "BACK_TO_ZOOM" }),
 						},
 
@@ -249,7 +261,7 @@ export const cameraMachine = createMachine({
 							{
 								guard : () => cartridgeY.progress === MAX_PROGRESS,
 								actions : [
-									() => nissyGirl.insertCartridge(),
+									() => nissyGirl.insertCartridge(cartridges.getCurrentCartridgeId()),
 									raise({ type : "BACK_TO_ZOOM" }),
 								],
 							},

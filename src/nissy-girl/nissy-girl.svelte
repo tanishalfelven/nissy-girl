@@ -26,11 +26,16 @@ let nissyGirlWidth = $state(false);
 			cameraService.send({
 				type : "DRAG_START",
 			}),
-		move : (distX) =>
+		move : (distX) => {
+			if(distX === 0 || nissyGirlWidth <= 0) {
+				return;
+			}
+
 			cameraService.send({
 				type : "DRAG_DELTA",
 				delta : distX / nissyGirlWidth,
-			}),
+			});
+		},
 		end : () =>
 			cameraService.send({
 				type : "DRAG_END",
@@ -116,7 +121,7 @@ let nissyGirlWidth = $state(false);
 
 	left: 0;
 	right: 0;
-	bottom: 8%;
+	bottom: 12%;
 
 	margin: auto;
 

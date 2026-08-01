@@ -157,6 +157,7 @@ export const controls = (node, {
 
 	const handleEnd = (e) => {
 		e.stopPropagation();
+		e.preventDefault();
 
 		canTrigger = false;
 

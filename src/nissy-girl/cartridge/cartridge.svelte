@@ -1,14 +1,10 @@
 <script>
-import PaintPng from "./assets/paint-art.png";
-
 import { roundHundredths, lerp } from "../util/math.js";
 import { touch } from "../util/touch-action.svelte.js";
 
 import { cameraService } from "../statechart-actors.svelte.js";
 
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte.js";
-
-let { cartridge = PaintPng } = $props();
 
 const displayCartridgeRot = $derived(
 	roundHundredths(
@@ -25,6 +21,8 @@ const displayCartridgeY = $derived(
 );
 
 let cartridgeHeight = $state(0);
+
+const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 </script>
 
 <div
@@ -34,17 +32,22 @@ let cartridgeHeight = $state(0);
 			translateZ(-4.18vh)
 			rotateY({displayCartridgeRot}deg);"
 	data-visibility="{cartridges.isVisible}"
-	bind:clientWidth={cartridgeHeight}
+	bind:clientHeight={cartridgeHeight}
 	use:touch={{
 		start : () =>
 			cameraService.send({
 				type : "CART_DRAG_START",
 			}),
-		move : (_distX, distY) =>
+		move : (_distX, distY) => {
+			if(distY === 0 || cartridgeHeight <= 0) {
+				return;
+			}
+
 			cameraService.send({
 				type : "CART_DRAG_DELTA",
 				delta : distY / cartridgeHeight,
-			}),
+			});
+		},
 		end : () =>
 			cameraService.send({
 				type : "CART_DRAG_END",

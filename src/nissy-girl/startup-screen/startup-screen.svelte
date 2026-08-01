@@ -1,4 +1,14 @@
-<div class="startup-screen"></div>
+<script>
+import { nissyGirlMachine } from "../nissy-girl.machine.js";
+
+</script>
+
+<div
+	class="startup-screen"
+	on:animationend={() => {
+		nissyGirlMachine.send({ type : "BOOT_FINISH" });
+	}}
+></div>
 
 <style>
 @keyframes animateframes {
