@@ -70,7 +70,7 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
 
 	backface-visibility: visible;
 
-	background-image: url("../assets/power-switch-side.png");
+	background-image: url("./assets/power-switch-side.png");
 }
 
 .powerswitch.parent {
@@ -108,7 +108,7 @@ const doesTriggerToggle = $derived(inToggleBounds(candidateY));
 
 	transform: rotateY(90deg) translateZ(0.6vh) translateX(50%);
 
-	background-image: url("../assets/power-switch-top.png");
+	background-image: url("./assets/power-switch-top.png");
 }
 
 .powerswitch.back {
