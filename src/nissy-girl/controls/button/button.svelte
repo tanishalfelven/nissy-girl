@@ -40,12 +40,6 @@ let { button } = $props();
 
 let isPressed = $state(false);
 
-input.subscribe(({ type, state }) => {
-	if(type === button) {
-		isPressed = state === TRIGGERED;
-	}
-});
-
 const type = $derived(getButtonType(button));
 
 const getTransform = (isPressed) => {
@@ -59,6 +53,14 @@ const getTransform = (isPressed) => {
 
 	return "translateZ(var(--button-plane))";
 };
+
+$effect(() =>
+	input.subscribe(({ type, state }) => {
+		if(type === button) {
+			isPressed = state === TRIGGERED;
+		}
+	}),
+);
 </script>
 
 <div

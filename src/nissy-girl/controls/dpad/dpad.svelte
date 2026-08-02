@@ -17,32 +17,6 @@ import {
 const MAX_TILT = 3;
 const TILT_DEADZONE = 0.4;
 
-let dpadElement = false;
-
-let dpadX = $state(0);
-let dpadY = $state(0);
-
-let dpadLeft = 0;
-let dpadTop = 0;
-let dpadWidth = 0;
-let dpadHeight = 0;
-
-let isTouchControls = $state(false);
-
-let rotationValue = 0;
-
-const xDeg = $derived(`${roundHundredths(dpadY * MAX_TILT)}deg`);
-const yDeg = $derived(`${roundHundredths(dpadX * MAX_TILT)}deg`);
-
-input.subscribe(() => {
-	if(isTouchControls) {
-		return;
-	}
-
-	dpadX = -Number(input.state[DPAD_LEFT]) + Number(input.state[DPAD_RIGHT]);
-	dpadY = Number(input.state[DPAD_UP]) + -Number(input.state[DPAD_DOWN]);
-});
-
 const handleInput = () => {
 	const xTriggered = Math.abs(dpadX) > TILT_DEADZONE;
 	const yTriggered = Math.abs(dpadY) > TILT_DEADZONE;
@@ -113,6 +87,34 @@ const getTransform = (x, y) => {
 
 	return `translateZ(var(--button-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
 };
+
+let dpadElement = false;
+
+let dpadX = $state(0);
+let dpadY = $state(0);
+
+let dpadLeft = 0;
+let dpadTop = 0;
+let dpadWidth = 0;
+let dpadHeight = 0;
+
+let isTouchControls = $state(false);
+
+let rotationValue = 0;
+
+const xDeg = $derived(`${roundHundredths(dpadY * MAX_TILT)}deg`);
+const yDeg = $derived(`${roundHundredths(dpadX * MAX_TILT)}deg`);
+
+$effect(() =>
+	input.subscribe(() => {
+		if(isTouchControls) {
+			return;
+		}
+
+		dpadX = -Number(input.state[DPAD_LEFT]) + Number(input.state[DPAD_RIGHT]);
+		dpadY = Number(input.state[DPAD_UP]) + -Number(input.state[DPAD_DOWN]);
+	}),
+);
 </script>
 
 <div

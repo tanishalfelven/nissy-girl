@@ -4,8 +4,6 @@ import { createRenderer } from "./render.js";
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./game.consts.js";
 
-import { input } from "$nissy-girl/input.js";
-
 import { rafLooper } from "$util/time.js";
 
 let isGame = false;
@@ -37,10 +35,6 @@ export const invokeGameActor = ({
 	return ({
 		id : "game",
 		src : fromCallback(({ sendBack, receive }) => {
-			input.subscribe((_event) => {
-				// do input stuff
-			});
-
 			registerCanvas = (canvas) => {
 				renderer = createRenderer(canvas, { width, height });
 
