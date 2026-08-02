@@ -1,13 +1,13 @@
-let cameraActor = $state(false);
+let innerStatechart = $state(false);
 let tree = $state(false);
 
 export const statechart = {
 	send : (event) => {
-		cameraActor?.broadcast?.(event);
+		innerStatechart?.broadcast?.(event);
 	},
 
 	set : (actor) => {
-		cameraActor = actor;
+		innerStatechart = actor;
 	},
 
 	setTree : (treeSnapshot) => {

@@ -2,6 +2,7 @@ import {
 	createMachine,
 	createActor,
 	raise,
+	sendTo,
 } from "xstate";
 
 import tracker from "xstate-state-tracker";
@@ -17,35 +18,49 @@ import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { hasParam, getParam } from "$util/params.js";
+import { screenRuntime } from "./screens/screen.actor.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
-
-	invoke : {
-		id : "camera",
-		src : cameraMachine,
-	},
 
 	meta : {
 		component : NissyGirlComponent,
 	},
 
-	initial : "off",
+	invoke : [
+		{
+			id : "camera",
+			src : cameraMachine,
+		},
+
+		screenRuntime,
+	],
+
+	on : {
+		HANDLE_GAME_PARAM : {
+			guard : () => hasParam("game"),
+			actions : () => nissyGirl.forceLoad(getParam("game")),
+		},
+
+		INSTANT_LOAD_GAME_READY : {
+			target : ".poweredon.game",
+		},
+	},
+
+	initial : "initializing",
 
 	states : {
-		off : {
-			entry : raise({ type : "HANDLE_GAME_PARAM" }),
-
+		initializing : {
 			on : {
-				HANDLE_GAME_PARAM : {
-					guard : () => hasParam("game"),
-					actions : () => nissyGirl.forceLoad(getParam("game")),
+				RENDERER_READY : {
+					target : "off",
+					actions : raise({ type : "HANDLE_GAME_PARAM" }),
 				},
+			},
+		},
 
-				INSTANT_LOAD_GAME_READY : {
-					target : "poweredon.game",
-				},
-
+		off : {
+			on : {
 				POWER_TOGGLE : {
 					target : "poweredon",
 					actions : () => nissyGirl.togglePower(),
@@ -67,6 +82,8 @@ const nissyGirlMachine = createMachine({
 
 			states : {
 				booting : {
+					// TODO - eventually we go BACK to keyframes and have a scene / animation actor
+					// replace component and draw directly
 					meta : {
 						component : StartupScreenComponent,
 					},
@@ -104,8 +121,19 @@ const nissyGirlMachine = createMachine({
 
 				game : {
 					invoke : {
-						id : "game",
+						id : "game-machine",
 						src : fromMachine(() => nissyGirl.getGame().machine),
+					},
+
+					on : {
+						REGISTER_GAME : {
+							actions : sendTo(
+								"screen",
+								({ event }) => ({
+									type : "REGISTER_GAME",
+									game : event.game,
+								})),
+						},
 					},
 				},
 
@@ -127,9 +155,18 @@ statechart.set(
 	}),
 );
 
+let game = false;
+
 if(import.meta.env.DEV) {
-	/* eslint-disable-next-line -- dev only */
-	tracker(service, (machine, state) => console.log(`${machine}:${JSON.stringify(state)}`));
+	tracker(service, (_machine, _state, last) => {
+		if(!game && last?.children?.["game-machine"]) {
+			game = true;
+
+			tracker(last?.children?.["game-machine"], (machine, state) => {
+				console.log(`${machine}:${JSON.stringify(state)}`, last);
+			});
+		}
+	});
 }
 
 service.start();

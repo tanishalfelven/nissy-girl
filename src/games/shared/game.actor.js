@@ -1,80 +1,52 @@
-import { fromCallback } from "xstate";
-
-import { createRenderer } from "./render.js";
-
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./game.consts.js";
-
 import { rafLooper } from "$util/time.js";
 
-let isGame = false;
-let registerCanvas = false;
+import { screenRuntime } from "$nissy-girl/screens/screen.actor.js";
 
-export const invokeGameActor = ({
-	width = CANVAS_WIDTH,
-	height = CANVAS_HEIGHT,
-} = false) => {
-	if(isGame) {
-		throw new Error("Cannot register new game actor, game in progress.");
-	}
+import { createLazyActor } from "$util/create-lazy-actor.js";
 
-	let renderer;
+export const gameActor = createLazyActor({
+	id : "game",
+	start(_started, { sendBack, receive }) {
+		sendBack({ type : "GAME_READY" });
 
-	const loop = rafLooper(() => {
-		if(!renderer) {
-			/* eslint-disable-next-line no-console */
-			console.warn("Entered game loop with no renderer, exiting.");
+		let scene = false;
 
-			return false;
-		}
+		const loop = rafLooper((dt) => {
+			if(scene.hasUpdate()) {
+				scene.update(dt);
+			}
 
-		renderer.render();
+			screenRuntime.send({ type : "RENDER_SCENE", scene : scene.getRenderable() });
 
-		return true;
-	});
+			return scene.hasUpdate();
+		});
 
-	return ({
-		id : "game",
-		src : fromCallback(({ sendBack, receive }) => {
-			registerCanvas = (canvas) => {
-				renderer = createRenderer(canvas, { width, height });
-
-				sendBack({ type : "READY" });
-			};
-
-			receive((event) => {
-				if(event.type === "START_GAME") {
-					if(!renderer) {
-						/* eslint-disable-next-line no-console */
-						console.warn("Tried to start game without a renderer!");
-
-						return false;
-					}
-
-					loop.start();
+		receive((event) => {
+			if(event.type === "REGISTER_SCENE" && event.scene) {
+				if(scene) {
+					throw new Error(`Attempted to register new scene "${event.scene.id}" while scene active {active:"${scene.id}"}`);
 				}
-			});
 
-			return () => {
-				loop.stop();
+				scene = event.scene;
 
-				// release all module vars
-				isGame = false;
-				registerCanvas = false;
-			};
-		}),
-	});
-};
+				return;
+			}
 
-export const isGameReady = () => {
-	return isGame;
-};
+			if(event.type === "REMOVE_SCENE" && scene) {
+				scene = false;
 
-export const registerCanvasToGame = (canvas) => {
-	if(!registerCanvas) {
-		return false;
-	}
+				return;
+			}
 
-	registerCanvas(canvas);
+			if(event.type === "START_SCENE" && scene) {
+				loop.start();
 
-	return true;
-};
+				return;
+			}
+		});
+
+		return () => {
+			loop.stop();
+		};
+	},
+});

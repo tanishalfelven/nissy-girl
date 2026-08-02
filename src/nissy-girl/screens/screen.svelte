@@ -1,11 +1,25 @@
 <script>
 import css from "./screens.mcss";
 
+import { screenRuntime } from "./screen.actor.js";
+
 let { children } = $props();
+
+let canvasEl = $state(false);
+
+$effect(() => {
+	if(canvasEl && screenRuntime) {
+		screenRuntime.initialize(canvasEl);
+	}
+});
 </script>
 
 <div class={css.screenborder}>
 	<div class={css.screencontainer}>
-		{@render children?.()}
+		<canvas bind:this={canvasEl} class={css.screen}></canvas>
+
+		<div class={css.screenoverlay}>
+			{@render children?.()}
+		</div>
 	</div>
 </div>

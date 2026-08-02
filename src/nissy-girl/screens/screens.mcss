@@ -38,6 +38,12 @@
 	margin-top: 0.5vh;
 }
 
+.screenoverlay {
+	composes: screen;
+	position: absolute;
+	inset: 0;
+}
+
 .errorscreen {
 	composes: screen;
 
@@ -55,7 +61,6 @@
 }
 
 .startupscreen {
-	width: screenwidth;
-	height: screenheight;
+	composes: screen;
 	image-rendering: pixelated;
 }
