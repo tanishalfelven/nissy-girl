@@ -13,30 +13,16 @@ const alias = {
 	"$util" : path.resolve("src/util"),
 };
 
-const mcssPlugin = mcss({
-	before : [
-		nested(),
-	],
-	resolvers : [
-		mcssAlias({ aliases : alias }),
-	],
-});
-
-// i am not well https://github.com/tivac/modular-css/pull/1152
-const originalTransform = mcssPlugin.transform;
-mcssPlugin.transform = async function (code, id) {
-	const result = await originalTransform.call(this, code, id);
-
-	if(result && typeof result.moduleSideEffects === "number") {
-		result.moduleSideEffects = Boolean(result.moduleSideEffects);
-	}
-
-	return result;
-};
-
 export default defineConfig({
 	plugins : [
-		mcssPlugin,
+		mcss({
+			before : [
+				nested(),
+			],
+			resolvers : [
+				mcssAlias({ aliases : alias }),
+			],
+		}),
 		svelte(),
 	],
 	resolve : {
