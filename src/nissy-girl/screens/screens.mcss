@@ -36,6 +36,9 @@
 	width: screenwidth;
 	height: screenheight;
 	margin-top: 0.5vh;
+
+	/* probably going to move this, idk why the screen is offset so slightly */
+	margin-left: 0.25vh;
 }
 
 .screenoverlay {
