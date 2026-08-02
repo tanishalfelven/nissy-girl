@@ -14,8 +14,7 @@
 		"paths": {
 			"$games/*": ["./src/games/*"],
 			"$util/*": ["./src/util/*"],
-			"$nissy-girl/*": ["./src/nissy-girl/*"],
-			"$cartridge/*": ["./src/cartridge/*"],
+			"$nissy-girl/*": ["./src/nissy-girl/*"]
 		}
 	},
 	"include": [

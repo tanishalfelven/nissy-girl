@@ -9,7 +9,7 @@ import tracker from "xstate-state-tracker";
 import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
 
-import { cartridges } from "$cartridge/cartridge.viewmodel.svelte.js";
+import { cartridges } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 import { statechart } from "$util/statechart-actors.svelte.js";
 
 import { cameraMachine } from "./camera.machine.js";

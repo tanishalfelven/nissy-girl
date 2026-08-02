@@ -9,7 +9,6 @@ import nested from "postcss-nested";
 const alias = {
 	"$games" : path.resolve("src/games"),
 	"$nissy-girl" : path.resolve("src/nissy-girl"),
-	"$cartridge" : path.resolve("src/cartridge"),
 	"$util" : path.resolve("src/util"),
 };
 

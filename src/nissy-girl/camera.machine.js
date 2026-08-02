@@ -17,7 +17,7 @@ import {
 	cartridgeX,
 	cartridgeY,
 	CARTRIDGE_SELECTION_THRESHOLD,
-} from "$cartridge/cartridge.viewmodel.svelte.js";
+} from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
 import {
 	camera,
