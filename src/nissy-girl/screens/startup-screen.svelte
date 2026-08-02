@@ -1,5 +1,5 @@
 <script>
-import StartupScreenGif from "./assets/startup-screen.gif";
+import StartupScreenGif from "./assets/startup-screen.gif?no-inline";
 
 import css from "./screens.mcss";
 
