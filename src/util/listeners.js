@@ -15,6 +15,13 @@ export const subscribers = () => {
 		subscribers : all,
 
 		add : (id, remove) => {
+			if(all.has(id)) {
+				/* eslint-disable-next-line no-console */
+				console.warn(`already subscribed to id ${id}`);
+
+				return false;
+			}
+
 			all.set(id, remove);
 
 			return id;

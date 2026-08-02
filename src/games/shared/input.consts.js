@@ -10,21 +10,21 @@ export const BUTTON_START = "start";
 export const BUTTON_SELECT = "select";
 
 export const KEYBOARD_TO_INPUT = new Map([
-	[ "w", DPAD_UP ],
-	[ "a", DPAD_LEFT ],
-	[ "s", DPAD_DOWN ],
-	[ "d", DPAD_RIGHT ],
+	[ "KeyW", DPAD_UP ],
+	[ "KeyA", DPAD_LEFT ],
+	[ "KeyS", DPAD_DOWN ],
+	[ "KeyD", DPAD_RIGHT ],
 
 	[ "ArrowUp", DPAD_UP ],
 	[ "ArrowLeft", DPAD_LEFT ],
 	[ "ArrowDown", DPAD_DOWN ],
 	[ "ArrowRight", DPAD_RIGHT ],
 
-	[ " ", BUTTON_A ],
-	[ "z", BUTTON_A ],
-	[ "j", BUTTON_A ],
-	[ "x", BUTTON_B ],
-	[ "k", BUTTON_B ],
+	[ "Space", BUTTON_A ],
+	[ "KeyZ", BUTTON_A ],
+	[ "KeyJ", BUTTON_A ],
+	[ "KeyX", BUTTON_B ],
+	[ "KeyK", BUTTON_B ],
 	[ "Enter", BUTTON_START ],
 	[ "Shift", BUTTON_SELECT ],
 ]);

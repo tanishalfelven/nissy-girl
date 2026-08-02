@@ -33,16 +33,16 @@ const startKeyListeners = (fire) => {
 	}
 
 	const handleKeyPress = (state) => (event) => {
-		console.log(event);
-
 		if(event.repeat) {
 			return;
 		}
 
-		if(KEYBOARD_TO_INPUT.has(event.key)) {
+		const hasInput = KEYBOARD_TO_INPUT.get(event.code) || KEYBOARD_TO_INPUT.get(event.key);
+
+		if(hasInput) {
 			event.preventDefault();
 
-			fire({ type : KEYBOARD_TO_INPUT.get(event.key), state });
+			fire({ type : hasInput, state });
 		}
 	};
 
