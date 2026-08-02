@@ -9,7 +9,6 @@ import tracker from "xstate-state-tracker";
 import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
 
-import { cartridges } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 import { statechart } from "$util/statechart-actors.svelte.js";
 
 import { cameraMachine } from "./camera.machine.js";
@@ -17,6 +16,7 @@ import StartupScreenComponent from "./screens/startup-screen.svelte";
 import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
+import { hasParam, getParam } from "$util/params.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -34,7 +34,18 @@ const nissyGirlMachine = createMachine({
 
 	states : {
 		off : {
+			entry : raise({ type : "HANDLE_GAME_PARAM" }),
+
 			on : {
+				HANDLE_GAME_PARAM : {
+					guard : () => hasParam("game"),
+					actions : () => nissyGirl.forceLoad(getParam("game")),
+				},
+
+				INSTANT_LOAD_GAME_READY : {
+					target : "poweredon.game",
+				},
+
 				POWER_TOGGLE : {
 					target : "poweredon",
 					actions : () => nissyGirl.togglePower(),
@@ -74,7 +85,7 @@ const nissyGirlMachine = createMachine({
 
 							on : {
 								GAME_ON_BOOT : {
-									guard : () => nissyGirl.hasInsertedCartridge,
+									guard : () => nissyGirl.hasInsertedCartridge(),
 									target : "hasgame",
 								},
 							},
@@ -83,7 +94,7 @@ const nissyGirlMachine = createMachine({
 						hasgame : {
 							after : {
 								4000 : {
-									guard : () => nissyGirl.hasInsertedCartridge,
+									guard : () => nissyGirl.hasInsertedCartridge(),
 									actions : raise({ type : "START_GAME" }),
 								},
 							},
@@ -94,7 +105,7 @@ const nissyGirlMachine = createMachine({
 				game : {
 					invoke : {
 						id : "game",
-						src : fromMachine(() => cartridges.getCurrentCartridgeGame().machine),
+						src : fromMachine(() => nissyGirl.getGame().machine),
 					},
 				},
 

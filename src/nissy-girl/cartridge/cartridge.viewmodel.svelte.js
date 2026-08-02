@@ -1,6 +1,6 @@
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
 import { clamp } from "$util/math.js";
-import { gameOrder, games } from "$games/games.js";
+import { gameOrder, games, getGameIndex } from "$games/games.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 
@@ -78,12 +78,6 @@ export const cartridges = {
 		return games.get(id);
 	},
 
-	setInserted() {
-		this.cartridgeX.set(CARTRIDGE_SELECTION_THRESHOLD);
-		this.cartridgeY.set(MAX_PROGRESS);
-		this.show();
-	},
-
 	resetCartridgePosition() {
 		cartridgeX.set(dir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
 	},
@@ -140,5 +134,18 @@ export const cartridges = {
 
 	isFullyInserted() {
 		return cartridgeY.progress === MAX_PROGRESS;
+	},
+
+	setInserted(id) {
+		index = getGameIndex(id);
+
+		if(!id) {
+			throw new Error(`Cannot get game with id: "${id}"`);
+		}
+
+		cartridgeX.set(CARTRIDGE_SELECTION_THRESHOLD);
+		cartridgeY.set(MAX_PROGRESS);
+
+		this.show();
 	},
 };

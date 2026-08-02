@@ -16,3 +16,13 @@ export const games = new Map([
 		},
 	],
 ]);
+
+export const getGameIndex = (id) => {
+	for(let i = 0; i < gameOrder.length; i++) {
+		if(id === gameOrder[i]) {
+			return i;
+		}
+	}
+
+	return false;
+};
