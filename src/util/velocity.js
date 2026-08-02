@@ -58,8 +58,8 @@ export const createVelocity = ({
 			const time = performance.now();
 
 			if(lastTime !== false) {
-				const dt = Math.max((time - lastTime) / FPS60, 1);
-				const measured = delta / dt;
+				const dt = Math.max(time - lastTime, 4);
+				const measured = delta * FPS60 / dt;
 
 				value += (measured - value) * smoothing;
 			}

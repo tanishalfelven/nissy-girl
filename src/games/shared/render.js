@@ -5,7 +5,7 @@ const COLOR_TRANSPARENT = 255;
 const COLORS = {
 	[COLOR_WHITE] : { r : 255, g : 255, b : 255 },
 	[COLOR_BLACK] : { r : 0, g : 0, b : 0 },
-	[COLOR_TRANSPARENT] : { r : 255, g : 255, b : 255, a : 255 },
+	[COLOR_TRANSPARENT] : { r : 0, g : 0, b : 0, a : 0 },
 };
 
 export const createRenderer = (canvas, { width, height }) => {
@@ -13,9 +13,6 @@ export const createRenderer = (canvas, { width, height }) => {
 	canvas.height = height;
 
 	const ctx = canvas.getContext("2d", { alpha : false });
-
-	ctx.width = width;
-	ctx.height = height;
 
 	const transient = new Uint8Array(width * height);
 	const committed = new Uint8Array(width * height);

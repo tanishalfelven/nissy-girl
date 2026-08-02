@@ -34,7 +34,7 @@ export const rafLooper = (func) => {
 	};
 
 	const loop = (now) => {
-		const dt = Math.max((now - prevTime) / FPS60, 1);
+		const dt = Math.min((now - prevTime) / FPS60, 4);
 
 		const run = func(dt);
 
