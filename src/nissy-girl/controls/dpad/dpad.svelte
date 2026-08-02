@@ -4,7 +4,7 @@ import { controls } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
 import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
-import { input } from "$nissy-girl/input.svelte.js";
+import { input } from "$nissy-girl/input.js";
 import {
 	TRIGGERED,
 	RELEASED,

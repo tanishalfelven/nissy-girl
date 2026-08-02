@@ -33,6 +33,8 @@ const startKeyListeners = (fire) => {
 	}
 
 	const handleKeyPress = (state) => (event) => {
+		console.log(event);
+
 		if(event.repeat) {
 			return;
 		}

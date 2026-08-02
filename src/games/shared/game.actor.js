@@ -4,7 +4,7 @@ import { createRenderer } from "./render.js";
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./game.consts.js";
 
-import { input } from "$nissy-girl/input.svelte.js";
+import { input } from "$nissy-girl/input.js";
 
 import { rafLooper } from "$util/time.js";
 

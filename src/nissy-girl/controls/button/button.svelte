@@ -1,6 +1,6 @@
 <script module>
 import { controls } from "$util/touch-action.svelte.js";
-import { input } from "$nissy-girl/input.svelte.js";
+import { input } from "$nissy-girl/input.js";
 import {
 	BUTTON_A,
 	BUTTON_B,
