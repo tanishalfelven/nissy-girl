@@ -5,25 +5,21 @@ import {
 	raise,
 } from "xstate";
 
-import { crossedThresholdWrapInclusive } from "$util/math.js";
 import {
 	createReleaseVelocity,
 	ROTATE_VELOCITYID,
 	VERT_VELOCITYID,
 } from "$util/release-velocity.actor.js";
-import { MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
 import {
 	cartridges,
 	cartridgeX,
 	cartridgeY,
-	CARTRIDGE_SELECTION_THRESHOLD,
 } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
 import {
 	camera,
 	rotation,
 	zoom,
-	ZOOM_ROTATION_THRESHOLD,
 } from "./camera.viewmodel.svelte.js";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
@@ -62,24 +58,14 @@ export const cameraMachine = createMachine({
 			on : {
 				ROTATE_SWIPE : [
 					{
-						// This is a bit odd but we don't bother creating an anchor for our
-						// rotation threshold BECAUSE we want to preserve momentum
 						guard : ({ event }) => {
-							// Replicating anchor logic here - this lets us continue rotation
-							// upon return
-							if(rotation.progress === ZOOM_ROTATION_THRESHOLD
-								&& camera.returnFromCartridgeFlow
-							) {
+							// Zoom angle must be rotated into to start, not away
+							if(camera.isCurrentlyAtZoomAngle()) {
 								return false;
 							}
 
-							return crossedThresholdWrapInclusive(
-								rotation.progress,
-								rotation.project(event.delta),
-								ZOOM_ROTATION_THRESHOLD,
-							);
+							return camera.enteringZoomAngle(event.delta);
 						},
-						actions : () => rotation.set(ZOOM_ROTATION_THRESHOLD),
 						target : "zooming",
 					},
 					{
@@ -89,7 +75,7 @@ export const cameraMachine = createMachine({
 							// prepares us to re-enter cartridge scroll
 							camera.clearReturningFromCartridgeFlow();
 
-							if(!nissyGirl.hasInsertedCartridge) {
+							if(!nissyGirl.hasInsertedCartridge()) {
 								cartridges.setDirection(Math.sign(event.delta));
 							}
 						},
@@ -123,22 +109,22 @@ export const cameraMachine = createMachine({
 
 				TEST_ZOOM_BOUNDS : [
 					{
-						guard : () => zoom.progress === MAX_PROGRESS,
+						guard : () => camera.isMaxZoomedOut(),
 						actions : raise({ type : "SCROLL_AT_MAX_CARTRIDGE_SELECT" }),
 					},
 					{
-						guard : () => zoom.progress === MIN_PROGRESS,
+						guard : () => camera.isMaxZoomedIn(),
 						target : "playing",
 					},
 				],
 
 				SCROLL_AT_MAX_CARTRIDGE_SELECT : [
 					{
-						guard : () => nissyGirl.hasInsertedCartridge,
+						guard : () => nissyGirl.hasInsertedCartridge(),
 						target : "cartridge select.cartridge manipulate",
 					},
 					{
-						guard : () => !camera.returnFromCartridgeFlow,
+						guard : () => !camera.returnFromCartridgeFlow(),
 						target : "cartridge select",
 					},
 				],
@@ -152,7 +138,7 @@ export const cameraMachine = createMachine({
 				BACK_TO_ZOOM : {
 					target : "zooming",
 					actions : () => {
-						if(!nissyGirl.hasInsertedCartridge) {
+						if(!nissyGirl.hasInsertedCartridge()) {
 							cartridges.hide();
 						}
 
@@ -182,16 +168,14 @@ export const cameraMachine = createMachine({
 							actions : [
 								({ event }) => cartridgeX.update(event.delta),
 								raise(({ event }) => ({
-									type : "TEST_CARTRIDGE_X_BOUNDS",
+									type : "CARTRIDGE_IS_OFF_SCREEN",
 									dir : Math.sign(event.delta),
 								})),
 							],
 						},
 
-						TEST_CARTRIDGE_X_BOUNDS : {
-							guard : () =>
-								(cartridgeX.progress === MAX_PROGRESS
-									|| cartridgeX.progress === MIN_PROGRESS),
+						CARTRIDGE_IS_OFF_SCREEN : {
+							guard : () => cartridges.isOffScreen(),
 
 							actions : [
 								({ event }) => cartridges.step(event.dir),
@@ -205,8 +189,7 @@ export const cameraMachine = createMachine({
 						},
 
 						SELECT_CARTRIDGE : {
-							guard : () =>
-								cartridgeX.progress === CARTRIDGE_SELECTION_THRESHOLD,
+							guard : () => cartridges.cartridgePositionedOverConsole(),
 							target : "cartridge manipulate",
 						},
 					},
@@ -219,9 +202,18 @@ export const cameraMachine = createMachine({
 					entry : [
 						updateVelocityTarget(VERT_VELOCITYID, cartridgeY),
 						updateVelocityTarget(ROTATE_VELOCITYID, cartridgeY),
+						raise({ type : "CARTRIDGE_FUCKED_WIDTH" }),
 					],
 
 					on : {
+						CARTRIDGE_FUCKED_WIDTH : {
+							guard : () => cartridges.isCartridgeEjected(),
+							actions : [
+								() => nissyGirl.ejectCartridge(),
+								sendParent({ type : "CARTRIDGE_EJECTED" }),
+							],
+						},
+
 						CART_DRAG_START : {
 							actions : sendTo(VERT_VELOCITYID, { type : "DRAG_START" }),
 						},
@@ -250,21 +242,17 @@ export const cameraMachine = createMachine({
 						// I dislike canonical entry direction as "yes" or opposite as "no"
 						ROTATE_SWIPE : {
 							actions : [
-								raise({ type : "TEST_CARTRIDGE_Y_BOUNDS" }),
+								raise({ type : "CARTRIDGE_INSERTED_OR_RETURNED" }),
 							],
 						},
 
-						TEST_CARTRIDGE_Y_BOUNDS : [
+						CARTRIDGE_INSERTED_OR_RETURNED : [
 							{
-								guard : () => cartridgeY.progress === MIN_PROGRESS,
-								actions : [
-									() => nissyGirl.ejectCartridge(),
-									sendParent({ type : "CARTRIDGE_EJECTED" }),
-								],
+								guard : () => cartridges.isReturnedToCarousel(),
 								target : "carousel",
 							},
 							{
-								guard : () => cartridgeY.progress === MAX_PROGRESS,
+								guard : () => cartridges.isFullyInserted(),
 								actions : [
 									() => nissyGirl.insertCartridge(cartridges.getCurrentCartridgeId()),
 									raise({ type : "BACK_TO_ZOOM" }),

@@ -78,6 +78,12 @@ export const cartridges = {
 		return games.get(id);
 	},
 
+	setInserted() {
+		this.cartridgeX.set(CARTRIDGE_SELECTION_THRESHOLD);
+		this.cartridgeY.set(MAX_PROGRESS);
+		this.show();
+	},
+
 	resetCartridgePosition() {
 		cartridgeX.set(dir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
 	},
@@ -113,5 +119,26 @@ export const cartridges = {
 
 	isFinishedIterating() {
 		return finishedIteratingCartridge;
+	},
+
+	isCartridgeEjected() {
+		return cartridgeY.progress > 0.08;
+	},
+
+	isOffScreen() {
+		return cartridgeX.progress === MAX_PROGRESS
+			|| cartridgeX.progress === MIN_PROGRESS;
+	},
+
+	cartridgePositionedOverConsole() {
+		return cartridgeX.progress === CARTRIDGE_SELECTION_THRESHOLD;
+	},
+
+	isReturnedToCarousel() {
+		return cartridgeY.progress === MIN_PROGRESS;
+	},
+
+	isFullyInserted() {
+		return cartridgeY.progress === MAX_PROGRESS;
 	},
 };

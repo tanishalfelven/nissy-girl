@@ -24,7 +24,7 @@ export const nissyGirl = {
 		isPowered = !isPowered;
 	},
 
-	get hasInsertedCartridge() {
+	hasInsertedCartridge() {
 		return insertedCartridge !== false;
 	},
 

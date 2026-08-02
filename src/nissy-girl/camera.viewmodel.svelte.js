@@ -1,4 +1,4 @@
-import { wrap, clamp } from "$util/math.js";
+import { wrap, clamp, crossedThresholdWrapInclusive } from "$util/math.js";
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
 
 export const ZOOM_ROTATION_THRESHOLD = 0.5;
@@ -36,8 +36,36 @@ export const zoom = createProgress({
 });
 
 export const camera = {
-	get returnFromCartridgeFlow() {
+	returnFromCartridgeFlow() {
 		return returnFromCartridgeFlow;
+	},
+
+	isMaxZoomedOut() {
+		return zoom.progress === MAX_PROGRESS;
+	},
+
+	isMaxZoomedIn() {
+		return zoom.progress === MIN_PROGRESS;
+	},
+
+	enteringZoomAngle(delta) {
+		const isEnteringZoomAngle = crossedThresholdWrapInclusive(
+			rotation.progress,
+			rotation.project(delta),
+			ZOOM_ROTATION_THRESHOLD,
+		);
+
+		// this is odd for not being a pure function but its nice to encapsulate
+		if(isEnteringZoomAngle) {
+			rotation.set(ZOOM_ROTATION_THRESHOLD);
+		}
+
+		return isEnteringZoomAngle;
+	},
+
+	isCurrentlyAtZoomAngle() {
+		return rotation.progress === ZOOM_ROTATION_THRESHOLD
+			&& returnFromCartridgeFlow;
 	},
 
 	setReturningFromCartridgeFlow() {
