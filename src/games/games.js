@@ -24,5 +24,5 @@ export const getGameIndex = (id) => {
 		}
 	}
 
-	return false;
+	return -1;
 };

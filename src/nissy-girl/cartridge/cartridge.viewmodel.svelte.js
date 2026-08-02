@@ -139,7 +139,7 @@ export const cartridges = {
 	setInserted(id) {
 		index = getGameIndex(id);
 
-		if(!id) {
+		if(index === -1) {
 			throw new Error(`Cannot get game with id: "${id}"`);
 		}
 
