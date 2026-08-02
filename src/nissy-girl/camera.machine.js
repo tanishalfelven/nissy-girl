@@ -202,11 +202,11 @@ export const cameraMachine = createMachine({
 					entry : [
 						updateVelocityTarget(VERT_VELOCITYID, cartridgeY),
 						updateVelocityTarget(ROTATE_VELOCITYID, cartridgeY),
-						raise({ type : "CARTRIDGE_FUCKED_WIDTH" }),
+						raise({ type : "CARTRIDGE_FUCKED_WITH" }),
 					],
 
 					on : {
-						CARTRIDGE_FUCKED_WIDTH : {
+						CARTRIDGE_FUCKED_WITH : {
 							guard : () => cartridges.isCartridgeEjected(),
 							actions : [
 								() => nissyGirl.ejectCartridge(),
