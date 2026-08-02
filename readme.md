@@ -10,7 +10,7 @@ Built with Svelte, XState, and CSS.
 
 https://github.com/user-attachments/assets/73889961-e462-4c6e-bf4b-0b81d3ca164d
 
-No WebGL, Canvas, or generated art here.
+3d console is rendered purely with HTML/CSS/JS. No generated art here.
 
 ## License
 
