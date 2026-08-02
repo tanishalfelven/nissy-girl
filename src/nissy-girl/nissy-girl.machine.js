@@ -116,8 +116,10 @@ statechart.set(
 	}),
 );
 
-/* eslint-disable-next-line -- this is nice for dev, whatever for now */
-tracker(service, (machine, state) => console.log(`${machine}:${JSON.stringify(state)}`));
+if(import.meta.env.DEV) {
+	/* eslint-disable-next-line -- dev only */
+	tracker(service, (machine, state) => console.log(`${machine}:${JSON.stringify(state)}`));
+}
 
 service.start();
 
