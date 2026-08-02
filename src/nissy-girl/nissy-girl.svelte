@@ -6,6 +6,7 @@ import Cartridge from "$cartridge/cartridge.svelte";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
+import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
@@ -51,11 +52,9 @@ let { children } = $props();
 				translateZ(calc({displayZoom} * 3vw))
 				translateY(calc({displayZoom} * 2.7vh));"
 	>
-		<div class={css.screencontainer}>
-			<div class={css.screen}>
-				{@render children?.()}
-			</div>
-		</div>
+		<Screen>
+			{@render children?.()}
+		</Screen>
 
 		<div class={css.front}>
 			<div

@@ -1,40 +1,6 @@
 import { rafThrottle } from "./time.js";
 
-const domListenerSub = (node, id, func) => {
-	node.addEventListener(id, func);
-
-	return () => {
-		if(node) {
-			node.removeEventListener(id, func);
-		}
-	};
-};
-
-const subscribers = () => {
-	const all = new Map();
-
-	return {
-		add : (id, remove) => {
-			all.set(id, remove);
-
-			return id;
-		},
-
-		remove : (id) => {
-			all.get(id)?.();
-
-			all.delete(id);
-		},
-
-		removeAll : () => {
-			for(const remove of all.values()) {
-				remove();
-			}
-
-			all.clear();
-		},
-	};
-};
+import { subscribers, domListenerSub } from "./listeners.js";
 
 /**
  * Svelte action for touch delta controls
@@ -154,10 +120,18 @@ export const controls = (node, {
 	const sub = subscribers();
 
 	let canTrigger = $state(true);
+	let activePointerId = $state(false);
 
 	const handleEnd = (e) => {
+		if(activePointerId !== e.pointerId) {
+			return;
+		}
+
 		e.stopPropagation();
 		e.preventDefault();
+		node.releasePointerCapture(e.pointerId);
+
+		activePointerId = false;
 
 		canTrigger = false;
 
@@ -176,8 +150,14 @@ export const controls = (node, {
 	});
 
 	const handlerDown = (e) => {
+		if(activePointerId !== false && activePointerId !== e.pointerId) {
+			return;
+		}
+
 		e.preventDefault();
 		e.stopPropagation();
+
+		activePointerId = e.pointerId;
 		node.setPointerCapture(e.pointerId);
 
 		fire(e);
@@ -186,6 +166,10 @@ export const controls = (node, {
 	$effect(() => {
 		sub.add("pointerdown", domListenerSub(node, "pointerdown", handlerDown));
 		sub.add("pointermove", domListenerSub(node, "pointermove", (e) => {
+			if(activePointerId !== e.pointerId) {
+				return;
+			}
+
 			e.preventDefault();
 			e.stopPropagation();
 

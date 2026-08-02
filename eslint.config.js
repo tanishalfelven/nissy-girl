@@ -56,6 +56,7 @@ export default defineConfig([
 			"@stylistic/quotes" : [ "error", "double" ],
 			"@stylistic/semi" : [ "error", "always" ],
 			"@stylistic/key-spacing" : [ "error", { beforeColon : true, afterColon : true }],
+			"@stylistic/brace-style" : [ "error", "1tbs" ],
 			"@stylistic/array-bracket-spacing" : [
 				"error", "always",
 				{ arraysInArrays : false, objectsInArrays : false },

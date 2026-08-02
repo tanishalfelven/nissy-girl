@@ -1,12 +1,23 @@
 <script module>
 import { controls } from "$util/touch-action.svelte.js";
+import { input } from "$nissy-girl/input.svelte.js";
+import {
+	BUTTON_A,
+	BUTTON_B,
+	BUTTON_SELECT,
+	BUTTON_START,
+	RELEASED,
+	TRIGGERED,
+} from "$games/shared/input.consts.js";
+
+export {
+	BUTTON_A,
+	BUTTON_B,
+	BUTTON_SELECT,
+	BUTTON_START,
+} from "$games/shared/input.consts.js";
 
 import css from "./button.mcss";
-
-export const BUTTON_A = "a";
-export const BUTTON_B = "b";
-export const BUTTON_START = "start";
-export const BUTTON_SELECT = "select";
 
 const BUTTONS_BEAN = new Set([ BUTTON_START, BUTTON_SELECT ]);
 const BUTTONS_ROUND = new Set([ BUTTON_A, BUTTON_B ]);
@@ -29,6 +40,12 @@ let { button } = $props();
 
 let isPressed = $state(false);
 
+input.subscribe(({ type, state }) => {
+	if(type === button) {
+		isPressed = state === TRIGGERED;
+	}
+});
+
 const type = $derived(getButtonType(button));
 
 const getTransform = (isPressed) => {
@@ -47,9 +64,21 @@ const getTransform = (isPressed) => {
 <div
 	use:controls={{
 		fire : () => {
+			if(isPressed) {
+				return;
+			}
+
+			input.fire({ type : button, state : TRIGGERED });
+
 			isPressed = true;
 		},
 		end : () => {
+			if(!isPressed) {
+				return;
+			}
+
+			input.fire({ type : button, state : RELEASED });
+
 			isPressed = false;
 		},
 	}}

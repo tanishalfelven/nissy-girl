@@ -1,8 +1,48 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
+@value depth from "$nissy-girl/nissy-girl.mcss";
+@value screenheight: 28vh;
+@value startupsequencewidth: calc(-35vh / 16 * 15);
+
+.screen {
+	width: var(--screen-width);
+	height: var(--screen-height);
+}
+
+.screenborder {
+	position: absolute;
+	transform: translateZ(calc(depth / 2.3));
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 50%;
+
+	background-color: black;
+}
+
+.screencontainer {
+	position: relative;
+
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	aspect-ratio: 5 / 4;
+	width: var(--screen-width);
+	height: var(--screen-height);
+	margin-top: 0.5vh;
+}
 
 .errorscreen {
+	composes: screen;
+
 	width: 100%;
-	height: 100%;
+	height: screenheight;
 	padding: calc(0.3 * px1);
 
 	font-family: monospace;
@@ -16,29 +56,31 @@
 
 @keyframes startupanim {
 	0% {
-		transform: translateX(0);
+		transform: translateX(calc(var(--screen-width) * 15));
 	}
 
 	100% {
-		transform: translateX(calc(-100% / 16 * 15));
+		transform: translateX(0);
 	}
 }
 
 .startupscreen {
-	aspect-ratio: 2000 / 100;
-	height: 100%;
-	margin-top: 1%;
+	position: absolute;
+	right: 0;
+
+	width: calc(var(--screen-width) * 16);
+	height: var(--screen-height);
 
 	background-image: url("./assets/startup-screen.png");
 	background-repeat: no-repeat;
-	background-size: cover;
+	background-size: contain;
 
 	image-rendering: pixelated;
 
 	animation-name: startupanim;
 	animation-duration: 1100ms;
 	animation-timing-function: steps(15);
-	animation-fill-mode: forwards;
+	animation-fill-mode: both;
 	animation-delay: 750ms;
 	animation-direction: normal;
 }
