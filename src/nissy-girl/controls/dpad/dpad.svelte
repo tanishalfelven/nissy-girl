@@ -40,7 +40,7 @@ input.subscribe(() => {
 	}
 
 	dpadX = -Number(input.state[DPAD_LEFT]) + Number(input.state[DPAD_RIGHT]);
-	dpadY = -Number(input.state[DPAD_UP]) + Number(input.state[DPAD_DOWN]);
+	dpadY = Number(input.state[DPAD_UP]) + -Number(input.state[DPAD_DOWN]);
 });
 
 const handleInput = () => {

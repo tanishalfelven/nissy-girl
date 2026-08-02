@@ -1,13 +1,7 @@
 <script>
-import { nissyGirlMachine } from "$nissy-girl/nissy-girl.machine.js";
+import StartupScreenGif from "./assets/startup-screen.gif";
+
 import css from "./screens.mcss";
 </script>
 
-<div
-	class={css.startupscreen}
-	on:animationend={() => {
-		setTimeout(() => {
-			nissyGirlMachine.send({ type : "BOOT_FINISH" });
-		}, 3000);
-	}}
-></div>
+<img src={StartupScreenGif} alt="startup gif" class={css.startupscreen} />

@@ -81,8 +81,8 @@ const nissyGirlMachine = createMachine({
 						},
 
 						hasgame : {
-							on : {
-								BOOT_FINISH : {
+							after : {
+								4000 : {
 									guard : () => nissyGirl.hasInsertedCartridge,
 									actions : raise({ type : "START_GAME" }),
 								},
