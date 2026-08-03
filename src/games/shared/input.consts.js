@@ -1,13 +1,13 @@
-export const TRIGGERED = "triggered";
-export const RELEASED = "released";
-export const DPAD_DOWN = "dpad_down";
-export const DPAD_LEFT = "dpad_left";
-export const DPAD_RIGHT = "dpad_right";
-export const DPAD_UP = "dpad_up";
-export const BUTTON_B = "b";
-export const BUTTON_A = "a";
-export const BUTTON_START = "start";
-export const BUTTON_SELECT = "select";
+export const TRIGGERED = "TRIGGERED";
+export const RELEASED = "RELEASED";
+export const DPAD_DOWN = "DPAD_DOWN";
+export const DPAD_LEFT = "DPAD_LEFT";
+export const DPAD_RIGHT = "DPAD_RIGHT";
+export const DPAD_UP = "DPAD_UP";
+export const BUTTON_B = "B";
+export const BUTTON_A = "A";
+export const BUTTON_START = "START";
+export const BUTTON_SELECT = "SELECT";
 
 export const KEYBOARD_TO_INPUT = new Map([
 	[ "KeyW", DPAD_UP ],

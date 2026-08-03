@@ -10,19 +10,24 @@ export const gameActor = createLazyActor({
 		sendBack({ type : "GAME_READY" });
 
 		let scene = false;
+		let handleInput = false;
 
 		const loop = rafLooper((dt) => {
-			if(!scene) {
-				return false;
+			let hasInput = false;
+
+			if(scene) {
+				if(scene.hasUpdate()) {
+					scene.update(dt);
+				}
+
+				screenRuntime.send({ type : "RENDER_SCENE", renderables : scene.getRenderables() });
 			}
 
-			if(scene.hasUpdate()) {
-				scene.update(dt);
+			if(handleInput) {
+				hasInput = handleInput(dt);
 			}
 
-			screenRuntime.send({ type : "RENDER_SCENE", renderables : scene.getRenderables() });
-
-			return scene.hasUpdate();
+			return scene.hasUpdate() || hasInput;
 		});
 
 		receive((event) => {
@@ -32,6 +37,36 @@ export const gameActor = createLazyActor({
 				}
 
 				scene = event.scene;
+
+				return;
+			}
+
+			if(event.type === "REGISTER_INPUT" && event.handleInput) {
+				// input handler just exists across states
+				handleInput = event.handleInput;
+
+				// it can request scenes but does not imply need of game loop
+				// input must request every frame it wishes to sample
+
+				return;
+			}
+
+			if(event.type === "REMOVE_INPUT") {
+				handleInput = false;
+
+				return;
+			}
+
+			if(event.type === "ENTITY_MESSAGE") {
+				if(scene) {
+					scene.send(event.entityId, event.event);
+				}
+
+				return;
+			}
+
+			if(event.type === "REQUEST_ITERATION") {
+				loop.start();
 
 				return;
 			}

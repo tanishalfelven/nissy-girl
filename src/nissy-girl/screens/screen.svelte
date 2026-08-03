@@ -8,7 +8,7 @@ let { children } = $props();
 let canvasEl = $state(false);
 
 $effect(() => {
-	if(canvasEl && screenRuntime) {
+	if(canvasEl && screenRuntime.getIsActive() && !screenRuntime.isInitialized()) {
 		screenRuntime.initialize(canvasEl);
 	}
 });

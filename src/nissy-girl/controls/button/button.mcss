@@ -14,14 +14,14 @@
 		width: calc(18 * px1);
 		padding: calc(5 * px1);
 
-		&[data-button="a"] {
+		&[data-button="A"] {
 			right: calc(8 * px1);
 			bottom: calc(65 * px1);
 			padding-left: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-a.png");
 		}
 
-		&[data-button="b"] {
+		&[data-button="B"] {
 			right: calc(34.5 * px1);
 			bottom: calc(54 * px1);
 			padding-right: calc(3.5 * px1) !important;
@@ -40,11 +40,11 @@
 
 		background-image: url("./assets/button-bean.png");
 
-		&[data-button="start"] {
+		&[data-button="START"] {
 			right: calc(47 * px1);
 		}
 
-		&[data-button="select"] {
+		&[data-button="SELECT"] {
 			left: calc(45 * px1);
 		}
 	}

@@ -110,7 +110,9 @@ const nissyGirlMachine = createMachine({
 
 						hasgame : {
 							on : {
-								CARTRIDGE_EJECTED : raise({ type : "CARTRIDGE_ERROR" }),
+								CARTRIDGE_EJECTED : {
+									actions : raise({ type : "CARTRIDGE_ERROR" }),
+								},
 							},
 
 							after : {
@@ -139,7 +141,9 @@ const nissyGirlMachine = createMachine({
 								})),
 						},
 
-						CARTRIDGE_EJECTED : raise({ type : "CARTRIDGE_ERROR" }),
+						CARTRIDGE_EJECTED : {
+							actions : raise({ type : "CARTRIDGE_ERROR" }),
+						},
 					},
 				},
 

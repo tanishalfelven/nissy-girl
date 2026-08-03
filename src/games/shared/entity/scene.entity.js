@@ -39,7 +39,7 @@ import { createSprite } from "$util/sprite.js";
  */
 export const createScene = ({
 	id,
-	entities,
+	entities : entityFactories,
 	start = noopFalseFunction,
 	stop = noopFalseFunction,
 	sendToGameActor,
@@ -47,6 +47,14 @@ export const createScene = ({
 	sendToGameMachine,
 }) => {
 	let isRunning = false;
+
+	const entities = [];
+
+	for(const createEntity of entityFactories) {
+		entities.push(createEntity());
+	}
+
+	const entityMap = new Map(entities.map((entity) => [ entity.id, entity ]));
 
 	const scene = {
 		id,
@@ -65,6 +73,19 @@ export const createScene = ({
 			start(this);
 
 			sendToGameActor({ type : "START_SCENE", scene });
+		},
+
+		send(entityId, event) {
+			const entity = entityMap.get(entityId);
+
+			if(!entity) {
+				/* eslint-disable-next-line no-console */
+				console.warn(`[scene.handleEntityMessage:${id}] Unable to send message to entity "${entityId}"`);
+
+				return;
+			}
+
+			entity?.send(event);
 		},
 
 		async load() {

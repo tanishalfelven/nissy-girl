@@ -230,7 +230,7 @@ export const cameraMachine = createMachine({
 						},
 
 						HAS_CARTRIDGE_EJECTED : {
-							guard : () => cartridges.isCartridgeEjected(),
+							guard : () => cartridges.isCartridgeEjected() && nissyGirl.hasInsertedCartridge(),
 							actions : [
 								() => nissyGirl.ejectCartridge(),
 								sendParent({ type : "CARTRIDGE_EJECTED" }),

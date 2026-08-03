@@ -15,7 +15,7 @@ import {
 } from "$games/shared/input.consts.js";
 
 const MAX_TILT = 3;
-const TILT_DEADZONE = 0.4;
+const TILT_DEADZONE = 0.35;
 
 const handleInput = () => {
 	const xTriggered = Math.abs(dpadX) > TILT_DEADZONE;

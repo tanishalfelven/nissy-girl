@@ -61,10 +61,10 @@ export const createLazyActor = ({
 			if(initializeValue || !fromCallbackInput) {
 				if(import.meta.env.DEV) {
 					/* eslint-disable-next-line no-console */
-					console.warn(`[createLazyActor] initialize called before invoke, throwing away (catastrophic failure, ${id} may never initialize.`);
-
-					return;
+					console.warn(`[createLazyActor]:"${id}" initialize called before invoke, throwing away (catastrophic failure, may never initialize.)`);
 				}
+
+				return;
 			}
 
 			initializeValue = value;
