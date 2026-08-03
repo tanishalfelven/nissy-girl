@@ -74,6 +74,7 @@ export default defineConfig([
 						export : { after : true },
 						const : { after : true },
 						let : { after : true },
+						else : { after : true },
 					},
 				},
 			],
@@ -89,6 +90,9 @@ export default defineConfig([
 				},
 			],
 			"import-x/extensions" : [ "error", "ignorePackages", { fix : true }],
+			"jsdoc/require-param-description" : "off",
+			"jsdoc/require-returns-description" : "off",
+			"jsdoc/require-property-description" : "off",
 		},
 	},
 	{

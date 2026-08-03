@@ -6,6 +6,7 @@
 .screen {
 	width: screenwidth;
 	height: screenheight;
+	image-rendering: pixelated;
 }
 
 .screenborder {
@@ -65,5 +66,4 @@
 
 .startupscreen {
 	composes: screen;
-	image-rendering: pixelated;
 }

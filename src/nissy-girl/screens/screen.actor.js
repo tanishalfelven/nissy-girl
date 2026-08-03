@@ -10,7 +10,17 @@ export const screenRuntime = createLazyActor({
 		sendBack({ type : "RENDERER_READY" });
 
 		receive((event) => {
-			console.log(event);
+			if(event.type === "RENDER_SCENE" && event.renderables) {
+				renderer.render(event.renderables);
+
+				return;
+			}
+
+			if(event.type === "CLEAR_SCREEN") {
+				renderer.clearBackground();
+
+				return;
+			}
 		});
 
 		return () => {

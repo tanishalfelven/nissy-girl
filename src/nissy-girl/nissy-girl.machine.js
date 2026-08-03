@@ -155,14 +155,20 @@ statechart.set(
 	}),
 );
 
-let game = false;
+const DEBUG_MACHINE = false;
 
-if(import.meta.env.DEV) {
+if(DEBUG_MACHINE) {
+	let game = false;
+
 	tracker(service, (_machine, _state, last) => {
+		/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
+		console.log(`${_machine}:${JSON.stringify(_state)}`, last);
+
 		if(!game && last?.children?.["game-machine"]) {
 			game = true;
 
 			tracker(last?.children?.["game-machine"], (machine, state) => {
+				/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
 				console.log(`${machine}:${JSON.stringify(state)}`, last);
 			});
 		}

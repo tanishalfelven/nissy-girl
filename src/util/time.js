@@ -42,7 +42,7 @@ export const rafLooper = (func) => {
 
 		if(run) {
 			id = requestAnimationFrame(loop);
-		} else{
+		} else {
 			stop();
 		}
 	};

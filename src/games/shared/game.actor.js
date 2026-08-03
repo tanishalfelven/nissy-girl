@@ -16,7 +16,7 @@ export const gameActor = createLazyActor({
 				scene.update(dt);
 			}
 
-			screenRuntime.send({ type : "RENDER_SCENE", scene : scene.getRenderable() });
+			screenRuntime.send({ type : "RENDER_SCENE", renderables : scene.getRenderables() });
 
 			return scene.hasUpdate();
 		});
@@ -35,6 +35,8 @@ export const gameActor = createLazyActor({
 			if(event.type === "REMOVE_SCENE" && scene) {
 				scene = false;
 
+				screenRuntime.send({ type : "CLEAR_SCREEN" });
+
 				return;
 			}
 
@@ -46,6 +48,8 @@ export const gameActor = createLazyActor({
 		});
 
 		return () => {
+			screenRuntime.send({ type : "CLEAR_SCREEN" });
+
 			loop.stop();
 		};
 	},

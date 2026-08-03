@@ -116,7 +116,7 @@ export const cartridges = {
 	},
 
 	isCartridgeEjected() {
-		return cartridgeY.progress > 0.08;
+		return cartridgeY.progress < 0.96;
 	},
 
 	isOffScreen() {

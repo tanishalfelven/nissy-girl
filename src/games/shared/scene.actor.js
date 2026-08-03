@@ -14,6 +14,8 @@ export const invokeScene = ({
 }) => ({
 	id,
 	src : fromCallback(({ sendBack }) => {
+		let cancelled = false;
+
 		const scene = createScene({
 			id,
 			entities,
@@ -23,8 +25,20 @@ export const invokeScene = ({
 			sendToGameMachine : (event) => sendBack(event),
 		});
 
-		scene.start();
+		scene.load().then(() => {
+			if(cancelled) {
+				return;
+			}
 
-		return () => scene.stop();
+			scene.start();
+		});
+
+		return () => {
+			cancelled = true;
+
+			if(scene) {
+				scene.stop();
+			}
+		};
 	}),
 });

@@ -1,8 +1,8 @@
 import {
 	createMachine,
 	sendTo,
-	sendParent,
 	raise,
+	sendParent,
 } from "xstate";
 
 import {
@@ -202,18 +202,9 @@ export const cameraMachine = createMachine({
 					entry : [
 						updateVelocityTarget(VERT_VELOCITYID, cartridgeY),
 						updateVelocityTarget(ROTATE_VELOCITYID, cartridgeY),
-						raise({ type : "CARTRIDGE_FUCKED_WITH" }),
 					],
 
 					on : {
-						CARTRIDGE_FUCKED_WITH : {
-							guard : () => cartridges.isCartridgeEjected(),
-							actions : [
-								() => nissyGirl.ejectCartridge(),
-								sendParent({ type : "CARTRIDGE_EJECTED" }),
-							],
-						},
-
 						CART_DRAG_START : {
 							actions : sendTo(VERT_VELOCITYID, { type : "DRAG_START" }),
 						},
@@ -228,13 +219,21 @@ export const cameraMachine = createMachine({
 								({ event }) => ({
 									type : "DRAG_DELTA",
 									delta : event.delta,
-								}
-								)),
+								})),
 						},
 
 						CART_SWIPE : {
 							actions : [
 								({ event }) => cartridgeY.update(event.delta),
+								raise({ type : "HAS_CARTRIDGE_EJECTED" }),
+							],
+						},
+
+						HAS_CARTRIDGE_EJECTED : {
+							guard : () => cartridges.isCartridgeEjected(),
+							actions : [
+								() => nissyGirl.ejectCartridge(),
+								sendParent({ type : "CARTRIDGE_EJECTED" }),
 							],
 						},
 

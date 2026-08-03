@@ -3,6 +3,8 @@ import { createMachine } from "xstate";
 import { gameActor } from "$games/shared/game.actor.js";
 
 import { invokeScene } from "$games/shared/scene.actor.js";
+import { createArtboard } from "./artboard.entity.js";
+import { createCursor } from "./cursor.entity.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
@@ -25,7 +27,10 @@ export const paintMachine = createMachine({
 		drawing : {
 			invoke : invokeScene({
 				id : "drawing",
-				entities : [],
+				entities : [
+					createArtboard(),
+					createCursor(),
+				],
 			}),
 		},
 	},

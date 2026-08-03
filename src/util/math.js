@@ -3,6 +3,8 @@ import {
 	MAX_PROGRESS,
 } from "./progress.svelte.js";
 
+/** @import { Rect } from "$games/shared/renderable.consts.js" */
+
 export const roundHundredths = (n) => Math.floor(n * 100) / 100;
 
 export const clamp = (value, min, max) => Math.min(max, Math.max(value, min));
@@ -35,3 +37,39 @@ export const crossedThresholdWrapInclusive = (from, to, threshold) => {
 };
 
 export const lerp = (min, max, t) => min + (max - min) * t;
+
+/**
+ * intersection of two rects, or false when they don't overlap
+ * @param {Rect} a
+ * @param {Rect} b
+ * @returns {Rect|false}
+ */
+export const intersectRects = (a, b) => {
+	const x = Math.max(a.x, b.x);
+	const y = Math.max(a.y, b.y);
+	const right = Math.min(a.x + a.width, b.x + b.width);
+	const bottom = Math.min(a.y + a.height, b.y + b.height);
+
+	if(right <= x || bottom <= y) {
+		return false;
+	}
+
+	return { x, y, width : right - x, height : bottom - y };
+};
+
+/**
+ * smallest rect containing both rects
+ * @param {Rect} a
+ * @param {Rect} b
+ * @returns {Rect}
+ */
+export const unionRects = (a, b) => {
+	const x = Math.min(a.x, b.x);
+	const y = Math.min(a.y, b.y);
+	const right = Math.max(a.x + a.width, b.x + b.width);
+	const bottom = Math.max(a.y + a.height, b.y + b.height);
+
+	return { x, y, width : right - x, height : bottom - y };
+};
+
+export const isEmptyRect = (rect) => rect.width <= 0 || rect.height <= 0;
