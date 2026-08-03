@@ -3,7 +3,7 @@ import {
 	MAX_PROGRESS,
 } from "./progress.svelte.js";
 
-/** @import { Rect } from "$games/shared/renderable.consts.js" */
+/** @import { Rect } from "$nissy-girl/screens/render.consts.js" */
 
 export const roundHundredths = (n) => Math.floor(n * 100) / 100;
 

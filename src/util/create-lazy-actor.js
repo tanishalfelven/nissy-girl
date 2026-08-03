@@ -56,8 +56,15 @@ export const createLazyActor = ({
 				throw new Error(`Can't initialize actor with value "${value}"`);
 			}
 
+			// TODO it is an ordering assumption that initialize is always called after fromCallbackInput
+			// If someone started expecting otherwise, that might suck for them!
 			if(initializeValue || !fromCallbackInput) {
-				return;
+				if(import.meta.env.DEV) {
+					/* eslint-disable-next-line no-console */
+					console.warn(`[createLazyActor] initialize called before invoke, throwing away (catastrophic failure, ${id} may never initialize.`);
+
+					return;
+				}
 			}
 
 			initializeValue = value;

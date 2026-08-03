@@ -12,6 +12,10 @@ export const gameActor = createLazyActor({
 		let scene = false;
 
 		const loop = rafLooper((dt) => {
+			if(!scene) {
+				return false;
+			}
+
 			if(scene.hasUpdate()) {
 				scene.update(dt);
 			}
@@ -33,6 +37,7 @@ export const gameActor = createLazyActor({
 			}
 
 			if(event.type === "REMOVE_SCENE" && scene) {
+				loop.stop();
 				scene = false;
 
 				screenRuntime.send({ type : "CLEAR_SCREEN" });

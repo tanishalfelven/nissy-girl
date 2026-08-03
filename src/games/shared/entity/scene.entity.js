@@ -87,10 +87,6 @@ export const createScene = ({
 		},
 
 		stop() {
-			if(!isRunning) {
-				throw new Error("Cannot stop stopped scene!", this);
-			}
-
 			isRunning = false;
 
 			for(const entity of entities) {

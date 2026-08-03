@@ -6,7 +6,7 @@ import {
 	isEmptyRect,
 } from "$util/math.js";
 
-const RENDER_DEBUG = true;
+const RENDER_DEBUG = false;
 
 /** @import { Renderable, Rect } from "./render.consts.js" */
 /** @import { Color } from "./render.consts.js" */
@@ -207,6 +207,10 @@ export const createRenderer = (canvas, { width : canvasWidth, height : canvasHei
 				const { id, type, x, y, dirty : dirtyHint } = renderable;
 				const bounds = getRenderableBounds(renderable);
 				const previous = previousRenderablesById.get(id);
+
+				if(currentRenderablesById.has(id)) {
+					throw new Error(`Duplicate render id ${id}`);
+				}
 
 				currentRenderablesById.set(id, {
 					x,
