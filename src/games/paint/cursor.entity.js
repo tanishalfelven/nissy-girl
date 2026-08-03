@@ -3,11 +3,10 @@ import { TYPE_RGBA } from "$nissy-girl/screens/render.consts.js";
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
 
+import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$games/shared/input.consts.js";
 import { FPS60 } from "$util/time.js";
 
-import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$games/shared/input.consts.js";
-
-const CURSOR_SPEED = 9 / FPS60;
+const STEP_INTERVAL_MS = 30;
 
 const DIRECTION = new Map([
 	[ DPAD_LEFT, -1 ],
@@ -22,6 +21,8 @@ const DIRECTION = new Map([
 export const createCursor = () => {
 	let x = 50;
 	let y = 50;
+
+	let elapsedMs = 0;
 
 	let sprites;
 
@@ -50,18 +51,28 @@ export const createCursor = () => {
 		update(dt) {
 			let didUpdate = false;
 
+			let dx = 0;
+			let dy = 0;
+
 			for(const dir of moveDir) {
 				if(dir === DPAD_LEFT || dir === DPAD_RIGHT) {
-					x += DIRECTION.get(dir) * dt * CURSOR_SPEED;
-
-					didUpdate = true;
+					dx += DIRECTION.get(dir);
 				}
 
 				if(dir === DPAD_DOWN || dir === DPAD_UP) {
-					y += DIRECTION.get(dir) * dt * CURSOR_SPEED;
-
-					didUpdate = true;
+					dy += DIRECTION.get(dir);
 				}
+			}
+
+			elapsedMs += dt * FPS60;
+
+			while(elapsedMs >= STEP_INTERVAL_MS) {
+				elapsedMs -= STEP_INTERVAL_MS;
+
+				x += dx;
+				y += dy;
+
+				didUpdate = true;
 			}
 
 			return didUpdate;
@@ -78,6 +89,8 @@ export const createCursor = () => {
 			let dirty;
 
 			if(currentFrameSprite !== lastFrameSprite) {
+				lastFrameSprite = currentFrameSprite;
+
 				dirty = {
 					x : 0,
 					y : 0,
@@ -89,8 +102,8 @@ export const createCursor = () => {
 			return {
 				id : "cursor",
 				// TODO this needs to be handled somewhere higher up
-				x : Math.round(x),
-				y : Math.round(y),
+				x,
+				y,
 				type : TYPE_RGBA,
 				imageData : currentFrameSprite.getCurrentFrame(),
 				dirty,
