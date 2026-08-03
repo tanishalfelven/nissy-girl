@@ -75,7 +75,7 @@ const nissyGirlMachine = createMachine({
 					target : "off",
 				},
 
-				CARTRIDGE_EJECTED : ".errant",
+				CARTRIDGE_ERROR : ".errant",
 			},
 
 			initial : "booting",
@@ -109,6 +109,10 @@ const nissyGirlMachine = createMachine({
 						},
 
 						hasgame : {
+							on : {
+								CARTRIDGE_EJECTED : raise({ type : "CARTRIDGE_ERROR" }),
+							},
+
 							after : {
 								4000 : {
 									guard : () => nissyGirl.hasInsertedCartridge(),
@@ -134,6 +138,8 @@ const nissyGirlMachine = createMachine({
 									game : event.game,
 								})),
 						},
+
+						CARTRIDGE_EJECTED : raise({ type : "CARTRIDGE_ERROR" }),
 					},
 				},
 
