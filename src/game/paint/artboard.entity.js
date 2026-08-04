@@ -4,11 +4,6 @@ import { COLOR_WHITE, COLOR_BLACK } from "$nissy-girl/screens/render.consts.js";
 
 import { GraphicsContext, Graphics } from "pixi.js";
 
-const createCoords = (x = 0, y = 0) => ({ x, y });
-const clearCoords = (pos) => {
-	pos.x = 0;
-	pos.y = 0;
-};
 const coordsDiffer = (a, b) => (a.x !== b.x || a.y !== b.y);
 
 /**
@@ -47,6 +42,11 @@ export const createArtboard = ({
 
 			if(cursor && isDrawing) {
 				pos.push(cursor.getPosition());
+
+				if(pos.length === 1) {
+					// throw it in twice so we get a rect
+					pos.push(pos[0]);
+				}
 			}
 		},
 		send(event) {
@@ -61,9 +61,19 @@ export const createArtboard = ({
 
 				return;
 			}
+
+			if(event.type === "CLEAR") {
+				pixels
+					.rect(0, 0, width, height)
+					.fill(backgroundColor);
+
+				pos.length = 0;
+
+				return;
+			}
 		},
 		destroy() {
-			pixels.destroy();
+			renderable.destroy();
 		},
 		render() {
 			if(isDrawing || pos.length) {
@@ -72,13 +82,19 @@ export const createArtboard = ({
 					const second = pos[i + 1];
 
 					if(first && second) {
-						pixels.moveTo(first.x, first.y)
-							.lineTo(second.x, second.y)
-							.stroke({ color : COLOR_BLACK, pixelLine : true });
+						if(coordsDiffer(first, second)) {
+							pixels.moveTo(first.x, first.y)
+								.lineTo(second.x, second.y)
+								.stroke({ color : COLOR_BLACK, pixelLine : true });
+						} else {
+							pixels
+								.rect(first.x, first.y, 1, 1)
+								.fill(COLOR_BLACK);
+						}
 					}
 				}
 
-				pos.slice(0, pos.length - 2);
+				pos.splice(0, pos.length - 2);
 			}
 
 			if(!isDrawing) {

@@ -33,7 +33,6 @@ export const gameloop = {
 					}
 
 					scene.render();
-
 					screen.render(scene.getRenderables());
 				}
 
@@ -58,7 +57,7 @@ export const gameloop = {
 					// machine exit lifecycle is more safely stored in an actor
 					return () => {
 						screen.clear();
-						context.loop.stop();
+						context?.loop?.stop?.();
 					};
 				}),
 			},
@@ -88,8 +87,11 @@ export const gameloop = {
 							},
 
 							ENTITY_MESSAGE : {
-								actions : ({ context, event }) =>
-									context.scene.send(event.entityId, event.event),
+								actions : [
+									({ context, event }) =>
+										context.scene.send(event.entityId, event.event),
+									raise({ type : "START" }),
+								],
 							},
 						},
 					},

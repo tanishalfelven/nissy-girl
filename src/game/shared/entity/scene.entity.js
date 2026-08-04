@@ -21,7 +21,7 @@ import { Container, Assets, Sprite } from "pixi.js";
  * @property {() => boolean} hasUpdate if should update
  * @property {() => void} update lifecycle
  * @property {() => void} stop pause
- * @property {() => Renderable[]} getRenderables get renderable for entity
+ * @property {() => Sprite[]} getRenderables get renderable for entity
  */
 
 /**

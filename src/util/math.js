@@ -36,12 +36,6 @@ export const crossedThresholdWrapInclusive = (from, to, threshold) => {
 
 export const lerp = (min, max, t) => min + (max - min) * t;
 
-/**
- * intersection of two rects, or false when they don't overlap
- * @param {Rect} a
- * @param {Rect} b
- * @returns {Rect|false}
- */
 export const intersectRects = (a, b) => {
 	const x = Math.max(a.x, b.x);
 	const y = Math.max(a.y, b.y);
@@ -55,12 +49,6 @@ export const intersectRects = (a, b) => {
 	return { x, y, width : right - x, height : bottom - y };
 };
 
-/**
- * smallest rect containing both rects
- * @param {Rect} a
- * @param {Rect} b
- * @returns {Rect}
- */
 export const unionRects = (a, b) => {
 	const x = Math.min(a.x, b.x);
 	const y = Math.min(a.y, b.y);

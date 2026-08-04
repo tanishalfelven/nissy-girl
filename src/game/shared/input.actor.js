@@ -21,7 +21,7 @@ const REPEATING_INPUTS = new Set([
 	DPAD_UP,
 ]);
 
-export const invokeInput = () => ({
+export const invokeInput = {
 	id : "input",
 	src : fromCallback(({ sendBack, system }) => {
 		const gameloop = system.get("gameloop");
@@ -78,4 +78,4 @@ export const invokeInput = () => ({
 			}
 		};
 	}),
-});
+};

@@ -14,6 +14,7 @@ import {
 	DPAD_RIGHT,
 	DPAD_UP,
 	BUTTON_A,
+	BUTTON_START,
 	RELEASED,
 } from "$game/shared/input.consts.js";
 
@@ -45,7 +46,7 @@ export const paintMachine = createMachine({
 						createCursor,
 					],
 				}),
-				invokeInput(),
+				invokeInput,
 			],
 
 			on : {
@@ -60,6 +61,9 @@ export const paintMachine = createMachine({
 				},
 				[DPAD_UP] : {
 					actions : sendToEntity("cursor"),
+				},
+				[BUTTON_START] : {
+					actions : sendToEntity("artboard", { type : "CLEAR" }),
 				},
 			},
 
