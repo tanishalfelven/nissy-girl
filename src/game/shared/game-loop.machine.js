@@ -92,15 +92,6 @@ export const gameloop = {
 					active : {
 						on : {
 							REMOVE_SCENE : {
-								actions : [
-									({ context }) => {
-										context.loop.stop();
-										context.scene.stop();
-
-										screen.clear();
-									},
-									assign({ scene : false }),
-								],
 								target : "none",
 							},
 
@@ -161,6 +152,18 @@ export const gameloop = {
 							LOOP_PAUSE : "paused",
 
 							REMOVE_SCENE : {
+								actions : [
+									({ context }) => {
+										context.loop.stop();
+										context.scene.stop();
+										screen.clear();
+									},
+									assign({ scene : false }),
+								],
+								target : "paused",
+							},
+
+							REGISTER_INPUT : {
 								actions : raise({ type : "UPDATE_SESSION" }),
 							},
 							REMOVE_INPUT : {

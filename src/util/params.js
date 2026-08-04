@@ -1,11 +1,13 @@
-export const getParam = (id) => {
-	let params = new URLSearchParams(document.location.search);
+let params;
 
-	return params.get(id);
+const getParams = () => {
+	if(!params) {
+		params = new URLSearchParams(document.location.search);
+	}
+
+	return params;
 };
 
-export const hasParam = (id) => {
-	let params = new URLSearchParams(document.location.search);
+export const getParam = (id) => getParams().get(id);
 
-	return params.has(id);
-};
+export const hasParam = (id) => getParams().get(id);

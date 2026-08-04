@@ -1,11 +1,14 @@
 <script module>
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
 import { createRenderer } from "./render.js";
+import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
 
 let renderer = false;
 
 const initRenderer = (canvas) => {
 	renderer = createRenderer(canvas, { width : CANVAS_WIDTH, height : CANVAS_HEIGHT });
+
+	nissyGirlActor.send({ type : "RENDERER_READY" });
 };
 
 export const screen = {

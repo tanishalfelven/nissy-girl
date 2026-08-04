@@ -9,13 +9,13 @@ import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
 
 import { statechart } from "$util/statechart-actors.svelte.js";
+import { hasParam, getParam } from "$util/params.js";
 
 import { cameraMachine } from "./camera.machine.js";
 import StartupScreenComponent from "./screens/startup-screen.svelte";
 import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
-import { hasParam, getParam } from "$util/params.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 
 const nissyGirlMachine = createMachine({
@@ -44,16 +44,13 @@ const nissyGirlMachine = createMachine({
 
 	states : {
 		"initializing" : {
-			always : [
-				{
+			on : {
+				RENDERER_READY : {
 					guard : () => hasParam("game"),
 					actions : () => nissyGirl.forceLoad(getParam("game")),
 					target : "wait-for-force-load-game",
 				},
-				{
-					target : "off",
-				},
-			],
+			},
 		},
 
 		"wait-for-force-load-game" : {
