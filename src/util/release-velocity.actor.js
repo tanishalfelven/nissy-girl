@@ -65,31 +65,13 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 				return;
 			}
 
-			if(event.type === "DRAG_END" && progress) {
-				if(!progress) {
-					return;
-				}
-
-				velocityLoop.start();
-
-				return;
-			}
-
 			if(event.type === "DRAG_START" && progress) {
-				if(!progress) {
-					return;
-				}
-
 				velocityLoop.stop();
 
 				return;
 			}
 
-			if(event.type === "DRAG_DELTA") {
-				if(!progress) {
-					return;
-				}
-
+			if(event.type === "DRAG_DELTA" && progress) {
 				if(event.delta === 0) {
 					return;
 				}
@@ -97,6 +79,12 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 				velocity.sample(event.delta);
 
 				sendBack({ type : eventName, delta : event.delta });
+
+				return;
+			}
+
+			if(event.type === "DRAG_END" && progress) {
+				velocityLoop.start();
 
 				return;
 			}

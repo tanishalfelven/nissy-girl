@@ -33,8 +33,6 @@ import { createSprite } from "$util/sprite.js";
  * @param {Entity[]} options.entities child entities in canonical rendering canonical ordering
  * @param {() => void} options.start lifecycle
  * @param {() => void} options.stop lifecycle
- * @param {() => void} options.sendToGameActor send event to game actor
- * @param {() => void} options.sendToGameMachine send event to game machine
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
@@ -42,9 +40,6 @@ export const createScene = ({
 	entities : entityFactories,
 	start = noopFalseFunction,
 	stop = noopFalseFunction,
-	sendToGameActor,
-	/* eslint-disable-next-line unused-imports/no-unused-vars */
-	sendToGameMachine,
 }) => {
 	let isRunning = false;
 
@@ -71,8 +66,6 @@ export const createScene = ({
 			}
 
 			start(this);
-
-			sendToGameActor({ type : "START_SCENE", scene });
 		},
 
 		send(entityId, event) {
@@ -115,8 +108,6 @@ export const createScene = ({
 			}
 
 			stop(this);
-
-			sendToGameActor({ type : "REMOVE_SCENE" });
 		},
 
 		hasUpdate() {
@@ -151,8 +142,6 @@ export const createScene = ({
 			return renderables;
 		},
 	};
-
-	sendToGameActor({ type : "REGISTER_SCENE", scene });
 
 	return scene;
 };

@@ -10,8 +10,6 @@ import {
 	RELEASED,
 } from "./input.consts.js";
 
-import { gameActor } from "./game.actor.js";
-
 import { FPS60 } from "$util/time.js";
 
 const REPEAT_TIME = 45 / FPS60;
@@ -25,19 +23,17 @@ const REPEATING_INPUTS = new Set([
 
 export const invokeInput = () => ({
 	id : "input",
-	src : fromCallback(({ sendBack }) => {
-		if(!gameActor.isInitialized() || !gameActor.getIsActive()) {
-			throw new Error("Game actor not initialized at time of input invocation.");
-		}
+	src : fromCallback(({ sendBack, system }) => {
+		const gameloop = system.get("gameloop");
 
 		const isRepeating = new Set();
 
 		let repeat = 0;
 
-		gameActor.send({
+		gameloop.send({
 			type : "REGISTER_INPUT",
 
-			handleInput : (dt) => {
+			input : (dt) => {
 				repeat += dt;
 
 				if(repeat >= REPEAT_TIME) {
@@ -65,13 +61,16 @@ export const invokeInput = () => ({
 			}
 
 			if(isRepeating.size > 0) {
-				gameActor.send({ type : "REQUEST_ITERATION" });
+				gameloop.send({ type : "START" });
 			}
 		});
 
 		return () => {
 			removeInput();
-			gameActor.send({ type : "REMOVE_INPUT" });
+
+			if(gameloop.getSnapshot().status === "active") {
+				gameloop.send({ type : "REMOVE_INPUT" });
+			}
 		};
 	}),
 });

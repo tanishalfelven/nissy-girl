@@ -5,7 +5,7 @@ const identity = (a) => a;
 export const sendToEntity = (id, eventCreator = identity) => {
 	if(typeof eventCreator === "function") {
 		return sendTo(
-			"game",
+			"gameloop",
 			({ event }) => ({
 				type : "ENTITY_MESSAGE",
 				entityId : id,
@@ -14,5 +14,5 @@ export const sendToEntity = (id, eventCreator = identity) => {
 		);
 	}
 
-	return sendTo("game", { type : "ENTITY_MESSAGE", entityId : id, event : eventCreator });
+	return sendTo("gameloop", { type : "ENTITY_MESSAGE", entityId : id, event : eventCreator });
 };

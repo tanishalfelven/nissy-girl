@@ -24,10 +24,13 @@ export const rafLooper = (func) => {
 	let isActive = false;
 	let prevTime = false;
 
+	let session = false;
+
 	const stop = () => {
 		if(id) {
 			cancelAnimationFrame(id);
 
+			session = false;
 			id = false;
 			isActive = false;
 		}
@@ -38,7 +41,7 @@ export const rafLooper = (func) => {
 			? 1
 			: Math.min((now - prevTime) / FPS60, 4);
 
-		const run = func(dt);
+		const run = func(dt, session);
 
 		prevTime = now;
 
@@ -49,9 +52,10 @@ export const rafLooper = (func) => {
 		}
 	};
 
-	const start = () => {
+	const start = (loopSession) => {
 		if(!id) {
 			isActive = true;
+			session = loopSession;
 			prevTime = performance.now();
 			id = requestAnimationFrame(loop);
 		}
