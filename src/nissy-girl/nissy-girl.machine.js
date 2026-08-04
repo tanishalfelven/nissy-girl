@@ -5,10 +5,9 @@ import {
 	sendTo,
 } from "xstate";
 
-import tracker from "xstate-state-tracker";
-
 import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
+import tracker from "xstate-state-tracker";
 
 import { statechart } from "$util/statechart-actors.svelte.js";
 
@@ -18,7 +17,6 @@ import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { hasParam, getParam } from "$util/params.js";
-import { screenRuntime } from "./screens/screen.actor.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -32,8 +30,6 @@ const nissyGirlMachine = createMachine({
 			id : "camera",
 			src : cameraMachine,
 		},
-
-		screenRuntime,
 	],
 
 	on : {
@@ -51,8 +47,10 @@ const nissyGirlMachine = createMachine({
 
 	states : {
 		initializing : {
+			entry : raise({ type : "FIRST_LOAD" }),
+
 			on : {
-				RENDERER_READY : {
+				FIRST_LOAD : {
 					target : "off",
 					actions : raise({ type : "HANDLE_GAME_PARAM" }),
 				},
@@ -157,20 +155,20 @@ const nissyGirlMachine = createMachine({
 	},
 });
 
-const service = createActor(nissyGirlMachine);
+const nissyGirlActor = createActor(nissyGirlMachine);
 
 statechart.set(
-	new ComponentTree(service, (tree) => {
+	new ComponentTree(nissyGirlActor, (tree) => {
 		statechart.setTree(tree);
 	}),
 );
 
-const DEBUG_MACHINE = false;
+const DEBUG_MACHINE = true;
 
 if(DEBUG_MACHINE) {
 	let game = false;
 
-	tracker(service, (_machine, _state, last) => {
+	tracker(nissyGirlActor, (_machine, _state, last) => {
 		/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
 		console.log(`${_machine}:${JSON.stringify(_state)}`, last);
 
@@ -185,8 +183,8 @@ if(DEBUG_MACHINE) {
 	});
 }
 
-service.start();
+nissyGirlActor.start();
 
 export {
-	service as nissyGirlMachine,
+	nissyGirlActor as nissyGirlMachine,
 };

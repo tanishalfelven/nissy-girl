@@ -10,7 +10,7 @@ import {
 	BUTTON_START,
 	BUTTON_SELECT,
 	KEYBOARD_TO_INPUT,
-} from "$games/shared/input.consts.js";
+} from "$game/shared/input.consts.js";
 
 import { subscribers, domListenerSub } from "$util/listeners.js";
 

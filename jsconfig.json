@@ -12,7 +12,7 @@
 		"skipLibCheck": true,
 		"checkJs": false,
 		"paths": {
-			"$games/*": ["./src/games/*"],
+			"$game/*": ["./src/game/*"],
 			"$util/*": ["./src/util/*"],
 			"$nissy-girl/*": ["./src/nissy-girl/*"]
 		}

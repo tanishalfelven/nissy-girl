@@ -10,7 +10,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.j
  * @param {number} [options.backgroundColor]
  * @param {number} options.width
  * @param {number} options.height
- * @returns {import("$games/shared/entity/scene.entity.js").Entity}
+ * @returns {import("$game/shared/entity/scene.entity.js").Entity}
  */
 export const createArtboard = ({
 	backgroundColor = COLOR_WHITE,

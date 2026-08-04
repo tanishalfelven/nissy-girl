@@ -1,12 +1,12 @@
 import { createMachine } from "xstate";
 
-import { gameActor } from "$games/shared/game.actor.js";
+import { gameActor } from "$game/shared/game.actor.js";
+import { invokeScene } from "$game/shared/scene.actor.js";
+import { invokeInput } from "$game/shared/input.actor.js";
+import { sendToEntity } from "$game/shared/sendto-entity.js";
 
-import { invokeScene } from "$games/shared/scene.actor.js";
 import { createArtboard } from "./artboard.entity.js";
 import { createCursor } from "./cursor.entity.js";
-import { invokeInput } from "$games/shared/input.actor.js";
-import { sendToEntity } from "$games/shared/sendto-entity.js";
 
 export const paintMachine = createMachine({
 	id : "paint",

@@ -3,7 +3,7 @@ import { TYPE_RGBA } from "$nissy-girl/screens/render.consts.js";
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
 
-import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$games/shared/input.consts.js";
+import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$game/shared/input.consts.js";
 import { FPS60 } from "$util/time.js";
 
 const STEP_INTERVAL_MS = 30;
@@ -16,7 +16,7 @@ const DIRECTION = new Map([
 ]);
 
 /**
- * @returns {import("$games/shared/entity/scene.entity.js").Entity}
+ * @returns {import("$game/shared/entity/scene.entity.js").Entity}
  */
 export const createCursor = () => {
 	let x = 50;

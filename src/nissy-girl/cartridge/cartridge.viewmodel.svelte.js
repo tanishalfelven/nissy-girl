@@ -1,6 +1,6 @@
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
 import { clamp } from "$util/math.js";
-import { gameOrder, games, getGameIndex } from "$games/games.js";
+import { gameOrder, games, getGameIndex } from "$game/games.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 

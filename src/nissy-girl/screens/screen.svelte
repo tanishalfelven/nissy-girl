@@ -1,15 +1,45 @@
+<script module>
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
+import { createRenderer } from "./render.js";
+
+let renderer = false;
+
+const initRenderer = (canvas) => {
+	renderer = createRenderer(canvas, { width : CANVAS_WIDTH, height : CANVAS_HEIGHT });
+};
+
+export const screen = {
+	render(renderables) {
+		if(!renderer) {
+			throw new Error("Render scene called before renderer init!");
+		}
+
+		renderer.render(renderables);
+	},
+
+	clear() {
+		if(!renderer) {
+			throw new Error("Clear scene called before renderer init!");
+		}
+
+		renderer.clearBackground();
+	},
+
+	isReady() {
+		return Boolean(renderer);
+	},
+};
+</script>
 <script>
 import css from "./screens.mcss";
-
-import { screenRuntime } from "./screen.actor.js";
 
 let { children } = $props();
 
 let canvasEl = $state(false);
 
 $effect(() => {
-	if(canvasEl && screenRuntime.getIsActive() && !screenRuntime.isInitialized()) {
-		screenRuntime.initialize(canvasEl);
+	if(canvasEl && !renderer) {
+		initRenderer(canvasEl);
 	}
 });
 </script>

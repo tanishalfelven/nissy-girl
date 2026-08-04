@@ -8,14 +8,14 @@ import {
 	BUTTON_START,
 	RELEASED,
 	TRIGGERED,
-} from "$games/shared/input.consts.js";
+} from "$game/shared/input.consts.js";
 
 export {
 	BUTTON_A,
 	BUTTON_B,
 	BUTTON_SELECT,
 	BUTTON_START,
-} from "$games/shared/input.consts.js";
+} from "$game/shared/input.consts.js";
 
 import css from "./button.mcss";
 

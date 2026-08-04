@@ -1,4 +1,4 @@
-import { games } from "$games/games.js";
+import { games } from "$game/games.js";
 import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 import { nissyGirlMachine } from "./nissy-girl.machine.js";
 

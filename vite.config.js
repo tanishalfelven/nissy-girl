@@ -7,7 +7,7 @@ import mcssAlias from "@modular-css/path-aliases";
 import nested from "postcss-nested";
 
 const alias = {
-	"$games" : path.resolve("src/games"),
+	"$game" : path.resolve("src/game"),
 	"$nissy-girl" : path.resolve("src/nissy-girl"),
 	"$util" : path.resolve("src/util"),
 };

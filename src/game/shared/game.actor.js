@@ -1,6 +1,6 @@
 import { rafLooper } from "$util/time.js";
 
-import { screenRuntime } from "$nissy-girl/screens/screen.actor.js";
+import { screen } from "$nissy-girl/screens/screen.svelte";
 
 import { createLazyActor } from "$util/create-lazy-actor.js";
 
@@ -20,7 +20,7 @@ export const gameActor = createLazyActor({
 					scene.update(dt);
 				}
 
-				screenRuntime.send({ type : "RENDER_SCENE", renderables : scene.getRenderables() });
+				screen.render(scene.getRenderables());
 			}
 
 			if(handleInput) {
@@ -75,7 +75,7 @@ export const gameActor = createLazyActor({
 				loop.stop();
 				scene = false;
 
-				screenRuntime.send({ type : "CLEAR_SCREEN" });
+				screen.clear();
 
 				return;
 			}
@@ -88,7 +88,7 @@ export const gameActor = createLazyActor({
 		});
 
 		return () => {
-			screenRuntime.send({ type : "CLEAR_SCREEN" });
+			screen.clear();
 
 			loop.stop();
 		};

@@ -12,7 +12,7 @@ import {
 	DPAD_LEFT,
 	DPAD_RIGHT,
 	DPAD_UP,
-} from "$games/shared/input.consts.js";
+} from "$game/shared/input.consts.js";
 
 const MAX_TILT = 3;
 const TILT_DEADZONE = 0.35;
