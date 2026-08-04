@@ -14,14 +14,14 @@
 		width: calc(18 * px1);
 		padding: calc(5 * px1);
 
-		&[data-button="A"] {
+		&[data-button="BUTTON_A"] {
 			right: calc(8 * px1);
 			bottom: calc(65 * px1);
 			padding-left: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-a.png");
 		}
 
-		&[data-button="B"] {
+		&[data-button="BUTTON_B"] {
 			right: calc(34.5 * px1);
 			bottom: calc(54 * px1);
 			padding-right: calc(3.5 * px1) !important;

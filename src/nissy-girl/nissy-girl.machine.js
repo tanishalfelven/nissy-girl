@@ -45,11 +45,16 @@ const nissyGirlMachine = createMachine({
 	states : {
 		"initializing" : {
 			on : {
-				RENDERER_READY : {
-					guard : () => hasParam("game"),
-					actions : () => nissyGirl.forceLoad(getParam("game")),
-					target : "wait-for-force-load-game",
-				},
+				RENDERER_READY : [
+					{
+						guard : () => hasParam("game"),
+						actions : () => nissyGirl.forceLoad(getParam("game")),
+						target : "wait-for-force-load-game",
+					},
+					{
+						target : "off",
+					},
+				],
 			},
 		},
 

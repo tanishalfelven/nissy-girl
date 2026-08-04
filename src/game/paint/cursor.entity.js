@@ -1,12 +1,11 @@
-import { TYPE_RGBA } from "$nissy-girl/screens/render.consts.js";
+import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$game/shared/input.consts.js";
+
+import { Sprite } from "pixi.js";
 
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
 
-import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$game/shared/input.consts.js";
-import { FPS60 } from "$util/time.js";
-
-const STEP_INTERVAL_MS = 30;
+const SPEED = 0.5;
 
 const DIRECTION = new Map([
 	[ DPAD_LEFT, -1 ],
@@ -22,16 +21,17 @@ export const createCursor = () => {
 	let x = 50;
 	let y = 50;
 
-	let elapsedMs = 0;
+	const sprite = new Sprite();
 
-	let sprites;
-
-	let lastFrameSprite = false;
+	let textures;
 
 	const moveDir = new Set();
 
 	return {
 		id : "cursor",
+		getRenderable() {
+			return sprite;
+		},
 		start() {},
 		stop() {},
 		send({ type, state }) {
@@ -51,63 +51,46 @@ export const createCursor = () => {
 		update(dt) {
 			let didUpdate = false;
 
-			let dx = 0;
-			let dy = 0;
-
 			for(const dir of moveDir) {
 				if(dir === DPAD_LEFT || dir === DPAD_RIGHT) {
-					dx += DIRECTION.get(dir);
+					x += DIRECTION.get(dir) * dt * SPEED;
+
+					didUpdate = true;
 				}
 
 				if(dir === DPAD_DOWN || dir === DPAD_UP) {
-					dy += DIRECTION.get(dir);
+					y += DIRECTION.get(dir) * dt * SPEED;
+
+					didUpdate = true;
 				}
-			}
-
-			elapsedMs += dt * FPS60;
-
-			while(elapsedMs >= STEP_INTERVAL_MS) {
-				elapsedMs -= STEP_INTERVAL_MS;
-
-				x += dx;
-				y += dy;
-
-				didUpdate = true;
 			}
 
 			return didUpdate;
 		},
-		getSpriteRequests() {
+		getPosition() {
+			return {
+				x : x + 2,
+				y : y + 2,
+			};
+		},
+		getTextureRequests() {
 			return { move : moveUrl, stationary : stationaryUrl };
 		},
-		setSprites(resolvedSprites) {
-			sprites = resolvedSprites;
+		setTextures(loadedTextures) {
+			textures = loadedTextures;
+
+			sprite.texture = textures.stationary;
 		},
-		getRenderable() {
-			let currentFrameSprite = moveDir.size > 0 ? sprites.move : sprites.stationary;
+		render() {
+			sprite.texture = textures[moveDir.size > 0 ? "move" : "stationary"];
 
-			let dirty;
+			sprite.x = Math.round(x);
+			sprite.y = Math.round(y);
 
-			if(currentFrameSprite !== lastFrameSprite) {
-				lastFrameSprite = currentFrameSprite;
-
-				dirty = {
-					x : 0,
-					y : 0,
-					width : currentFrameSprite.getCurrentFrame().width,
-					height : currentFrameSprite.getCurrentFrame().height,
-				};
-			}
-
-			return {
-				id : "cursor",
-				// TODO this needs to be handled somewhere higher up
-				x,
-				y,
-				type : TYPE_RGBA,
-				imageData : currentFrameSprite.getCurrentFrame(),
-				dirty,
-			};
+			return sprite;
+		},
+		destroy() {
+			sprite.destroy();
 		},
 	};
 };

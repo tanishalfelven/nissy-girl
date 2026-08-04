@@ -6,16 +6,18 @@ import { sendToEntity } from "$game/shared/sendto-entity.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
 import { invokeInput } from "$game/shared/input.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
+import { createCursor } from "./cursor.entity.js";
 
 import {
 	DPAD_DOWN,
 	DPAD_LEFT,
 	DPAD_RIGHT,
 	DPAD_UP,
+	BUTTON_A,
+	RELEASED,
 } from "$game/shared/input.consts.js";
 
 import { createArtboard } from "./artboard.entity.js";
-import { createCursor } from "./cursor.entity.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
@@ -58,6 +60,35 @@ export const paintMachine = createMachine({
 				},
 				[DPAD_UP] : {
 					actions : sendToEntity("cursor"),
+				},
+			},
+
+			initial : "pen up",
+
+			states : {
+				"pen up" : {
+					on : {
+						[BUTTON_A] : {
+							actions : sendToEntity("artboard", { type : "PEN_DOWN" }),
+							target : "pen down",
+						},
+					},
+				},
+
+				"pen down" : {
+					on : {
+						[BUTTON_A] : [
+							{
+								guard : ({ event }) => event.state === RELEASED,
+								actions : sendToEntity("artboard", { type : "PEN_UP" }),
+								target : "pen up",
+							},
+						],
+					},
+
+					always : {
+						actions : sendToEntity("artboard", { type : "PEN_DOWN" }),
+					},
 				},
 			},
 		},

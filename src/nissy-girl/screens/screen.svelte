@@ -2,11 +2,14 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
 import { createRenderer } from "./render.js";
 import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
+import { Assets } from "pixi.js";
 
 let renderer = false;
 
-const initRenderer = (canvas) => {
-	renderer = createRenderer(canvas, { width : CANVAS_WIDTH, height : CANVAS_HEIGHT });
+const initRenderer = async (canvas) => {
+	renderer = await createRenderer(canvas, { width : CANVAS_WIDTH, height : CANVAS_HEIGHT });
+
+	await Assets.init();
 
 	nissyGirlActor.send({ type : "RENDERER_READY" });
 };
@@ -25,7 +28,7 @@ export const screen = {
 			throw new Error("Clear scene called before renderer init!");
 		}
 
-		renderer.clearBackground();
+		renderer.clear();
 	},
 
 	isReady() {

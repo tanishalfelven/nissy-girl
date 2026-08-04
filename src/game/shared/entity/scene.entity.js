@@ -1,10 +1,6 @@
 import { noopFalseFunction } from "$util/noop.js";
 
-import { loadImageData } from "$util/image.js";
-import { createSprite } from "$util/sprite.js";
-
-/** @import { Renderable } from "$nissy-girl/screens/render.consts.js" */
-/** @import { Sprite } from "$util/sprite.js" */
+import { Container, Assets, Sprite } from "pixi.js";
 
 /**
  * @typedef {object} Entity
@@ -12,17 +8,19 @@ import { createSprite } from "$util/sprite.js";
  * @property {() => void} stop lifecycle
  * @property {() => boolean} hasUpdate if should update
  * @property {() => void} update lifecycle
- * @property {() => Renderable|Renderable[]} getRenderable get renderable for entity
- * @property {() => Record<string, string>} [getSpriteRequests] optional: sprite key -> image url this entity needs
- * @property {(sprites: Record<string, Sprite>) => void} [setSprites] optional: receives loaded sprites, keyed the same as getSpriteRequests
+ * @property {() => void} render lifecycle
+ * @property {() => Container} getRenderable get renderable for entity
+ * @property {() => Record<string, string>} [getTextureRequests] optional: sprite key -> image url this entity needs
+ * @property {(sprites: Record<string, Sprite>) => void} [setTextures] optional: receives loaded sprites, keyed the same as getSpriteRequests
  */
 
 /**
  * @typedef {object} SceneEntity
  * @property {() => void} start lifecycle
- * @property {() => void} stop lifecycle
+ * @property {() => void} destroy lifecycle
  * @property {() => boolean} hasUpdate if should update
  * @property {() => void} update lifecycle
+ * @property {() => void} stop pause
  * @property {() => Renderable[]} getRenderables get renderable for entity
  */
 
@@ -43,10 +41,16 @@ export const createScene = ({
 }) => {
 	let isRunning = false;
 
+	const pixiScene = new Container();
+
 	const entities = [];
 
 	for(const createEntity of entityFactories) {
-		entities.push(createEntity());
+		const entity = createEntity();
+
+		pixiScene.addChild(entity.getRenderable());
+
+		entities.push(entity);
 	}
 
 	const entityMap = new Map(entities.map((entity) => [ entity.id, entity ]));
@@ -60,6 +64,9 @@ export const createScene = ({
 			}
 
 			isRunning = true;
+
+			// create pixi container
+			// add children
 
 			for(const entity of entities) {
 				entity.start();
@@ -84,20 +91,28 @@ export const createScene = ({
 		async load() {
 			return Promise.all(
 				entities
-					.filter((entity) => entity.getSpriteRequests)
+					.filter((entity) => entity.getTextureRequests)
 					.map(async (entity) => {
-						const requests = entity.getSpriteRequests();
-						const sprites = {};
+						const requests = entity.getTextureRequests();
+						const textures = {};
 
 						await Promise.all(
 							Object.entries(requests).map(async ([ key, url ]) => {
-								sprites[key] = createSprite([ await loadImageData(url) ]);
+								textures[key] = await Assets.load(url);
 							}),
 						);
 
-						entity.setSprites(sprites);
+						entity.setTextures(textures);
 					}),
 			);
+		},
+
+		destroy() {
+			for(const entity of entities) {
+				entity.destroy();
+			}
+
+			pixiScene.destroy();
 		},
 
 		stop() {
@@ -112,7 +127,7 @@ export const createScene = ({
 
 		hasUpdate() {
 			for(const entity of entities) {
-				if(entity.hasUpdate()) {
+				if(entity.hasUpdate(entityMap)) {
 					return true;
 				}
 			}
@@ -122,24 +137,20 @@ export const createScene = ({
 
 		update(dt) {
 			for(const entity of entities) {
-				if(entity.hasUpdate()) {
-					entity.update(dt);
+				if(entity.hasUpdate(entityMap)) {
+					entity.update(dt, entityMap);
 				}
 			}
 		},
 
-		getRenderables() {
-			const renderables = [];
-
+		render() {
 			for(const entity of entities) {
-				const renderable = entity.getRenderable();
-
-				if(renderable) {
-					renderables.push(renderable);
-				}
+				entity.render();
 			}
+		},
 
-			return renderables;
+		getRenderables() {
+			return pixiScene;
 		},
 	};
 

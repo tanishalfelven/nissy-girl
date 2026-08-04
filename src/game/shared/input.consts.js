@@ -4,8 +4,8 @@ export const DPAD_DOWN = "DPAD_DOWN";
 export const DPAD_LEFT = "DPAD_LEFT";
 export const DPAD_RIGHT = "DPAD_RIGHT";
 export const DPAD_UP = "DPAD_UP";
-export const BUTTON_B = "B";
-export const BUTTON_A = "A";
+export const BUTTON_B = "BUTTON_B";
+export const BUTTON_A = "BUTTON_A";
 export const BUTTON_START = "START";
 export const BUTTON_SELECT = "SELECT";
 

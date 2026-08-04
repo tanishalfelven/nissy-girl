@@ -2,8 +2,8 @@ import {
 	createMachine,
 	fromCallback,
 	assign,
-	sendParent,
 	raise,
+	sendParent,
 } from "xstate";
 
 import { rafLooper } from "$util/time.js";
@@ -19,22 +19,22 @@ export const gameloop = {
 	src : createMachine({
 		id : "gameloop",
 
-		entry : sendParent({ type : "GAME_READY" }),
-
 		context : () => ({
 			loop : rafLooper((dt, { scene, input, parent }) => {
 				let hasInput = false;
+
+				if(input) {
+					hasInput = input(dt);
+				}
 
 				if(scene) {
 					if(scene.hasUpdate()) {
 						scene.update(dt);
 					}
 
-					screen.render(scene.getRenderables());
-				}
+					scene.render();
 
-				if(input) {
-					hasInput = input(dt);
+					screen.render(scene.getRenderables());
 				}
 
 				const endFrameState = scene?.hasUpdate?.() || hasInput;
@@ -49,6 +49,8 @@ export const gameloop = {
 			input : false,
 		}),
 
+		entry : sendParent({ type : "GAME_READY" }),
+
 		invoke : [
 			{
 				id : "gameloop-lifecycle",
@@ -62,16 +64,6 @@ export const gameloop = {
 			},
 			stateLogger,
 		],
-
-		on : {
-			REGISTER_INPUT : {
-
-			},
-
-			REMOVE_INPUT : {
-
-			},
-		},
 
 		type : "parallel",
 
@@ -120,7 +112,7 @@ export const gameloop = {
 					active : {
 						on : {
 							REMOVE_INPUT : {
-								// no teardown for input
+							// no teardown for input
 								actions : assign({ input : false }),
 								target : "none",
 							},
