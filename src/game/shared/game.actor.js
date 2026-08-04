@@ -27,7 +27,7 @@ export const gameActor = createLazyActor({
 				hasInput = handleInput(dt);
 			}
 
-			return scene.hasUpdate() || hasInput;
+			return scene?.hasUpdate() || hasInput;
 		});
 
 		receive((event) => {

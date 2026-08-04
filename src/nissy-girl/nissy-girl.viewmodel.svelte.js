@@ -1,6 +1,6 @@
 import { games } from "$game/games.js";
 import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
-import { nissyGirlMachine } from "./nissy-girl.machine.js";
+import { nissyGirlActor } from "./nissy-girl.machine.js";
 
 let isPowered = $state(false);
 let insertedCartridge = $state(false);
@@ -37,7 +37,7 @@ export const nissyGirl = {
 
 		cartridges.setInserted(id);
 
-		nissyGirlMachine.send({ type : "INSTANT_LOAD_GAME_READY" });
+		nissyGirlActor.send({ type : "INSTANT_LOAD_GAME_READY" });
 	},
 
 	ejectCartridge() {

@@ -2,7 +2,7 @@
 import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
 import { touch } from "$util/touch-action.svelte.js";
 
-import { nissyGirlMachine } from "$nissy-girl/nissy-girl.machine.js";
+import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
 
 import css from "./power-switch.mcss";
 
@@ -42,7 +42,7 @@ let switchHeight = $state(0);
 			const percentY = (e.clientY - startY) / switchHeight;
 
 			if(Math.abs(percentY) < MIN_CLICK_DIST || inToggleBounds(percentY)) {
-				nissyGirlMachine.send({
+				nissyGirlActor.send({
 					type : "POWER_TOGGLE",
 				});
 			}

@@ -28,17 +28,13 @@ const nissyGirlMachine = createMachine({
 	invoke : [
 		{
 			id : "camera",
+			systemId : "camera",
 			src : cameraMachine,
 		},
 	],
 
 	on : {
-		HANDLE_GAME_PARAM : {
-			guard : () => hasParam("game"),
-			actions : () => nissyGirl.forceLoad(getParam("game")),
-		},
-
-		INSTANT_LOAD_GAME_READY : {
+		INSTANT_LOAD_GAME : {
 			target : ".poweredon.game",
 		},
 	},
@@ -46,18 +42,28 @@ const nissyGirlMachine = createMachine({
 	initial : "initializing",
 
 	states : {
-		initializing : {
-			entry : raise({ type : "FIRST_LOAD" }),
-
-			on : {
-				FIRST_LOAD : {
+		"initializing" : {
+			always : [
+				{
+					guard : () => hasParam("game"),
+					actions : () => nissyGirl.forceLoad(getParam("game")),
+					target : "wait-for-force-load-game",
+				},
+				{
 					target : "off",
-					actions : raise({ type : "HANDLE_GAME_PARAM" }),
+				},
+			],
+		},
+
+		"wait-for-force-load-game" : {
+			on : {
+				INSTANT_LOAD_GAME_READY : {
+					actions : raise({ type : "INSTANT_LOAD_GAME" }),
 				},
 			},
 		},
 
-		off : {
+		"off" : {
 			on : {
 				POWER_TOGGLE : {
 					target : "poweredon",
@@ -66,7 +72,7 @@ const nissyGirlMachine = createMachine({
 			},
 		},
 
-		poweredon : {
+		"poweredon" : {
 			on : {
 				POWER_TOGGLE : {
 					actions : () => nissyGirl.togglePower(),
@@ -157,27 +163,24 @@ const nissyGirlMachine = createMachine({
 
 const nissyGirlActor = createActor(nissyGirlMachine);
 
-statechart.set(
-	new ComponentTree(nissyGirlActor, (tree) => {
-		statechart.setTree(tree);
-	}),
-);
+new ComponentTree(nissyGirlActor, (tree) => statechart.setTree(tree));
 
 const DEBUG_MACHINE = true;
 
+const cameraActor = nissyGirlActor.system.get("camera");
+
 if(DEBUG_MACHINE) {
 	let game = false;
-
 	tracker(nissyGirlActor, (_machine, _state, last) => {
 		/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
-		console.log(`${_machine}:${JSON.stringify(_state)}`, last);
+		console.log(`${_machine}:${JSON.stringify(_state)}`);
 
 		if(!game && last?.children?.["game-machine"]) {
 			game = true;
 
 			tracker(last?.children?.["game-machine"], (machine, state) => {
 				/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
-				console.log(`${machine}:${JSON.stringify(state)}`, last);
+				console.log(`${machine}:${JSON.stringify(state)}`);
 			});
 		}
 	});
@@ -186,5 +189,6 @@ if(DEBUG_MACHINE) {
 nissyGirlActor.start();
 
 export {
-	nissyGirlActor as nissyGirlMachine,
+	nissyGirlActor,
+	cameraActor,
 };

@@ -1,6 +1,5 @@
 <script>
 import { touch } from "$util/touch-action.svelte.js";
-import { statechart } from "$util/statechart-actors.svelte.js";
 import { roundHundredths } from "$util/math.js";
 import Cartridge from "$nissy-girl/cartridge/cartridge.svelte";
 
@@ -10,6 +9,8 @@ import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { rotation, zoom } from "./camera.viewmodel.svelte.js";
+
+import { cameraActor } from "./nissy-girl.machine.js";
 
 import css from "./nissy-girl.mcss";
 
@@ -25,7 +26,7 @@ let { children } = $props();
 	class={css.camera}
 	use:touch={{
 		start : () =>
-			statechart.send({
+			cameraActor.send({
 				type : "DRAG_START",
 			}),
 		move : (distX) => {
@@ -33,13 +34,13 @@ let { children } = $props();
 				return;
 			}
 
-			statechart.send({
+			cameraActor.send({
 				type : "DRAG_DELTA",
 				delta : distX / nissyGirlWidth,
 			});
 		},
 		end : () =>
-			statechart.send({
+			cameraActor.send({
 				type : "DRAG_END",
 			}),
 	}}
