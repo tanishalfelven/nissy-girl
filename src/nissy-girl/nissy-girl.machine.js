@@ -7,7 +7,6 @@ import {
 
 import { fromMachine } from "xstate-component-tree/from-machine";
 import { ComponentTree } from "xstate-component-tree";
-import tracker from "xstate-state-tracker";
 
 import { statechart } from "$util/statechart-actors.svelte.js";
 
@@ -17,6 +16,7 @@ import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { hasParam, getParam } from "$util/params.js";
+import { stateLogger } from "$util/state-logger.actor.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -31,6 +31,7 @@ const nissyGirlMachine = createMachine({
 			systemId : "camera",
 			src : cameraMachine,
 		},
+		stateLogger,
 	],
 
 	on : {
@@ -165,26 +166,7 @@ const nissyGirlActor = createActor(nissyGirlMachine);
 
 new ComponentTree(nissyGirlActor, (tree) => statechart.setTree(tree));
 
-const DEBUG_MACHINE = true;
-
 const cameraActor = nissyGirlActor.system.get("camera");
-
-if(DEBUG_MACHINE) {
-	let game = false;
-	tracker(nissyGirlActor, (_machine, _state, last) => {
-		/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
-		console.log(`${_machine}:${JSON.stringify(_state)}`);
-
-		if(!game && last?.children?.["game-machine"]) {
-			game = true;
-
-			tracker(last?.children?.["game-machine"], (machine, state) => {
-				/* eslint-disable-next-line no-console -- DEBUG ONLY WHAT DO U WANT FROM ME */
-				console.log(`${machine}:${JSON.stringify(state)}`);
-			});
-		}
-	});
-}
 
 nissyGirlActor.start();
 

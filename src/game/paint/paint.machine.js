@@ -7,12 +7,14 @@ import { sendToEntity } from "$game/shared/sendto-entity.js";
 
 import { createArtboard } from "./artboard.entity.js";
 import { createCursor } from "./cursor.entity.js";
+import { stateLogger } from "$util/state-logger.actor.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
 
 	invoke : [
 		gameActor,
+		stateLogger,
 	],
 
 	entry : () => gameActor.initialize(true),

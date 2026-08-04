@@ -23,6 +23,8 @@ import {
 } from "./camera.viewmodel.svelte.js";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
+import { stateLogger } from "$util/state-logger.actor.js";
+
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });
 
@@ -33,6 +35,7 @@ export const cameraMachine = createMachine({
 
 	invoke : [
 		createReleaseVelocity(ROTATE_VELOCITYID, "ROTATE_SWIPE"),
+		stateLogger,
 	],
 
 	on : {
