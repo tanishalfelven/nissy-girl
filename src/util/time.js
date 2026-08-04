@@ -64,6 +64,9 @@ export const rafLooper = (func) => {
 	return {
 		start,
 		stop,
+		updateSession(loopSession) {
+			session = loopSession;
+		},
 		isActive() {
 			return isActive;
 		},

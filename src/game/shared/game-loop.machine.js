@@ -1,8 +1,16 @@
-import { createMachine, fromCallback, assign, sendParent } from "xstate";
+import {
+	createMachine,
+	fromCallback,
+	assign,
+	sendParent,
+	raise,
+} from "xstate";
 
 import { rafLooper } from "$util/time.js";
 
 import { screen } from "$nissy-girl/screens/screen.svelte";
+
+import { stateLogger } from "$util/state-logger.actor.js";
 
 // attaches to game machine and manages scene / raf loop / teardown / etc
 export const gameloop = {
@@ -52,7 +60,7 @@ export const gameloop = {
 					};
 				}),
 			},
-			// stateLogger,
+			stateLogger,
 		],
 
 		on : {
@@ -151,6 +159,22 @@ export const gameloop = {
 						on : {
 							// emitted by loop directly, match its state
 							LOOP_PAUSE : "paused",
+
+							REMOVE_SCENE : {
+								actions : raise({ type : "UPDATE_SESSION" }),
+							},
+							REMOVE_INPUT : {
+								actions : raise({ type : "UPDATE_SESSION" }),
+							},
+
+							UPDATE_SESSION : {
+								actions : ({ context, self }) =>
+									context.loop.updateSession({
+										parent : self,
+										scene : context.scene,
+										input : context.input,
+									}),
+							},
 						},
 					},
 				},

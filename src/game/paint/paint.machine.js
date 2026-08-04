@@ -7,6 +7,13 @@ import { invokeScene } from "$game/shared/scene.actor.js";
 import { invokeInput } from "$game/shared/input.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 
+import {
+	DPAD_DOWN,
+	DPAD_LEFT,
+	DPAD_RIGHT,
+	DPAD_UP,
+} from "$game/shared/input.consts.js";
+
 import { createArtboard } from "./artboard.entity.js";
 import { createCursor } from "./cursor.entity.js";
 
@@ -36,21 +43,20 @@ export const paintMachine = createMachine({
 						createCursor,
 					],
 				}),
-
 				invokeInput(),
 			],
 
 			on : {
-				DPAD_LEFT : {
+				[DPAD_LEFT] : {
 					actions : sendToEntity("cursor"),
 				},
-				DPAD_RIGHT : {
+				[DPAD_RIGHT] : {
 					actions : sendToEntity("cursor"),
 				},
-				DPAD_DOWN : {
+				[DPAD_DOWN] : {
 					actions : sendToEntity("cursor"),
 				},
-				DPAD_UP : {
+				[DPAD_UP] : {
 					actions : sendToEntity("cursor"),
 				},
 			},

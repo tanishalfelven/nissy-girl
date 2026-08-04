@@ -66,6 +66,11 @@ export const invokeInput = () => ({
 		});
 
 		return () => {
+			// make sure everyone knows input has ended
+			for(const repeating of isRepeating) {
+				sendBack({ type : repeating, state : RELEASED });
+			}
+
 			removeInput();
 
 			if(gameloop.getSnapshot().status === "active") {
