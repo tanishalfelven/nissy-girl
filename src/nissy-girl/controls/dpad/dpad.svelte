@@ -1,8 +1,13 @@
 <script module>
+import { clamp } from "$util/math.js";
+
 const normalize = (pos, max) =>
 	// pos can be out of bounds of Max, so clamp
 	// this produces a (-1 to 1) value
-	(Math.min(pos, max) / max) * 2 - 1;
+	clamp(
+		(pos / max) * 2 - 1,
+		-1, 1,
+	);
 
 const DIRECTIONS = [
 	{ type : DPAD_LEFT, isHorzAxis : true, sign : -1 },
@@ -83,7 +88,6 @@ const handleInput = () => {
 	const horz = Math.abs(pointerX);
 	const vert = Math.abs(pointerY);
 
-	// diagonal hit box is a small square in the corner
 	const isDiagonal = Math.abs(pointerX) > DIAGONAL_MIN && Math.abs(pointerY) > DIAGONAL_MIN;
 	const fireDiagonal = magnitude > DIAGONAL_MAGNITUDE_MIN && isDiagonal;
 
