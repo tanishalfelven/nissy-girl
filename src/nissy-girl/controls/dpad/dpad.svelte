@@ -1,13 +1,6 @@
 <script module>
-import { clamp } from "$util/math.js";
-
-const normalize = (pos, max) =>
-	// pos can be out of bounds of Max, so clamp
-	// this produces a (-1 to 1) value
-	clamp(
-		(pos / max) * 2 - 1,
-		-1, 1,
-	);
+// normalize to -1 to 1, no clamp because ACTUALLY we need that data
+const normalize = (pos, max) => (pos / max) * 2 - 1;
 
 const DIRECTIONS = [
 	{ type : DPAD_LEFT, isHorzAxis : true, sign : -1 },
@@ -44,6 +37,9 @@ const MAX_TILT = 3;
 const TILT_DEADZONE = 0.2;
 const DIAGONAL_MIN = 0.48;
 const DIAGONAL_MAGNITUDE_MIN = Math.hypot(0.7, 0.7);
+const RELATIVE_INTENT_MIN = 0.35;
+const CHANGE_STARTED_MIN = 0.32;
+const RELATIVE_DIAGONAL_MIN_SLOPE = 0.45;
 
 let pointerX = $state(0);
 let pointerY = $state(0);
@@ -59,6 +55,10 @@ let dpadWidth = 0;
 let dpadHeight = 0;
 
 let rotationValue = 0;
+
+let isHeld = false;
+let originX = 0;
+let originY = 0;
 
 const storeDpadState = (e) => {
 	if(!dpadElement) {
@@ -82,31 +82,66 @@ const storeDpadState = (e) => {
 };
 
 const handleInput = () => {
-	const magnitude = Math.hypot(pointerX, pointerY);
-	const notInDeadzone = magnitude > TILT_DEADZONE;
+	const isRelative = isHeld;
 
-	const horz = Math.abs(pointerX);
-	const vert = Math.abs(pointerY);
+	let dx = pointerX - originX;
+	let dy = pointerY - originY;
 
-	const isDiagonal = Math.abs(pointerX) > DIAGONAL_MIN && Math.abs(pointerY) > DIAGONAL_MIN;
-	const fireDiagonal = magnitude > DIAGONAL_MAGNITUDE_MIN && isDiagonal;
+	let forceOriginOverwrite = false;
+
+	const magnitude = Math.hypot(dx, dy);
+	// relative moves disregard deadzone
+	const notInDeadzone = (magnitude > TILT_DEADZONE) && !isRelative;
+
+	const horz = Math.abs(dx);
+	const vert = Math.abs(dy);
+
+	const isInitialDiagonal = horz > DIAGONAL_MIN && vert > DIAGONAL_MIN;
+	const startsInDiagonalSector = magnitude > DIAGONAL_MAGNITUDE_MIN && isInitialDiagonal;
+
+	// resolving relative drag to input is a whole thing but it feels better damnit
+	const isRelativeMove = (magnitude > RELATIVE_INTENT_MIN) && isRelative;
+	const isRelativeDiagonal = isRelativeMove
+		&& ((Math.min(horz, vert) / Math.max(horz, vert)) > RELATIVE_DIAGONAL_MIN_SLOPE);
+
+	const detectedChange = isRelative && !isRelativeMove
+		&& (magnitude > CHANGE_STARTED_MIN);
+
+	if(isRelative && (!isRelativeMove && !isRelativeDiagonal && !detectedChange)) {
+		return;
+	}
+
+	const isValidDiagonal = (isRelative && isRelativeDiagonal) || startsInDiagonalSector;
 
 	for(const { type, isHorzAxis, sign } of DIRECTIONS) {
-		const value = isHorzAxis ? pointerX : pointerY;
+		const value = isHorzAxis ? dx : dy;
 		const dominant = isHorzAxis ? horz > vert : vert > horz;
-		const active = notInDeadzone && dominant && Math.sign(value) === sign;
+		const active = (notInDeadzone || isRelativeMove)
+			&& (dominant || isValidDiagonal)
+			&& Math.sign(value) === sign;
 		const wasActive = input.state[type];
 
-		if(wasActive && !active) {
+		if((wasActive && !active) || (detectedChange && wasActive)) {
+			forceOriginOverwrite = true;
+
 			input.fire({ type, state : RELEASED });
-		} else if(active && !wasActive && !fireDiagonal) {
+		} else if(active && !wasActive) {
+			forceOriginOverwrite = !isHeld;
+
+			isHeld = true;
+
 			input.fire({ type, state : TRIGGERED });
 		}
 	}
 
-	if(fireDiagonal) {
-		input.fire({ type : pointerX > 0 ? DPAD_RIGHT : DPAD_LEFT, state : TRIGGERED });
-		input.fire({ type : pointerY > 0 ? DPAD_UP : DPAD_DOWN, state : TRIGGERED });
+	// Change doens't ever save and is just an optimistic cancel around held inputs when we detect that change is likely to occur
+	if(detectedChange) {
+		return;
+	}
+
+	if((isRelative && (isRelativeMove || isRelativeDiagonal)) || forceOriginOverwrite) {
+		originX = pointerX;
+		originY = pointerY;
 	}
 };
 
@@ -129,8 +164,11 @@ $effect(() =>
 			handleInput();
 		},
 		end : () => {
+			isHeld = false;
 			pointerX = 0;
 			pointerY = 0;
+			originX = 0;
+			originY = 0;
 
 			handleInput();
 		},

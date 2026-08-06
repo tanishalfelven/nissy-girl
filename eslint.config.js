@@ -40,13 +40,7 @@ export default defineConfig([
 		rules : {
 			"@stylistic/linebreak-style" : [ "error", "unix" ],
 			"svelte/prefer-svelte-reactivity" : "off",
-			"svelte/indent" : [
-				"error",
-				{
-					indent : "tab",
-					indentScript : false,
-				},
-			],
+			"svelte/indent" : [ "off" ],
 			"@stylistic/arrow-parens" : [ "error", "always" ],
 			"no-console" : "warn",
 			"@stylistic/no-tabs" : "off",

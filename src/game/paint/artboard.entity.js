@@ -42,11 +42,6 @@ export const createArtboard = ({
 
 			if(cursor && isDrawing) {
 				pos.push(cursor.getPosition());
-
-				if(pos.length === 1) {
-					// throw it in twice so we get a rect
-					pos.push(pos[0]);
-				}
 			}
 		},
 		send(event) {
@@ -77,19 +72,21 @@ export const createArtboard = ({
 		},
 		render() {
 			if(isDrawing || pos.length) {
-				for(let i = 0; i < pos.length; i++) {
-					const first = pos[i];
-					const second = pos[i + 1];
+				if(pos.length === 1) {
+					pixels
+						.rect(pos[0].x, pos[0].y, 1, 1)
+						.fill(COLOR_BLACK);
+				} else {
+					for(let i = 0; i < pos.length; i++) {
+						const first = pos[i];
+						const second = pos[i + 1];
 
-					if(first && second) {
-						if(coordsDiffer(first, second)) {
-							pixels.moveTo(first.x, first.y)
-								.lineTo(second.x, second.y)
-								.stroke({ color : COLOR_BLACK, pixelLine : true });
-						} else {
-							pixels
-								.rect(first.x, first.y, 1, 1)
-								.fill(COLOR_BLACK);
+						if(first && second) {
+							if(coordsDiffer(first, second)) {
+								pixels.moveTo(first.x, first.y)
+									.lineTo(second.x, second.y)
+									.stroke({ color : COLOR_BLACK, pixelLine : true });
+							}
 						}
 					}
 				}

@@ -5,7 +5,7 @@ import { Sprite } from "pixi.js";
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
 
-const SPEED = 0.5;
+const SPEED = 0.35;
 
 const DIRECTION = new Map([
 	[ DPAD_LEFT, -1 ],
@@ -69,8 +69,8 @@ export const createCursor = () => {
 		},
 		getPosition() {
 			return {
-				x : x + 2,
-				y : y + 2,
+				x : Math.round(x + 2.9),
+				y : Math.round(y + 2.9),
 			};
 		},
 		getTextureRequests() {
