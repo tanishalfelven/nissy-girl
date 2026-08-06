@@ -2,11 +2,11 @@ import { createMachine } from "xstate";
 
 import { stateLogger } from "$util/state-logger.actor.js";
 
-import { sendToEntity } from "$game/shared/sendto-entity.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
 import { invokeInput } from "$game/shared/input.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { createCursor } from "./cursor.entity.js";
+import { sceneAction } from "$game/shared/scene-action.js";
 
 import {
 	BUTTON_A,
@@ -37,8 +37,8 @@ export const paintMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "drawing",
+					world : createArtboard,
 					entities : [
-						createArtboard,
 						createCursor,
 					],
 				}),
@@ -47,7 +47,10 @@ export const paintMachine = createMachine({
 
 			on : {
 				[BUTTON_START] : {
-					actions : sendToEntity("artboard", { type : "CLEAR" }),
+					actions : sceneAction(({ world }) => {
+						world.artboard.clear();
+						world.cursor.tool.stop();
+					}),
 				},
 			},
 
@@ -57,7 +60,7 @@ export const paintMachine = createMachine({
 				"pen up" : {
 					on : {
 						[BUTTON_A] : {
-							actions : sendToEntity("artboard", { type : "PEN_DOWN" }),
+							actions : sceneAction(({ world }) => world.cursor.tool.start()),
 							target : "pen down",
 						},
 					},
@@ -68,14 +71,15 @@ export const paintMachine = createMachine({
 						[BUTTON_A] : [
 							{
 								guard : ({ event }) => event.state === RELEASED,
-								actions : sendToEntity("artboard", { type : "PEN_UP" }),
+								actions : sceneAction(({ world }) => world.cursor.tool.stop()),
 								target : "pen up",
 							},
 						],
 					},
 
+					// hold processes from input directional repeat
 					always : {
-						actions : sendToEntity("artboard", { type : "PEN_DOWN" }),
+						actions : sceneAction(({ world }) => world.cursor.tool.start()),
 					},
 				},
 			},

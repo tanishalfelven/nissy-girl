@@ -33,7 +33,7 @@ export const gameloop = {
 					}
 
 					scene.render();
-					screen.render(scene.getRenderables());
+					screen.render(scene.world.getRenderable());
 				}
 
 				const endFrameState = scene?.hasUpdate?.() || hasInput;

@@ -1,4 +1,4 @@
-import { fromCallback } from "xstate";
+import { fromObservable } from "xstate";
 
 import { noopFalseFunction } from "$util/noop.js";
 
@@ -6,42 +6,51 @@ import { createScene } from "./entity/scene.entity.js";
 
 export const invokeScene = ({
 	id,
+	world,
 	entities,
 	start = noopFalseFunction,
 	stop = noopFalseFunction,
 }) => ({
+	systemId : "scene",
 	id,
-	src : fromCallback(({ system }) => {
-		let cancelled = false;
+	src : fromObservable(({ system }) => ({
+		subscribe(observer) {
+			let cancelled = false;
 
-		const gameloop = system.get("gameloop");
+			const gameloop = system.get("gameloop");
 
-		const scene = createScene({
-			id,
-			entities,
-			start,
-			stop,
-		});
+			const scene = createScene({
+				id,
+				world,
+				entities,
+				start,
+				stop,
+			});
 
-		scene.load().then(() => {
-			if(cancelled) {
-				return;
-			}
+			scene.load().then(() => {
+				if(cancelled) {
+					return;
+				}
 
-			scene.start();
+				scene.start();
 
-			gameloop.send({ type : "REGISTER_SCENE", scene });
-			gameloop.send({ type : "START" });
-		});
+				gameloop.send({ type : "REGISTER_SCENE", scene });
+				gameloop.send({ type : "START" });
 
-		return () => {
-			cancelled = true;
+				observer.next(scene);
+			});
 
-			if(gameloop.getSnapshot().status === "active") {
-				gameloop.send({ type : "REMOVE_SCENE" });
-			} else {
-				scene.stop();
-			}
-		};
-	}),
+			return {
+				unsubscribe() {
+					cancelled = true;
+
+					if(gameloop.getSnapshot().status === "active") {
+						gameloop.send({ type : "REMOVE_SCENE" });
+					} else {
+						scene.stop();
+					}
+				},
+			};
+		},
+	})),
 });

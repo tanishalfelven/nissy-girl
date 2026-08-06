@@ -7,6 +7,10 @@ import { Sprite } from "pixi.js";
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
 
+import { createPencil } from "./tools/pencil.js";
+
+/** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
+
 const SPEED = 0.35;
 
 const DIRECTION = new Map([
@@ -17,9 +21,10 @@ const DIRECTION = new Map([
 ]);
 
 /**
+ * @param world
  * @returns {import("$game/shared/entity/scene.entity.js").Entity}
  */
-export const createCursor = () => {
+export const createCursor = (world) => {
 	let x = 50;
 	let y = 50;
 
@@ -29,8 +34,11 @@ export const createCursor = () => {
 
 	const moveDir = new Set();
 
+	const tool = createPencil(world);
+
 	return {
 		id : "cursor",
+		tool,
 		getRenderable() {
 			return sprite;
 		},
@@ -47,7 +55,9 @@ export const createCursor = () => {
 				}
 			}
 
-			return moveDir.size !== dirCount || moveDir.size > 0;
+			return tool.hasUpdate()
+				|| moveDir.size !== dirCount
+				|| moveDir.size > 0;
 		},
 		update(dt) {
 			let didUpdate = false;
@@ -66,7 +76,7 @@ export const createCursor = () => {
 				}
 			}
 
-			return didUpdate;
+			return tool.update() || didUpdate;
 		},
 		getPosition() {
 			return {
@@ -88,7 +98,7 @@ export const createCursor = () => {
 			sprite.x = Math.round(x);
 			sprite.y = Math.round(y);
 
-			return sprite;
+			tool.render();
 		},
 		destroy() {
 			sprite.destroy();
