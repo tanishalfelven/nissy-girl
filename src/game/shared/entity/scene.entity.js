@@ -65,27 +65,11 @@ export const createScene = ({
 
 			isRunning = true;
 
-			// create pixi container
-			// add children
-
 			for(const entity of entities) {
 				entity.start();
 			}
 
 			start(this);
-		},
-
-		send(entityId, event) {
-			const entity = entityMap.get(entityId);
-
-			if(!entity) {
-				/* eslint-disable-next-line no-console */
-				console.warn(`[scene.handleEntityMessage:${id}] Unable to send message to entity "${entityId}"`);
-
-				return;
-			}
-
-			entity?.send(event);
 		},
 
 		async load() {

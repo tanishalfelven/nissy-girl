@@ -86,6 +86,7 @@ export const gameloop = {
 								target : "none",
 							},
 
+							// this might be bad?
 							ENTITY_MESSAGE : {
 								actions : [
 									({ context, event }) =>

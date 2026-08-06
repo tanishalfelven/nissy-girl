@@ -9,10 +9,6 @@ import { gameloop } from "$game/shared/game-loop.machine.js";
 import { createCursor } from "./cursor.entity.js";
 
 import {
-	DPAD_DOWN,
-	DPAD_LEFT,
-	DPAD_RIGHT,
-	DPAD_UP,
 	BUTTON_A,
 	BUTTON_START,
 	RELEASED,
@@ -50,18 +46,6 @@ export const paintMachine = createMachine({
 			],
 
 			on : {
-				[DPAD_LEFT] : {
-					actions : sendToEntity("cursor"),
-				},
-				[DPAD_RIGHT] : {
-					actions : sendToEntity("cursor"),
-				},
-				[DPAD_DOWN] : {
-					actions : sendToEntity("cursor"),
-				},
-				[DPAD_UP] : {
-					actions : sendToEntity("cursor"),
-				},
 				[BUTTON_START] : {
 					actions : sendToEntity("artboard", { type : "CLEAR" }),
 				},

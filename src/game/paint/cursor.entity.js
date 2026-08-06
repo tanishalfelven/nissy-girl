@@ -1,4 +1,6 @@
-import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP, RELEASED, TRIGGERED } from "$game/shared/input.consts.js";
+import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP } from "$game/shared/input.consts.js";
+
+import { input } from "$nissy-girl/input.js";
 
 import { Sprite } from "pixi.js";
 
@@ -34,19 +36,18 @@ export const createCursor = () => {
 		},
 		start() {},
 		stop() {},
-		send({ type, state }) {
-			if(DIRECTION.has(type)) {
-				if(state === TRIGGERED) {
-					moveDir.add(type);
-				} else if(state === RELEASED) {
-					moveDir.delete(type);
-				}
-
-				return;
-			}
-		},
 		hasUpdate() {
-			return moveDir.size > 0;
+			const dirCount = moveDir.size;
+
+			for(const dir of DIRECTION.keys()) {
+				if(input.state[dir]) {
+					moveDir.add(dir);
+				} else if(!input.state[dir]) {
+					moveDir.delete(dir);
+				}
+			}
+
+			return moveDir.size !== dirCount || moveDir.size > 0;
 		},
 		update(dt) {
 			let didUpdate = false;
