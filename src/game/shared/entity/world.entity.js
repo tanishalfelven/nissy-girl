@@ -45,10 +45,12 @@ const createContainerComponent = () => {
 			return entityMap.get(entityId);
 		},
 
-		// ??? no removal for the moment
+		// remove(){} > no removal for the moment
+
 		getRenderable() {
 			return surface;
 		},
+
 		destroy() {
 			surface.destroy();
 		},
@@ -69,9 +71,16 @@ export const createWorld = ({
 		id,
 		components : {
 			world : createContainerComponent(),
-			...components,
 		},
 	});
+
+	// world is specifically weird - since most components need access to the world we
+	// use entity component addition and then factory components in with the world
+	const componentMap = new Map(Object.entries(components));
+
+	for(const [ id, component ] of componentMap) {
+		worldEntity.addComponent(id, () => component({ world : worldEntity }));
+	}
 
 	return worldEntity;
 };

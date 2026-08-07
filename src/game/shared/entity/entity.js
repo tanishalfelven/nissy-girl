@@ -9,7 +9,9 @@
 /**
  * @typedef {object} Entity
  * @property {boolean} hasComponent
- * @property {Component} getComponent
+ * @property {(string) => Component} getComponent
+ * @property {Map<string, Component>} getComponents
+ * @property {(string) => void} addComponent register component with factory
  */
 
 /**
@@ -34,6 +36,10 @@ export const createEntity = ({ id, components = {} }) => {
 		},
 		getComponent(id) {
 			return componentMap.get(id);
+		},
+		addComponent(id, factory) {
+			entity[id] = factory();
+			componentMap.set(id, entity[id]);
 		},
 	});
 

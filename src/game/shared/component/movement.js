@@ -67,15 +67,15 @@ export const createMovement = ({
 		},
 
 		getPosition() {
-			return { x, y };
+			return { x : Math.round(x), y : Math.round(y) };
 		},
 
 		getX() {
-			return x;
+			return Math.round(x);
 		},
 
 		getY() {
-			return y;
+			return Math.round(y);
 		},
 	});
 };

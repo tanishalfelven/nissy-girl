@@ -7,8 +7,8 @@ export const createPencil = ({ artboard, movement }) => {
 	const pos = [];
 
 	// this definitely needs to come from something else!
-	const xOffset = 2;
-	const yOffset = 2;
+	const xOffset = 5 / 2;
+	const yOffset = 5 / 2;
 
 	return {
 		get active() {
@@ -58,7 +58,7 @@ export const createPencil = ({ artboard, movement }) => {
 							if(coordsDiffer(first, second)) {
 								pixels.moveTo(first.x + xOffset, first.y + yOffset)
 									.lineTo(second.x + xOffset, second.y + yOffset)
-									.stroke({ color : COLOR_BLACK, pixelLine : true });
+									.stroke({ color : COLOR_BLACK, width : 1, cap : "butt", join : "miter" });
 							}
 						}
 					}

@@ -1,8 +1,9 @@
 import { Sprite, Assets } from "pixi.js";
 
+import { createEntity } from "$game/shared/entity/entity.js";
+
 import moveUrl from "./assets/cursor-move.png";
 import stationaryUrl from "./assets/cursor-stationary.png";
-import { createEntity } from "$game/shared/entity/entity.js";
 
 import { createPencil } from "./tools/pencil.js";
 import { createMovement } from "$game/shared/component/movement.js";
@@ -22,13 +23,16 @@ export const createCursor = ({
 	const sprite = new Sprite();
 	const textures = {};
 
+	const { width, height } = world.camera.getBounds();
+	const { artboard } = world.world.get("artboard");
+
 	const movement = createMovement({
-		x : 50,
-		y : 50,
+		x : width / 2,
+		y : height / 2,
 		speed : SPEED,
 	});
 
-	const { artboard } = world.world.get("artboard");
+	world.camera.follow(movement);
 
 	const pencil = createPencil({ artboard, movement });
 
@@ -41,8 +45,8 @@ export const createCursor = ({
 
 			render : {
 				async load() {
-					const move = await Assets.load(moveUrl);
-					const stationary = await Assets.load(stationaryUrl);
+					const move = await Assets.load({ src : moveUrl, data : { scaleMode : "nearest" } });
+					const stationary = await Assets.load({ src : stationaryUrl, data : { scaleMode : "nearest" } });
 
 					textures.move = move;
 					textures.stationary = stationary;
@@ -51,18 +55,21 @@ export const createCursor = ({
 
 					return true;
 				},
+
 				update() {
 					sprite.texture = textures[movement.isMoving() ? "move" : "stationary"];
 
-					sprite.x = Math.round(movement.getX());
-					sprite.y = Math.round(movement.getY());
+					sprite.x = movement.getX();
+					sprite.y = movement.getY();
 
 					// tool component implements its own render we delegate to in cursor render
 					pencil.render();
 				},
+
 				getRenderable() {
 					return sprite;
 				},
+
 				destroy() {
 					sprite.destroy();
 				},
