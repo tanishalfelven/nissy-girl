@@ -4,8 +4,15 @@
 @value screenwidth: 35vh;
 
 .screen {
+	will-change: transform;
+
+	transform: translateZ(0);
+
 	width: screenwidth;
 	height: screenheight;
+
+	backface-visibility: hidden;
+
 	image-rendering: pixelated;
 }
 
