@@ -44,7 +44,7 @@ const createArtboardRender = ({
 		antialias : false,
 	});
 
-	artboardTexture.source.scalemode = "nearest";
+	artboardTexture.source.scaleMode = "nearest";
 
 	const sprite = new Sprite(artboardTexture);
 

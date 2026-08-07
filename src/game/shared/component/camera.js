@@ -11,7 +11,7 @@ const DEFAULT_ZOOM = 1;
 const NOZOOM_WITH_PAN = 2;
 
 const ZOOM_STEPS = new Map([
-	[ 0, 0.8 ],
+	[ 0, 0.85 ],
 	[ DEFAULT_ZOOM, 1 ],
 	[ NOZOOM_WITH_PAN, 1 ],
 	[ 3, 2 ],
