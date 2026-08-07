@@ -22,7 +22,9 @@
 	justify-content: center;
 
 	box-sizing: content-box;
-	aspect-ratio: 31 / 30;
+
+	/* aspect ratio: 31 / 30 (safari doesnt like aspect ratio here so precalc it..) */
+	width: calc(34.13 * px1);
 	height: calc(32 * px1);
 	padding: calc(2 * px1);
 }
@@ -30,7 +32,7 @@
 .dpadface {
 	composes: face from "$util/util.mcss";
 	aspect-ratio: 1 / 1;
-	width: 80%;
+	height: 80%;
 	background-image: url("./assets/dpad.png");
 }
 

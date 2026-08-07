@@ -34,8 +34,10 @@
 		bottom: calc(10 * px1);
 		transform-style: preserve-3d;
 
-		aspect-ratio: 17 / 5;
 		width: calc(17 * px1);
+
+		/* safari prefers this as strict height... */
+		height: calc(5 * px1);
 		padding-bottom: calc(8 * px1);
 
 		background-image: url("./assets/button-bean.png");

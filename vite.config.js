@@ -5,6 +5,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import mcss from "@modular-css/vite";
 import mcssAlias from "@modular-css/path-aliases";
 import nested from "postcss-nested";
+import autoprefixer from "autoprefixer";
 
 const alias = {
 	"$game" : path.resolve("src/game"),
@@ -17,6 +18,7 @@ export default defineConfig({
 		mcss({
 			before : [
 				nested(),
+				autoprefixer(),
 			],
 			resolvers : [
 				mcssAlias({ aliases : alias }),
@@ -28,4 +30,8 @@ export default defineConfig({
 		alias,
 	},
 	base : "/nissy-girl/",
+	server : {
+		host : true,
+		allowedHosts : [ "nissy.local" ],
+	},
 });

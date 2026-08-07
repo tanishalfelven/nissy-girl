@@ -87,6 +87,8 @@ export const touch = (node, {
 
 			handleMove(e);
 		}));
+		sub.add("click", domListenerSub(node, "click", (e) => e.preventDefault()));
+		sub.add("dblclick", domListenerSub(node, "dblclick", (e) => e.preventDefault()));
 		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
 		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
 
@@ -165,6 +167,8 @@ export const controls = (node, {
 
 	$effect(() => {
 		sub.add("pointerdown", domListenerSub(node, "pointerdown", handlerDown));
+		sub.add("click", domListenerSub(node, "click", (e) => e.preventDefault()));
+		sub.add("dblclick", domListenerSub(node, "dblclick", (e) => e.preventDefault()));
 		sub.add("pointermove", domListenerSub(node, "pointermove", (e) => {
 			if(activePointerId !== e.pointerId) {
 				return;
