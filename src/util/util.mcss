@@ -14,4 +14,5 @@
 
 .touchinteractive {
 	touch-action: none;
+	user-select: none;
 }
