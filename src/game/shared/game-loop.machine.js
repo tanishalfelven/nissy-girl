@@ -28,12 +28,9 @@ export const gameloop = {
 				}
 
 				if(scene) {
-					if(scene.hasUpdate()) {
-						scene.update(dt);
-					}
+					scene.update(dt);
 
-					scene.render();
-					screen.render(scene.world.getRenderable());
+					screen.render(scene.world.world.getRenderable());
 				}
 
 				const endFrameState = scene?.hasUpdate?.() || hasInput;
@@ -150,7 +147,7 @@ export const gameloop = {
 								actions : [
 									({ context }) => {
 										context.loop.stop();
-										context.scene.stop();
+										context.scene.destroy();
 										screen.clear();
 									},
 									assign({ scene : false }),

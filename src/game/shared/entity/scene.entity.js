@@ -1,6 +1,4 @@
-import { noopFalseFunction } from "$util/noop.js";
-
-import { Assets } from "pixi.js";
+import { createWorld } from "./world.entity.js";
 
 /** @import { Entity } from "./entity.js" */
 /** @import { WorldEntity } from "./world.entity.js" */
@@ -16,93 +14,95 @@ import { Assets } from "pixi.js";
  * @property {WorldEntity} world
  */
 
+const createUnrolledCallableByLifecycle = (components, entities, lifecycles) => {
+	const lifecycleMap = new Map(
+		lifecycles.map(
+			(lifecycle) => [ lifecycle, []],
+		),
+	);
+
+	// trying to only do this insane loop once
+	for(const component of components) {
+		for(const entity of entities) {
+			const entityComponents = entity.getComponents();
+
+			for(const lifecycle of lifecycles) {
+				if(entityComponents.get(component)?.[lifecycle]) {
+					lifecycleMap.get(lifecycle).push([ entity, entity[component][lifecycle] ]);
+				}
+			}
+		}
+	}
+
+	return lifecycleMap;
+};
+
 /**
  *
  * @param {object} options options obj
  * @param {string} options.id entity id
  * @param {() => WorldEntity} options.world
  * @param {(() => Entity)[]} options.entities child entities in canonical rendering canonical ordering
- * @param {() => void} options.start lifecycle
- * @param {() => void} options.stop lifecycle
+ * @param {string[]} options.componentOrder
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
 	id,
-	world : worldFactory,
+	world : worldFactory = createWorld,
 	entities : entityFactories,
-	start = noopFalseFunction,
-	stop = noopFalseFunction,
+	componentOrder,
 }) => {
-	let isRunning = false;
-
 	const world = worldFactory();
 	const entities = [ world ];
 
-	for(const createEntity of entityFactories) {
-		const entity = createEntity(world);
+	let isAlive = true;
 
-		world.registerEntity(entity);
+	for(const createEntity of entityFactories) {
+		const entity = createEntity({ world });
+
+		world.world.add(entity);
 
 		entities.push(entity);
 	}
 
+	const lifecycleMap = createUnrolledCallableByLifecycle(
+		componentOrder,
+		entities,
+		[
+			"load",
+			"destroy",
+			"stop",
+			"hasUpdate",
+			"update",
+		],
+	);
+
+	// set calls upfront so iteration has as few lookups as possible
+	const load = lifecycleMap.get("load").map(([ , loadFunc ]) => loadFunc);
+	const hasUpdate = lifecycleMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc);
+	const update = lifecycleMap.get("update");
+	const stop = lifecycleMap.get("stop").map(([ , stopFunc ]) => stopFunc);
+	const destroy = lifecycleMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc);
+	// We clearly aren't really ECS but we're going to try and model that direction keep room to grow!
+
 	const scene = {
 		id,
-
 		world,
 
-		start() {
-			if(isRunning) {
-				throw new Error("Cannot start in progress scene", this);
-			}
-
-			isRunning = true;
-
-			for(const entity of entities) {
-				entity.start();
-			}
-
-			start(this);
+		// scene-action caches the scene while it's alive, expose lifecycle so it knows to get rid of us
+		get isAlive() {
+			return isAlive;
 		},
 
 		async load() {
 			return Promise.all(
-				entities
-					.filter((entity) => entity.getTextureRequests)
-					.map(async (entity) => {
-						const requests = entity.getTextureRequests();
-						const textures = {};
-
-						await Promise.all(
-							Object.entries(requests).map(async ([ key, url ]) => {
-								textures[key] = await Assets.load(url);
-							}),
-						);
-
-						entity.setTextures(textures);
-					}),
+				load.map((loadFunc) => loadFunc()),
 			);
 		},
 
-		destroy() {
-			for(const entity of entities) {
-				entity.destroy();
-			}
-		},
-
-		stop() {
-			isRunning = false;
-
-			for(const entity of entities) {
-				entity.stop();
-			}
-
-			stop(this);
-		},
-
 		hasUpdate() {
-			for(const entity of entities) {
-				if(entity.hasUpdate()) {
+			for(const hasUpdateFunc of hasUpdate) {
+				if(hasUpdateFunc()) {
 					return true;
 				}
 			}
@@ -111,17 +111,24 @@ export const createScene = ({
 		},
 
 		update(dt) {
-			for(const entity of entities) {
-				if(entity.hasUpdate()) {
-					entity.update(dt);
-				}
+			for(const [ entity, updateFunc ] of update) {
+				updateFunc(dt, entity);
 			}
 		},
 
-		render() {
-			for(const entity of entities) {
-				entity.render();
+		// stop is maybe not semantically making sense so far
+		stop() {
+			for(const stopFunc of stop) {
+				stopFunc();
 			}
+		},
+
+		destroy() {
+			for(const destroyFunc of destroy) {
+				destroyFunc();
+			}
+
+			isAlive = false;
 		},
 	};
 

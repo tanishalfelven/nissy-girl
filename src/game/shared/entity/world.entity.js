@@ -1,67 +1,77 @@
 import { Container } from "pixi.js";
 
+import { createEntity } from "./entity.js";
+
 /** @import { Entity } from "./entity.js" */
 
 /**
- * @typedef {object} WorldEntity
- * @property {() => void} start lifecycle
- * @property {() => void} destroy lifecycle
- * @property {() => boolean} hasUpdate if should update
- * @property {() => void} update lifecycle
- * @property {() => void} stop pause
- * @property {() => Container} getRenderable get renderable for entity
- * @property {(Entity) => void} registerEntity register entity to world
+ * @typedef {object} Component
+ * @property {() => void} [update]
+ * @property {() => void} [start]
+ * @property {() => void} [stop]
+ * @property {() => void} [destroy]
  */
+
+/**
+ * @typedef {object} ContainerComponent
+ * @property {(Entity) => void} add
+ * \@property {() => void} remove
+ * @property {() => Container} getRenderable
+ * @property {() => void} destroy
+ */
+
+/**
+ * @returns {ContainerComponent}
+ */
+const createContainerComponent = () => {
+	const entities = [];
+	const entityMap = new Map();
+	const surface = new Container();
+
+	return ({
+		add(entity) {
+			entities.push(entity);
+			entityMap.set(entity.id, entity);
+
+			if(entity?.render?.getRenderable) {
+				surface.addChild(entity.render.getRenderable());
+			}
+
+			// components get a special reference to their world component!
+			entity.world = this;
+		},
+
+		get(entityId) {
+			return entityMap.get(entityId);
+		},
+
+		// ??? no removal for the moment
+		getRenderable() {
+			return surface;
+		},
+		destroy() {
+			surface.destroy();
+		},
+	});
+};
 
 /**
  * @param {object} [options]
  * @param {string} options.id
- * @param {number} options.width
- * @param {number} options.height
- * @returns {WorldEntity}
+ * @param {object} options.components
+ * @returns {Entity}
  */
 export const createWorld = ({
-	id,
-	// todo
-	width = 1,
-	height = 1,
+	id = "world",
+	components = {},
 } = false) => {
-	const surface = new Container();
-
-	const entities = [];
-
-	return {
+	const worldEntity = createEntity({
 		id,
-
-		start() {},
-
-		registerEntity(entity) {
-			entities.push(entity);
-
-			surface.addChild(entity.getRenderable());
+		components : {
+			world : createContainerComponent(),
+			...components,
 		},
+	});
 
-		// this may be antipattern
-		getEntities() {
-			return entities;
-		},
-
-		hasUpdate() {
-			return false;
-		},
-
-		update() {},
-
-		render() {},
-
-		getRenderable() {
-			return surface;
-		},
-
-		stop() {},
-
-		destroy() {
-			surface.destroy();
-		},
-	};
+	return worldEntity;
 };

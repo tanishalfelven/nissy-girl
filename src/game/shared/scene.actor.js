@@ -1,6 +1,6 @@
 import { fromObservable } from "xstate";
 
-import { noopFalseFunction } from "$util/noop.js";
+import { isActorAlive } from "$util/is-actor-alive.js";
 
 import { createScene } from "./entity/scene.entity.js";
 
@@ -8,8 +8,7 @@ export const invokeScene = ({
 	id,
 	world,
 	entities,
-	start = noopFalseFunction,
-	stop = noopFalseFunction,
+	componentOrder,
 }) => ({
 	systemId : "scene",
 	id,
@@ -23,31 +22,28 @@ export const invokeScene = ({
 				id,
 				world,
 				entities,
-				start,
-				stop,
+				componentOrder,
 			});
+
+			observer.next(scene);
 
 			scene.load().then(() => {
 				if(cancelled) {
 					return;
 				}
 
-				scene.start();
-
 				gameloop.send({ type : "REGISTER_SCENE", scene });
 				gameloop.send({ type : "START" });
-
-				observer.next(scene);
 			});
 
 			return {
 				unsubscribe() {
 					cancelled = true;
 
-					if(gameloop.getSnapshot().status === "active") {
+					if(isActorAlive(gameloop)) {
 						gameloop.send({ type : "REMOVE_SCENE" });
 					} else {
-						scene.stop();
+						scene.destroy();
 					}
 				},
 			};

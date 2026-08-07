@@ -3,10 +3,10 @@ import { createMachine } from "xstate";
 import { stateLogger } from "$util/state-logger.actor.js";
 
 import { invokeScene } from "$game/shared/scene.actor.js";
-import { invokeInput } from "$game/shared/input.actor.js";
+import { invokeInput, invokeComponentInputListener } from "$game/shared/input.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { createCursor } from "./cursor.entity.js";
-import { sceneAction } from "$game/shared/scene-action.js";
+import { sceneAction, withScene } from "$game/shared/scene-action.js";
 
 import {
 	BUTTON_A,
@@ -37,50 +37,49 @@ export const paintMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "drawing",
-					world : createArtboard,
 					entities : [
+						createArtboard,
 						createCursor,
+					],
+					componentOrder : [
+						"world",
+						"movement",
+						"tool",
+						"render",
 					],
 				}),
 				invokeInput,
+
+				invokeComponentInputListener(
+					"cursor-movement",
+					withScene(
+						// this is wild...
+						(scene) => scene.world.world.get("cursor").movement,
+					),
+				),
 			],
 
 			on : {
 				[BUTTON_START] : {
-					actions : sceneAction(({ world }) => {
-						world.artboard.clear();
-						world.cursor.tool.stop();
+					actions : sceneAction((_, { world }) => {
+						const artboard = world.world.get("artboard");
+						const cursor = world.world.get("cursor");
+
+						artboard.artboard.clear();
+						cursor.tool.stop();
 					}),
 				},
-			},
 
-			initial : "pen up",
+				[BUTTON_A] : {
+					actions : sceneAction(({ event }, { world }) => {
+						const cursor = world.world.get("cursor");
 
-			states : {
-				"pen up" : {
-					on : {
-						[BUTTON_A] : {
-							actions : sceneAction(({ world }) => world.cursor.tool.start()),
-							target : "pen down",
-						},
-					},
-				},
-
-				"pen down" : {
-					on : {
-						[BUTTON_A] : [
-							{
-								guard : ({ event }) => event.state === RELEASED,
-								actions : sceneAction(({ world }) => world.cursor.tool.stop()),
-								target : "pen up",
-							},
-						],
-					},
-
-					// hold processes from input directional repeat
-					always : {
-						actions : sceneAction(({ world }) => world.cursor.tool.start()),
-					},
+						if(event.state === RELEASED) {
+							cursor.tool.stop();
+						} else if(!cursor.tool.active) {
+							cursor.tool.begin();
+						}
+					}),
 				},
 			},
 		},

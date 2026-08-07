@@ -2,33 +2,52 @@ import { COLOR_BLACK } from "$nissy-girl/screens/render.consts.js";
 
 import { coordsDiffer } from "$game/shared/component/position.js";
 
-export const createPencil = (world) => {
+export const createPencil = ({ artboard, movement }) => {
 	let isDrawing = false;
 	const pos = [];
 
+	// this definitely needs to come from something else!
+	const xOffset = 2;
+	const yOffset = 2;
+
 	return {
-		start() {
+		get active() {
+			return isDrawing;
+		},
+
+		begin() {
 			isDrawing = true;
 		},
+
+		// intentional scene lifecycle hook
 		stop() {
 			isDrawing = false;
 			pos.length = 0;
 		},
+
 		hasUpdate() {
-			return isDrawing || pos.length;
+			return isDrawing && movement.isMoving();
 		},
+
 		update() {
-			if(world.cursor && isDrawing) {
-				pos.push(world.cursor.getPosition());
+			if(!isDrawing) {
+				return false;
+			}
+
+			const nextPos = movement.getPosition();
+
+			if(pos.length === 0 || coordsDiffer(nextPos, pos.at(-1))) {
+				pos.push(nextPos);
 			}
 		},
+
 		render() {
 			if(isDrawing || pos.length) {
-				const pixels = world.artboard.getContext();
+				const pixels = artboard.getContext();
 
 				if(pos.length === 1) {
 					pixels
-						.rect(pos[0].x, pos[0].y, 1, 1)
+						.rect(pos[0].x + xOffset, pos[0].y + yOffset, 1, 1)
 						.fill(COLOR_BLACK);
 				} else {
 					for(let i = 0; i < pos.length; i++) {
@@ -37,8 +56,8 @@ export const createPencil = (world) => {
 
 						if(first && second) {
 							if(coordsDiffer(first, second)) {
-								pixels.moveTo(first.x, first.y)
-									.lineTo(second.x, second.y)
+								pixels.moveTo(first.x + xOffset, first.y + yOffset)
+									.lineTo(second.x + xOffset, second.y + yOffset)
 									.stroke({ color : COLOR_BLACK, pixelLine : true });
 							}
 						}

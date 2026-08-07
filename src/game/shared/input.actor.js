@@ -1,5 +1,6 @@
 import { fromCallback } from "xstate";
 import { input } from "$nissy-girl/input.js";
+import { isActorAlive } from "$util/is-actor-alive.js";
 
 import {
 	DPAD_DOWN,
@@ -22,17 +23,18 @@ const REPEATING_INPUTS = new Set([
 ]);
 
 export const invokeInput = {
+	systemId : "input",
 	id : "input",
-	src : fromCallback(({ sendBack, system }) => {
+	src : fromCallback(({ sendBack, system, receive }) => {
 		const gameloop = system.get("gameloop");
 
+		const componentTargets = new Set();
 		const isRepeating = new Set();
 
 		let repeat = 0;
 
 		gameloop.send({
 			type : "REGISTER_INPUT",
-
 			input : (dt) => {
 				repeat += dt;
 
@@ -49,8 +51,16 @@ export const invokeInput = {
 		});
 
 		const removeInput = input.subscribe((event) => {
+			let triggersFrame = false;
+
 			// proxy triggered events back
 			sendBack(event);
+
+			for(const component of componentTargets) {
+				if(component.handleInput() !== false) {
+					triggersFrame = true;
+				}
+			}
 
 			if(REPEATING_INPUTS.has(event.type)) {
 				if(event.state === RELEASED) {
@@ -60,8 +70,28 @@ export const invokeInput = {
 				}
 			}
 
-			if(isRepeating.size > 0) {
+			triggersFrame ||= isRepeating.size > 0;
+
+			if(triggersFrame) {
 				gameloop.send({ type : "START" });
+			}
+		});
+
+		receive((event) => {
+			if(event.type === "SEND_COMPONENT_INPUT") {
+				if(!event.component.handleInput) {
+					throw new Error("Attempted to register input for component with no handleInput");
+				}
+
+				componentTargets.add(event.component);
+
+				return;
+			}
+
+			if(event.type === "REMOVE_COMPONENT_INPUT") {
+				componentTargets.delete(event.component);
+
+				return;
 			}
 		});
 
@@ -73,9 +103,32 @@ export const invokeInput = {
 
 			removeInput();
 
-			if(gameloop.getSnapshot().status === "active") {
+			if(isActorAlive(gameloop)) {
 				gameloop.send({ type : "REMOVE_INPUT" });
 			}
 		};
 	}),
 };
+
+export const invokeComponentInputListener = (id, func) => ({
+	id : `component-input-listener-${id}`,
+	src : fromCallback((all) => {
+		const { system } = all;
+
+		const component = func(all);
+
+		if(!component) {
+			throw new Error("[invokeComponentInputListener] sent invalid component");
+		}
+
+		const input = system.get("input");
+
+		input.send({ type : "SEND_COMPONENT_INPUT", component });
+
+		return () => {
+			if(isActorAlive(input)) {
+				input.send({ type : "REMOVE_COMPONENT_INPUT", component });
+			}
+		};
+	}),
+});

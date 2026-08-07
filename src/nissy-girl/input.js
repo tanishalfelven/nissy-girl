@@ -46,8 +46,8 @@ const startKeyListeners = (fire) => {
 		}
 	};
 
-	subs.add("keydown", domListenerSub(window, "keydown", handleKeyPress(TRIGGERED, fire)));
-	subs.add("keyup", domListenerSub(window, "keyup", handleKeyPress(RELEASED, fire)));
+	subs.add("keydown", domListenerSub(window, "keydown", handleKeyPress(TRIGGERED)));
+	subs.add("keyup", domListenerSub(window, "keyup", handleKeyPress(RELEASED)));
 
 	return () => subs.removeAll();
 };

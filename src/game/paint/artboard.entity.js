@@ -1,62 +1,56 @@
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
+/** @import { Container } from "pixi.js" */
+/** @import { ContainerComponent } from "$game/shared/entity/world.entity.js" */
+
 import { COLOR_WHITE } from "$nissy-girl/screens/render.consts.js";
 
 import { GraphicsContext, Graphics } from "pixi.js";
 
-import { createWorld } from "$game/shared/entity/world.entity.js";
+import { createEntity } from "$game/shared/entity/entity.js";
+
+const createArtboardComponent = ({
+	pixels,
+	backgroundColor = COLOR_WHITE,
+	width = CANVAS_WIDTH,
+	height = CANVAS_HEIGHT,
+}) => {
+	return ({
+		clear() {
+			pixels
+				.clear()
+				.rect(0, 0, width, height)
+				.fill(backgroundColor);
+
+			return true;
+		},
+		getContext() {
+			return pixels;
+		},
+	});
+};
 
 /**
- * @param {object} [options]
- * @param {number} [options.backgroundColor]
- * @param {number} options.width
- * @param {number} options.height
- * @returns {import("$game/shared/entity/world.entity.js").WorldEntity}
+ * @returns {import("$game/shared/entity/entity.js").Entity}
  */
-export const createArtboard = ({
-	backgroundColor = COLOR_WHITE,
-	width : artboardWidth = CANVAS_WIDTH,
-	height : artboardHeight = CANVAS_HEIGHT,
-} = false) => {
-	const world = createWorld({
-		id : "artboard",
-	});
-
+export const createArtboard = () => {
 	const pixels = new GraphicsContext();
 
 	const renderable = new Graphics(pixels);
 
-	world.getRenderable().addChild(renderable);
-
-	world.artboard = {
-		getContext() {
-			return pixels;
+	const artboard = createEntity({
+		id : "artboard",
+		components : {
+			artboard : createArtboardComponent({ pixels }),
+			render : {
+				getRenderable() {
+					return renderable;
+				},
+			},
 		},
-		clear() {
-			pixels
-				.rect(0, 0, artboardWidth, artboardHeight)
-				.fill(backgroundColor);
-		},
-	};
-
-	let cursor;
-
-	Object.defineProperty(world, "cursor", {
-		get() {
-			if(!cursor) {
-				for(const entity of world.getEntities()) {
-					if(entity.id === "cursor") {
-						cursor = entity;
-					}
-				}
-			}
-
-			return cursor;
-		},
-		enumerable : true,
 	});
 
-	world.artboard.clear();
+	artboard.artboard.clear();
 
-	return world;
+	return artboard;
 };
