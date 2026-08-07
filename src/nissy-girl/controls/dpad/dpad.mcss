@@ -11,7 +11,7 @@
 
 	position: absolute;
 	bottom: calc(57.5 * px1);
-	left: calc(7 * px1);
+	left: calc(6 * px1);
 	transform-origin: center center 4px;
 	transform-style: preserve-3d;
 	transform: translateZ(var(--button-plane));
