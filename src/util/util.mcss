@@ -12,6 +12,25 @@
 	backface-visibility: hidden;
 }
 
+.backface {
+	transform-style: preserve-3d;
+
+	&::after {
+		will-change: transform;
+		content: "";
+
+		transform: rotateY(180deg) translateZ(1px);
+
+		display: block;
+
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
+		background-size: cover;
+
+		image-rendering: pixelated;
+	}
+}
+
 .touchinteractive {
 	touch-action: none;
 	user-select: none;

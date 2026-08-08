@@ -1,9 +1,13 @@
 <script module>
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
+import { COLOR_BLACK } from "./render.consts.js";
 import { createRenderer } from "./render.js";
 import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
 import { Assets } from "pixi.js";
 
+/** @import { Renderer } from "pixi.js"; */
+
+/** @type {Renderer} */
 let renderer = false;
 
 const initRenderer = async (canvas) => {
@@ -28,7 +32,7 @@ export const screen = {
 			throw new Error("Clear scene called before renderer init!");
 		}
 
-		renderer.clear();
+		renderer.clear({ clearColor : COLOR_BLACK });
 	},
 
 	isReady() {

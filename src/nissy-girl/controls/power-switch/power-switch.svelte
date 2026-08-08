@@ -52,12 +52,11 @@ let switchHeight = $state(0);
 	}}
 >
 	<div
-		class={css.powerswitch}
-		data-top="true"
+		class={css.powerswitchtop}
 		data-power={nissyGirl.isPowered}
 		data-willtoggle={doesTriggerToggle}
 	>
-		<div class={css.powerswitch} data-left="true"></div>
-		<div class={css.powerswitch} data-right="true"></div>
+		<div class={css.powerswitchside} data-left="true"></div>
+		<div class={css.powerswitchside} data-right="true"></div>
 	</div>
 </div>

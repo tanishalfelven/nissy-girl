@@ -33,30 +33,48 @@
 	width: calc(4 * px1);
 	padding: hitpadding;
 
-	background-image: url("./assets/power-switch-side.png");
-
-	&[data-top="true"] {
-		top: calc(-2 * px1);
-		left: calc(-2.5 * px1);
-		transform-style: preserve-3d;
-		transform:
-			translateZ(switchdepth)
-			translateY(var(--position))
-			scale(0.9);
-
-		box-sizing: content-box;
-
-		background-image: url("./assets/power-switch-top.png");
-		background-origin: content-box;
-
-		transition: transform 300ms ease-in-out;
+	&[data-willtoggle="true"] {
+		--position: 10%;
 	}
 
-	&[data-left="true"],
-	&[data-right="true"] {
-		width: switchdepth;
-		padding: 0;
-		backface-visibility: visible;
+	&[data-power="false"] {
+		--position: 92%;
+	}
+
+	&[data-power="false"][data-willtoggle="true"] {
+		--position: 84%;
+	}
+}
+
+.powerswitchtop {
+	composes: powerswitch;
+
+	top: calc(-2 * px1);
+	left: calc(-2.25 * px1);
+	transform-style: preserve-3d;
+	transform:
+		translateZ(switchdepth)
+		translateY(var(--position))
+		scale(0.9);
+
+	box-sizing: content-box;
+
+	background-image: url("./assets/power-switch-top.png");
+	background-origin: content-box;
+
+	transition: transform 300ms ease-in-out;
+}
+
+.powerswitchside {
+	composes: backface from "$util/util.mcss";
+	composes: powerswitch;
+	width: switchdepth;
+	padding: 0;
+
+	&::after {
+		width: 100%;
+		height: 100%;
+		background-image: url("./assets/power-switch-side.png");
 	}
 
 	&[data-left="true"] {
@@ -73,17 +91,5 @@
 			translateX(50%)
 			rotateY(90deg)
 			translateX(50%);
-	}
-
-	&[data-willtoggle="true"] {
-		--position: 10%;
-	}
-
-	&[data-power="false"] {
-		--position: 92%;
-	}
-
-	&[data-power="false"][data-willtoggle="true"] {
-		--position: 55%;
 	}
 }

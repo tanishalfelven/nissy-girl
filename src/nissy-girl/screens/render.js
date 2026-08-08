@@ -11,9 +11,11 @@ export const createRenderer = async (canvas, { width = CANVAS_WIDTH, height = CA
 		canvas,
 		width,
 		height,
+		backgroundAlpha : 1,
 		backgroundColor : COLOR_BLACK,
 		// have you heard of pixel art
 		antialias : false,
+		roundPixels : true,
 	});
 
 	return renderer;

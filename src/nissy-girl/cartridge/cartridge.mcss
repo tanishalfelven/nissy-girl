@@ -1,9 +1,10 @@
 @value height: 32vh;
 @value width: calc(height * 112 / 105);
 @value depth: calc(height * 6 / 105);
+@value px1: calc(height / 105);
 
 .cartridge {
-	--pcb-y: -9%;
+	--pcb-y: -3%;
 
 	composes: touchinteractive from "$util/util.mcss";
 
@@ -60,7 +61,7 @@
 }
 
 .cartridgeface {
-	composes: face from "$util/util.mcss";
+	composes: face, backface from "$util/util.mcss";
 
 	position: absolute;
 	top: 0;
@@ -69,14 +70,31 @@
 
 	aspect-ratio: 112 / 105;
 
-	backface-visibility: visible;
 	background-image: url("./assets/cartridge-face.png");
+
+	&::after {
+		position: absolute;
+		bottom: 0;
+
+		aspect-ratio: 112 / 15;
+		width: 100%;
+
+		background-image: url("./assets/cartridge-face-inner.png");
+	}
 
 	&[data-back="true"] {
 		transform: rotateY(180deg) translateZ(depth);
-		width: 100%;
-		height: 100%;
 		background-image: url("./assets/cartridge-back.png");
+
+		&::after {
+			position: absolute;
+			bottom: 0;
+
+			width: 100%;
+			height: 100%;
+
+			background-image: url("./assets/cartridge-inner.png");
+		}
 	}
 }
 
@@ -150,9 +168,9 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	top: 17%;
+	top: calc(17 * px1);
 	left: 16.2%;
-	transform: translateZ(calc(depth * -0.07)) rotateY(90deg);
+	transform: translateZ(calc(depth * -0.08)) rotateY(90deg);
 
 	aspect-ratio: 1 / 72;
 	width: 0.31vh;
@@ -163,12 +181,12 @@
 	&[data-right="true"] {
 		right: 16.2%;
 		left: auto;
-		transform: translateZ(calc(depth * -0.07)) rotateY(-90deg);
+		transform: translateZ(calc(depth * -0.08)) rotateY(-90deg);
 	}
 }
 
 .cartridgeslattop {
-	composes: face from "$util/util.mcss";
+	composes: face, backface from "$util/util.mcss";
 
 	position: absolute;
 	top: 0;
@@ -182,8 +200,13 @@
 	aspect-ratio: 6 / 84;
 	width: depth;
 
-	backface-visibility: visible;
 	background-image: url("./assets/cartridge-slat-top.png");
+
+	&::after {
+		width: 100%;
+		height: 100%;
+		background-image: url("./assets/cartridge-slat-top-inner.png");
+	}
 
 	&[data-right="true"] {
 		right: 0;
@@ -197,10 +220,10 @@
 }
 
 .cartridgeslatbottom {
-	composes: face from "$util/util.mcss";
+	composes: face, backface from "$util/util.mcss";
 
 	position: absolute;
-	bottom: 0.12%;
+	bottom: 0.13%;
 	left: 0;
 	transform:
 		translateZ(calc(depth * -0.5))
@@ -211,8 +234,17 @@
 	aspect-ratio: 6 / 21;
 	width: depth;
 
-	backface-visibility: visible;
 	background-image: url("./assets/cartridge-slat-bottom.png");
+
+	&::after {
+		position: absolute;
+		bottom: 0;
+
+		width: 100%;
+		height: 100%;
+
+		background-image: url("./assets/cartridge-slat-bottom-inner.png");
+	}
 
 	&[data-right="true"] {
 		right: 0;

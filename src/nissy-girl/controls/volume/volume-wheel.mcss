@@ -15,12 +15,11 @@
 }
 
 .wheel {
-	composes: face from "$util/util.mcss";
+	composes: face, backface from "$util/util.mcss";
 
 	will-change: transform;
 
 	bottom: calc(2 * px1);
-	transform-style: preserve-3d;
 
 	width: calc(18 * px1);
 	height: calc(18 * px1);
@@ -28,20 +27,9 @@
 	background-image: url("./assets/wheel-outer.png");
 
 	&::after {
-		will-change: transform;
-		content: "";
-
-		display: block;
-
 		width: calc(18 * px1);
 		height: calc(18 * px1);
-
 		background-image: url("./assets/wheel-inner.png");
-		background-repeat: no-repeat;
-		background-position: 50% 50%;
-		background-size: cover;
-
-		image-rendering: pixelated;
 	}
 
 	&[data-back="true"] {
@@ -53,7 +41,7 @@
 	}
 
 	&[data-front="true"] {
-		left: calc(-0.9 * px1);
+		left: calc(-1 * px1);
 		transform: rotateY(-90deg) translateX(-20%) scaleX(-1) rotateZ(var(--rotation));
 
 		&::after {

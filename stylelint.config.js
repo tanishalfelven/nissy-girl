@@ -14,5 +14,10 @@ export default{
 	rules : {
 		"@stylistic/indentation" : "tab",
 		"declaration-property-value-no-unknown" : null,
+
+		// footgun for 3d, prefer util backface helper
+		"declaration-property-value-disallowed-list" : {
+			"backface-visibility" : "visible",
+		},
 	},
 };
