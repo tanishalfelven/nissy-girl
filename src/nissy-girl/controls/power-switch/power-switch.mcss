@@ -1,8 +1,5 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 
-@value switchdepth: calc(4 * px1);
-@value hitpadding: calc(3 * px1);
-
 .housing {
 	composes: face, touchinteractive from "$util/util.mcss";
 
@@ -23,22 +20,22 @@
 }
 
 .powerswitch {
-	--position: 0%;
+	--position: 8%;
 
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
+	transform-style: preserve-3d;
 
-	aspect-ratio: 5 / 24;
-	width: calc(4 * px1);
-	padding: hitpadding;
+	aspect-ratio: 5 / 20;
+	width: calc(5 * px1);
 
 	&[data-willtoggle="true"] {
 		--position: 10%;
 	}
 
 	&[data-power="false"] {
-		--position: 92%;
+		--position: 110%;
 	}
 
 	&[data-power="false"][data-willtoggle="true"] {
@@ -46,50 +43,65 @@
 	}
 }
 
-.powerswitchtop {
+.powerback {
 	composes: powerswitch;
 
-	top: calc(-2 * px1);
-	left: calc(-2.25 * px1);
+	position: relative;
+	top: calc(0 * px1);
+	left: calc(0.15 * px1);
 	transform-style: preserve-3d;
 	transform:
-		translateZ(switchdepth)
 		translateY(var(--position))
 		scale(0.9);
 
-	box-sizing: content-box;
+	background-image: url("./assets/power-backface.png");
 
-	background-image: url("./assets/power-switch-top.png");
-	background-origin: content-box;
-
-	transition: transform 300ms ease-in-out;
+	transition: transform 700ms linear(0, 0.837 15.2%, 1.053 23.6%, 1);
 }
 
-.powerswitchside {
-	composes: backface from "$util/util.mcss";
+.middle {
 	composes: powerswitch;
-	width: switchdepth;
-	padding: 0;
+	transform: translateX(calc(0.2 * px1)) translateZ(calc(2.5 * px1));
+	background-image: url("./assets/power-face-middle.png");
+}
+
+.face {
+	composes: powerswitch;
+	transform-style: flat;
+	transform: translateZ(calc(0.5 * px1));
+	background-image: url("./assets/power-face.png");
+}
+
+.innerside {
+	composes: face, backface from "$util/util.mcss";
+
+	position: absolute;
+	transform: rotateY(-90deg) translateZ(calc(2.05 * px1));
+
+	width: calc(6 * px1);
+	height: calc(20 * px1);
+
+	background-image: url("./assets/power-inner-side.png");
 
 	&::after {
+		transform: rotate(180deg) translateZ(calc(-0.3 * px1));
 		width: 100%;
 		height: 100%;
-		background-image: url("./assets/power-switch-side.png");
+		background-image: url("./assets/power-face-inner-back.png");
 	}
+}
 
-	&[data-left="true"] {
-		left: auto;
-		transform:
-			translateX(-50%)
-			rotateY(-90deg)
-			translateX(-50%);
-	}
+.innersideright {
+	composes: innerside;
 
-	&[data-right="true"] {
-		right: auto;
-		transform:
-			translateX(50%)
-			rotateY(90deg)
-			translateX(50%);
+	transform: scaleX(-1) rotateY(-90deg) translateX(11%) translateZ(calc(1.7 * px1));
+
+	width: 100%;
+	height: 100%;
+
+	background-image: url("./assets/power-inner-side.png");
+
+	&::after {
+		transform: rotate(180deg) translateZ(calc(-0.1 * px1));
 	}
 }

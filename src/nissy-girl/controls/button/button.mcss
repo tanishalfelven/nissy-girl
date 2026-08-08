@@ -15,7 +15,7 @@
 		padding: calc(5 * px1);
 
 		&::after {
-			transform: translateZ(-0.8px) scale(0.92);
+			transform: translateY(0.5px) translateZ(-1px);
 			width: 100%;
 			height: 100%;
 		}
@@ -93,11 +93,12 @@
 
 .roundside {
 	composes: face, backface from "$util/util.mcss";
-	transform: rotateY(90deg) translateX(53.6%) translateZ(calc(8 * px1));
+	transform: rotateY(90deg) translateX(55%) translateZ(calc(8 * px1));
 	aspect-ratio: 3 / 9;
 	height: calc(18 * px1);
 
 	&::after {
+		transform: translateZ(calc(-3 * px1));
 		width: 100%;
 		height: 100%;
 		background-image: url("./assets/button-round-side.png");
