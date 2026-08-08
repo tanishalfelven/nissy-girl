@@ -5,6 +5,7 @@ import Cartridge from "$nissy-girl/cartridge/cartridge.svelte";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
+import VolumeWheel from "./controls/volume/volume-wheel.svelte";
 import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
@@ -72,10 +73,13 @@ let { children } = $props();
 			<PowerSwitch />
 		</div>
 
+		<div class={css.panelside} data-left="true">
+			<VolumeWheel />
+		</div>
+
 		<div class={css.screenbevelhorz}></div>
 		<div class={css.screenbevelvert}></div>
 		<div class={css.screenbevelvert} data-left="true"></div>
-		<div class={css.panelside} data-left="true"></div>
 		<div class={css.backupper}></div>
 		<div class={css.vent}></div>
 		<div class={css.backlower}></div>

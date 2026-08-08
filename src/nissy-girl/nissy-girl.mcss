@@ -106,6 +106,7 @@
 .panelside {
 	composes: face from "$util/util.mcss";
 
+	transform-style: preserve-3d;
 	transform: rotateY(90deg) translateZ(calc(width - depth / 2));
 
 	aspect-ratio: 46 / 224;
@@ -116,11 +117,6 @@
 
 	&[data-left="true"] {
 		transform: rotateY(-90deg) scaleX(-1) translateZ(calc(depth / 2));
-	}
-
-	/* right side has power switch */
-	&[data-right="true"] {
-		transform-style: preserve-3d;
 	}
 }
 

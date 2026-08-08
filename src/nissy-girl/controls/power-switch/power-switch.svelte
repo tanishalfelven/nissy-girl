@@ -28,8 +28,7 @@ let switchHeight = $state(0);
 </script>
 
 <div
-	class={css.powerswitch}
-	data-top="true"
+	class={css.housing}
 	bind:clientHeight={switchHeight}
 	use:touch={{
 		start : (e) => {
@@ -51,9 +50,14 @@ let switchHeight = $state(0);
 			candidateY = 0;
 		},
 	}}
-	data-power={nissyGirl.isPowered}
-	data-willtoggle={doesTriggerToggle}
 >
-	<div class={css.powerswitch} data-left="true"></div>
-	<div class={css.powerswitch} data-right="true"></div>
+	<div
+		class={css.powerswitch}
+		data-top="true"
+		data-power={nissyGirl.isPowered}
+		data-willtoggle={doesTriggerToggle}
+	>
+		<div class={css.powerswitch} data-left="true"></div>
+		<div class={css.powerswitch} data-right="true"></div>
+	</div>
 </div>

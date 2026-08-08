@@ -3,10 +3,29 @@
 @value switchdepth: calc(4 * px1);
 @value hitpadding: calc(3 * px1);
 
+.housing {
+	composes: face, touchinteractive from "$util/util.mcss";
+
+	will-change: auto;
+
+	position: absolute;
+	top: calc(46 * px1);
+	left: 23%;
+	transform-style: preserve-3d;
+
+	/* I am fighting my demons, right here */
+	transform: translateX(calc(1vh * 0.07));
+
+	width: calc(13 * px1);
+	height: calc(44 * px1);
+
+	background-image: url("./assets/housing.png");
+}
+
 .powerswitch {
 	--position: 0%;
 
-	composes: face, touchinteractive from "$util/util.mcss";
+	composes: face from "$util/util.mcss";
 
 	position: absolute;
 
@@ -17,12 +36,13 @@
 	background-image: url("./assets/power-switch-side.png");
 
 	&[data-top="true"] {
-		top: 21.8%;
-		left: calc(9 * px1);
+		top: calc(-2 * px1);
+		left: calc(-2.5 * px1);
 		transform-style: preserve-3d;
 		transform:
 			translateZ(switchdepth)
-			translateY(var(--position));
+			translateY(var(--position))
+			scale(0.9);
 
 		box-sizing: content-box;
 
@@ -60,7 +80,7 @@
 	}
 
 	&[data-power="false"] {
-		--position: 70%;
+		--position: 92%;
 	}
 
 	&[data-power="false"][data-willtoggle="true"] {
