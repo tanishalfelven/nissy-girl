@@ -103,6 +103,21 @@
 	background-image: url("./assets/nissygirl-front.png");
 }
 
+.speakerback {
+	composes: face from "$util/util.mcss";
+
+	position: absolute;
+	right: calc(7.01 * px1);
+	bottom: calc(9.0015 * px1);
+	transform-style: preserve-3d;
+	transform: translateZ(-0.8px);
+
+	aspect-ratio: 39 / 38;
+	height: calc(38 * px1);
+
+	background-image: url("./assets/nissygirl-speaker-back.png");
+}
+
 .panelside {
 	composes: face from "$util/util.mcss";
 

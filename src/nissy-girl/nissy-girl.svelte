@@ -65,6 +65,8 @@ let { children } = $props();
 			></div>
 
 			<FaceControls />
+
+			<div class={css.speakerback}></div>
 		</div>
 
 		<Cartridge />
