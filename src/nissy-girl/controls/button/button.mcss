@@ -10,8 +10,8 @@
 		position: absolute;
 		transform-style: preserve-3d;
 
-		aspect-ratio: 1 / 1;
 		width: calc(18 * px1);
+		height: calc(18 * px1);
 		padding: calc(5 * px1);
 
 		&::after {
@@ -74,7 +74,7 @@
 	left: calc(2 * px1);
 	transform: rotateY(-90deg) translateX(-50%);
 
-	aspect-ratio: 3 / 5;
+	width: calc(3 * px1);
 	height: calc(5 * px1);
 	margin: auto;
 
@@ -94,7 +94,7 @@
 .roundside {
 	composes: face, backface from "$util/util.mcss";
 	transform: rotateY(90deg) translateX(55%) translateZ(calc(8 * px1));
-	aspect-ratio: 3 / 9;
+	width: calc(6 * px1);
 	height: calc(18 * px1);
 
 	&::after {

@@ -197,8 +197,8 @@
 		rotateY(-90deg)
 		scaleX(1.05);
 
-	aspect-ratio: 6 / 84;
 	width: depth;
+	height: calc(84 * px1);
 
 	background-image: url("./assets/cartridge-slat-top.png");
 
@@ -231,8 +231,8 @@
 		rotateY(-90deg)
 		scaleX(1.05);
 
-	aspect-ratio: 6 / 21;
 	width: depth;
+	height: calc(21 * px1);
 
 	background-image: url("./assets/cartridge-slat-bottom.png");
 
@@ -270,7 +270,7 @@
 		rotateZ(90deg)
 		scaleX(1.03);
 
-	aspect-ratio: 9 / 6;
+	width: calc(9 * px1);
 	height: depth;
 
 	background-image: url("./assets/cartridge-slat-under.png");
@@ -324,8 +324,8 @@
 		translateY(calc(var(--pcb-y) - 50%))
 		rotateX(-90deg);
 
-	aspect-ratio: 88 / 1;
 	width: 80%;
+	height: px1;
 	margin: auto;
 
 	background-image: url("./assets/pcb-under.png");
