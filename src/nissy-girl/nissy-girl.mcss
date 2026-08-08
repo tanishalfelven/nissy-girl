@@ -127,7 +127,8 @@
 	aspect-ratio: 46 / 224;
 	height: 100%;
 
-	/* stylelint-disable-next-line declaration-property-value-disallowed-list -- this one is tough... seeing if it matters  */
+	/* this one is tough...seeing if it matters */
+	/* stylelint-disable-next-line declaration-property-value-disallowed-list -- ... */
 	backface-visibility: visible;
 	background-image: url("./assets/nissygirl-side.png");
 

@@ -41,7 +41,7 @@
 
 	position: absolute;
 	inset: 0;
-	transform: translateZ(calc(depth * -0.0175));
+	transform: translateZ(-1px);
 
 	aspect-ratio: 33 / 32;
 	width: calc(31 * px1);

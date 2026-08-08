@@ -1,7 +1,7 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .button {
-	composes: face, touchinteractive from "$util/util.mcss";
+	composes: face, backface, touchinteractive from "$util/util.mcss";
 	box-sizing: content-box;
 	padding: calc(2 * px1);
 	background-origin: content-box;
@@ -14,11 +14,21 @@
 		width: calc(18 * px1);
 		padding: calc(5 * px1);
 
+		&::after {
+			transform: translateZ(-0.8px) scale(0.92);
+			width: 100%;
+			height: 100%;
+		}
+
 		&[data-button="BUTTON_A"] {
 			right: calc(8 * px1);
 			bottom: calc(65 * px1);
 			padding-left: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-a.png");
+
+			&::after {
+				background-image: url("./assets/button-a-inner.png");
+			}
 		}
 
 		&[data-button="BUTTON_B"] {
@@ -26,6 +36,10 @@
 			bottom: calc(54 * px1);
 			padding-right: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-b.png");
+
+			&::after {
+				background-image: url("./assets/button-b-inner.png");
+			}
 		}
 	}
 
@@ -79,7 +93,7 @@
 
 .roundside {
 	composes: face, backface from "$util/util.mcss";
-	transform: rotateY(90deg) translateX(50%) translateZ(calc(8 * px1));
+	transform: rotateY(90deg) translateX(53.5%) translateZ(calc(8 * px1));
 	aspect-ratio: 3 / 9;
 	height: calc(18 * px1);
 
