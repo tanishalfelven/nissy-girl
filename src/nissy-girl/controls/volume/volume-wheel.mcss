@@ -1,7 +1,7 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .housing {
-	composes: face, touchinteractive from "$util/util.mcss";
+	composes: face, touchinteractive, animates from "$util/util.mcss";
 
 	bottom: calc(28 * px1);
 	left: calc(4 * px1);
@@ -16,8 +16,6 @@
 
 .wheel {
 	composes: face, backface from "$util/util.mcss";
-
-	will-change: transform;
 
 	bottom: calc(2 * px1);
 

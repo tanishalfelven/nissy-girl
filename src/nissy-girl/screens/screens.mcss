@@ -4,7 +4,7 @@
 @value screenwidth: 35vh;
 
 .screen {
-	will-change: transform;
+	composes: animates from "$util/util.mcss";
 
 	transform-style: preserve-3d;
 	transform: translateZ(0);
@@ -19,7 +19,7 @@
 
 /* Safari seems to have a lot of problems with this hierarchy so LOTS of layer hints.. */
 .screenborder {
-	will-change: transform;
+	composes: animates from "$util/util.mcss";
 
 	position: absolute;
 	transform-style: preserve-3d;
@@ -37,7 +37,7 @@
 }
 
 .screencontainer {
-	will-change: transform;
+	composes: animates from "$util/util.mcss";
 
 	position: relative;
 	transform-style: preserve-3d;

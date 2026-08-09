@@ -6,9 +6,7 @@
 .cartridge {
 	--pcb-y: -3%;
 
-	composes: touchinteractive from "$util/util.mcss";
-
-	will-change: transform;
+	composes: touchinteractive, animates from "$util/util.mcss";
 
 	position: absolute;
 	top: 0;
@@ -115,7 +113,7 @@
 }
 
 .cartridgefaceart {
-	composes: face from "$util/util.mcss";
+	composes: face, animates from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;

@@ -21,6 +21,8 @@
 	--zoom: 1;
 	--button-plane: calc(3 * px1);
 
+	composes: animates from "$util/util.mcss";
+
 	position: absolute;
 	right: 0;
 	bottom: 12%;
@@ -70,6 +72,7 @@
 .mushroom {
 	composes: img from "$util/util.mcss";
 
+	/* filter on a 3d element is actually expensive by nature, this hint may be helping but I may need to change this */
 	will-change: filter;
 
 	position: relative;

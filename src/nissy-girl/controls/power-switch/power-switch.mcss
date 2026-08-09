@@ -3,8 +3,6 @@
 .housing {
 	composes: face, touchinteractive from "$util/util.mcss";
 
-	will-change: auto;
-
 	position: absolute;
 	top: calc(46 * px1);
 	left: 23%;

@@ -5,9 +5,7 @@
 	--rotate-x: 0deg;
 	--rotate-y: 0deg;
 
-	composes: touchinteractive from "$util/util.mcss";
-
-	will-change: transform;
+	composes: touchinteractive, animates from "$util/util.mcss";
 
 	position: absolute;
 	bottom: calc(57.5 * px1);

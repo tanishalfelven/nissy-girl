@@ -1,7 +1,7 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .button {
-	composes: face, backface, touchinteractive from "$util/util.mcss";
+	composes: face, backface, touchinteractive, animates from "$util/util.mcss";
 	box-sizing: content-box;
 	padding: calc(2 * px1);
 	background-origin: content-box;
