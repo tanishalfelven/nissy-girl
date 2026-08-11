@@ -10,4 +10,4 @@ const getParams = () => {
 
 export const getParam = (id) => getParams().get(id);
 
-export const hasParam = (id) => getParams().get(id);
+export const hasParam = (id) => Boolean(getParams().get(id));

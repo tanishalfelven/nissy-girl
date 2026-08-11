@@ -1,6 +1,7 @@
 import { games } from "$game/games.js";
 import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 import { nissyGirlActor } from "./nissy-girl.machine.js";
+import { audio } from "./sound/audio.svelte.js";
 
 let isPowered = $state(false);
 let insertedCartridge = $state(false);
@@ -20,6 +21,12 @@ export const nissyGirl = {
 
 	togglePower() {
 		isPowered = !isPowered;
+
+		if(isPowered) {
+			audio.playPowerOn();
+		} else {
+			audio.playPowerOff();
+		}
 	},
 
 	hasInsertedCartridge() {
@@ -27,7 +34,13 @@ export const nissyGirl = {
 	},
 
 	insertCartridge(id) {
+		if(this.hasInsertedCartridge()) {
+			return;
+		}
+
 		insertedCartridge = id;
+
+		audio.playCartridgeInsert();
 	},
 
 	forceLoad(id) {
@@ -41,6 +54,11 @@ export const nissyGirl = {
 	},
 
 	ejectCartridge() {
+		if(!insertedCartridge) {
+			return;
+		}
+
 		insertedCartridge = false;
+		audio.playCartridgeRemove();
 	},
 };

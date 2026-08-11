@@ -228,17 +228,23 @@ export const cameraMachine = createMachine({
 						CART_SWIPE : {
 							actions : [
 								({ event }) => cartridgeY.update(event.delta),
-								raise({ type : "HAS_CARTRIDGE_EJECTED" }),
+								raise({ type : "CARTRIDGE_POSITION" }),
 							],
 						},
 
-						HAS_CARTRIDGE_EJECTED : {
-							guard : () => cartridges.isCartridgeEjected() && nissyGirl.hasInsertedCartridge(),
-							actions : [
-								() => nissyGirl.ejectCartridge(),
-								sendParent({ type : "CARTRIDGE_EJECTED" }),
-							],
-						},
+						CARTRIDGE_POSITION : [
+							{
+								guard : () => cartridges.isCartridgeEjected() && nissyGirl.hasInsertedCartridge(),
+								actions : [
+									() => nissyGirl.ejectCartridge(),
+									sendParent({ type : "CARTRIDGE_EJECTED" }),
+								],
+							},
+							{
+								guard : () => cartridges.isFullyInserted(),
+								actions : () => nissyGirl.insertCartridge(cartridges.getCurrentCartridgeId()),
+							},
+						],
 
 						// proxying horizontal swipe to cartridge progress is tough
 						// I dislike canonical entry direction as "yes" or opposite as "no"
@@ -255,10 +261,7 @@ export const cameraMachine = createMachine({
 							},
 							{
 								guard : () => cartridges.isFullyInserted(),
-								actions : [
-									() => nissyGirl.insertCartridge(cartridges.getCurrentCartridgeId()),
-									raise({ type : "BACK_TO_ZOOM" }),
-								],
+								actions : raise({ type : "BACK_TO_ZOOM" }),
 							},
 						],
 					},

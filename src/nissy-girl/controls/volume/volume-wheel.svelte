@@ -1,25 +1,32 @@
 <script>
 import { controls } from "$util/touch-action.svelte.js";
 import css from "./volume-wheel.mcss";
-
-import { clamp } from "$util/math.js";
-
-const step = (val, stepBy) => Math.round(val / stepBy) * stepBy;
+import { audio } from "$nissy-girl/sound/audio.svelte.js";
 
 const MAX_ROT = 105;
 const ANGLE_OFFSET = 7;
 
+const step = (val, stepBy) => Math.round(val / stepBy) * stepBy;
+const volumeToSteppedRotation = () => (MAX_ROT - step(audio.volume * MAX_ROT, 7) - ANGLE_OFFSET);
+
 let sliderHeight = $state(false);
 let lastY = $state(0);
 
-let volume = $state(0.25);
+const rotation = $derived(volumeToSteppedRotation(audio.volume));
+let hasPlayed = $state(volumeToSteppedRotation());
 
-const rotation = $derived(`${MAX_ROT - step(volume * MAX_ROT, 7) - ANGLE_OFFSET}deg`);
+$effect(() => {
+	if(rotation !== hasPlayed) {
+		audio.playVolumeKnob();
+
+		hasPlayed = rotation;
+	}
+});
 </script>
 
 <div
 	class={css.housing}
-	style:--rotation={rotation}
+	style:--rotation="{rotation}deg"
 	bind:clientHeight={sliderHeight}
 	use:controls={{
 		fire : (e) => {
@@ -30,9 +37,9 @@ const rotation = $derived(`${MAX_ROT - step(volume * MAX_ROT, 7) - ANGLE_OFFSET}
 			const newY = e.clientY;
 
 			if(lastY) {
-				let dragDist = (newY - lastY) / sliderHeight * 0.3;
+				let dragDist = (newY - lastY) / sliderHeight / 5;
 
-				volume = clamp(volume - dragDist, 0, 1);
+				audio.setVolume(audio.volume - dragDist);
 			}
 
 			lastY = newY;

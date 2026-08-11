@@ -3,6 +3,7 @@ import {
 	createActor,
 	raise,
 	sendTo,
+	fromPromise,
 } from "xstate";
 
 import { fromMachine } from "xstate-component-tree/from-machine";
@@ -17,6 +18,7 @@ import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
+import { audio } from "./sound/audio.svelte.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -44,17 +46,53 @@ const nissyGirlMachine = createMachine({
 
 	states : {
 		"initializing" : {
-			on : {
-				RENDERER_READY : [
-					{
-						guard : () => hasParam("game"),
-						actions : () => nissyGirl.forceLoad(getParam("game")),
-						target : "wait-for-force-load-game",
+			type : "parallel",
+
+			onDone : [
+				{
+					guard : () => hasParam("game"),
+					actions : () => nissyGirl.forceLoad(getParam("game")),
+					target : "wait-for-force-load-game",
+				},
+				{
+					target : "off",
+				},
+			],
+
+			states : {
+				render : {
+					initial : "none",
+
+					states : {
+						none : {
+							on : {
+								RENDERER_READY : "done",
+							},
+						},
+
+						done : {
+							type : "final",
+						},
 					},
-					{
-						target : "off",
+				},
+
+				audio : {
+					initial : "loading",
+
+					states : {
+						loading : {
+							invoke : {
+								id : "load-audio",
+								src : fromPromise(audio.loadNissyGirlSfx),
+								onDone : "done",
+							},
+						},
+
+						done : {
+							type : "final",
+						},
 					},
-				],
+				},
 			},
 		},
 
