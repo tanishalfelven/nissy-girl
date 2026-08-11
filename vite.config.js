@@ -6,6 +6,7 @@ import mcss from "@modular-css/vite";
 import mcssAlias from "@modular-css/path-aliases";
 import nested from "postcss-nested";
 import autoprefixer from "autoprefixer";
+import postcssCalc from "postcss-calc";
 
 const alias = {
 	"$game" : path.resolve("src/game"),
@@ -19,6 +20,9 @@ export default defineConfig({
 			before : [
 				nested(),
 				autoprefixer(),
+			],
+			after : [
+				postcssCalc(),
 			],
 			resolvers : [
 				mcssAlias({ aliases : alias }),
