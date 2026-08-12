@@ -16,6 +16,8 @@ import {
 	cartridgeY,
 } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
+import { audio } from "./sound/audio.svelte.js";
+
 import {
 	camera,
 	rotation,
@@ -24,6 +26,7 @@ import {
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 import { stateLogger } from "$util/state-logger.actor.js";
+import { crossedThreshold } from "$util/math.js";
 
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });
@@ -227,7 +230,16 @@ export const cameraMachine = createMachine({
 
 						CART_SWIPE : {
 							actions : [
-								({ event }) => cartridgeY.update(event.delta),
+								({ event }) => {
+									if(
+										event.delta > 0
+										&& crossedThreshold(cartridgeY.progress, cartridgeY.project(event.delta), 0.96)
+									) {
+										audio.playCartridgeScrape();
+									}
+
+									cartridgeY.update(event.delta);
+								},
 								raise({ type : "CARTRIDGE_POSITION" }),
 							],
 						},

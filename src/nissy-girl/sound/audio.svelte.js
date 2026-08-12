@@ -39,11 +39,6 @@ const getAudioContext = () => {
 };
 
 const play = (id, options = {}, channel = false) => {
-	// disable everything but volumewheel. Not happy with them yet.
-	if(id !== "volumeWheel") {
-		return;
-	}
-
 	if(!nissyGirlAudio.has(id)) {
 		throw new Error(`Tried to play nonexistent sound with id "${id}"`);
 	}
@@ -90,8 +85,10 @@ export const audio = {
 	},
 
 	playVolumeKnob : () => play("volumeWheel", { detune : audio.volume * 30 + Math.random() * 15 }, "volume"),
-	playPowerOn : () => play("powerOn", { playbackRate : 1.075 }, "power"),
-	playPowerOff : () => play("powerOff", { playbackRate : 1.075 }, "power"),
+	// disabled for now until I have sounds I like
+	playPowerOn : () => {}, // play("powerOn", { playbackRate : 1.075 }, "power"),
+	playPowerOff : () => {}, // play("powerOff", { playbackRate : 1.075 }, "power"),
+	playCartridgeScrape : () => play("scrape", {}, "scrape"),
 	playCartridgeInsert : () => play("cartridgeInsert", {}, "cartridge"),
 	playCartridgeRemove : () => play("cartridgeRemove", {}, "cartridge"),
 
