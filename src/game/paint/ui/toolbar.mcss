@@ -1,0 +1,51 @@
+@value spx from "$nissy-girl/screens/screens.mcss";
+
+.tools {
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	width: auto;
+	height: 100%;
+	padding: calc(1.5 * spx);
+}
+
+.tool {
+	display: flex;
+	align-items: center;
+	align-self: flex-end;
+	justify-content: center;
+
+	width: calc(12 * spx);
+	height: calc(12 * spx);
+	margin-bottom: spx;
+	padding: calc(1 * spx);
+	border: spx solid black;
+}
+
+.toolimg {
+	composes: img from "$util/util.mcss";
+
+	width: 100%;
+	height: 100%;
+
+	background-image: var(--img);
+	background-size: cover;
+}
+
+.selectedcolor {
+	composes: tool;
+	width: calc(6 * spx);
+	height: calc(6 * spx);
+	padding: 0;
+}
+
+.color {
+	width: 100%;
+	height: 100%;
+	background-color: var(--color);
+}

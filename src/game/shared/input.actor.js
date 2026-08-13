@@ -57,6 +57,7 @@ export const invokeInput = {
 			sendBack(event);
 
 			for(const component of componentTargets) {
+				// component checks input directly, we handle next frame
 				if(component.handleInput() !== false) {
 					triggersFrame = true;
 				}
@@ -89,6 +90,15 @@ export const invokeInput = {
 			}
 
 			if(event.type === "REMOVE_COMPONENT_INPUT") {
+				if(!event.component) {
+					/* eslint-disable-next-line */
+					console.warn("Tried to remove input for nonexistent target", event);
+
+					return;
+				}
+
+				event.component?.stopInput?.();
+
 				componentTargets.delete(event.component);
 
 				return;

@@ -3,6 +3,9 @@
 @value screenheight: 28vh;
 @value screenwidth: 35vh;
 
+/* ripped from "./screen.consts.js" */
+@value spx: calc(screenheight / 96);
+
 .screen {
 	composes: animates from "$util/util.mcss";
 

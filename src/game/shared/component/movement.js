@@ -48,6 +48,10 @@ export const createMovement = ({
 				|| isMoving();
 		},
 
+		stopInput() {
+			moveDir.clear();
+		},
+
 		update(dt) {
 			if(!isMoving()) {
 				return false;

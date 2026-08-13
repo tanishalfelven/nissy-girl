@@ -9,6 +9,8 @@ import { createCursor } from "./cursor.entity.js";
 import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createCamera } from "$game/shared/component/camera.js";
+import { createPainUIComponent } from "./ui/paint-ui.component.svelte.js";
+import Toolbar from "./ui/toolbar.svelte";
 
 import {
 	BUTTON_A,
@@ -33,17 +35,18 @@ export const paintMachine = createMachine({
 	states : {
 		loading : {
 			on : {
-				GAME_READY : "drawing",
+				GAME_READY : "artboard",
 			},
 		},
 
-		drawing : {
+		artboard : {
 			invoke : [
 				invokeScene({
-					id : "drawing",
+					id : "artboard",
 					world : () => createWorld({
 						components : {
 							camera : createCamera,
+							ui : createPainUIComponent,
 						},
 					}),
 					entities : [
@@ -55,51 +58,85 @@ export const paintMachine = createMachine({
 						"movement",
 						"camera",
 						"tool",
+						"ui",
 						"render",
 					],
 				}),
 				invokeInput,
-
-				invokeComponentInputListener(
-					"cursor-movement",
-					withScene(
-						// this is wild...
-						(scene) => scene.world.world.get("cursor").movement,
-					),
-				),
 			],
 
-			on : {
-				[BUTTON_START] : {
-					actions : sceneAction((_, { world }) => {
-						const artboard = world.world.get("artboard");
-						const cursor = world.world.get("cursor");
+			meta : {
+				load : withScene((scene) => [
+					Toolbar,
+					{ model : scene.world.ui.getModel() },
+				]),
+			},
 
-						artboard.artboard.clear();
-						cursor.tool.stop();
-					}),
+			initial : "drawing",
+
+			states : {
+				"drawing" : {
+					invoke : [
+						invokeComponentInputListener(
+							"cursor-movement",
+							withScene(
+								// this is wild...
+								(scene) => scene.world.world.get("cursor").movement,
+							),
+						),
+					],
+
+					on : {
+						// [BUTTON_START] : "tool selection",
+
+						[BUTTON_START] : {
+							actions : sceneAction((_, { world }) => {
+								const artboard = world.world.get("artboard");
+								const cursor = world.world.get("cursor");
+
+								artboard.artboard.clear();
+								cursor.tool.stop();
+							}),
+						},
+
+						[BUTTON_SELECT] : {
+							actions : sceneAction(({ event }, { world }) => {
+								if(event.state === TRIGGERED) {
+									world.camera.stepZoom();
+								}
+							}),
+						},
+
+						[BUTTON_A] : {
+							actions : sceneAction(({ event }, { world }) => {
+								const cursor = world.world.get("cursor");
+
+								if(event.state === RELEASED) {
+									cursor.tool.stop();
+								} else if(!cursor.tool.active) {
+									cursor.tool.begin();
+								}
+							}),
+						},
+					},
 				},
 
-				[BUTTON_SELECT] : {
-					actions : sceneAction(({ event }, { world }) => {
-						if(event.state === TRIGGERED) {
-							world.camera.stepZoom();
-						}
-					}),
-				},
+				"tool selection" : {
 
-				[BUTTON_A] : {
-					actions : sceneAction(({ event }, { world }) => {
-						const cursor = world.world.get("cursor");
-
-						if(event.state === RELEASED) {
-							cursor.tool.stop();
-						} else if(!cursor.tool.active) {
-							cursor.tool.begin();
-						}
-					}),
 				},
 			},
 		},
 	},
 });
+
+/*
+{
+	actions : sceneAction((_, { world }) => {
+		const artboard = world.world.get("artboard");
+		const cursor = world.world.get("cursor");
+
+		artboard.artboard.clear();
+		cursor.tool.stop();
+	}),
+}
+*/

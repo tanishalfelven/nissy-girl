@@ -6,12 +6,13 @@ import { coordsDiffer } from "./position.js";
 
 const PADDING = 45;
 
-const DEFAULT_ZOOM = 0;
+export const NOZOOM_FIXED = 0;
+export const NOZOOM_WITH_PAN = 1;
 
-const NOZOOM_WITH_PAN = 1;
+export const DEFAULT_ZOOM = NOZOOM_WITH_PAN;
 
 const ZOOM_STEPS = new Map([
-	[ DEFAULT_ZOOM, 1 ],
+	[ NOZOOM_FIXED, 1 ],
 	[ NOZOOM_WITH_PAN, 1 ],
 	[ 2, 3 ],
 ]);
@@ -83,7 +84,7 @@ export const createCamera = ({
 		lastFollow = pos;
 		zoomChanged = false;
 
-		if(zoom <= DEFAULT_ZOOM) {
+		if(zoom <= NOZOOM_FIXED) {
 			setFixedTransform();
 		} else if(zoom === NOZOOM_WITH_PAN) {
 			setPanningWithPadding(pos);
@@ -138,6 +139,10 @@ export const createCamera = ({
 
 		getZoomScale() {
 			return zoomScale;
+		},
+
+		getZoomType() {
+			return zoom;
 		},
 
 		update() {
