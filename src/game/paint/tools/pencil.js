@@ -7,8 +7,8 @@ export const createPencil = ({ artboard, movement }) => {
 	const pos = [];
 
 	// this definitely needs to come from something else!
-	const xOffset = 5 / 2;
-	const yOffset = 5 / 2;
+	const xOffset = 2;
+	const yOffset = 2;
 
 	return {
 		get active() {
@@ -64,7 +64,7 @@ export const createPencil = ({ artboard, movement }) => {
 					}
 				}
 
-				pos.splice(0, pos.length - 2);
+				pos.splice(0, pos.length - 1);
 			}
 
 			if(!isDrawing) {
