@@ -57,14 +57,25 @@ export const createMovement = ({
 				return false;
 			}
 
+			let dx = 0;
+			let dy = 0;
+
 			for(const dir of moveDir) {
 				if(dir === DPAD_LEFT || dir === DPAD_RIGHT) {
-					x += DIRECTION.get(dir) * dt * speed;
+					dx = DIRECTION.get(dir);
 				}
 
 				if(dir === DPAD_DOWN || dir === DPAD_UP) {
-					y += DIRECTION.get(dir) * dt * speed;
+					dy = DIRECTION.get(dir);
 				}
+			}
+
+			// normalize so diagonal is same speed
+			const denom = Math.hypot(dx, dy);
+
+			if(denom) {
+				x += (dx / denom) * dt * speed;
+				y += (dy / denom) * dt * speed;
 			}
 
 			return true;

@@ -8,7 +8,7 @@ import stationaryUrl from "./assets/cursor-stationary.png";
 import { createPencil } from "./tools/pencil.js";
 import { createMovement } from "$game/shared/component/movement.js";
 
-const SPEED = 0.35;
+const SPEED = 0.45;
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 

@@ -8,14 +8,6 @@ const DIRECTIONS = [
 	{ type : DPAD_UP, isHorzAxis : false, sign : 1 },
 	{ type : DPAD_DOWN, isHorzAxis : false, sign : -1 },
 ];
-
-const getTransform = (x, y) => {
-	if(x === 0 && y === 0) {
-		return "";
-	}
-
-	return `translateZ(var(--button-plane)) rotateX(${x}) rotateY(${y}) scale(0.98)`;
-};
 </script>
 <script>
 import { roundHundredths } from "$util/math.js";
@@ -25,21 +17,18 @@ import css from "./dpad.mcss";
 import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
 import { input } from "$nissy-girl/input.js";
 import {
-	TRIGGERED,
-	RELEASED,
 	DPAD_DOWN,
 	DPAD_LEFT,
 	DPAD_RIGHT,
 	DPAD_UP,
+	TRIGGERED,
+	RELEASED,
 } from "$game/shared/input.consts.js";
 
 const MAX_TILT = 3;
-const TILT_DEADZONE = 0.2;
-const DIAGONAL_MIN = 0.48;
-const DIAGONAL_MAGNITUDE_MIN = Math.hypot(0.7, 0.7);
-const RELATIVE_INTENT_MIN = 0.35;
-const CHANGE_STARTED_MIN = 0.32;
-const RELATIVE_DIAGONAL_MIN_SLOPE = 0.55;
+const DEADZONE = 0.15;
+const DIAGONAL_RATIO = 0.4;
+const RADIUS = 0.6;
 
 let pointerX = $state(0);
 let pointerY = $state(0);
@@ -56,9 +45,11 @@ let dpadHeight = 0;
 
 let rotationValue = 0;
 
-let isHeld = false;
 let originX = 0;
 let originY = 0;
+
+let heldX = 0;
+let heldY = 0;
 
 const storeDpadState = (e) => {
 	if(!dpadElement) {
@@ -82,66 +73,33 @@ const storeDpadState = (e) => {
 };
 
 const handleInput = () => {
-	const isRelative = isHeld;
+	const dx = pointerX - originX;
+	const dy = pointerY - originY;
 
-	let dx = pointerX - originX;
-	let dy = pointerY - originY;
+	const dist = Math.hypot(dx, dy);
+	const live = dist > DEADZONE;
 
-	let forceOriginOverwrite = false;
-
-	const magnitude = Math.hypot(dx, dy);
-	// relative moves disregard deadzone
-	const notInDeadzone = (magnitude > TILT_DEADZONE) && !isRelative;
-
-	const horz = Math.abs(dx);
-	const vert = Math.abs(dy);
-
-	const isInitialDiagonal = horz > DIAGONAL_MIN && vert > DIAGONAL_MIN;
-	const startsInDiagonalSector = magnitude > DIAGONAL_MAGNITUDE_MIN && isInitialDiagonal;
-
-	// resolving relative drag to input is a whole thing but it feels better damnit
-	const isRelativeMove = (magnitude > RELATIVE_INTENT_MIN) && isRelative;
-	const isRelativeDiagonal = isRelativeMove
-		&& ((Math.min(horz, vert) / Math.max(horz, vert)) > RELATIVE_DIAGONAL_MIN_SLOPE);
-
-	const detectedChange = isRelative && !isRelativeMove
-		&& (magnitude > CHANGE_STARTED_MIN);
-
-	if(isRelative && (!isRelativeMove && !isRelativeDiagonal && !detectedChange)) {
-		return;
-	}
-
-	const isValidDiagonal = (isRelative && isRelativeDiagonal) || startsInDiagonalSector;
+	const nextX = live && Math.abs(dx) > Math.abs(dy) * DIAGONAL_RATIO ? Math.sign(dx) : 0;
+	const nextY = live && Math.abs(dy) > Math.abs(dx) * DIAGONAL_RATIO ? Math.sign(dy) : 0;
 
 	for(const { type, isHorzAxis, sign } of DIRECTIONS) {
-		const value = isHorzAxis ? dx : dy;
-		const dominant = isHorzAxis ? horz > vert : vert > horz;
-		const active = (notInDeadzone || isRelativeMove)
-			&& (dominant || isValidDiagonal)
-			&& Math.sign(value) === sign;
-		const wasActive = input.state[type];
+		const active = (isHorzAxis ? nextX : nextY) === sign;
+		const wasActive = (isHorzAxis ? heldX : heldY) === sign;
 
-		if((wasActive && !active) || (detectedChange && wasActive)) {
-			forceOriginOverwrite = true;
-
-			input.fire({ type, state : RELEASED });
-		} else if(active && !wasActive) {
-			forceOriginOverwrite = !isHeld;
-
-			isHeld = true;
-
+		if(active && !wasActive) {
 			input.fire({ type, state : TRIGGERED });
+		} else if(wasActive && !active) {
+			input.fire({ type, state : RELEASED });
 		}
 	}
 
-	// Change doens't ever save and is just an optimistic cancel around held inputs when we detect that change is likely to occur
-	if(detectedChange) {
-		return;
-	}
+	heldX = nextX;
+	heldY = nextY;
 
-	if((isRelative && (isRelativeMove || isRelativeDiagonal)) || forceOriginOverwrite) {
-		originX = pointerX;
-		originY = pointerY;
+	if(dist > RADIUS) {
+		const excess = (dist - RADIUS) / dist;
+		originX += dx * excess;
+		originY += dy * excess;
 	}
 };
 
@@ -164,7 +122,6 @@ $effect(() =>
 			handleInput();
 		},
 		end : () => {
-			isHeld = false;
 			pointerX = 0;
 			pointerY = 0;
 			originX = 0;
@@ -174,7 +131,7 @@ $effect(() =>
 		},
 	}}
 	bind:this={dpadElement}
-	style="transform: {getTransform(xDeg, yDeg)};"
+	style="transform: translateZ(var(--button-plane)) rotateX({xDeg}) rotateY({yDeg}) scale(0.98);"
 >
 	<div class={css.dpadface}></div>
 	<div class={css.dpadbackface}></div>
