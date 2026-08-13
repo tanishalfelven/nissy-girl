@@ -9,7 +9,7 @@ import { createCursor } from "./cursor.entity.js";
 import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createCamera } from "$game/shared/component/camera.js";
-import { createPainUIComponent } from "./ui/paint-ui.component.svelte.js";
+import { createPaintUIComponent } from "./ui/paint-ui.component.svelte.js";
 import Toolbar from "./ui/toolbar.svelte";
 
 import {
@@ -46,7 +46,7 @@ export const paintMachine = createMachine({
 					world : () => createWorld({
 						components : {
 							camera : createCamera,
-							ui : createPainUIComponent,
+							ui : createPaintUIComponent,
 						},
 					}),
 					entities : [

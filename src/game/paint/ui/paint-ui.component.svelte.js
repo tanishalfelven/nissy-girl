@@ -1,6 +1,6 @@
 import { NOZOOM_FIXED } from "$game/shared/component/camera.js";
 
-export const createPainUIComponent = ({
+export const createPaintUIComponent = ({
 	world,
 } = false) => {
 	const { camera } = world;
