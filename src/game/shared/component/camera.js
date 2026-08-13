@@ -6,16 +6,14 @@ import { coordsDiffer } from "./position.js";
 
 const PADDING = 45;
 
-const DEFAULT_ZOOM = 1;
+const DEFAULT_ZOOM = 0;
 
-const NOZOOM_WITH_PAN = 2;
+const NOZOOM_WITH_PAN = 1;
 
 const ZOOM_STEPS = new Map([
-	[ 0, 0.85 ],
 	[ DEFAULT_ZOOM, 1 ],
 	[ NOZOOM_WITH_PAN, 1 ],
-	[ 3, 2 ],
-	[ 4, 3 ],
+	[ 2, 3 ],
 ]);
 
 export const createCamera = ({
