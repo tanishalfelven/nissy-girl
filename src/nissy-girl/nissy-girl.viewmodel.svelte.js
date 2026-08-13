@@ -1,7 +1,7 @@
 import { games } from "$game/games.js";
 import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 import { nissyGirlActor } from "./nissy-girl.machine.js";
-import { audio } from "./sound/audio.svelte.js";
+import { audio } from "./sound/audio.js";
 
 let isPowered = $state(false);
 let insertedCartridge = $state(false);
@@ -22,11 +22,7 @@ export const nissyGirl = {
 	togglePower() {
 		isPowered = !isPowered;
 
-		if(isPowered) {
-			audio.playPowerOn();
-		} else {
-			audio.playPowerOff();
-		}
+		audio.playPowerToggle();
 	},
 
 	hasInsertedCartridge() {

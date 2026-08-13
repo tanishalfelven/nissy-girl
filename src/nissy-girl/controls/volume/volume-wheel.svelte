@@ -1,18 +1,19 @@
 <script>
 import { controls } from "$util/touch-action.svelte.js";
 import css from "./volume-wheel.mcss";
-import { audio } from "$nissy-girl/sound/audio.svelte.js";
+import { volume } from "$nissy-girl/sound/volume.svelte.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 const MAX_ROT = 105;
 const ANGLE_OFFSET = 7;
 
 const step = (val, stepBy) => Math.round(val / stepBy) * stepBy;
-const volumeToSteppedRotation = () => (MAX_ROT - step(audio.volume * MAX_ROT, 7) - ANGLE_OFFSET);
+const volumeToSteppedRotation = () => (MAX_ROT - step(volume.value * MAX_ROT, 7) - ANGLE_OFFSET);
 
 let sliderHeight = $state(false);
 let lastY = $state(0);
 
-const rotation = $derived(volumeToSteppedRotation(audio.volume));
+const rotation = $derived(volumeToSteppedRotation(volume.value));
 let hasPlayed = $state(volumeToSteppedRotation());
 
 $effect(() => {
@@ -39,7 +40,7 @@ $effect(() => {
 			if(lastY) {
 				let dragDist = (newY - lastY) / sliderHeight / 5;
 
-				audio.setVolume(audio.volume - dragDist);
+				volume.set(volume.value - dragDist);
 			}
 
 			lastY = newY;

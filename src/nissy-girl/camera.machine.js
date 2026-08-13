@@ -16,7 +16,7 @@ import {
 	cartridgeY,
 } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
-import { audio } from "./sound/audio.svelte.js";
+import { audio } from "./sound/audio.js";
 
 import {
 	camera,

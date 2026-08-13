@@ -18,7 +18,7 @@ import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
-import { audio } from "./sound/audio.svelte.js";
+import { audio } from "./sound/audio.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -127,43 +127,55 @@ const nissyGirlMachine = createMachine({
 
 			states : {
 				booting : {
-					// TODO - eventually we go BACK to keyframes and have a scene / animation actor
-					// replace component and draw directly
-					meta : {
-						component : StartupScreenComponent,
-					},
-
 					on : {
 						START_GAME : "game",
 					},
 
-					initial : "nogame",
+					initial : "none",
 
 					states : {
-						// I *love* that we just get wedged here if theres no game in.
-						// ux. be damned.
-						nogame : {
-							entry : raise({ type : "GAME_ON_BOOT" }),
-
-							on : {
-								GAME_ON_BOOT : {
-									guard : () => nissyGirl.hasInsertedCartridge(),
-									target : "hasgame",
-								},
+						none : {
+							after : {
+								500 : "display",
 							},
 						},
 
-						hasgame : {
-							on : {
-								CARTRIDGE_EJECTED : {
-									actions : raise({ type : "CARTRIDGE_ERROR" }),
-								},
+						display : {
+							// TODO - eventually we go BACK to keyframes and have a scene / animation actor
+							// replace component and draw directly
+							meta : {
+								component : StartupScreenComponent,
 							},
 
-							after : {
-								4000 : {
-									guard : () => nissyGirl.hasInsertedCartridge(),
-									actions : raise({ type : "START_GAME" }),
+							initial : "nogame",
+
+							states : {
+								// I *love* that we just get wedged here if theres no game in.
+								// ux. be damned.
+								nogame : {
+									entry : raise({ type : "GAME_ON_BOOT" }),
+
+									on : {
+										GAME_ON_BOOT : {
+											guard : () => nissyGirl.hasInsertedCartridge(),
+											target : "hasgame",
+										},
+									},
+								},
+
+								hasgame : {
+									on : {
+										CARTRIDGE_EJECTED : {
+											actions : raise({ type : "CARTRIDGE_ERROR" }),
+										},
+									},
+
+									after : {
+										4000 : {
+											guard : () => nissyGirl.hasInsertedCartridge(),
+											actions : raise({ type : "START_GAME" }),
+										},
+									},
 								},
 							},
 						},
