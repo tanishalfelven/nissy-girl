@@ -1,5 +1,6 @@
 export const TRIGGERED = "TRIGGERED";
 export const RELEASED = "RELEASED";
+export const PAUSED = "PAUSED";
 export const DPAD_DOWN = "DPAD_DOWN";
 export const DPAD_LEFT = "DPAD_LEFT";
 export const DPAD_RIGHT = "DPAD_RIGHT";
