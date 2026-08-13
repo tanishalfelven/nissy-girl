@@ -27,7 +27,6 @@ import { input } from "$nissy-girl/input.js";
 import {
 	TRIGGERED,
 	RELEASED,
-	PAUSED,
 	DPAD_DOWN,
 	DPAD_LEFT,
 	DPAD_RIGHT,
@@ -40,7 +39,7 @@ const DIAGONAL_MIN = 0.48;
 const DIAGONAL_MAGNITUDE_MIN = Math.hypot(0.7, 0.7);
 const RELATIVE_INTENT_MIN = 0.35;
 const CHANGE_STARTED_MIN = 0.32;
-const RELATIVE_DIAGONAL_MIN_SLOPE = 0.45;
+const RELATIVE_DIAGONAL_MIN_SLOPE = 0.55;
 
 let pointerX = $state(0);
 let pointerY = $state(0);
@@ -125,7 +124,7 @@ const handleInput = () => {
 		if((wasActive && !active) || (detectedChange && wasActive)) {
 			forceOriginOverwrite = true;
 
-			input.fire({ type, state : detectedChange ? PAUSED : RELEASED });
+			input.fire({ type, state : RELEASED });
 		} else if(active && !wasActive) {
 			forceOriginOverwrite = !isHeld;
 
