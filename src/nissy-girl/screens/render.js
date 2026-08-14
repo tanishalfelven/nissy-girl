@@ -2,7 +2,7 @@ import { WebGLRenderer } from "pixi.js";
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./screen.consts.js";
 
-import { COLOR_BLACK } from "./render.consts.js";
+import { COLOR_OFF_BLACK } from "./render.consts.js";
 
 export const createRenderer = async (canvas, { width = CANVAS_WIDTH, height = CANVAS_HEIGHT }) => {
 	const renderer = new WebGLRenderer();
@@ -12,7 +12,7 @@ export const createRenderer = async (canvas, { width = CANVAS_WIDTH, height = CA
 		width,
 		height,
 		backgroundAlpha : 1,
-		backgroundColor : COLOR_BLACK,
+		backgroundColor : COLOR_OFF_BLACK,
 		// have you heard of pixel art
 		antialias : false,
 		roundPixels : true,

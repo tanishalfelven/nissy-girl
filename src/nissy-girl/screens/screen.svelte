@@ -1,6 +1,6 @@
 <script module>
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
-import { COLOR_BLACK } from "./render.consts.js";
+import { COLOR_OFF_BLACK } from "./render.consts.js";
 import { createRenderer } from "./render.js";
 import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
 import { Assets } from "pixi.js";
@@ -32,7 +32,7 @@ export const screen = {
 			throw new Error("Clear scene called before renderer init!");
 		}
 
-		renderer.clear({ clearColor : COLOR_BLACK });
+		renderer.clear({ clearColor : COLOR_OFF_BLACK });
 	},
 
 	isReady() {

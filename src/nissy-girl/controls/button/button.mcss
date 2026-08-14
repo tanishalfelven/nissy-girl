@@ -93,7 +93,7 @@
 
 .roundside {
 	composes: face, backface from "$util/util.mcss";
-	transform: rotateY(90deg) translateX(56%) translateZ(calc(8 * px1));
+	transform: rotateY(90deg) translateX(60%) translateZ(calc(8 * px1));
 	width: calc(6 * px1);
 	height: calc(18 * px1);
 

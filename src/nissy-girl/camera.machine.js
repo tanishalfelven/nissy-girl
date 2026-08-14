@@ -16,6 +16,8 @@ import {
 	cartridgeY,
 } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
+import { hasParams } from "$util/params.js";
+
 import { audio } from "./sound/audio.js";
 
 import {
@@ -27,14 +29,13 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 import { stateLogger } from "$util/state-logger.actor.js";
 import { crossedThreshold } from "$util/math.js";
+import { getAnimateProgress } from "$util/animate-progress.js";
 
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });
 
 export const cameraMachine = createMachine({
 	id : "camera",
-
-	initial : "playing",
 
 	invoke : [
 		createReleaseVelocity(ROTATE_VELOCITYID, "ROTATE_SWIPE"),
@@ -55,11 +56,48 @@ export const cameraMachine = createMachine({
 		},
 	},
 
+	initial : "decide",
+
 	states : {
-		"playing" : {
-			entry : [
-				updateVelocityTarget(ROTATE_VELOCITYID, rotation),
+		"decide" : {
+			always : [
+				{
+					// Eventually we guard this around FTUE not just has url param
+					guard : () => hasParams(),
+					target : "playing",
+				},
+				{
+					target : "lure",
+				},
 			],
+		},
+
+		"lure" : {
+			invoke : {
+				id : "rotation-lure",
+				src : getAnimateProgress({
+					duration : 4000,
+					steps : [ 0, -0.2, 0.1, -0.05, 0.022, 0 ],
+					// reverse direction each time we play
+					modify : (steps) => steps.map((step) => -step),
+					progress : rotation,
+				}),
+			},
+
+			after : {
+				6500 : {
+					reenter : true,
+					target : "lure",
+				},
+			},
+
+			on : {
+				DRAG_START : "playing",
+			},
+		},
+
+		"playing" : {
+			entry : updateVelocityTarget(ROTATE_VELOCITYID, rotation),
 
 			on : {
 				ROTATE_SWIPE : [
