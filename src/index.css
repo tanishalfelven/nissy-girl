@@ -1,3 +1,9 @@
+@font-face {
+	font-family: Cairopixel;
+
+	src: url("./assets/Cairopixel.ttf") format("truetype");
+}
+
 #root,
 body {
 	overflow: hidden;
@@ -5,6 +11,8 @@ body {
 	width: 100vw;
 	height: 100vh;
 	margin: 0;
+
+	font-family: Cairopixel;
 
 	background-color: black;
 }

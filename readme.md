@@ -1,7 +1,5 @@
 # Nissy Girl - The Web Based Handheld Console
 
-![License: PolyForm Noncommercial License 1.0.0](https://img.shields.io/badge/License-polyformnoncommercial1.0.0-blue.svg)
-
 [Live Demo](https://tanishalfelven.github.io/nissy-girl/)
 
 The nissy-girl is a device that delivers a handheld game console experience. Currently a work in progress.
