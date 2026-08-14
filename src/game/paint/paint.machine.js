@@ -14,6 +14,7 @@ import Toolbar from "./ui/toolbar.svelte";
 
 import {
 	BUTTON_A,
+	BUTTON_B,
 	BUTTON_START,
 	BUTTON_SELECT,
 	RELEASED,
@@ -115,6 +116,18 @@ export const paintMachine = createMachine({
 									cursor.tool.stop();
 								} else if(!cursor.tool.active) {
 									cursor.tool.begin();
+								}
+							}),
+						},
+
+						[BUTTON_B] : {
+							actions : sceneAction(({ event }, { world }) => {
+								const artboard = world.world.get("artboard");
+
+								const pixels = artboard.artboard.getContext();
+
+								if(event.state === RELEASED) {
+									pixels.undo();
 								}
 							}),
 						},

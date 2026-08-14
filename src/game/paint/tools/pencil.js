@@ -1,10 +1,9 @@
-import { COLOR_BLACK } from "$nissy-girl/screens/render.consts.js";
-
 import { coordsDiffer } from "$game/shared/component/position.js";
 
 export const createPencil = ({ artboard, movement }) => {
 	let isDrawing = false;
 	const pos = [];
+	const pixels = artboard.getContext();
 
 	// this definitely needs to come from something else!
 	const xOffset = 2;
@@ -17,6 +16,7 @@ export const createPencil = ({ artboard, movement }) => {
 
 		begin() {
 			isDrawing = true;
+			pixels.commit();
 		},
 
 		// intentional scene lifecycle hook
@@ -43,12 +43,17 @@ export const createPencil = ({ artboard, movement }) => {
 
 		render() {
 			if(isDrawing || pos.length) {
-				const pixels = artboard.getContext();
-
 				if(pos.length === 1) {
+					const x = pos[0].x + xOffset;
+					const y = pos[0].y + yOffset;
+
 					pixels
-						.rect(pos[0].x + xOffset, pos[0].y + yOffset, 1, 1)
-						.fill(COLOR_BLACK);
+						.drawLine(
+							x,
+							y,
+							x,
+							y,
+						);
 				} else {
 					for(let i = 0; i < pos.length; i++) {
 						const first = pos[i];
@@ -56,9 +61,12 @@ export const createPencil = ({ artboard, movement }) => {
 
 						if(first && second) {
 							if(coordsDiffer(first, second)) {
-								pixels.moveTo(first.x + xOffset, first.y + yOffset)
-									.lineTo(second.x + xOffset, second.y + yOffset)
-									.stroke({ color : COLOR_BLACK, width : 1, cap : "butt", join : "miter" });
+								pixels.drawLine(
+									first.x + xOffset,
+									first.y + yOffset,
+									second.x + xOffset,
+									second.y + yOffset,
+								);
 							}
 						}
 					}

@@ -1,28 +1,16 @@
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
-
-import { RenderTexture, GraphicsContext, Graphics, Sprite } from "pixi.js";
-
-import { screen } from "$nissy-girl/screens/screen.svelte";
-
 /** @import { Container } from "pixi.js" */
 /** @import { ContainerComponent } from "$game/shared/entity/world.entity.js" */
 
-import { COLOR_WHITE } from "$nissy-girl/screens/render.consts.js";
-
 import { createEntity } from "$game/shared/entity/entity.js";
+
+import { PixelCanvas } from "./util/pixels.js";
 
 const createArtboardComponent = ({
 	pixels,
-	backgroundColor = COLOR_WHITE,
-	width = CANVAS_WIDTH,
-	height = CANVAS_HEIGHT,
 }) => {
 	return ({
 		clear() {
-			pixels
-				.clear()
-				.rect(0, 0, width, height)
-				.fill(backgroundColor);
+			pixels.clear();
 
 			return true;
 		},
@@ -33,32 +21,13 @@ const createArtboardComponent = ({
 	});
 };
 
-const createArtboardRender = ({
-	width = CANVAS_WIDTH,
-	height = CANVAS_HEIGHT,
-	pixels,
-}) => {
-	const artboardTexture = RenderTexture.create({
-		width,
-		height,
-		antialias : false,
-	});
-
-	artboardTexture.source.scaleMode = "nearest";
-
-	const sprite = new Sprite(artboardTexture);
-
-	const renderable = new Graphics(pixels);
-
+const createArtboardRender = ({ pixels }) => {
 	return ({
 		update() {
-			screen.render({
-				container : renderable,
-				target : artboardTexture,
-			});
+			pixels.update();
 		},
 		getRenderable() {
-			return sprite;
+			return pixels.sprite;
 		},
 	});
 };
@@ -71,13 +40,13 @@ const createArtboardRender = ({
 export const createArtboard = ({ world }) => {
 	const { width, height } = world.camera.getBounds();
 
-	const pixels = new GraphicsContext();
+	const pixels = new PixelCanvas({ width, height });
 
 	const artboard = createEntity({
 		id : "artboard",
 		components : {
 			artboard : createArtboardComponent({ pixels }),
-			render : createArtboardRender({ pixels, width, height }),
+			render : createArtboardRender({ pixels }),
 		},
 	});
 
