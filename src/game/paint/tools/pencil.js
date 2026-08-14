@@ -47,13 +47,7 @@ export const createPencil = ({ artboard, movement }) => {
 					const x = pos[0].x + xOffset;
 					const y = pos[0].y + yOffset;
 
-					pixels
-						.drawLine(
-							x,
-							y,
-							x,
-							y,
-						);
+					pixels.drawLine(x, y, x, y);
 				} else {
 					for(let i = 0; i < pos.length; i++) {
 						const first = pos[i];

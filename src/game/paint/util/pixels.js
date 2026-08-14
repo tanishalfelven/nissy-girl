@@ -55,7 +55,7 @@ export class PixelCanvas {
 			throw new Error(`Color "${colorId}" does not exist.`);
 		}
 
-		return this.selectedColor;
+		this.selectedColor = colorId;
 	}
 
 	index(x, y) {

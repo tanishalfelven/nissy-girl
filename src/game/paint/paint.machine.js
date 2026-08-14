@@ -1,4 +1,4 @@
-import { createMachine } from "xstate";
+import { createMachine, raise } from "xstate";
 
 import { stateLogger } from "$util/state-logger.actor.js";
 
@@ -9,7 +9,7 @@ import { createCursor } from "./cursor.entity.js";
 import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createCamera } from "$game/shared/component/camera.js";
-import { createPaintUIComponent } from "./ui/paint-ui.component.svelte.js";
+import { createPaintUI } from "./ui/paint-ui.entity.svelte.js";
 import Toolbar from "./ui/toolbar.svelte";
 
 import {
@@ -47,12 +47,12 @@ export const paintMachine = createMachine({
 					world : () => createWorld({
 						components : {
 							camera : createCamera,
-							ui : createPaintUIComponent,
 						},
 					}),
 					entities : [
 						createArtboard,
 						createCursor,
+						createPaintUI,
 					],
 					componentOrder : [
 						"world",
@@ -67,10 +67,14 @@ export const paintMachine = createMachine({
 			],
 
 			meta : {
-				load : withScene((scene) => [
-					Toolbar,
-					{ model : scene.world.ui.getModel() },
-				]),
+				load : withScene(({ world }) => {
+					const ui = world.world.get("ui");
+
+					return [
+						Toolbar,
+						{ model : ui.ui.getModel() },
+					];
+				}),
 			},
 
 			initial : "drawing",
@@ -88,16 +92,9 @@ export const paintMachine = createMachine({
 					],
 
 					on : {
-						// [BUTTON_START] : "tool selection",
-
 						[BUTTON_START] : {
-							actions : sceneAction((_, { world }) => {
-								const artboard = world.world.get("artboard");
-								const cursor = world.world.get("cursor");
-
-								artboard.artboard.clear();
-								cursor.tool.stop();
-							}),
+							guard : ({ event }) => event.state === TRIGGERED,
+							target : "tool selection",
 						},
 
 						[BUTTON_SELECT] : {
@@ -135,7 +132,93 @@ export const paintMachine = createMachine({
 				},
 
 				"tool selection" : {
+					invoke : [
+						invokeComponentInputListener(
+							"ui-movement",
+							withScene(
+								({ world }) => world.world.get("ui").movement,
+							),
+						),
+					],
 
+					on : {
+						BACK_TO_DRAWING : "drawing",
+					},
+
+					initial : "palette",
+
+					states : {
+						palette : {
+							entry : sceneAction((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								ui.ui.openPaletteMenu();
+								ui.movement.setActiveNav("palette");
+							}),
+
+							exit : sceneAction((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								ui.ui.closePaletteMenu();
+								ui.movement.clearActiveNav();
+							}),
+
+							on : {
+								CLEAR_ACTION : {
+									actions : sceneAction((_, { world }) => {
+										const artboard = world.world.get("artboard");
+										const cursor = world.world.get("cursor");
+
+										artboard.artboard.clear();
+										cursor.tool.stop();
+									}),
+								},
+
+								[BUTTON_A] : {
+									guard : ({ event }) => event.state === TRIGGERED,
+									actions : raise({ type : "BACK_TO_DRAWING" }),
+								},
+
+								[BUTTON_START] : {
+									guard : ({ event }) => event.state === TRIGGERED,
+									target : "tools",
+								},
+							},
+						},
+
+						tools : {
+							entry : sceneAction((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								ui.ui.openToolsMenu();
+							}),
+
+							exit : sceneAction((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								ui.ui.closeToolsMenu();
+							}),
+
+							on : {
+								[BUTTON_A] : {
+									guard : ({ event }) => event.state === TRIGGERED,
+									actions : [
+										sceneAction((_, { world }) => {
+											const artboard = world.world.get("artboard");
+
+											artboard.artboard.clear();
+										}),
+										raise({ type : "BACK_TO_DRAWING" }),
+									],
+								},
+
+								[BUTTON_START] : {
+									guard : ({ event }) => event.state === TRIGGERED,
+									actions : raise({ type : "BACK_TO_DRAWING" }),
+								},
+							},
+						},
+					},
 				},
 			},
 		},

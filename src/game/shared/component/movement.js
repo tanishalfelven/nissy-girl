@@ -4,7 +4,7 @@ import { input } from "$nissy-girl/input.js";
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 
-const DIRECTION = new Map([
+export const DIRECTION = new Map([
 	[ DPAD_LEFT, -1 ],
 	[ DPAD_RIGHT, 1 ],
 	[ DPAD_UP, -1 ],

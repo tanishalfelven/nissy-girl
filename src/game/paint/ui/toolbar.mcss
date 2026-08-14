@@ -1,5 +1,18 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
 
+.offmenu {
+	position: absolute;
+	top: calc(23 * spx);
+	right: calc(1.5 * spx);
+	transform: translateX(200%);
+
+	transition: transform 200ms;
+
+	&[data-show="true"] {
+		transform: translateX(0);
+	}
+}
+
 .tools {
 	position: absolute;
 	top: 0;
@@ -12,6 +25,12 @@
 	width: auto;
 	height: 100%;
 	padding: calc(1.5 * spx);
+
+	opacity: 0;
+
+	&[data-show="true"] {
+		opacity: 1;
+	}
 }
 
 .tool {
@@ -37,15 +56,23 @@
 	background-size: cover;
 }
 
+.color {
+	background-color: var(--color);
+}
+
 .selectedcolor {
-	composes: tool;
+	composes: tool, color;
 	width: calc(6 * spx);
 	height: calc(6 * spx);
 	padding: 0;
 }
 
-.color {
-	width: 100%;
-	height: 100%;
-	background-color: var(--color);
+.toolbarmenu {
+	composes: tool, offmenu;
+	background-color: rgb(99 155 255);
+}
+
+.newartboard {
+	composes: toolimg;
+	background-image: url("./assets/paper.png");
 }

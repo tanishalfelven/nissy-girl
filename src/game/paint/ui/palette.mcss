@@ -1,0 +1,27 @@
+@value spx from "$nissy-girl/screens/screens.mcss";
+
+.palette {
+	composes: offmenu from "./toolbar.mcss";
+
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+
+	width: calc(15 * spx);
+	height: auto;
+	border: calc(2 * spx) solid black;
+
+	background-color: black;
+}
+
+.palettecolor {
+	composes: color from "./toolbar.mcss";
+	width: 50%;
+	height: calc(6 * spx);
+
+	&[data-selected="true"] {
+		z-index: 1;
+		border: spx solid black;
+		outline: spx solid white;
+	}
+}
