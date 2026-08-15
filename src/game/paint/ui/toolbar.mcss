@@ -1,8 +1,10 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
 
+@value cursorred: #bf0000;
+
 .offmenu {
 	position: absolute;
-	top: calc(23 * spx);
+	top: calc(24 * spx);
 	right: calc(1.5 * spx);
 	transform: translateX(200%);
 
@@ -41,9 +43,11 @@
 
 	width: calc(12 * spx);
 	height: calc(12 * spx);
-	margin-bottom: spx;
+	margin-bottom: calc(2 * spx);
 	padding: calc(1 * spx);
 	border: spx solid black;
+
+	outline: spx solid white;
 }
 
 .toolimg {
@@ -90,7 +94,5 @@
 	width: spx;
 	height: spx;
 
-	outline: quarterspx solid rgb(191 0 0);
-
-	image-rendering: pixelated;
+	outline: 3px solid cursorred;
 }

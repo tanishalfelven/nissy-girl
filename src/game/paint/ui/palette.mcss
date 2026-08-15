@@ -1,4 +1,5 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
+@value cursorred from "./toolbar.mcss";
 
 .palette {
 	composes: offmenu from "./toolbar.mcss";

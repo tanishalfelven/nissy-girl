@@ -16,17 +16,14 @@ const selectedColorRGB = $derived(`rgb(${selectedColorValue[0]}, ${selectedColor
 
 <div
 	class={css.cursor}
-	style:left=""
-	style:top=""
 	style="transform:
-		translate(
-			calc({model.cursor.x} * var(--spx)),
-			calc({model.cursor.y} * var(--spx))
-		)
-		scale(0.9);
+			translate(
+				calc({model.cursor.x} * var(--spx)),
+				calc({model.cursor.y} * var(--spx))
+			)
+			scale(0.9);
 		width: calc({model.scale} * var(--spx));
-		height: calc({model.scale} * var(--spx));
-	"
+		height: calc({model.scale} * var(--spx));"
 >
 </div>
 
