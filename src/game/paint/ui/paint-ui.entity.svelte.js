@@ -89,8 +89,9 @@ export const createPaintUI = ({
 						cursor.movement.getX(),
 						cursor.movement.getY(),
 					);
-					cursorX = x;
-					cursorY = y;
+					cursorX = Math.round(x);
+					cursorY = Math.round(y);
+
 					scale = camera.getZoomScale();
 
 					showUI = camera.getZoomType() !== NOZOOM_FIXED;

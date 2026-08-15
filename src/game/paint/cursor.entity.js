@@ -3,7 +3,10 @@ import { createEntity } from "$game/shared/entity/entity.js";
 import { createPencil } from "./tools/pencil.js";
 import { createMovement } from "$game/shared/component/movement.js";
 
-const SPEED = 0.45;
+const SCALE_TO_SPEED = {
+	1 : 0.45,
+	3 : 0.3,
+};
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 
@@ -19,10 +22,12 @@ export const createCursor = ({
 	const cameraBounds = camera.getBounds();
 	const { artboard } = world.world.get("artboard");
 
+	let cameraScale = camera.getZoomScale();
+
 	const movement = createMovement({
 		x : cameraBounds.width / 2,
 		y : cameraBounds.height / 2,
-		speed : SPEED,
+		speed : SCALE_TO_SPEED[cameraScale],
 		camera,
 	});
 
@@ -36,6 +41,18 @@ export const createCursor = ({
 			movement,
 
 			tool : pencil,
+
+			camera : {
+				update() {
+					const zoomScale = camera.getZoomScale();
+
+					if(zoomScale !== cameraScale) {
+						cameraScale = zoomScale;
+
+						movement.setSpeed(SCALE_TO_SPEED[cameraScale]);
+					}
+				},
+			},
 
 			render : {
 				update() {

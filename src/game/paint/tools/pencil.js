@@ -22,7 +22,7 @@ export const createPencil = ({ artboard, movement }) => {
 		},
 
 		hasUpdate() {
-			return isDrawing && movement.isMoving();
+			return isDrawing;
 		},
 
 		update() {
@@ -30,7 +30,7 @@ export const createPencil = ({ artboard, movement }) => {
 				return false;
 			}
 
-			const nextPos = movement.getPosition();
+			const nextPos = movement.getRoundedPosition();
 
 			if(pos.length === 0 || coordsDiffer(nextPos, pos.at(-1))) {
 				pos.push(nextPos);

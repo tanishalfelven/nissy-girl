@@ -58,8 +58,8 @@ export const paintMachine = createMachine({
 						"world",
 						"movement",
 						"camera",
-						"tool",
 						"ui",
+						"tool",
 						"render",
 					],
 				}),
@@ -111,7 +111,7 @@ export const paintMachine = createMachine({
 
 								if(event.state === RELEASED) {
 									cursor.tool.stop();
-								} else {
+								} else if(!cursor.tool.active) {
 									cursor.tool.begin();
 								}
 							}),

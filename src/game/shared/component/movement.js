@@ -14,12 +14,14 @@ export const DIRECTION = new Map([
 export const createMovement = ({
 	x : startX = 50,
 	y : startY = 50,
-	speed = 1,
+	speed : inputSpeed = 1,
 	camera,
 }) => {
 	// own position for the moment but likely pull out in the future
 	let x = startX;
 	let y = startY;
+
+	let speed = inputSpeed;
 
 	const moveDir = new Set();
 
@@ -32,6 +34,10 @@ export const createMovement = ({
 
 		hasUpdate() {
 			return isMoving();
+		},
+
+		setSpeed(newSpeed) {
+			speed = newSpeed;
 		},
 
 		handleInput() {
@@ -87,12 +93,20 @@ export const createMovement = ({
 				const newX = x + ((dx / denom) * dt * speed);
 				const newY = y + ((dy / denom) * dt * speed);
 
-				if(camera.inBounds(newX, y)) {
+				let isChange = false;
+
+				if(x !== newX && camera.inBounds(newX, y)) {
+					isChange = true;
 					x = newX;
 				}
 
-				if(camera.inBounds(x, newY)) {
+				if(y !== newY && camera.inBounds(x, newY)) {
+					isChange = true;
 					y = newY;
+				}
+
+				if(isChange) {
+					// console.log(newX, newY);
 				}
 			}
 
@@ -100,15 +114,19 @@ export const createMovement = ({
 		},
 
 		getPosition() {
+			return { x, y };
+		},
+
+		getRoundedPosition() {
 			return { x : Math.round(x), y : Math.round(y) };
 		},
 
 		getX() {
-			return Math.round(x);
+			return x;
 		},
 
 		getY() {
-			return Math.round(y);
+			return y;
 		},
 	});
 };
