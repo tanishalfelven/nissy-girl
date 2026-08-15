@@ -4,11 +4,9 @@
 
 ![NissyGirl Lure](/docs/assets/gifs/01-lure.gif)
 
-NissyGirl is a CSS/HTML based handheld console taken to the extreme.
+NissyGirl is a 3D handheld game console that is rendered with CSS/HTML and powered by Svelte/XState/Vite/m-css - What you are seeing is all HTML and CSS. The appearance of the NissyGirl is achieved through perspective tricks and usage of `translateZ()`.
 
-This 3D console is rendered with CSS/HTML and powered by Svelte/XState/Vite/m-css - What you are seeing is all HTML and CSS. The 3D visualization of the NissyGirl is mostly perspective tricks and usage of `translateZ()`.
-
-**There is NO `Three.js` or 3D rendered scene to make this work.**
+**There is NO `Three.js` or 3D rendered scene to make this work, primarily a pile of `<div>s`.**
 
 The NissyGirl is lovingly designed to be touch interactive first (with keyboard and mouse interactions also supported). The philosophy behind this decision hails back to the nostalgia felt when finding an old handheld console of a past age, flipping it over to inspect the cartridge, and turning it on to see what hides inside. Now you can enjoy a similar but new experience from your web browser.
 
@@ -41,7 +39,7 @@ The back panel is loaded with perspective tricks. The edge panels imply curves, 
 
 ![NissyGirl Machine XState diagram](/docs/assets/nissy-girl.machine.png)
 
-The NissyGirl machine is the root XState machine for the program. It hosts the camera machine at its root and models the device lifecycle.
+The [NissyGirl machine](/src/nissy-girl/nissy-girl.machine.js) is the root XState machine for the program. It hosts the camera machine at its root and models the device lifecycle.
 
 ### Controls
 
@@ -49,7 +47,7 @@ Building a virtual game console is nothing without working controls.
 
 ![animation showing DPAD animating with pointer movement](/docs/assets/gifs/08-functional-DPAD.gif)
 
-The DPAD rotating on its axis in reaction to pointer movements was really important to get right. Pointer movements translate into game movements through a light touch handler layer wrapped with a Svelte action. Input events from the dpad pointer listeners and keyboard event listeners result in the dpad element rotation.
+The DPAD rotating on its axis in reaction to pointer movements was really important to get right. Pointer movements translate into game movements through a light touch handler layer wrapped with a Svelte action. Input events from the dpad pointer listeners and keyboard event listeners result in the dpad element rotation through a centralized input middleware.
 
 ![animation showing all interactive NissyGirl controls](/docs/assets/gifs/14-interactions.gif)
 
@@ -77,7 +75,7 @@ stateDiagram-v2
 
 The intention with camera interactions is to be as discoverable and intuitive as possible. Discovery should be rewarding, and consistent. The design required that any interaction flow could be cancelled or reversed completely.
 
-A generalized [progress](/src/util/progress.Svelte.js) rune wrapper is used to solve needing discrete states that power separate interaction concepts. Velocity for interaction in a generalized way without relying on a keyframe library was a must. The progress wrapper creates a convenient velocity target - animation values are outputted into `$derived` runes directly where they transform into more meaningful values.
+A generalized [progress](/src/util/progress.svelte.js) rune wrapper is used to solve needing discrete states that power separate interactions. Velocity for interactions in a generalized way without relying on a keyframe library was a must. The progress wrapper creates a convenient velocity target - animation values are then output into `$derived` runes directly where they transform into more meaningful animation values.
 
 ![animation of NissyGirl facing away and zooming away from the camera](/docs/assets/gifs/03-zoom.gif)
 
@@ -111,19 +109,19 @@ And finally, after insertion you can rotate it back and look at it. Any stage in
 
 The NissyGirl cartridges have a really neat advantage due to the NissyGirl device being all HTML/CSS - they can host a canvas inside of them and rely on HTML/CSS for their UI layer. The first NissyGirl cartridge, Paint, was intended to stress test the base concepts to get this working. After a game is loaded and the machine is powered on, a game machine is loaded directly.
 
-The canvas screen is created at program start and the NissyGirl machine waits for it to exist and be wrapped in a light layer on top of a PixiJS renderer. The PixiJS renderer is wrapped giving NissyGirl fine-grained control of the render loop. 
+The canvas screen is created at program start and the NissyGirl machine waits for it to exist and be wrapped in a light layer on top of a PixiJS renderer - this gives us fine-grained control of the render loop.
 
 ### Introducing: the gameloop machine
 
 ![XState machine for the lazy loop](/docs/assets/gameloop.machine.png)
 
-The gameloop machine maintains a lazy RAF loop that can be registered to by scenes, entities/components, and input. The expected flow for a game cartridge is that it points to a game machine. The game machine is invoked dynamically from the nissy-girl machine.
+The [gameloop machine](/src/game/shared/game-loop.machine.js) maintains a lazy RAF loop that can be registered to by scenes, entities/components, and input. The expected flow for a game cartridge is that it points to a game machine. The game machine is invoked dynamically from the nissy-girl machine.
 
 The game machine (below) has the gameloop machine invoked at its root. A scene actor is then invoked which registers itself to the gameloop. Both input and Entities inside of a Scene can request a frame from the gameloop machine. The gameloop machine detects from the scene if a frame is required and only triggers RAF updates when necessary.
 
 ### Scene based statechart composition
 
-The cartridge game architecture is loosely based on ECS. Entities exist as part of a scene and are are composed of Component interfaces. At invocation of a scene, we compile the ordering of our frame based on a canonical component ordering defined at scene creation time. This means that a frame update can be very dynamically defined (with components providing regular interfaces) that results in a predictable update loop.
+The cartridge game architecture is loosely based on ECS. Entities exist as part of a scene and are composed of Component interfaces. At invocation of a scene, we compile the ordering of our frame based on a canonical component ordering defined at scene creation time. This means that a frame update can be very dynamically defined (with components providing regular interfaces) that results in a predictable update loop.
 
 The paint game scene invocation looks like the following:
 
@@ -153,7 +151,7 @@ invokeScene({
 
 ![XState machine for the paint game](/docs/assets/paint.machine.png)
 
-The paint game currently only has drawing with a small submenu flow.
+The [paint game machine](/src/game/paint/paint.machine.js) currently only has drawing with a small submenu flow.
 
 The UI for NissyGirl games are all drawn with Svelte. The web is the best UI framework available, no need to reinvent this through canvas. A scene can communicate directly with Svelte template through entity components. A UI entity sets up a UI component and registers to the `movement` component pattern. Both the in-game cursor entity and the in-game UI entity use the same `movement` contract with different implementations to handle inputs!
 
@@ -165,7 +163,8 @@ UI Navigation is in its early stages but the core concept is that nav items shou
 
 ## Future planning
 
-- Cartridges
+- More cartridges
+- Lore
 - FTUE and tutorialization
 - Accessibility
 
