@@ -16,6 +16,8 @@ const selectedColorRGB = $derived(`rgb(${selectedColorValue[0]}, ${selectedColor
 
 <div
 	class={css.cursor}
+	style:--color={selectedColorRGB}
+	data-toolactive={model.toolActive}
 	style="transform:
 			translate(
 				calc({model.cursor.x} * var(--spx)),

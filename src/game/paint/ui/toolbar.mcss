@@ -95,4 +95,8 @@
 	height: spx;
 
 	outline: 3px solid cursorred;
+
+	&[data-toolactive="true"] {
+		background-color: var(--color);
+	}
 }

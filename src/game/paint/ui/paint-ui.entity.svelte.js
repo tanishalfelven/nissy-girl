@@ -15,6 +15,7 @@ export const createPaintUI = ({
 	let cursorX = $state(cursor.movement.getX());
 	let cursorY = $state(cursor.movement.getY());
 	let scale = $state(camera.getZoomScale());
+	let toolActive = $state(false);
 
 	let paletteNav = false;
 
@@ -39,6 +40,10 @@ export const createPaintUI = ({
 
 		get scale() {
 			return scale;
+		},
+
+		get toolActive() {
+			return toolActive;
 		},
 
 		cursor : {
@@ -91,6 +96,7 @@ export const createPaintUI = ({
 					);
 					cursorX = Math.round(x);
 					cursorY = Math.round(y);
+					toolActive = cursor.tool.active;
 
 					scale = camera.getZoomScale();
 
