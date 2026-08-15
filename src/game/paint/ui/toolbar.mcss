@@ -76,3 +76,21 @@
 	composes: toolimg;
 	background-image: url("./assets/paper.png");
 }
+
+@value quarterspx: calc(0.25 * spx);
+@value halfspx: calc(0.5 * spx);
+
+.cursor {
+	--spx: spx;
+
+	will-change: transform;
+
+	position: absolute;
+
+	width: spx;
+	height: spx;
+
+	outline: quarterspx solid rgb(191 0 0);
+
+	image-rendering: pixelated;
+}

@@ -5,10 +5,6 @@ export const createPencil = ({ artboard, movement }) => {
 	const pos = [];
 	const pixels = artboard.getContext();
 
-	// this definitely needs to come from something else!
-	const xOffset = 2;
-	const yOffset = 2;
-
 	return {
 		get active() {
 			return isDrawing;
@@ -44,8 +40,8 @@ export const createPencil = ({ artboard, movement }) => {
 		render() {
 			if(isDrawing || pos.length) {
 				if(pos.length === 1) {
-					const x = pos[0].x + xOffset;
-					const y = pos[0].y + yOffset;
+					const x = pos[0].x;
+					const y = pos[0].y;
 
 					pixels.drawLine(x, y, x, y);
 				} else {
@@ -56,10 +52,10 @@ export const createPencil = ({ artboard, movement }) => {
 						if(first && second) {
 							if(coordsDiffer(first, second)) {
 								pixels.drawLine(
-									first.x + xOffset,
-									first.y + yOffset,
-									second.x + xOffset,
-									second.y + yOffset,
+									first.x,
+									first.y,
+									second.x,
+									second.y,
 								);
 							}
 						}

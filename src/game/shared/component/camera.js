@@ -123,8 +123,23 @@ export const createCamera = ({
 			setTransform(target.getPosition());
 		},
 
+		inBounds(x, y) {
+			return x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
+		},
+
 		getBounds() {
 			return { width, height };
+		},
+
+		getPosition() {
+			return { x, y };
+		},
+
+		cameraToScreen(cameraX, cameraY) {
+			return {
+				x : cameraX * zoomScale + x,
+				y : cameraY * zoomScale + y,
+			};
 		},
 
 		stepZoom(dir = 1) {

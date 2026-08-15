@@ -15,6 +15,7 @@ export const createMovement = ({
 	x : startX = 50,
 	y : startY = 50,
 	speed = 1,
+	camera,
 }) => {
 	// own position for the moment but likely pull out in the future
 	let x = startX;
@@ -44,8 +45,17 @@ export const createMovement = ({
 				}
 			}
 
-			return moveDir.size !== dirCount
+			const moveChange = moveDir.size !== dirCount
 				|| isMoving();
+
+			// when a move starts/changes wipe the decimal
+			// This gets flatter movements and makes pixel movement more predictable
+			if(moveChange) {
+				x = Math.round(x);
+				y = Math.round(y);
+			}
+
+			return moveChange;
 		},
 
 		stopInput() {
@@ -74,8 +84,16 @@ export const createMovement = ({
 			const denom = Math.hypot(dx, dy);
 
 			if(denom) {
-				x += (dx / denom) * dt * speed;
-				y += (dy / denom) * dt * speed;
+				const newX = x + ((dx / denom) * dt * speed);
+				const newY = y + ((dy / denom) * dt * speed);
+
+				if(camera.inBounds(newX, y)) {
+					x = newX;
+				}
+
+				if(camera.inBounds(x, newY)) {
+					y = newY;
+				}
 			}
 
 			return true;

@@ -7,10 +7,14 @@ export const createPaintUI = ({
 	world,
 } = false) => {
 	const { camera } = world;
+	const cursor = world.world.get("cursor");
 
 	let showUI = $state(false);
 	let showPalette = $state(false);
 	let showTools = $state(false);
+	let cursorX = $state(cursor.movement.getX());
+	let cursorY = $state(cursor.movement.getY());
+	let scale = $state(camera.getZoomScale());
 
 	let paletteNav = false;
 
@@ -31,6 +35,20 @@ export const createPaintUI = ({
 
 		get selectedColor() {
 			return paletteNav.active;
+		},
+
+		get scale() {
+			return scale;
+		},
+
+		cursor : {
+			get x() {
+				return cursorX;
+			},
+
+			get y() {
+				return cursorY;
+			},
 		},
 
 		getColor() {
@@ -63,10 +81,18 @@ export const createPaintUI = ({
 			movement : navComponent,
 			ui : {
 				hasUpdate() {
-					return camera.hasUpdate();
+					return camera.hasUpdate() || cursor.movement.isMoving();
 				},
 
 				update() {
+					const { x, y } = camera.cameraToScreen(
+						cursor.movement.getX(),
+						cursor.movement.getY(),
+					);
+					cursorX = x;
+					cursorY = y;
+					scale = camera.getZoomScale();
+
 					showUI = camera.getZoomType() !== NOZOOM_FIXED;
 				},
 

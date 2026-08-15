@@ -111,7 +111,7 @@ export const paintMachine = createMachine({
 
 								if(event.state === RELEASED) {
 									cursor.tool.stop();
-								} else if(!cursor.tool.active) {
+								} else {
 									cursor.tool.begin();
 								}
 							}),
