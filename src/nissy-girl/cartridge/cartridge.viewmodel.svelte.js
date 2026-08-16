@@ -16,8 +16,8 @@ export const cartridgeX = createProgress({
 		MAX_PROGRESS,
 	),
 	velocity : {
-		smoothing : 0.6,
-		decay : 0.92,
+		decay : 0.98,
+		smoothing : 0.3,
 	},
 });
 
@@ -32,8 +32,8 @@ export const cartridgeY = createProgress({
 			MAX_PROGRESS,
 		),
 	velocity : {
-		smoothing : 0.7,
-		decay : 0.9,
+		smoothing : 0.3,
+		decay : 0.95,
 		min : 0.0001,
 	},
 });

@@ -15,7 +15,8 @@ export const rotation = createProgress({
 		MAX_PROGRESS,
 	),
 	velocity : {
-		smoothing : 0.75,
+		decay : 0.9,
+		smoothing : 0.6,
 	},
 });
 
@@ -28,7 +29,6 @@ const backfaceHidden = $derived(displayRotation < VISIBLE_ROTATION_SWEEP
 export const zoom = createProgress({
 	start : 0,
 	speed : 1.8,
-	anchors : [ 1 ],
 	update : (cur, movement) =>
 		clamp(
 			cur + Math.abs(movement) * (returnFromCartridgeFlow ? -1 : 1),
@@ -37,7 +37,7 @@ export const zoom = createProgress({
 		),
 	velocity : {
 		decay : 0.9,
-		smoothing : 0.9,
+		smoothing : 0.3,
 	},
 });
 
