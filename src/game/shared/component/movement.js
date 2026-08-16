@@ -11,10 +11,14 @@ export const DIRECTION = new Map([
 	[ DPAD_DOWN, 1 ],
 ]);
 
+export const ALL_AXIS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN ];
+export const HORZ_AXIS = [ DPAD_LEFT, DPAD_RIGHT ];
+
 export const createMovement = ({
 	x : startX = 50,
 	y : startY = 50,
 	speed : inputSpeed = 1,
+	axis = ALL_AXIS,
 	canMoveTo = () => true,
 }) => {
 	// own position for the moment but likely pull out in the future
@@ -43,7 +47,7 @@ export const createMovement = ({
 		handleInput() {
 			const dirCount = moveDir.size;
 
-			for(const dir of DIRECTION.keys()) {
+			for(const dir of axis) {
 				if(input.state[dir]) {
 					moveDir.add(dir);
 				} else if(!input.state[dir]) {
@@ -54,10 +58,12 @@ export const createMovement = ({
 			const moveChange = moveDir.size !== dirCount
 				|| isMoving();
 
-			// when a move starts/changes wipe the decimal
-			// This makes diagonals not have staircase movements and makes pixel movement more predictable
-			x = Math.round(x);
-			y = Math.round(y);
+			if(moveDir.size > 1) {
+				// when a multi axis move starts/changes wipe the decimal
+				// This makes diagonals not have staircase movements and makes pixel movement more predictable
+				x = Math.round(x);
+				y = Math.round(y);
+			}
 
 			return moveChange;
 		},
