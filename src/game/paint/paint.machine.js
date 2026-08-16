@@ -10,7 +10,7 @@ import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createCamera } from "$game/shared/component/camera.js";
 import { createPaintUI } from "./ui/paint-ui.entity.svelte.js";
-import Toolbar from "./ui/toolbar.svelte";
+import Drawing from "./ui/drawing.svelte";
 
 import {
 	BUTTON_A,
@@ -71,7 +71,7 @@ export const paintMachine = createMachine({
 					const ui = world.world.get("ui");
 
 					return [
-						Toolbar,
+						Drawing,
 						{ model : ui.ui.getModel() },
 					];
 				}),
@@ -81,6 +81,12 @@ export const paintMachine = createMachine({
 
 			states : {
 				"drawing" : {
+					exit : sceneAction((_, { world }) => {
+						const cursor = world.world.get("cursor");
+
+						cursor.tool.stop();
+					}),
+
 					invoke : [
 						invokeComponentInputListener(
 							"cursor-movement",

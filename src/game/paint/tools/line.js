@@ -17,10 +17,7 @@ export const createLine = ({ pixels, movement }) => {
 			isDrawing = false;
 			startPos = false;
 			endPos = false;
-		},
-
-		hasUpdate() {
-			return isDrawing;
+			snapshot = false;
 		},
 
 		update() {

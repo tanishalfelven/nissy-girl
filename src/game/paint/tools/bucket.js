@@ -16,10 +16,6 @@ export const createBucket = ({ pixels, movement }) => {
 			isFilling = false;
 		},
 
-		hasUpdate() {
-			return isFilling;
-		},
-
 		update() {
 			if(!isFilling) {
 				return false;

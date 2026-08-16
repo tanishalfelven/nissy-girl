@@ -1,80 +1,11 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
+@value cursorred from "./drawing.mcss";
 
-@value cursorred: #bf0000;
-
-.offmenu {
-	position: absolute;
-	top: calc(24 * spx);
-	right: calc(1.5 * spx);
-	transform: translateX(200%);
-
-	transition: transform 200ms;
-
-	&[data-show="true"] {
-		transform: translateX(0);
-	}
-}
-
-.tools {
-	position: absolute;
-	top: 0;
-	right: 0;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-
-	width: auto;
-	height: 100%;
-	padding: calc(1.5 * spx);
-
-	opacity: 0;
-
-	transition: opacity 100ms;
-
-	&[data-show="true"] {
-		opacity: 1;
-	}
-}
-
-.tool {
-	display: flex;
-	align-items: center;
-	align-self: flex-end;
-	justify-content: center;
-
-	width: calc(12 * spx);
-	height: calc(12 * spx);
-	margin-bottom: calc(2 * spx);
-	padding: calc(1 * spx);
-	border: spx solid black;
-
-	outline: spx solid white;
-}
-
-.toolimg {
-	composes: img from "$util/util.mcss";
-
-	width: 100%;
-	height: 100%;
-
-	background-image: var(--img);
-	background-size: cover;
-}
-
-.color {
-	background-color: var(--color);
-}
-
-.selectedcolor {
-	composes: tool, color;
-	width: calc(6 * spx);
-	height: calc(6 * spx);
-	padding: 0;
-}
+@value quarterspx: calc(0.25 * spx);
+@value halfspx: calc(0.5 * spx);
 
 .toolbarmenu {
-	composes: offmenu;
+	composes: offmenu from "./drawing.mcss";
 
 	display: flex;
 	flex-direction: column;
@@ -85,11 +16,11 @@
 	padding: 0 calc(2 * spx);
 	border: calc(2 * spx) solid black;
 
-	background-color: rgb(99 155 255);
+	background-color: #639bff;
 }
 
 .tooloption {
-	composes: toolimg;
+	composes: toolimg from "./drawing.mcss";
 
 	width: calc(8 * spx);
 	height: calc(8 * spx);
@@ -100,25 +31,5 @@
 	&[data-selected="true"] {
 		z-index: 1;
 		outline: spx solid black;
-	}
-}
-
-@value quarterspx: calc(0.25 * spx);
-@value halfspx: calc(0.5 * spx);
-
-.cursor {
-	--spx: spx;
-
-	will-change: transform;
-
-	position: absolute;
-
-	width: spx;
-	height: spx;
-
-	outline: 3px solid cursorred;
-
-	&[data-toolactive="true"] {
-		background-color: var(--color);
 	}
 }
