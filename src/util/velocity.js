@@ -48,13 +48,6 @@ export const createVelocity = ({
 			return value;
 		},
 
-		set(newValue) {
-			value = newValue;
-			previous = false;
-
-			return value;
-		},
-
 		init({
 			smoothing : updateSmoothing = DEFAULT_SMOOTHING,
 			decay : updateDecay = DEFAULT_DECAY,

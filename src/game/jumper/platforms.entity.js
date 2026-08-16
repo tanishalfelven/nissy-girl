@@ -12,6 +12,12 @@ export const createPlatforms = () => {
 			width : 100,
 			height : 3,
 		},
+		{
+			x : 20,
+			y : 70,
+			width : 15,
+			height : 3,
+		},
 	];
 
 	const graphics = new Graphics();

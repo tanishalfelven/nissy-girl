@@ -3,7 +3,10 @@ import { BUTTON_A } from "$game/shared/input.consts.js";
 import { createVelocity } from "$util/velocity.js";
 
 const GRAVITY = 0.07;
-const JUMP = -2.15;
+const JUMP_FRAMES = 5;
+const JUMP = -2.2;
+const FIRST_JUMP = JUMP * 0.7;
+const CONSECUTIVE_JUMP = (JUMP - FIRST_JUMP) / JUMP_FRAMES;
 
 export const createPhysics = ({
 	movement,
@@ -22,6 +25,7 @@ export const createPhysics = ({
 	let deltaY = 0;
 	let jumping = false;
 	let isGrounded = false;
+	let jumpFrames = -1;
 
 	const isMoving = () => deltaX !== 0 || deltaY !== 0;
 
@@ -48,11 +52,30 @@ export const createPhysics = ({
 			xVelocity.sampleDt(newX - movement.getLastX(), dt);
 
 			deltaX = xVelocity.step(dt);
-
 			const newY = movement.getY();
 
-			if(jumping && isGrounded) {
-				yVelocity.add(JUMP);
+			if(jumping && (isGrounded || jumpFrames !== -1)) {
+				const isInitialJump = isGrounded && jumpFrames === -1;
+
+				const jumpDt = Math.min(jumpFrames, dt);
+
+				yVelocity.add(isInitialJump
+					? FIRST_JUMP
+					: (CONSECUTIVE_JUMP * jumpDt));
+
+				if(isInitialJump) {
+					jumpFrames = JUMP_FRAMES;
+				}
+			}
+
+			if(jumpFrames !== -1) {
+				if(jumpFrames > 0) {
+					jumpFrames -= dt;
+				}
+
+				if(jumpFrames <= 0) {
+					jumpFrames = -1;
+				}
 			}
 
 			yVelocity.add(GRAVITY * dt);
@@ -65,11 +88,11 @@ export const createPhysics = ({
 		},
 
 		cancelX() {
-			xVelocity.set(0);
+			xVelocity.stop();
 		},
 
 		cancelY() {
-			yVelocity.set(0);
+			yVelocity.stop();
 		},
 
 		getDeltaX() {
