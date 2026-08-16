@@ -55,11 +55,9 @@ export const createMovement = ({
 				|| isMoving();
 
 			// when a move starts/changes wipe the decimal
-			// This gets flatter movements and makes pixel movement more predictable
-			if(moveChange) {
-				x = Math.round(x);
-				y = Math.round(y);
-			}
+			// This makes diagonals not have staircase movements and makes pixel movement more predictable
+			x = Math.round(x);
+			y = Math.round(y);
 
 			return moveChange;
 		},
@@ -93,20 +91,12 @@ export const createMovement = ({
 				const newX = x + ((dx / denom) * dt * speed);
 				const newY = y + ((dy / denom) * dt * speed);
 
-				let isChange = false;
-
 				if(x !== newX && camera.inBounds(newX, y)) {
-					isChange = true;
 					x = newX;
 				}
 
 				if(y !== newY && camera.inBounds(x, newY)) {
-					isChange = true;
 					y = newY;
-				}
-
-				if(isChange) {
-					// console.log(newX, newY);
 				}
 			}
 

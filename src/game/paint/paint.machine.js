@@ -129,7 +129,7 @@ export const paintMachine = createMachine({
 
 								const pixels = artboard.artboard.getContext();
 
-								if(event.state === RELEASED) {
+								if(event.state === TRIGGERED) {
 									pixels.undo();
 								}
 							}),

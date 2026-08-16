@@ -49,8 +49,6 @@ const startKeyListeners = (fire) => {
 	subs.add("keydown", domListenerSub(window, "keydown", handleKeyPress(TRIGGERED)));
 	subs.add("keyup", domListenerSub(window, "keyup", handleKeyPress(RELEASED)));
 	subs.add("blur", domListenerSub(window, "blur", () => {
-		event.preventDefault();
-
 		for(const input of Object.keys(state)) {
 			fire({ type : input, state : RELEASED });
 		}

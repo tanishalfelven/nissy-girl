@@ -107,7 +107,9 @@ export const createNav = ({
 				element.dataset.selected = elementItem.key === selected;
 
 				return () => {
-
+					if(!element) {
+						itemByElement.delete(element);
+					}
 				};
 			});
 		},

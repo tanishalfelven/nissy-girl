@@ -27,7 +27,7 @@ import {
 
 const MAX_TILT = 3;
 const DEADZONE = 0.15;
-const DIAGONAL_RATIO = 0.45;
+const DIAGONAL_RATIO = 0.55;
 const RADIUS = 0.6;
 
 let pointerX = $state(0);

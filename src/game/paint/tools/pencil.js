@@ -19,10 +19,6 @@ export const createPencil = ({ pixels, movement }) => {
 			pos.length = 0;
 		},
 
-		hasUpdate() {
-			return isDrawing && movement.isMoving();
-		},
-
 		update() {
 			if(!isDrawing) {
 				return false;

@@ -124,6 +124,20 @@ export const gameloop = {
 			loop : {
 				initial : "paused",
 
+				on : {
+					REMOVE_SCENE : {
+						actions : [
+							({ context }) => {
+								context.loop.stop();
+								context.scene.destroy();
+								screen.clear();
+							},
+							assign({ scene : false }),
+						],
+						target : ".paused",
+					},
+				},
+
 				states : {
 					paused : {
 						on : {
@@ -142,18 +156,6 @@ export const gameloop = {
 						on : {
 							// emitted by loop directly, match its state
 							LOOP_PAUSE : "paused",
-
-							REMOVE_SCENE : {
-								actions : [
-									({ context }) => {
-										context.loop.stop();
-										context.scene.destroy();
-										screen.clear();
-									},
-									assign({ scene : false }),
-								],
-								target : "paused",
-							},
 
 							REGISTER_INPUT : {
 								actions : raise({ type : "UPDATE_SESSION" }),
