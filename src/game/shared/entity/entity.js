@@ -22,7 +22,6 @@
  * @returns {Entity}
  */
 export const createEntity = ({ id, components = {} }) => {
-	// TODO validate components to scene
 	const componentMap = new Map(Object.entries(components));
 
 	const entity = ({

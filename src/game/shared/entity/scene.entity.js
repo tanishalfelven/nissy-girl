@@ -37,20 +37,30 @@ const createUnrolledCallableByLifecycle = (components, entities, lifecycles) => 
 	return lifecycleMap;
 };
 
+const lifecycleOrder = [
+	"load",
+	"destroy",
+	"stop",
+	"hasUpdate",
+	"update",
+];
+
 /**
  *
  * @param {object} options options obj
  * @param {string} options.id entity id
  * @param {() => WorldEntity} options.world
  * @param {(() => Entity)[]} options.entities child entities in canonical rendering canonical ordering
- * @param {string[]} options.componentOrder
+ * @param {string[]} options.simulateOrder
+ * @param {string[]} options.frameOrder
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
 	id,
 	world : worldFactory = createWorld,
 	entities : entityFactories,
-	componentOrder,
+	simulateOrder = [],
+	frameOrder = [],
 }) => {
 	const world = worldFactory();
 	const entities = [ world ];
@@ -65,24 +75,36 @@ export const createScene = ({
 		entities.push(entity);
 	}
 
-	const lifecycleMap = createUnrolledCallableByLifecycle(
-		componentOrder,
+	const simulateMap = createUnrolledCallableByLifecycle(
+		simulateOrder,
 		entities,
-		[
-			"load",
-			"destroy",
-			"stop",
-			"hasUpdate",
-			"update",
-		],
+		lifecycleOrder,
+	);
+
+	const frameMap = createUnrolledCallableByLifecycle(
+		frameOrder,
+		entities,
+		lifecycleOrder,
 	);
 
 	// set calls upfront so iteration has as few lookups as possible
-	const load = lifecycleMap.get("load").map(([ , loadFunc ]) => loadFunc);
-	const hasUpdate = lifecycleMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc);
-	const update = lifecycleMap.get("update");
-	const stop = lifecycleMap.get("stop").map(([ , stopFunc ]) => stopFunc);
-	const destroy = lifecycleMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc);
+	// simulated and frame components share some lifecycle - load/stop/destroy
+	const load = [
+		...simulateMap.get("load").map(([ , loadFunc ]) => loadFunc),
+		...frameMap.get("load").map(([ , loadFunc ]) => loadFunc),
+	];
+	const stop = [
+		...simulateMap.get("stop").map(([ , stopFunc ]) => stopFunc),
+		...frameMap.get("stop").map(([ , stopFunc ]) => stopFunc),
+	];
+	const destroy = [
+		...simulateMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc),
+		...frameMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc),
+	];
+	const simulateHasUpdate = simulateMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc);
+	const simulateUpdate = simulateMap.get("update");
+	// ! frame lifecycle doesn't respect hasUpdate, if simulate proposes a frame, frame occurs
+	const frameUpdate = frameMap.get("update");
 	// We clearly aren't really ECS but we're going to try and model that direction with room to grow!
 
 	const scene = {
@@ -101,7 +123,7 @@ export const createScene = ({
 		},
 
 		hasUpdate() {
-			for(const hasUpdateFunc of hasUpdate) {
+			for(const hasUpdateFunc of simulateHasUpdate) {
 				if(!isAlive) {
 					return;
 				}
@@ -114,8 +136,18 @@ export const createScene = ({
 			return false;
 		},
 
-		update(dt) {
-			for(const [ entity, updateFunc ] of update) {
+		simulate() {
+			for(const [ entity, updateFunc ] of simulateUpdate) {
+				if(!isAlive) {
+					return;
+				}
+
+				updateFunc(entity);
+			}
+		},
+
+		frame(dt) {
+			for(const [ entity, updateFunc ] of frameUpdate) {
 				if(!isAlive) {
 					return;
 				}

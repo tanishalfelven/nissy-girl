@@ -72,7 +72,7 @@ export const createMovement = ({
 			moveDir.clear();
 		},
 
-		update(dt) {
+		update() {
 			lastX = x;
 			lastY = y;
 
@@ -97,8 +97,8 @@ export const createMovement = ({
 			const denom = Math.hypot(dx, dy);
 
 			if(denom) {
-				const newX = x + ((dx / denom) * dt * speed);
-				const newY = y + ((dy / denom) * dt * speed);
+				const newX = x + ((dx / denom) * speed);
+				const newY = y + ((dy / denom) * speed);
 
 				if(x !== newX && canMoveTo(newX, y)) {
 					x = newX;

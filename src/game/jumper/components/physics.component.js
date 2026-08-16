@@ -1,6 +1,7 @@
 import { input } from "$nissy-girl/input.js";
 import { BUTTON_A } from "$game/shared/input.consts.js";
 import { createVelocity } from "$util/velocity.js";
+import { GAME_TICK } from "$game/shared/game.consts.js";
 
 const GRAVITY = 0.07;
 const JUMP_FRAMES = 5;
@@ -46,22 +47,20 @@ export const createPhysics = ({
 			isGrounded = newIsGrounded;
 		},
 
-		update(dt) {
+		update() {
 			const newX = movement.getX();
 
-			xVelocity.sampleDt(newX - movement.getLastX(), dt);
+			xVelocity.sampleDt(newX - movement.getLastX(), GAME_TICK);
 
-			deltaX = xVelocity.step(dt);
+			deltaX = xVelocity.step(GAME_TICK);
 			const newY = movement.getY();
 
 			if(jumping && (isGrounded || jumpFrames !== -1)) {
 				const isInitialJump = isGrounded && jumpFrames === -1;
 
-				const jumpDt = Math.min(jumpFrames, dt);
-
 				yVelocity.add(isInitialJump
 					? FIRST_JUMP
-					: (CONSECUTIVE_JUMP * jumpDt));
+					: CONSECUTIVE_JUMP);
 
 				if(isInitialJump) {
 					jumpFrames = JUMP_FRAMES;
@@ -69,20 +68,14 @@ export const createPhysics = ({
 			}
 
 			if(jumpFrames !== -1) {
-				if(jumpFrames > 0) {
-					jumpFrames -= dt;
-				}
-
-				if(jumpFrames <= 0) {
-					jumpFrames = -1;
-				}
+				jumpFrames--;
 			}
 
-			yVelocity.add(GRAVITY * dt);
+			yVelocity.add(GRAVITY);
 
-			yVelocity.sampleDt(newY - movement.getLastY(), dt);
+			yVelocity.sampleDt(newY - movement.getLastY(), GAME_TICK);
 
-			deltaY = yVelocity.step(dt);
+			deltaY = yVelocity.step(GAME_TICK);
 
 			isGrounded = false;
 		},

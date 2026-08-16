@@ -8,7 +8,8 @@ export const invokeScene = ({
 	id,
 	world,
 	entities,
-	componentOrder,
+	simulateOrder,
+	frameOrder,
 }) => ({
 	systemId : "scene",
 	id,
@@ -22,7 +23,8 @@ export const invokeScene = ({
 				id,
 				world,
 				entities,
-				componentOrder,
+				simulateOrder,
+				frameOrder,
 			});
 
 			observer.next(scene);

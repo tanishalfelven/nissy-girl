@@ -65,8 +65,8 @@ export const createTool = ({ artboard, movement }) => {
 			tools[currentTool].update();
 		},
 
-		render() {
-			tools[currentTool].render();
+		render(dt) {
+			tools[currentTool].render(dt);
 		},
 	};
 };

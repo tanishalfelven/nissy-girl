@@ -11,6 +11,9 @@ import { rafLooper } from "$util/time.js";
 import { screen } from "$nissy-girl/screens/screen.svelte";
 import { stateLogger } from "$util/state-logger.actor.js";
 
+const SIMULATION_STEP = 1;
+const MAX_SIMULATION_STEPS = 4;
+
 // attaches to game machine and manages scene / raf loop / teardown / etc
 export const gameloop = {
 	id : "gameloop",
@@ -18,31 +21,46 @@ export const gameloop = {
 	src : createMachine({
 		id : "gameloop",
 
-		context : () => ({
-			loop : rafLooper((dt, { scene, input, parent }) => {
-				let hasInput = false;
+		context : () => {
+			let acc = 0;
 
-				if(input) {
-					hasInput = input(dt);
-				}
+			return ({
+				loop : rafLooper((dt, { scene, input, parent }) => {
+					acc = Math.min(acc + dt, MAX_SIMULATION_STEPS);
 
-				if(scene) {
-					scene.update(dt);
+					let hasInput = false;
 
-					screen.render(scene.world.world.getRenderable());
-				}
+					if(input) {
+						hasInput = input(dt);
+					}
 
-				const endFrameState = scene?.hasUpdate?.() || hasInput;
+					if(scene) {
+						let simulationSteps = 0;
 
-				if(!endFrameState) {
-					parent.send({ type : "LOOP_PAUSE" });
-				}
+						while(acc >= SIMULATION_STEP && simulationSteps < MAX_SIMULATION_STEPS) {
+							scene.simulate();
 
-				return endFrameState;
-			}),
-			scene : false,
-			input : false,
-		}),
+							acc -= SIMULATION_STEP;
+							simulationSteps++;
+						}
+
+						scene.frame(dt);
+
+						screen.render(scene.world.world.getRenderable());
+					}
+
+					const endFrameState = scene?.hasUpdate?.() || hasInput;
+
+					if(!endFrameState) {
+						parent.send({ type : "LOOP_PAUSE" });
+					}
+
+					return endFrameState;
+				}),
+				scene : false,
+				input : false,
+			});
+		},
 
 		entry : sendParent({ type : "GAME_READY" }),
 

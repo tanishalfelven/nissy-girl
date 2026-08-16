@@ -36,11 +36,14 @@ export const jumperMachine = createMachine({
 						// player needs to be after walls so when player attemps to collide we have good positions
 						createJumper,
 					],
-					componentOrder : [
+					simulateOrder : [
 						// dynamic ordering comping in clutch here
+						"world",
 						"movement",
 						"physics",
 						"collision",
+					],
+					frameOrder : [
 						"render",
 					],
 				}),

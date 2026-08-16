@@ -56,8 +56,8 @@ export const createCursor = ({
 			},
 
 			render : {
-				update() {
-					tool.render();
+				update(dt) {
+					tool.render(dt);
 				},
 			},
 		},
