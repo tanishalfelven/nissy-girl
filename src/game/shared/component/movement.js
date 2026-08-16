@@ -24,6 +24,8 @@ export const createMovement = ({
 	// own position for the moment but likely pull out in the future
 	let x = startX;
 	let y = startY;
+	let lastX = x;
+	let lastY = y;
 
 	let speed = inputSpeed;
 
@@ -73,6 +75,9 @@ export const createMovement = ({
 		},
 
 		update(dt) {
+			lastX = x;
+			lastY = y;
+
 			if(!isMoving()) {
 				return false;
 			}
@@ -109,6 +114,14 @@ export const createMovement = ({
 			return true;
 		},
 
+		getLastX() {
+			return lastX;
+		},
+
+		getLastY() {
+			return lastY;
+		},
+
 		getPosition() {
 			return { x, y };
 		},
@@ -123,6 +136,14 @@ export const createMovement = ({
 
 		getY() {
 			return y;
+		},
+
+		setX(newX) {
+			x = newX;
+		},
+
+		setY(newY) {
+			y = newY;
 		},
 	});
 };

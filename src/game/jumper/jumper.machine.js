@@ -7,6 +7,7 @@ import { invokeScene } from "$game/shared/scene.actor.js";
 import { createJumper } from "./jumper.entity.js";
 import { invokeInput, invokeComponentInputListener } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
+import { createPlatforms } from "./platforms.entity.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -30,10 +31,16 @@ export const jumperMachine = createMachine({
 				invokeScene({
 					id : "play",
 					entities : [
+						// entity ordering being decides component order as well
+						createPlatforms,
+						// player needs to be after walls so when player attemps to collide we have good positions
 						createJumper,
 					],
 					componentOrder : [
+						// dynamic ordering comping in clutch here
 						"movement",
+						"physics",
+						"collision",
 						"render",
 					],
 				}),
@@ -42,6 +49,12 @@ export const jumperMachine = createMachine({
 					"jumper-movement",
 					withScene(
 						(scene) => scene.world.world.get("jumper").movement,
+					),
+				),
+				invokeComponentInputListener(
+					"jumper-jumping",
+					withScene(
+						(scene) => scene.world.world.get("jumper").physics,
 					),
 				),
 			],

@@ -83,7 +83,7 @@ export const createScene = ({
 	const update = lifecycleMap.get("update");
 	const stop = lifecycleMap.get("stop").map(([ , stopFunc ]) => stopFunc);
 	const destroy = lifecycleMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc);
-	// We clearly aren't really ECS but we're going to try and model that direction keep room to grow!
+	// We clearly aren't really ECS but we're going to try and model that direction with room to grow!
 
 	const scene = {
 		id,
@@ -102,6 +102,10 @@ export const createScene = ({
 
 		hasUpdate() {
 			for(const hasUpdateFunc of hasUpdate) {
+				if(!isAlive) {
+					return;
+				}
+
 				if(hasUpdateFunc()) {
 					return true;
 				}
@@ -112,6 +116,10 @@ export const createScene = ({
 
 		update(dt) {
 			for(const [ entity, updateFunc ] of update) {
+				if(!isAlive) {
+					return;
+				}
+
 				updateFunc(dt, entity);
 			}
 		},

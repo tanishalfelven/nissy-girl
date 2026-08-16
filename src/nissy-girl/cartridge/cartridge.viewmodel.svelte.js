@@ -1,6 +1,7 @@
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
 import { clamp } from "$util/math.js";
 import { gameOrder, games, getGameIndex } from "$game/games.js";
+import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 
@@ -67,6 +68,11 @@ export const cartridges = {
 
 	getCurrentCartridgeGame() {
 		const id = this.getCurrentCartridgeId();
+
+		// cartridges that aren't in game order can exist :)
+		if(nissyGirl.hasInsertedCartridge()) {
+			return nissyGirl.getGame();
+		}
 
 		if(!games.has(id)) {
 			/* eslint-disable-next-line */
@@ -138,6 +144,10 @@ export const cartridges = {
 
 	setInserted(id) {
 		index = getGameIndex(id);
+
+		if(games.has(id) && index === -1) {
+			index = 0;
+		}
 
 		if(index === -1) {
 			throw new Error(`Cannot get game with id: "${id}"`);

@@ -1,4 +1,20 @@
-export const FPS60 = 16.66;
+export const FPS60 = 1000 / 60;
+
+const MAX_DT = 4;
+
+export const calcDt = (prev, now) => {
+	if(prev === false) {
+		return 1;
+	}
+
+	const dt = Math.min((now - prev) / FPS60, MAX_DT);
+
+	if(dt < 0) {
+		return 0.001;
+	}
+
+	return dt;
+};
 
 export const rafThrottle = (func) => {
 	let scheduled = false;
@@ -22,7 +38,7 @@ export const rafThrottle = (func) => {
 export const rafLooper = (func) => {
 	let id = false;
 	let isActive = false;
-	let prevTime = false;
+	let previous = false;
 
 	let session = false;
 
@@ -37,13 +53,11 @@ export const rafLooper = (func) => {
 	};
 
 	const loop = (now) => {
-		const dt = prevTime === false
-			? 1
-			: Math.min((now - prevTime) / FPS60, 4);
+		const dt = calcDt(previous, now);
 
 		const run = func(dt, session);
 
-		prevTime = now;
+		previous = now;
 
 		if(run) {
 			id = requestAnimationFrame(loop);
@@ -56,7 +70,7 @@ export const rafLooper = (func) => {
 		if(!id) {
 			isActive = true;
 			session = loopSession;
-			prevTime = performance.now();
+			previous = performance.now();
 			id = requestAnimationFrame(loop);
 		}
 	};

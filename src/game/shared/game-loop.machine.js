@@ -9,7 +9,6 @@ import {
 import { rafLooper } from "$util/time.js";
 
 import { screen } from "$nissy-girl/screens/screen.svelte";
-
 import { stateLogger } from "$util/state-logger.actor.js";
 
 // attaches to game machine and manages scene / raf loop / teardown / etc

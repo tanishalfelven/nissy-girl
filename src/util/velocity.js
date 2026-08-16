@@ -1,4 +1,4 @@
-import { FPS60 } from "./time.js";
+import { calcDt } from "./time.js";
 
 const DEFAULT_SMOOTHING = 0.4;
 const DEFAULT_DECAY = 0.9;
@@ -31,7 +31,7 @@ export const createVelocity = ({
 	min = DEFAULT_MIN,
 } = false) => {
 	let value = 0;
-	let lastTime = false;
+	let previous = false;
 
 	return {
 		get value() {
@@ -40,6 +40,19 @@ export const createVelocity = ({
 
 		isMoving() {
 			return value !== 0;
+		},
+
+		add(delta) {
+			value += delta;
+
+			return value;
+		},
+
+		set(newValue) {
+			value = newValue;
+			previous = false;
+
+			return value;
 		},
 
 		init({
@@ -51,20 +64,25 @@ export const createVelocity = ({
 			decay = updateDecay;
 			min = updateMin;
 
-			lastTime = false;
+			previous = false;
+		},
+
+		sampleDt(delta, dt) {
+			const measured = delta * dt;
+
+			value += (measured - value) * smoothing;
 		},
 
 		sample(delta) {
-			const time = performance.now();
+			const now = performance.now();
 
-			if(lastTime !== false) {
-				const dt = Math.max(time - lastTime, 4);
-				const measured = delta * FPS60 / dt;
+			if(previous !== false) {
+				const dt = calcDt(previous, now);
 
-				value += (measured - value) * smoothing;
+				this.sampleDt(delta, dt);
 			}
 
-			lastTime = time;
+			previous = now;
 
 			return value;
 		},
@@ -81,7 +99,7 @@ export const createVelocity = ({
 
 		stop() {
 			value = 0;
-			lastTime = false;
+			previous = false;
 		},
 	};
 };
