@@ -27,7 +27,7 @@ export const createPlatforms = () => {
 					// its falling platforms so we can make a bunch of assumptions
 					// we take the lowest value and return that
 					for(const platform of platforms) {
-						if(!inRange(targetX, platform.x, platform.x + platform.width)) {
+						if(!inRange(targetX, platform.x - width, platform.x + platform.width)) {
 							continue;
 						}
 

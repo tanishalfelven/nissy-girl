@@ -54,6 +54,7 @@ export const gameloop = {
 					return () => {
 						screen.clear();
 						context?.loop?.stop?.();
+						context?.scene?.destroy?.();
 					};
 				}),
 			},
