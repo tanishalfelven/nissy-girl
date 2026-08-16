@@ -60,11 +60,9 @@ export const createMovement = ({
 			const moveChange = moveDir.size !== dirCount
 				|| isMoving();
 
-			if(moveDir.size > 1) {
-				// when a multi axis move starts/changes wipe the decimal
+			if(moveChange) {
 				// This makes diagonals not have staircase movements and makes pixel movement more predictable
-				x = Math.round(x);
-				y = Math.round(y);
+				this.setRoundedPosition();
 			}
 
 			return moveChange;
@@ -114,6 +112,19 @@ export const createMovement = ({
 			return true;
 		},
 
+		setRoundedPosition() {
+			x = Math.round(x);
+			y = Math.round(y);
+		},
+
+		setX(newX) {
+			x = newX;
+		},
+
+		setY(newY) {
+			y = newY;
+		},
+
 		getLastX() {
 			return lastX;
 		},
@@ -136,14 +147,6 @@ export const createMovement = ({
 
 		getY() {
 			return y;
-		},
-
-		setX(newX) {
-			x = newX;
-		},
-
-		setY(newY) {
-			y = newY;
 		},
 	});
 };
