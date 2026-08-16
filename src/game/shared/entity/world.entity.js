@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 
 import { createEntity } from "./entity.js";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
 /** @import { Entity } from "./entity.js" */
 
@@ -21,12 +22,20 @@ import { createEntity } from "./entity.js";
  */
 
 /**
+ * @param {object} options
+ * @param {number} options.width
+ * @param {number} options.height
  * @returns {ContainerComponent}
  */
-const createContainerComponent = () => {
+const createContainerComponent = ({
+	width,
+	height,
+}) => {
 	const entities = [];
 	const entityMap = new Map();
 	const surface = new Container();
+
+	const isInBounds = (x, y) => x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
 
 	return ({
 		add(entity) {
@@ -40,6 +49,12 @@ const createContainerComponent = () => {
 			// components get a special reference to their world component!
 			entity.world = this;
 		},
+
+		getBounds() {
+			return { width, height };
+		},
+
+		isInBounds,
 
 		get(entityId) {
 			return entityMap.get(entityId);
@@ -61,16 +76,20 @@ const createContainerComponent = () => {
  * @param {object} [options]
  * @param {string} options.id
  * @param {object} options.components
+ * @param {number} [options.width]
+ * @param {number} [options.height]
  * @returns {Entity}
  */
 export const createWorld = ({
 	id = "world",
+	width = CANVAS_WIDTH,
+	height = CANVAS_HEIGHT,
 	components = {},
 } = false) => {
 	const worldEntity = createEntity({
 		id,
 		components : {
-			world : createContainerComponent(),
+			world : createContainerComponent({ width, height }),
 		},
 	});
 

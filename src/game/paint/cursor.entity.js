@@ -17,22 +17,22 @@ const SCALE_TO_SPEED = {
  * @returns {import("$game/shared/entity/scene.entity.js").Entity}
  */
 export const createCursor = ({
-	world,
+	world : worldEntity,
 }) => {
-	const { camera } = world;
-	const cameraBounds = camera.getBounds();
-	const { artboard } = world.world.get("artboard");
+	const { camera, world } = worldEntity;
+	const worldBounds = world.getBounds();
+	const { artboard } = world.get("artboard");
 
 	let cameraScale = camera.getZoomScale();
 
 	const movement = createMovement({
-		x : cameraBounds.width / 2,
-		y : cameraBounds.height / 2,
+		x : worldBounds.width / 2,
+		y : worldBounds.height / 2,
 		speed : SCALE_TO_SPEED[cameraScale],
-		camera,
+		canMoveTo : world.isInBounds,
 	});
 
-	world.camera.follow(movement);
+	camera.follow(movement);
 
 	const tool = createTool({ artboard, movement });
 

@@ -15,7 +15,7 @@ export const createMovement = ({
 	x : startX = 50,
 	y : startY = 50,
 	speed : inputSpeed = 1,
-	camera,
+	canMoveTo = () => true,
 }) => {
 	// own position for the moment but likely pull out in the future
 	let x = startX;
@@ -91,11 +91,11 @@ export const createMovement = ({
 				const newX = x + ((dx / denom) * dt * speed);
 				const newY = y + ((dy / denom) * dt * speed);
 
-				if(x !== newX && camera.inBounds(newX, y)) {
+				if(x !== newX && canMoveTo(newX, y)) {
 					x = newX;
 				}
 
-				if(y !== newY && camera.inBounds(x, newY)) {
+				if(y !== newY && canMoveTo(x, newY)) {
 					y = newY;
 				}
 			}

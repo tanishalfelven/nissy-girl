@@ -1,6 +1,8 @@
 import PaintCartridgeArt from "./assets/paint-art.png";
-import { GAME_PAINT_ID } from "./games.consts.js";
+import JumperCartridgeArt from "./assets/jumper-art.png";
+import { GAME_PAINT_ID, GAME_JUMPER_ID } from "./games.consts.js";
 import { paintMachine } from "./paint/paint.machine.js";
+import { jumperMachine } from "./jumper/jumper.machine.js";
 
 export const gameOrder = [
 	GAME_PAINT_ID,
@@ -16,6 +18,15 @@ export const games = new Map([
 		},
 	],
 ]);
+
+if(import.meta.env.DEV) {
+	gameOrder.push(GAME_JUMPER_ID);
+	games.set(GAME_JUMPER_ID, {
+		id : GAME_JUMPER_ID,
+		cartridge : JumperCartridgeArt,
+		machine : jumperMachine,
+	});
+}
 
 export const getGameIndex = (id) => {
 	for(let i = 0; i < gameOrder.length; i++) {

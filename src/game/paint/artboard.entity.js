@@ -38,7 +38,7 @@ const createArtboardRender = ({ pixels }) => {
  * @returns {import("$game/shared/entity/entity.js").Entity}
  */
 export const createArtboard = ({ world }) => {
-	const { width, height } = world.camera.getBounds();
+	const { width, height } = world.world.getBounds();
 
 	const pixels = new PixelCanvas({ width, height });
 

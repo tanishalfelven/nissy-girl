@@ -22,6 +22,7 @@ import {
 } from "$game/shared/input.consts.js";
 
 import { createArtboard } from "./artboard.entity.js";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
@@ -45,6 +46,8 @@ export const paintMachine = createMachine({
 				invokeScene({
 					id : "artboard",
 					world : () => createWorld({
+						width : CANVAS_WIDTH,
+						height : CANVAS_HEIGHT,
 						components : {
 							camera : createCamera,
 						},
