@@ -19,10 +19,8 @@
 	height: height;
 	margin: auto;
 
-	opacity: 1;
-
 	&[data-visibility="false"] {
-		opacity: 0;
+		visibility: hidden;
 	}
 }
 

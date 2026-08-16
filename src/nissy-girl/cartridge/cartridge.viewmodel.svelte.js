@@ -2,6 +2,7 @@ import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelt
 import { clamp } from "$util/math.js";
 import { gameOrder, games, getGameIndex } from "$game/games.js";
 import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
+import { camera } from "$nissy-girl/camera.viewmodel.svelte.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 
@@ -44,7 +45,7 @@ let finishedIteratingCartridge = $state(false);
 
 export const cartridges = {
 	get isVisible() {
-		return isVisible;
+		return isVisible && !camera.backfaceHidden;
 	},
 
 	show() {

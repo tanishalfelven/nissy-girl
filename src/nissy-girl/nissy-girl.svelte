@@ -9,18 +9,17 @@ import VolumeWheel from "./controls/volume/volume-wheel.svelte";
 import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
-import { rotation, zoom } from "./camera.viewmodel.svelte.js";
+import { camera, zoom } from "./camera.viewmodel.svelte.js";
 
 import { cameraActor } from "./nissy-girl.machine.js";
 
 import css from "./nissy-girl.mcss";
 
-const displayRot = $derived(roundHundredths(rotation.progress * 360));
+let { children } = $props();
+
 const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 let nissyGirlWidth = $state(false);
-
-let { children } = $props();
 </script>
 
 <div
@@ -50,7 +49,7 @@ let { children } = $props();
 		class={css.nissygirl}
 		bind:clientWidth={nissyGirlWidth}
 		style="transform:
-			rotateY({displayRot}deg)
+			rotateY({camera.displayRotation}deg)
 				translateZ(calc({displayZoom} * 3vw))
 				translateY(calc({displayZoom} * 2.7vh));"
 	>
