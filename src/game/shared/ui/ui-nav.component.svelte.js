@@ -28,6 +28,10 @@ export const createUINavComponent = () => {
 			return nav;
 		},
 
+		getNav(id) {
+			return navs.get(id);
+		},
+
 		setActiveNav(id) {
 			activeNav = id;
 		},

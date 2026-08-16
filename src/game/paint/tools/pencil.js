@@ -1,9 +1,8 @@
 import { coordsDiffer } from "$game/shared/component/position.js";
 
-export const createPencil = ({ artboard, movement }) => {
+export const createPencil = ({ pixels, movement }) => {
 	let isDrawing = false;
 	const pos = [];
-	const pixels = artboard.getContext();
 
 	return {
 		get active() {
@@ -12,7 +11,6 @@ export const createPencil = ({ artboard, movement }) => {
 
 		begin() {
 			isDrawing = true;
-			pixels.commit();
 		},
 
 		// intentional scene lifecycle hook
@@ -22,7 +20,7 @@ export const createPencil = ({ artboard, movement }) => {
 		},
 
 		hasUpdate() {
-			return isDrawing;
+			return isDrawing && movement.isMoving();
 		},
 
 		update() {
@@ -39,27 +37,16 @@ export const createPencil = ({ artboard, movement }) => {
 
 		render() {
 			if(isDrawing || pos.length) {
-				if(pos.length === 1) {
-					const x = pos[0].x;
-					const y = pos[0].y;
+				for(let i = 0; i < pos.length; i++) {
+					const first = pos[i];
+					const second = pos[i + 1] || first;
 
-					pixels.drawLine(x, y, x, y);
-				} else {
-					for(let i = 0; i < pos.length; i++) {
-						const first = pos[i];
-						const second = pos[i + 1];
-
-						if(first && second) {
-							if(coordsDiffer(first, second)) {
-								pixels.drawLine(
-									first.x,
-									first.y,
-									second.x,
-									second.y,
-								);
-							}
-						}
-					}
+					pixels.drawLine(
+						first.x,
+						first.y,
+						second.x,
+						second.y,
+					);
 				}
 
 				pos.splice(0, pos.length - 1);

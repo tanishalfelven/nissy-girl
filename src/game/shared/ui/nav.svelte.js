@@ -18,6 +18,7 @@ export const createNav = ({
 	keys,
 	initial,
 }) => {
+	const itemByKey = new Map();
 	const itemByElement = new Map();
 	const navElements = [];
 
@@ -69,6 +70,7 @@ export const createNav = ({
 
 			row.items.push(rowItem);
 			itemByElement.set(navElement, rowItem);
+			itemByKey.set(key, rowItem);
 		}
 	};
 
@@ -77,6 +79,21 @@ export const createNav = ({
 
 		get active() {
 			return selected;
+		},
+
+		setActive(itemId) {
+			const item = itemByKey.get(itemId);
+
+			if(!item) {
+				/* eslint-disable-next-line -- debug */
+				console.warn(`tried to set nav ${id} to ${itemId} -- oof.`);
+
+				return;
+			}
+
+			selected = itemId;
+			selectedRowIndex = item.rowIndex;
+			selectedItemIndex = item.itemIndex;
 		},
 
 		navPoint : (element) => {

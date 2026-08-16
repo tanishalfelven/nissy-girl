@@ -112,6 +112,10 @@ export class PixelCanvas {
 		return this.pixels.slice();
 	}
 
+	restore(snapshot) {
+		this.pixels.set(snapshot);
+	}
+
 	commit() {
 		this.undoStack.push(this.snapshot());
 
@@ -189,7 +193,7 @@ export class PixelCanvas {
 		}
 	}
 
-	floodFill(x, y, replacementColor) {
+	floodFill(x, y, color = COLORS.get(this.selectedColor)) {
 		x = Math.round(x);
 		y = Math.round(y);
 
@@ -199,7 +203,7 @@ export class PixelCanvas {
 
 		const targetColor = this.getPixel(x, y);
 
-		if(this.colorsEqual(targetColor, replacementColor)) {
+		if(this.colorsEqual(targetColor, color)) {
 			return;
 		}
 
@@ -218,7 +222,7 @@ export class PixelCanvas {
 				continue;
 			}
 
-			this.setPixel(cx, cy, replacementColor);
+			this.setPixel(cx, cy, color);
 
 			stack.push(
 				[ cx + 1, cy ],
@@ -233,7 +237,6 @@ export class PixelCanvas {
 		color = COLOR_WHITE,
 		{
 			commit = true,
-			update = true,
 		} = false,
 	) {
 		if(commit) {
@@ -245,10 +248,6 @@ export class PixelCanvas {
 			this.pixels[i + 1] = color[1];
 			this.pixels[i + 2] = color[2];
 			this.pixels[i + 3] = color[3] ?? 255;
-		}
-
-		if(update) {
-			this.update();
 		}
 	}
 

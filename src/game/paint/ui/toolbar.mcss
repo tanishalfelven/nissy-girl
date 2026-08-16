@@ -30,6 +30,8 @@
 
 	opacity: 0;
 
+	transition: opacity 100ms;
+
 	&[data-show="true"] {
 		opacity: 1;
 	}
@@ -72,13 +74,33 @@
 }
 
 .toolbarmenu {
-	composes: tool, offmenu;
+	composes: offmenu;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	width: calc(14 * spx);
+	height: auto;
+	padding: 0 calc(2 * spx);
+	border: calc(2 * spx) solid black;
+
 	background-color: rgb(99 155 255);
 }
 
-.newartboard {
+.tooloption {
 	composes: toolimg;
-	background-image: url("./assets/paper.png");
+
+	width: calc(8 * spx);
+	height: calc(8 * spx);
+	margin: spx 0;
+
+	background-size: calc(7 * spx) calc(7 * spx);
+
+	&[data-selected="true"] {
+		z-index: 1;
+		outline: spx solid black;
+	}
 }
 
 @value quarterspx: calc(0.25 * spx);

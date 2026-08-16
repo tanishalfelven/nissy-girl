@@ -1,6 +1,7 @@
 import { createEntity } from "$game/shared/entity/entity.js";
 
-import { createPencil } from "./tools/pencil.js";
+import { createTool } from "./tools/tool.component.js";
+
 import { createMovement } from "$game/shared/component/movement.js";
 
 const SCALE_TO_SPEED = {
@@ -33,14 +34,14 @@ export const createCursor = ({
 
 	world.camera.follow(movement);
 
-	const pencil = createPencil({ artboard, movement });
+	const tool = createTool({ artboard, movement });
 
 	return createEntity({
 		id : "cursor",
 		components : {
 			movement,
 
-			tool : pencil,
+			tool,
 
 			camera : {
 				update() {
@@ -56,7 +57,7 @@ export const createCursor = ({
 
 			render : {
 				update() {
-					pencil.render();
+					tool.render();
 				},
 			},
 		},

@@ -111,7 +111,7 @@ export const paintMachine = createMachine({
 
 								if(event.state === RELEASED) {
 									cursor.tool.stop();
-								} else if(!cursor.tool.active) {
+								} else if(!cursor.tool.active && event.state === TRIGGERED) {
 									cursor.tool.begin();
 								}
 							}),
@@ -142,6 +142,10 @@ export const paintMachine = createMachine({
 					],
 
 					on : {
+						[BUTTON_B] : {
+							actions : raise({ type : "BACK_TO_DRAWING" }),
+						},
+
 						BACK_TO_DRAWING : "drawing",
 					},
 
@@ -153,27 +157,15 @@ export const paintMachine = createMachine({
 								const ui = world.world.get("ui");
 
 								ui.ui.openPaletteMenu();
-								ui.movement.setActiveNav("palette");
 							}),
 
 							exit : sceneAction((_, { world }) => {
 								const ui = world.world.get("ui");
 
 								ui.ui.closePaletteMenu();
-								ui.movement.clearActiveNav();
 							}),
 
 							on : {
-								CLEAR_ACTION : {
-									actions : sceneAction((_, { world }) => {
-										const artboard = world.world.get("artboard");
-										const cursor = world.world.get("cursor");
-
-										artboard.artboard.clear();
-										cursor.tool.stop();
-									}),
-								},
-
 								[BUTTON_A] : {
 									guard : ({ event }) => event.state === TRIGGERED,
 									actions : raise({ type : "BACK_TO_DRAWING" }),
@@ -204,9 +196,9 @@ export const paintMachine = createMachine({
 									guard : ({ event }) => event.state === TRIGGERED,
 									actions : [
 										sceneAction((_, { world }) => {
-											const artboard = world.world.get("artboard");
+											const ui = world.world.get("ui");
 
-											artboard.artboard.clear();
+											ui.ui.selectTool();
 										}),
 										raise({ type : "BACK_TO_DRAWING" }),
 									],
@@ -224,15 +216,3 @@ export const paintMachine = createMachine({
 		},
 	},
 });
-
-/*
-{
-	actions : sceneAction((_, { world }) => {
-		const artboard = world.world.get("artboard");
-		const cursor = world.world.get("cursor");
-
-		artboard.artboard.clear();
-		cursor.tool.stop();
-	}),
-}
-*/

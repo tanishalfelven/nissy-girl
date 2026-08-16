@@ -9,6 +9,8 @@ export const createPaintUI = ({
 	const { camera } = world;
 	const cursor = world.world.get("cursor");
 
+	const getActiveTool = () => cursor.tool.getTool();
+
 	let showUI = $state(false);
 	let showPalette = $state(false);
 	let showTools = $state(false);
@@ -16,8 +18,7 @@ export const createPaintUI = ({
 	let cursorY = $state(cursor.movement.getY());
 	let scale = $state(camera.getZoomScale());
 	let toolActive = $state(false);
-
-	let paletteNav = false;
+	let tool = $state(getActiveTool());
 
 	const navComponent = createUINavComponent();
 
@@ -35,6 +36,12 @@ export const createPaintUI = ({
 		},
 
 		get selectedColor() {
+			const paletteNav = navComponent.getNav("palette");
+
+			if(!paletteNav) {
+				return false;
+			}
+
 			return paletteNav.active;
 		},
 
@@ -44,6 +51,10 @@ export const createPaintUI = ({
 
 		get toolActive() {
 			return toolActive;
+		},
+
+		get tool() {
+			return tool;
 		},
 
 		cursor : {
@@ -72,10 +83,6 @@ export const createPaintUI = ({
 			// this indirection is meh
 			const newNav = navComponent.createNav(navOptions);
 
-			if(navOptions.id === "palette") {
-				paletteNav = newNav;
-			}
-
 			return newNav;
 		},
 	};
@@ -97,6 +104,7 @@ export const createPaintUI = ({
 					cursorX = Math.round(x);
 					cursorY = Math.round(y);
 					toolActive = cursor.tool.active;
+					tool = getActiveTool();
 
 					scale = camera.getZoomScale();
 
@@ -107,19 +115,38 @@ export const createPaintUI = ({
 					return model;
 				},
 
+				selectTool() {
+					const toolNav = navComponent.getNav("tool");
+
+					if(!toolNav) {
+						return false;
+					}
+
+					cursor.tool.selectTool(toolNav.active);
+				},
+
 				openPaletteMenu() {
 					showPalette = true;
+					navComponent.setActiveNav("palette");
 				},
 
 				closePaletteMenu() {
 					showPalette = false;
+					navComponent.clearActiveNav();
 				},
 
 				openToolsMenu() {
+					const toolNav = navComponent.getNav("tool"); ;
+					toolNav.setActive(getActiveTool());
+
+					navComponent.setActiveNav("tool");
+
 					showTools = true;
 				},
 
 				closeToolsMenu() {
+					navComponent.clearActiveNav();
+
 					showTools = false;
 				},
 			},
