@@ -1,6 +1,7 @@
-import { NOZOOM_FIXED } from "$game/shared/component/camera.js";
+import { NOZOOM_FIXED } from "$game/shared/component/camera.component.js";
 
-import { createUINavComponent } from "$game/shared/ui/ui-nav.component.svelte.js";
+import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/component/input.component.js";
+import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
 
 export const createPaintUI = ({
@@ -20,7 +21,15 @@ export const createPaintUI = ({
 	let toolActive = $state(false);
 	let tool = $state(getActiveTool());
 
-	const navComponent = createUINavComponent();
+	const navComponent = createUINav();
+	const input = createInput({
+		onInputChange(inputs) {
+			navComponent.setDir(
+				resolveDirectionX(inputs),
+				resolveDirectionY(inputs),
+			);
+		},
+	});
 
 	const model = {
 		get showUI() {
@@ -90,6 +99,7 @@ export const createPaintUI = ({
 	return createEntity({
 		id : "ui",
 		components : {
+			input,
 			movement : navComponent,
 			ui : {
 				hasUpdate() {

@@ -11,10 +11,14 @@ import { Assets, Sprite, Container, Graphics } from "pixi.js";
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
 
-import { createMovement, HORZ_AXIS } from "$game/shared/component/movement.js";
+import { createMovement } from "$game/shared/component/movement.component.js";
+import { createInput, resolveDirectionX } from "$game/shared/component/input.component.js";
 
 import { createPhysics } from "./components/physics.component.js";
 import { createCollision } from "./components/collision.component.js";
+import { BUTTON_A, DPAD_LEFT, DPAD_RIGHT } from "$game/shared/input.consts.js";
+
+export const JUMPER_INPUTS = [ DPAD_LEFT, DPAD_RIGHT, BUTTON_A ];
 
 const CALM_FRAMES = 14;
 const MAX_PANIC = 18;
@@ -104,7 +108,6 @@ export const createJumper = ({
 	const movement = createMovement({
 		x : CANVAS_WIDTH / 2,
 		y : CANVAS_HEIGHT * 0.7,
-		axis : HORZ_AXIS,
 		speed : 0.82,
 	});
 
@@ -126,6 +129,17 @@ export const createJumper = ({
 		height,
 	});
 
+	const input = createInput({
+		observedInputs : JUMPER_INPUTS,
+		onInputChange : (inputs) => {
+			const xDir = resolveDirectionX(inputs);
+
+			movement.setDir(xDir, 0);
+
+			physics.setJumpIntent(inputs.has(BUTTON_A));
+		},
+	});
+
 	const jumperSprite = new Sprite({ anchor : 0.5, x : width / 2, y : height / 2 });
 	const face = createFace({ physics });
 
@@ -135,6 +149,7 @@ export const createJumper = ({
 	return createEntity({
 		id : "jumper",
 		components : {
+			input,
 			movement,
 			physics,
 			collision,

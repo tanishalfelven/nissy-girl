@@ -3,12 +3,12 @@ import { createMachine, raise } from "xstate";
 import { stateLogger } from "$util/state-logger.actor.js";
 
 import { invokeScene } from "$game/shared/scene.actor.js";
-import { invokeInput, invokeComponentInputListener } from "$game/shared/input.actor.js";
+import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { createCursor } from "./cursor.entity.js";
 import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
-import { createCamera } from "$game/shared/component/camera.js";
+import { createCamera } from "$game/shared/component/camera.component.js";
 import { createPaintUI } from "./ui/paint-ui.entity.svelte.js";
 import Drawing from "./ui/drawing.svelte";
 
@@ -59,6 +59,7 @@ export const paintMachine = createMachine({
 					],
 					frameOrder : [
 						"world",
+						"input",
 						"movement",
 						"tool",
 						"camera",
@@ -91,11 +92,11 @@ export const paintMachine = createMachine({
 					}),
 
 					invoke : [
-						invokeComponentInputListener(
-							"cursor-movement",
+						invokeInputComponent(
+							"cursor-input",
 							withScene(
 								// this is wild...
-								(scene) => scene.world.world.get("cursor").movement,
+								(scene) => scene.world.world.get("cursor").input,
 							),
 						),
 					],
@@ -142,10 +143,10 @@ export const paintMachine = createMachine({
 
 				"tool selection" : {
 					invoke : [
-						invokeComponentInputListener(
-							"ui-movement",
+						invokeInputComponent(
+							"ui-input",
 							withScene(
-								({ world }) => world.world.get("ui").movement,
+								({ world }) => world.world.get("ui").input,
 							),
 						),
 					],

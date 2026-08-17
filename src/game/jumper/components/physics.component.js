@@ -1,5 +1,3 @@
-import { input } from "$nissy-girl/input.js";
-import { BUTTON_A } from "$game/shared/input.consts.js";
 import { createVelocity } from "$util/velocity.js";
 import { GAME_TICK } from "$game/shared/game.consts.js";
 
@@ -25,7 +23,7 @@ export const createPhysics = ({
 
 	let deltaX = 0;
 	let deltaY = 0;
-	let jumping = false;
+	let hasJumpIntent = false;
 	let isGrounded = false;
 	let jumpFrames = -1;
 
@@ -36,10 +34,8 @@ export const createPhysics = ({
 			return true;
 		},
 
-		handleInput() {
-			if(input.state[BUTTON_A] !== jumping) {
-				jumping = input.state[BUTTON_A];
-			}
+		setJumpIntent(newHasJumpIntent) {
+			hasJumpIntent = newHasJumpIntent;
 		},
 
 		isMoving,
@@ -53,7 +49,7 @@ export const createPhysics = ({
 		},
 
 		isJumping() {
-			return jumping && (isGrounded || jumpFrames !== -1);
+			return hasJumpIntent && (isGrounded || jumpFrames !== -1);
 		},
 
 		update() {
@@ -64,7 +60,7 @@ export const createPhysics = ({
 			deltaX = xVelocity.step(GAME_TICK);
 			const newY = movement.getY();
 
-			if(jumping && (isGrounded || jumpFrames !== -1)) {
+			if(hasJumpIntent && (isGrounded || jumpFrames !== -1)) {
 				const isInitialJump = isGrounded && jumpFrames === -1;
 
 				yVelocity.add(isInitialJump

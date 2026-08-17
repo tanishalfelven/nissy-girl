@@ -1,8 +1,4 @@
-import { DIRECTION } from "../component/movement.js";
-
 import { wrap } from "$util/math.js";
-
-import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP } from "../input.consts.js";
 
 const createRow = (x, y) => {
 	return ({ x, y, items : [] });
@@ -114,19 +110,19 @@ export const createNav = ({
 			});
 		},
 
-		handleInput : (moving) => {
-			for(const dir of moving) {
-				if(dir === DPAD_DOWN || dir === DPAD_UP) {
-					selectedRowIndex = wrap(selectedRowIndex + DIRECTION.get(dir), 0, rows.length);
-				}
+		stepDirection : (xDir, yDir) => {
+			let prevY = selectedRowIndex;
 
-				if(dir === DPAD_LEFT || dir === DPAD_RIGHT) {
-					selectedItemIndex = wrap(
-						selectedItemIndex + DIRECTION.get(dir),
-						0,
-						rows[selectedRowIndex].items.length,
-					);
-				}
+			if(yDir !== 0) {
+				selectedRowIndex = wrap(selectedRowIndex + yDir, 0, rows.length);
+			}
+
+			if(xDir !== 0 || prevY !== selectedRowIndex) {
+				selectedItemIndex = wrap(
+					selectedItemIndex + xDir,
+					0,
+					rows[selectedRowIndex].items.length,
+				);
 			}
 
 			selected = rows[selectedRowIndex].items[selectedItemIndex].key;

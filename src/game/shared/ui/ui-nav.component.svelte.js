@@ -1,25 +1,33 @@
 import { createNav } from "./nav.svelte.js";
-import { DIRECTION } from "../component/movement.js";
-
-import { input } from "$nissy-girl/input.js";
 
 import { FPS60 } from "$util/time.js";
+
+import { createDirection } from "../component/direction.js";
 
 const REPEAT_TIME = 150 / FPS60;
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 
-export const createUINavComponent = () => {
+export const createUINav = () => {
+	const dir = createDirection();
 	const navs = new Map();
+
 	let activeNav = false;
-
-	const moveDir = new Set();
-
-	const isMoving = () => moveDir.size > 0;
-
 	let repeat = 0;
 
 	return {
+		isMoving : dir.isMoving,
+
+		hasUpdate : dir.isMoving,
+
+		setDir : (xDir, yDir) => {
+			const changed = dir.set(xDir, yDir);
+
+			if(changed) {
+				repeat = 0;
+			}
+		},
+
 		createNav(options) {
 			const nav = createNav(options);
 
@@ -40,37 +48,8 @@ export const createUINavComponent = () => {
 			activeNav = false;
 		},
 
-		isMoving() {
-			return isMoving();
-		},
-
-		hasUpdate() {
-			return isMoving();
-		},
-
-		handleInput() {
-			const dirCount = moveDir.size;
-
-			for(const dir of DIRECTION.keys()) {
-				if(input.state[dir]) {
-					repeat = 0;
-
-					moveDir.add(dir);
-				} else if(!input.state[dir]) {
-					moveDir.delete(dir);
-				}
-			}
-
-			return moveDir.size !== dirCount
-				|| isMoving();
-		},
-
-		stopInput() {
-			moveDir.clear();
-		},
-
 		update(dt) {
-			if(!isMoving()) {
+			if(!dir.isMoving()) {
 				return false;
 			}
 
@@ -80,7 +59,7 @@ export const createUINavComponent = () => {
 				const activeNavigable = navs.get(activeNav);
 
 				if(activeNavigable) {
-					activeNavigable.handleInput(moveDir);
+					activeNavigable.stepDirection(dir.getX(), dir.getY());
 				}
 			}
 

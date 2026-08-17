@@ -5,7 +5,7 @@ import { stateLogger } from "$util/state-logger.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
 import { createJumper } from "./jumper.entity.js";
-import { invokeInput, invokeComponentInputListener } from "$game/shared/input.actor.js";
+import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
 import { createPlatforms } from "./platforms.entity.js";
 
@@ -39,6 +39,7 @@ export const jumperMachine = createMachine({
 					simulateOrder : [
 						// dynamic ordering comping in clutch here
 						"world",
+						"input",
 						"movement",
 						"physics",
 						"collision",
@@ -48,16 +49,10 @@ export const jumperMachine = createMachine({
 					],
 				}),
 				invokeInput,
-				invokeComponentInputListener(
-					"jumper-movement",
+				invokeInputComponent(
+					"jumper-input",
 					withScene(
-						(scene) => scene.world.world.get("jumper").movement,
-					),
-				),
-				invokeComponentInputListener(
-					"jumper-jumping",
-					withScene(
-						(scene) => scene.world.world.get("jumper").physics,
+						(scene) => scene.world.world.get("jumper").input,
 					),
 				),
 			],

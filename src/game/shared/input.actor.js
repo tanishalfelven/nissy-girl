@@ -65,7 +65,7 @@ export const invokeInput = {
 	}),
 };
 
-export const invokeComponentInputListener = (id, func) => ({
+export const invokeInputComponent = (id, func) => ({
 	id : `component-input-listener-${id}`,
 	src : fromCallback((all) => {
 		const { system } = all;

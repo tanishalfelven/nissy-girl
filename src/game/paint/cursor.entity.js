@@ -1,8 +1,8 @@
 import { createEntity } from "$game/shared/entity/entity.js";
 
 import { createTool } from "./tools/tool.component.js";
-
-import { createMovement } from "$game/shared/component/movement.js";
+import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/component/input.component.js";
+import { createMovement } from "$game/shared/component/movement.component.js";
 
 const SCALE_TO_SPEED = {
 	1 : 0.45,
@@ -30,8 +30,19 @@ export const createCursor = ({
 		y : worldBounds.height / 2,
 		speed : SCALE_TO_SPEED[cameraScale],
 		canMoveTo : world.isInBounds,
-		onDirectionChange : () => {
-			movement.setRoundedPosition();
+	});
+
+	const input = createInput({
+		onInputChange(inputs) {
+			const dirChanged = movement.setDir(
+				resolveDirectionX(inputs),
+				resolveDirectionY(inputs),
+			);
+
+			if(dirChanged) {
+				// for ease of gridded movement, round out position whenever direction changes
+				movement.setRoundedPosition();
+			}
 		},
 	});
 
@@ -42,8 +53,8 @@ export const createCursor = ({
 	return createEntity({
 		id : "cursor",
 		components : {
+			input,
 			movement,
-
 			tool,
 
 			camera : {
