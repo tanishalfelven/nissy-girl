@@ -27,12 +27,12 @@ export const createLine = ({ pixels, movement }) => {
 
 			if(!startPos) {
 				snapshot = pixels.snapshot();
-				startPos = movement.getRoundedPosition();
+				startPos = movement.getPosition();
 
 				return;
 			}
 
-			endPos = movement.getRoundedPosition();
+			endPos = movement.getPosition();
 		},
 
 		render() {

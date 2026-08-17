@@ -92,8 +92,8 @@ export const createCamera = ({
 			followMovement(pos);
 		}
 
-		renderable.position.x = Math.round(x);
-		renderable.position.y = Math.round(y);
+		renderable.position.x = x;
+		renderable.position.y = y;
 	};
 
 	const setZoom = () => {
@@ -127,10 +127,10 @@ export const createCamera = ({
 			return { x, y };
 		},
 
-		cameraToScreen(cameraX, cameraY) {
+		cameraToScreen(posX, posY) {
 			return {
-				x : cameraX * zoomScale + x,
-				y : cameraY * zoomScale + y,
+				x : posX * zoomScale + x,
+				y : posY * zoomScale + y,
 			};
 		},
 

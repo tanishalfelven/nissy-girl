@@ -101,8 +101,10 @@ export const createPaintUI = ({
 						cursor.movement.getX(),
 						cursor.movement.getY(),
 					);
-					cursorX = Math.round(x);
-					cursorY = Math.round(y);
+
+					cursorX = x;
+					cursorY = y;
+
 					toolActive = cursor.tool.active;
 					tool = getActiveTool();
 

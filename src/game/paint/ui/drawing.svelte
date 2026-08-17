@@ -21,14 +21,14 @@ const activeToolPng = $derived(TOOLS.get(model.tool).lined);
 	class={css.cursor}
 	style:--color={selectedColorRGB}
 	data-toolactive={model.toolActive}
-	style="transform:
+	style="
+		--scale: {model.scale};
+		transform:
 			translate(
 				calc({model.cursor.x} * var(--spx)),
 				calc({model.cursor.y} * var(--spx))
 			)
-			scale(0.9);
-		width: calc({model.scale} * var(--spx));
-		height: calc({model.scale} * var(--spx));"
+			scale(0.9);"
 >
 </div>
 

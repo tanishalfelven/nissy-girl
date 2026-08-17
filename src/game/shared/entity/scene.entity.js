@@ -101,9 +101,11 @@ export const createScene = ({
 		...simulateMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc),
 		...frameMap.get("destroy").map(([ , destroyFunc ]) => destroyFunc),
 	];
-	const simulateHasUpdate = simulateMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc);
+	const hasUpdate = [
+		...simulateMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc),
+		...frameMap.get("hasUpdate").map(([ , hasUpdateFunc ]) => hasUpdateFunc),
+	];
 	const simulateUpdate = simulateMap.get("update");
-	// ! frame lifecycle doesn't respect hasUpdate, if simulate proposes a frame, frame occurs
 	const frameUpdate = frameMap.get("update");
 	// We clearly aren't really ECS but we're going to try and model that direction with room to grow!
 
@@ -123,7 +125,7 @@ export const createScene = ({
 		},
 
 		hasUpdate() {
-			for(const hasUpdateFunc of simulateHasUpdate) {
+			for(const hasUpdateFunc of hasUpdate) {
 				if(!isAlive) {
 					return;
 				}
@@ -136,13 +138,13 @@ export const createScene = ({
 			return false;
 		},
 
-		simulate() {
+		simulate(dt) {
 			for(const [ entity, updateFunc ] of simulateUpdate) {
 				if(!isAlive) {
 					return;
 				}
 
-				updateFunc(entity);
+				updateFunc(dt, entity);
 			}
 		},
 

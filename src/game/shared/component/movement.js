@@ -20,6 +20,7 @@ export const createMovement = ({
 	speed : inputSpeed = 1,
 	axis = ALL_AXIS,
 	canMoveTo = () => true,
+	onDirectionChange = () => true,
 }) => {
 	// own position for the moment but likely pull out in the future
 	let x = startX;
@@ -32,6 +33,8 @@ export const createMovement = ({
 	const moveDir = new Set();
 
 	const isMoving = () => moveDir.size > 0;
+
+	let directionChange = false;
 
 	return ({
 		isMoving() {
@@ -46,6 +49,14 @@ export const createMovement = ({
 			speed = newSpeed;
 		},
 
+		getSpeed() {
+			return speed;
+		},
+
+		didDirectionChange() {
+			return directionChange;
+		},
+
 		handleInput() {
 			const dirCount = moveDir.size;
 
@@ -57,22 +68,21 @@ export const createMovement = ({
 				}
 			}
 
-			const moveChange = moveDir.size !== dirCount
+			directionChange = moveDir.size !== dirCount
 				|| isMoving();
 
-			if(moveChange) {
-				// This makes diagonals not have staircase movements and makes pixel movement more predictable
-				this.setRoundedPosition();
+			if(directionChange) {
+				onDirectionChange();
 			}
 
-			return moveChange;
+			return directionChange;
 		},
 
 		stopInput() {
 			moveDir.clear();
 		},
 
-		update() {
+		update(dt) {
 			lastX = x;
 			lastY = y;
 
@@ -97,8 +107,8 @@ export const createMovement = ({
 			const denom = Math.hypot(dx, dy);
 
 			if(denom) {
-				const newX = x + ((dx / denom) * speed);
-				const newY = y + ((dy / denom) * speed);
+				const newX = x + ((dx / denom) * dt * speed);
+				const newY = y + ((dy / denom) * dt * speed);
 
 				if(x !== newX && canMoveTo(newX, y)) {
 					x = newX;
@@ -108,6 +118,8 @@ export const createMovement = ({
 					y = newY;
 				}
 			}
+
+			directionChange = false;
 
 			return true;
 		},
@@ -135,10 +147,6 @@ export const createMovement = ({
 
 		getPosition() {
 			return { x, y };
-		},
-
-		getRoundedPosition() {
-			return { x : Math.round(x), y : Math.round(y) };
 		},
 
 		getX() {

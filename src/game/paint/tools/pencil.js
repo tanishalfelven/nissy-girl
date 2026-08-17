@@ -24,7 +24,7 @@ export const createPencil = ({ pixels, movement }) => {
 				return false;
 			}
 
-			const nextPos = movement.getRoundedPosition();
+			const nextPos = movement.getPosition();
 
 			if(pos.length === 0 || coordsDiffer(nextPos, pos.at(-1))) {
 				pos.push(nextPos);

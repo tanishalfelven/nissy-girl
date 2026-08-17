@@ -57,13 +57,11 @@ export const paintMachine = createMachine({
 						createCursor,
 						createPaintUI,
 					],
-					simulateOrder : [
+					frameOrder : [
 						"world",
 						"movement",
-					],
-					frameOrder : [
-						"camera",
 						"tool",
+						"camera",
 						"ui",
 						"render",
 					],

@@ -21,7 +21,7 @@ export const createBucket = ({ pixels, movement }) => {
 				return false;
 			}
 
-			pos = movement.getRoundedPosition();
+			pos = movement.getPosition();
 		},
 
 		render() {

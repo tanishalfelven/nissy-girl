@@ -30,11 +30,14 @@ export const createCursor = ({
 		y : worldBounds.height / 2,
 		speed : SCALE_TO_SPEED[cameraScale],
 		canMoveTo : world.isInBounds,
+		onDirectionChange : () => {
+			movement.setRoundedPosition();
+		},
 	});
 
 	camera.follow(movement);
 
-	const tool = createTool({ artboard, movement });
+	const tool = createTool({ artboard, movement : movement });
 
 	return createEntity({
 		id : "cursor",

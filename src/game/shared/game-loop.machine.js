@@ -11,7 +11,8 @@ import { rafLooper } from "$util/time.js";
 import { screen } from "$nissy-girl/screens/screen.svelte";
 import { stateLogger } from "$util/state-logger.actor.js";
 
-const SIMULATION_STEP = 1;
+import { GAME_TICK } from "./game.consts.js";
+
 const MAX_SIMULATION_STEPS = 4;
 
 // attaches to game machine and manages scene / raf loop / teardown / etc
@@ -37,10 +38,10 @@ export const gameloop = {
 					if(scene) {
 						let simulationSteps = 0;
 
-						while(acc >= SIMULATION_STEP && simulationSteps < MAX_SIMULATION_STEPS) {
-							scene.simulate();
+						while(acc >= GAME_TICK && simulationSteps < MAX_SIMULATION_STEPS) {
+							scene.simulate(GAME_TICK);
 
-							acc -= SIMULATION_STEP;
+							acc -= GAME_TICK;
 							simulationSteps++;
 						}
 

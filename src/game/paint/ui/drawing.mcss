@@ -15,14 +15,15 @@
 }
 
 .cursor {
+	--scale: 1;
 	--spx: spx;
 
 	will-change: transform;
 
 	position: absolute;
 
-	width: spx;
-	height: spx;
+	width: calc(var(--spx) * var(--scale));
+	height: calc(var(--spx) * var(--scale));
 
 	outline: 3px solid cursorred;
 
