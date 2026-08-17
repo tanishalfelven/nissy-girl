@@ -13,8 +13,9 @@ export const createPhysics = ({
 	movement,
 }) => {
 	const xVelocity = createVelocity({
-		decay : 0.98,
-		smoothing : 0.05,
+		decay : 0.95,
+		smoothing : 0.025,
+		min : 0.01,
 	});
 
 	const yVelocity = createVelocity({
@@ -43,8 +44,16 @@ export const createPhysics = ({
 
 		isMoving,
 
+		getIsGrounded() {
+			return isGrounded;
+		},
+
 		setGrounded(newIsGrounded) {
 			isGrounded = newIsGrounded;
+		},
+
+		isJumping() {
+			return jumping && (isGrounded || jumpFrames !== -1);
 		},
 
 		update() {
@@ -86,6 +95,14 @@ export const createPhysics = ({
 
 		cancelY() {
 			yVelocity.stop();
+		},
+
+		getVelocityX() {
+			return xVelocity.value;
+		},
+
+		getVelocityY() {
+			return yVelocity.value;
 		},
 
 		getDeltaX() {

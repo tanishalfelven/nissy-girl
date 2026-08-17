@@ -1,5 +1,7 @@
 import { createEntity } from "$game/shared/entity/entity.js";
 
+import { COLOR_RED } from "$nissy-girl/screens/render.consts.js";
+
 import { inRange } from "$util/math.js";
 
 import { Graphics } from "pixi.js";
@@ -15,6 +17,18 @@ export const createPlatforms = () => {
 		{
 			x : 20,
 			y : 70,
+			width : 15,
+			height : 3,
+		},
+		{
+			x : 40,
+			y : 50,
+			width : 15,
+			height : 3,
+		},
+		{
+			x : 55,
+			y : 25,
 			width : 15,
 			height : 3,
 		},
@@ -54,7 +68,7 @@ export const createPlatforms = () => {
 					for(const platform of platforms) {
 						graphics
 							.rect(platform.x, platform.y, platform.width, platform.height)
-							.fill("#ac0022");
+							.fill(COLOR_RED);
 					}
 				},
 
