@@ -33,9 +33,6 @@ export const createMovement = ({
 	const moveDir = new Set();
 
 	const isMoving = () => moveDir.size > 0;
-
-	let directionChange = false;
-
 	return ({
 		isMoving() {
 			return isMoving();
@@ -53,10 +50,6 @@ export const createMovement = ({
 			return speed;
 		},
 
-		didDirectionChange() {
-			return directionChange;
-		},
-
 		handleInput() {
 			const dirCount = moveDir.size;
 
@@ -68,7 +61,7 @@ export const createMovement = ({
 				}
 			}
 
-			directionChange = moveDir.size !== dirCount
+			const directionChange = moveDir.size !== dirCount
 				|| isMoving();
 
 			if(directionChange) {
@@ -118,8 +111,6 @@ export const createMovement = ({
 					y = newY;
 				}
 			}
-
-			directionChange = false;
 
 			return true;
 		},
