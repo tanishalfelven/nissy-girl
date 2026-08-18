@@ -68,19 +68,31 @@ const createContainerComponent = ({
 
 		isInBounds,
 
-		getValidPosition(startX, targetX, startY, targetY, width, height) {
-			let finalX = targetX;
-			let finalY = targetY;
-
+		isAtStationaryBoundary(boundaryIndex, x, y, width) {
 			for(const boundingEntity of boundingEntities) {
-				const result = boundingEntity.bounds.resolve(startX, targetX, startY, targetY, width, height);
-
-				if(result.y < finalY) {
-					finalY = result.y;
+				if(boundingEntity.bounds.isAtStationaryBoundary(boundaryIndex, x, y, width)) {
+					return true;
 				}
 			}
 
-			return { x : finalX, y : finalY };
+			return false;
+		},
+
+		getValidPosition(startX, startY, targetX, targetY, width) {
+			let finalX = targetX;
+			let finalY = targetY;
+			let finalIndex = -1;
+
+			for(const boundingEntity of boundingEntities) {
+				const result = boundingEntity.bounds.resolve(startX, startY, targetX, targetY, width);
+
+				if(result.y < finalY) {
+					finalY = result.y;
+					finalIndex = result.index;
+				}
+			}
+
+			return { x : finalX, y : finalY, index : finalIndex };
 		},
 
 		get(entityId) {

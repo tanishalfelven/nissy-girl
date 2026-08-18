@@ -2,11 +2,13 @@ import { createDirection } from "./direction.js";
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 
+const noopTrue = () => true;
+
 export const createMovement = ({
 	x : startX = 50,
 	y : startY = 50,
 	speed : inputSpeed = 1,
-	canMoveTo = () => true,
+	canMoveTo = noopTrue,
 }) => {
 	// own position for the moment but likely pull out in the future
 	let x = startX;

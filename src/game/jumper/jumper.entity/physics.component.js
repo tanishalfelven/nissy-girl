@@ -2,54 +2,50 @@ import { createVelocity } from "$util/velocity.js";
 import { GAME_TICK } from "$game/shared/game.consts.js";
 
 const GRAVITY = 0.07;
-const JUMP_FRAMES = 5;
-const JUMP = -2.2;
-const FIRST_JUMP = JUMP * 0.7;
-const CONSECUTIVE_JUMP = (JUMP - FIRST_JUMP) / JUMP_FRAMES;
 
 export const createPhysics = ({
 	movement,
 }) => {
 	const xVelocity = createVelocity({
-		decay : 0.95,
-		smoothing : 0.025,
+		decay : 0.995,
+		smoothing : 0.021,
 		min : 0.01,
 	});
 
 	const yVelocity = createVelocity({
 		decay : 0.99,
-		smoothing : 0.001,
+		smoothing : 0.01,
 	});
 
-	let deltaX = 0;
-	let deltaY = 0;
-	let hasJumpIntent = false;
-	let isGrounded = false;
-	let jumpFrames = -1;
+	let hasGravity = true;
 
-	const isMoving = () => deltaX !== 0 || deltaY !== 0;
+	const applyGravity = () => {
+		if(hasGravity) {
+			yVelocity.add(GRAVITY);
+		}
+	};
+
+	applyGravity();
+
+	const isMoving = () => xVelocity.isMoving() || yVelocity.isMoving();
 
 	return {
-		hasUpdate() {
-			return true;
-		},
-
-		setJumpIntent(newHasJumpIntent) {
-			hasJumpIntent = newHasJumpIntent;
-		},
-
 		isMoving,
 
-		getIsGrounded() {
-			return isGrounded;
+		hasUpdate() {
+			return isMoving();
 		},
 
-		setGrounded(newIsGrounded) {
-			isGrounded = newIsGrounded;
+		enableGravity() {
+			hasGravity = true;
 		},
 
-		isJumping() {
-			return hasJumpIntent && (isGrounded || jumpFrames !== -1);
+		disableGravity() {
+			hasGravity = false;
+		},
+
+		addY(value) {
+			yVelocity.add(value);
 		},
 
 		update() {
@@ -57,32 +53,11 @@ export const createPhysics = ({
 
 			xVelocity.sampleDt(newX - movement.getLastX(), GAME_TICK);
 
-			deltaX = xVelocity.step(GAME_TICK);
 			const newY = movement.getY();
 
-			if(hasJumpIntent && (isGrounded || jumpFrames !== -1)) {
-				const isInitialJump = isGrounded && jumpFrames === -1;
-
-				yVelocity.add(isInitialJump
-					? FIRST_JUMP
-					: CONSECUTIVE_JUMP);
-
-				if(isInitialJump) {
-					jumpFrames = JUMP_FRAMES;
-				}
-			}
-
-			if(jumpFrames !== -1) {
-				jumpFrames--;
-			}
-
-			yVelocity.add(GRAVITY);
+			applyGravity();
 
 			yVelocity.sampleDt(newY - movement.getLastY(), GAME_TICK);
-
-			deltaY = yVelocity.step(GAME_TICK);
-
-			isGrounded = false;
 		},
 
 		cancelX() {
@@ -97,16 +72,20 @@ export const createPhysics = ({
 			return xVelocity.value;
 		},
 
+		isFalling() {
+			return yVelocity.value > 0;
+		},
+
 		getVelocityY() {
 			return yVelocity.value;
 		},
 
 		getDeltaX() {
-			return deltaX;
+			return xVelocity.step(GAME_TICK);
 		},
 
 		getDeltaY() {
-			return deltaY;
+			return yVelocity.step(GAME_TICK);
 		},
 	};
 };

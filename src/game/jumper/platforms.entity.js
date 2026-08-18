@@ -36,29 +36,48 @@ export const createPlatforms = () => {
 
 	const graphics = new Graphics();
 
+	const movesThroughPlatform = (platform, startX, startY, targetX, targetY, width) => {
+		if(!inRange(targetX, platform.x - width, platform.x + platform.width)) {
+			return false;
+		}
+
+		return inRange(platform.y, startY, targetY) && platform.y <= targetY;
+	};
+
 	return createEntity({
 		id : "walls",
 		components : {
 			bounds : {
-				resolve(startX, targetX, startY, targetY, width, height) {
+				isAtStationaryBoundary(index, x, y, width) {
+					const platform = platforms[index];
+
+					return movesThroughPlatform(platform, x, y, x, y, width) !== false;
+				},
+
+				resolve(startX, startY, targetX, targetY, width) {
 					let finalX = targetX;
 					let finalY = targetY;
+					let needleIndex = -1;
 
 					// its falling platforms so we can make a bunch of assumptions
 					// we take the lowest value and return that
-					for(const platform of platforms) {
-						if(!inRange(targetX, platform.x - width, platform.x + platform.width)) {
-							continue;
-						}
+					for(let index = 0; index < platforms.length; index++) {
+						const platform = platforms[index];
 
-						const bottomEdgeY = platform.y - height;
-
-						if(inRange(bottomEdgeY, startY, targetY) && bottomEdgeY < finalY) {
-							finalY = bottomEdgeY;
+						if(movesThroughPlatform(
+							platform,
+							startX,
+							startY,
+							targetX,
+							targetY,
+							width,
+						)) {
+							finalY = platform.y;
+							needleIndex = index;
 						}
 					}
 
-					return { x : finalX, y : finalY };
+					return { x : finalX, y : finalY, index : needleIndex };
 				},
 			},
 			render : {
