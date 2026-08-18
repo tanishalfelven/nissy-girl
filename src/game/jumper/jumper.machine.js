@@ -4,7 +4,7 @@ import { stateLogger } from "$util/state-logger.actor.js";
 
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
-import { createJumper } from "./jumper.entity.js";
+import { createJumper } from "./jumper.entity/jumper.entity.js";
 import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
 import { createPlatforms } from "./platforms.entity.js";
@@ -42,7 +42,7 @@ export const jumperMachine = createMachine({
 						"input",
 						"movement",
 						"physics",
-						"collision",
+						"behavior",
 					],
 					frameOrder : [
 						"render",

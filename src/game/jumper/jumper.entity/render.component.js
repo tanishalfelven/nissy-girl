@@ -1,24 +1,10 @@
-import { createEntity } from "$game/shared/entity/entity.js";
-
+import JumperPng from "./assets/jumper.png";
+import { Assets, Sprite, Container, Graphics } from "pixi.js";
 import { COLOR_BLACK, COLOR_WHITE, COLOR_RED } from "$nissy-girl/screens/render.consts.js";
 
 import { clamp, lerp } from "$util/math.js";
 
 import { cubicInOut } from "svelte/easing";
-
-import JumperPng from "./assets/jumper.png";
-import { Assets, Sprite, Container, Graphics } from "pixi.js";
-
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
-
-import { createMovement } from "$game/shared/component/movement.component.js";
-import { createInput, resolveDirectionX } from "$game/shared/component/input.component.js";
-
-import { createPhysics } from "./components/physics.component.js";
-import { createCollision } from "./components/collision.component.js";
-import { BUTTON_A, DPAD_LEFT, DPAD_RIGHT } from "$game/shared/input.consts.js";
-
-export const JUMPER_INPUTS = [ DPAD_LEFT, DPAD_RIGHT, BUTTON_A ];
 
 const CALM_FRAMES = 14;
 const MAX_PANIC = 18;
@@ -99,88 +85,48 @@ const createFace = ({ physics }) => {
 	};
 };
 
-export const createJumper = ({
-	world,
+export const createJumperRender = ({
+	movement,
+	physics,
+	width,
+	height,
 }) => {
-	const width = 6;
-	const height = 6;
-
-	const movement = createMovement({
-		x : CANVAS_WIDTH / 2,
-		y : CANVAS_HEIGHT * 0.7,
-		speed : 0.82,
-	});
-
-	const physics = createPhysics({
-		movement,
-	});
-
-	const collision = createCollision({
-		world,
-		movement,
-		physics,
-		width,
-		height,
-	});
-
 	const jumperRenderable = new Container({
 		position : movement.getPosition(),
 		width,
 		height,
 	});
-
-	const input = createInput({
-		observedInputs : JUMPER_INPUTS,
-		onInputChange : (inputs) => {
-			const xDir = resolveDirectionX(inputs);
-
-			movement.setDir(xDir, 0);
-
-			physics.setJumpIntent(inputs.has(BUTTON_A));
-		},
-	});
-
 	const jumperSprite = new Sprite({ anchor : 0.5, x : width / 2, y : height / 2 });
 	const face = createFace({ physics });
 
 	jumperRenderable.addChild(jumperSprite);
 	jumperRenderable.addChild(face.getRenderable());
-
-	return createEntity({
-		id : "jumper",
-		components : {
-			input,
-			movement,
-			physics,
-			collision,
-			render : {
-				async load() {
-					jumperSprite.texture = await Assets.load({
-						src : JumperPng,
-						data : { scaleMode : "nearest" },
-					});
-				},
-
-				update(dt) {
-					jumperRenderable.position.set(
-						movement.getX(),
-						movement.getY(),
-					);
-
-					jumperSprite.scale.x = physics.isJumping() ? 1.4 : 1;
-					jumperSprite.scale.y = physics.isJumping() ? 0.4 : 1;
-
-					face.update(dt);
-				},
-
-				getRenderable() {
-					return jumperRenderable;
-				},
-
-				destroy() {
-					jumperSprite.destroy();
-				},
-			},
+	return {
+		async load() {
+			jumperSprite.texture = await Assets.load({
+				src : JumperPng,
+				data : { scaleMode : "nearest" },
+			});
 		},
-	});
+
+		update(dt) {
+			jumperRenderable.position.set(
+				movement.getX(),
+				movement.getY(),
+			);
+
+			jumperSprite.scale.x = physics.isJumping() ? 1.4 : 1;
+			jumperSprite.scale.y = physics.isJumping() ? 0.4 : 1;
+
+			face.update(dt);
+		},
+
+		getRenderable() {
+			return jumperRenderable;
+		},
+
+		destroy() {
+			jumperSprite.destroy();
+		},
+	};
 };
