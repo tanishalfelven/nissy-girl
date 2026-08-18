@@ -96,7 +96,7 @@ export const createJumperRender = ({
 				movement.getY(),
 			);
 
-			if(behavior.isJumping()) {
+			if(behavior.isJumpFrame()) {
 				jumperRenderable.scale.x = 1.4;
 				jumperRenderable.scale.y = 0.6;
 			} else if(behavior.isCrouching()) {

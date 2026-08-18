@@ -2,10 +2,12 @@ import { createActor, createMachine, raise } from "xstate";
 
 import { clamp } from "$util/math.js";
 
+import { stateLogger } from "$util/state-logger.actor.js";
+
 import { cubicInOut } from "svelte/easing";
 
-const HIGH_JUMP = -2.5;
-const INITIAL_JUMP = -1.5;
+const HIGH_JUMP = -2.9;
+const INITIAL_JUMP = -1.9;
 const CONSECUTIVE_JUMP = -0.05;
 const NUM_CONSECUTIVE_JUMPS = 20;
 
@@ -55,7 +57,7 @@ export const createBehavior = ({
 	const behavior = createActor(createMachine({
 		id : "jumper-behavior",
 
-		// invoke : stateLogger,
+		invoke : stateLogger,
 
 		initial : "none",
 
@@ -89,23 +91,21 @@ export const createBehavior = ({
 						target : "airborne.falling",
 					},
 
-					JUMP : "airborne.jumping",
-				},
-
-				always : [
-					{
+					TICK_Y : {
 						guard : () => jumpIntent,
 						actions : [
 							raise({ type : "JUMP" }),
 							() => physics.addY(INITIAL_JUMP),
 						],
 					},
-					{
-						guard : () => crouchIntent,
-						target : ".crouch",
-					},
-					// CROUCH has no horizontal movement!
-				],
+
+					JUMP : "airborne.jumping",
+				},
+
+				always : {
+					guard : () => crouchIntent,
+					target : ".crouch",
+				},
 
 				states : {
 					impact : {
@@ -136,8 +136,8 @@ export const createBehavior = ({
 							isCrouching = false;
 						},
 
-						always : [
-							{
+						on : {
+							TICK_Y : {
 								guard : () => jumpIntent,
 								actions : [
 									raise({ type : "JUMP" }),
@@ -147,6 +147,9 @@ export const createBehavior = ({
 									// this forces a stricter horizontal path
 								],
 							},
+						},
+
+						always : [
 							{
 								guard : () => !crouchIntent,
 								target : "stationary",
@@ -172,7 +175,7 @@ export const createBehavior = ({
 					IMPACT : "grounded.impact",
 					LAND : "grounded.stationary",
 
-					TICK_Y : {
+					PROCESS_VERT : {
 						actions : () => {
 							const x = movement.getX();
 							const startY = movement.getLastY();
@@ -196,31 +199,41 @@ export const createBehavior = ({
 							}
 						},
 					},
+
+					TICK_Y : {
+						actions : raise({ type : "PROCESS_VERT" }),
+					},
 				},
 
 				states : {
 					jumping : {
 						entry : () => {
 							isJumping = true;
-							consecutiveJumps = NUM_CONSECUTIVE_JUMPS;
+							consecutiveJumps = 0;
 						},
 						exit : () => {
 							isJumping = false;
-							consecutiveJumps = 0;
+							consecutiveJumps = NUM_CONSECUTIVE_JUMPS;
 						},
 
-						always : [
-							{
-								guard : () => jumpIntent && consecutiveJumps > 0,
-								actions : () => {
-									physics.addY(CONSECUTIVE_JUMP),
-									consecutiveJumps--;
+						on : {
+							TICK_Y : [
+								{
+									guard : () => jumpIntent && consecutiveJumps < NUM_CONSECUTIVE_JUMPS,
+									actions : [
+										() => {
+											physics.addY(CONSECUTIVE_JUMP),
+											consecutiveJumps++;
+										},
+										raise({ type : "PROCESS_VERT" }),
+									],
 								},
-							},
-							{
-								target : "rising",
-							},
-						],
+								{
+									target : "rising",
+									actions : raise({ type : "PROCESS_VERT" }),
+								},
+							],
+						},
 					},
 
 					rising : {
@@ -235,21 +248,32 @@ export const createBehavior = ({
 					},
 
 					falling : {
-						always : [
-							{
-								guard : () => isGrounded && fallTime > IMPACT_FALL,
-								actions : raise({ type : "IMPACT" }),
-							},
-							{
-								guard : () => isGrounded,
-								actions : raise({ type : "LAND" }),
-							},
-							{
-								actions : () => {
-									fallTime++;
+						on : {
+							TICK_Y : [
+								{
+									guard : () => isGrounded && fallTime > IMPACT_FALL,
+									actions : [
+										raise({ type : "IMPACT" }),
+										raise({ type : "PROCESS_VERT" }),
+									],
 								},
-							},
-						],
+								{
+									guard : () => isGrounded,
+									actions : [
+										raise({ type : "LAND" }),
+										raise({ type : "PROCESS_VERT" }),
+									],
+								},
+								{
+									actions : [
+										() => {
+											fallTime++;
+										},
+										raise({ type : "PROCESS_VERT" }),
+									],
+								},
+							],
+						},
 					},
 				},
 			},
@@ -263,6 +287,7 @@ export const createBehavior = ({
 		isImpact : () => isImpact,
 		isJumping : () => isJumping,
 		isCrouching : () => isCrouching,
+		isJumpFrame : () => isJumping && consecutiveJumps < 3,
 		getPanic : () => cubicInOut(clamp((fallTime - CALM_FRAMES) / MAX_PANIC, 0, 1)),
 
 		setJumpIntent(newJumpIntent) {
