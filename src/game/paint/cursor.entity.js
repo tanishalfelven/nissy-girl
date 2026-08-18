@@ -23,13 +23,15 @@ export const createCursor = ({
 	const worldBounds = world.getBounds();
 	const { artboard } = world.get("artboard");
 
-	let cameraScale = camera.getZoomScale();
-
 	const movement = createMovement({
 		x : worldBounds.width / 2,
 		y : worldBounds.height / 2,
-		speed : SCALE_TO_SPEED[cameraScale],
+		speed : SCALE_TO_SPEED[camera.getZoom()],
 		canMoveTo : world.isInBounds,
+	});
+
+	camera.onCameraChange(() => {
+		movement.setSpeed(SCALE_TO_SPEED[camera.getZoom()]);
 	});
 
 	const input = createInput({
@@ -56,19 +58,6 @@ export const createCursor = ({
 			input,
 			movement,
 			tool,
-
-			camera : {
-				update() {
-					const zoomScale = camera.getZoomScale();
-
-					if(zoomScale !== cameraScale) {
-						cameraScale = zoomScale;
-
-						movement.setSpeed(SCALE_TO_SPEED[cameraScale]);
-					}
-				},
-			},
-
 			render : {
 				update(dt) {
 					tool.render(dt);

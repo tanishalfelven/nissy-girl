@@ -8,7 +8,7 @@ import { gameloop } from "$game/shared/game-loop.machine.js";
 import { createCursor } from "./cursor.entity.js";
 import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
-import { createCamera } from "$game/shared/component/camera.component.js";
+import { createPaintCamera } from "./camera.component.js";
 import { createPaintUI } from "./ui/paint-ui.entity.svelte.js";
 import Drawing from "./ui/drawing.svelte";
 
@@ -49,7 +49,7 @@ export const paintMachine = createMachine({
 						width : CANVAS_WIDTH,
 						height : CANVAS_HEIGHT,
 						components : {
-							camera : createCamera,
+							camera : createPaintCamera,
 						},
 					}),
 					entities : [

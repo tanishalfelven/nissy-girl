@@ -1,5 +1,3 @@
-import { NOZOOM_FIXED } from "$game/shared/component/camera.component.js";
-
 import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/component/input.component.js";
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
@@ -12,16 +10,23 @@ export const createPaintUI = ({
 
 	const getActiveTool = () => cursor.tool.getTool();
 
-	let showUI = $state(false);
+	let isFixedCamera = $state(false);
+	let scale = $state(1);
+
 	let showPalette = $state(false);
 	let showTools = $state(false);
 	let cursorX = $state(cursor.movement.getX());
 	let cursorY = $state(cursor.movement.getY());
-	let scale = $state(camera.getZoomScale());
 	let toolActive = $state(false);
 	let tool = $state(getActiveTool());
 
+	camera.onCameraChange(() => {
+		scale = camera.getZoom();
+		isFixedCamera = camera.getIsFixedStyle();
+	});
+
 	const navComponent = createUINav();
+
 	const input = createInput({
 		onInputChange(inputs) {
 			navComponent.setDir(
@@ -33,7 +38,7 @@ export const createPaintUI = ({
 
 	const model = {
 		get showUI() {
-			return showUI || showPalette || showTools;
+			return !isFixedCamera || showPalette || showTools;
 		},
 
 		get showPalette() {
@@ -117,10 +122,6 @@ export const createPaintUI = ({
 
 					toolActive = cursor.tool.active;
 					tool = getActiveTool();
-
-					scale = camera.getZoomScale();
-
-					showUI = camera.getZoomType() !== NOZOOM_FIXED;
 				},
 
 				getModel() {

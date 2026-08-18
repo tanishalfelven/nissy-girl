@@ -1,161 +1,118 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
 
-import { wrap } from "$util/math.js";
+import {
+	CAMERA,
+	FIXED_1X_CAMERA,
+	DEFAULT_PADDING,
+	CAMERA_STYLE_FIXED,
+} from "./camera.consts.js";
 
 import { coordsDiffer } from "./position.js";
-
-const PADDING = 45;
-
-export const NOZOOM_FIXED = 0;
-export const NOZOOM_WITH_PAN = 1;
-
-export const DEFAULT_ZOOM = NOZOOM_WITH_PAN;
-
-const ZOOM_STEPS = new Map([
-	[ NOZOOM_FIXED, 1 ],
-	[ NOZOOM_WITH_PAN, 1 ],
-	[ 2, 3 ],
-]);
 
 export const createCamera = ({
 	world,
 	width = CANVAS_WIDTH,
 	height = CANVAS_HEIGHT,
-	padding = PADDING,
+	padding = DEFAULT_PADDING,
+	config : inputConfig = FIXED_1X_CAMERA,
 } = false) => {
-	let x = 0;
-	let y = 0;
-
-	let zoomChanged = false;
-	let zoom = DEFAULT_ZOOM;
-	let zoomScale = ZOOM_STEPS.get(zoom);
-
 	const renderable = world.world.getRenderable();
+	const subscribers = new Set();
 
-	const minX = padding * zoomScale;
-	const minY = padding * zoomScale;
-	const maxX = width - padding * zoomScale;
-	const maxY = height - padding * zoomScale;
+	let configChanged = false;
+	let config = inputConfig;
 
 	let target = false;
-
 	let lastFollow = false;
 
-	const setPanningWithPadding = (pos) => {
-		const screenX = pos.x + x;
-
-		if(screenX < minX) {
-			x += minX - screenX;
-		} else if(screenX > maxX) {
-			x -= screenX - maxX;
-		}
-
-		const screenY = pos.y + y;
-
-		if(screenY < minY) {
-			y += minY - screenY;
-		} else if(screenY > maxY) {
-			y -= screenY - maxY;
-		}
-	};
-
-	const setFixedTransform = () => {
-		x = width * (1 - zoomScale) / 2;
-		y = height * (1 - zoomScale) / 2;
-	};
-
-	const followMovement = (pos) => {
-		// keep the cursor centered when zoomed in
-		x = -pos.x * zoomScale + width / 2;
-		y = -pos.y * zoomScale + height / 2;
-	};
-
-	const setTransform = (didZoom) => {
-		if(!target && !didZoom) {
+	const setTransform = () => {
+		if(!configChanged && !target) {
 			return;
 		}
 
 		const pos = target.getPosition();
 
-		if(!coordsDiffer(lastFollow, pos) && !didZoom) {
-			return false;
-		}
-
-		lastFollow = pos;
-		zoomChanged = false;
-
-		if(zoom <= NOZOOM_FIXED) {
-			setFixedTransform();
-		} else if(zoom === NOZOOM_WITH_PAN) {
-			setPanningWithPadding(pos);
-		} else if(zoom >= 2) {
-			followMovement(pos);
-		}
-
-		renderable.position.x = x;
-		renderable.position.y = y;
-	};
-
-	const setZoom = () => {
-		if(!zoomChanged) {
+		if(!coordsDiffer(lastFollow, pos)) {
 			return;
 		}
 
-		zoomScale = ZOOM_STEPS.get(zoom);
+		lastFollow = pos;
+		configChanged = false;
 
-		renderable.scale.x = zoomScale;
-		renderable.scale.y = zoomScale;
+		renderable.position.x = CAMERA[config.style].getX(
+			width,
+			config.zoom,
+			pos.x,
+			renderable.position.x,
+			padding,
+		);
 
-		return true;
+		renderable.position.y = CAMERA[config.style].getY(
+			height,
+			config.zoom,
+			pos.y,
+			renderable.position.y,
+			padding,
+		);
+	};
+
+	const updateZoom = () => {
+		if(!configChanged) {
+			return;
+		}
+
+		renderable.scale.x = config.zoom;
+		renderable.scale.y = config.zoom;
 	};
 
 	return {
 		hasUpdate() {
-			return (Boolean(target)
-				&& lastFollow
-				&& coordsDiffer(lastFollow, target.getPosition()))
-			|| zoomChanged;
+			return (target && target.isMoving())
+				|| configChanged;
 		},
 
 		follow(movement) {
 			target = movement;
 
-			setTransform(target.getPosition());
-		},
-
-		getPosition() {
-			return { x, y };
+			setTransform();
 		},
 
 		cameraToScreen(posX, posY) {
 			return {
-				x : posX * zoomScale + x,
-				y : posY * zoomScale + y,
+				x : posX * config.zoom + renderable.position.x,
+				y : posY * config.zoom + renderable.position.y,
 			};
 		},
 
-		stepZoom(dir = 1) {
-			const newZoom = wrap(zoom + dir, 0, ZOOM_STEPS.size);
+		onCameraChange(subscriber) {
+			subscribers.add(subscriber);
 
-			if(ZOOM_STEPS.has(newZoom)) {
-				zoom = newZoom;
+			return () => subscribers.delete(subscriber);
+		},
 
-				zoomChanged = true;
+		setCameraConfig(newCameraConfig) {
+			configChanged = newCameraConfig.zoom !== config.zoom
+				|| newCameraConfig.style !== config.style;
+
+			config = newCameraConfig;
+
+			for(const subscriber of subscribers) {
+				subscriber(config);
 			}
 		},
 
-		getZoomScale() {
-			return zoomScale;
+		getZoom() {
+			return config.zoom;
 		},
 
-		getZoomType() {
-			return zoom;
+		getIsFixedStyle() {
+			return config.style === CAMERA_STYLE_FIXED;
 		},
 
 		update() {
-			const didZoom = setZoom();
+			updateZoom();
 
-			return setTransform(didZoom);
+			return setTransform();
 		},
 	};
 };
