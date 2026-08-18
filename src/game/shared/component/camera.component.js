@@ -32,7 +32,7 @@ export const createCamera = ({
 
 		const pos = target.getPosition();
 
-		if(!coordsDiffer(lastFollow, pos)) {
+		if(!configChanged && !coordsDiffer(lastFollow, pos)) {
 			return;
 		}
 
@@ -112,7 +112,7 @@ export const createCamera = ({
 		update() {
 			updateZoom();
 
-			return setTransform();
+			setTransform();
 		},
 	};
 };
