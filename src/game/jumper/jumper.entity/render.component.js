@@ -59,19 +59,21 @@ const createFace = ({ physics, behavior }) => {
 	};
 };
 
-export const createJumperRender = ({
-	behavior,
-	movement,
-	physics,
+const createJumper = ({
 	width,
 	height,
+	movement,
+	physics,
+	behavior,
+	offset = 0,
+	enabled = true,
 }) => {
 	const jumperRenderable = new Container({
-		position : movement.getPosition(),
 		width,
 		height,
 		pivot : { x : width / 2, y : height },
 	});
+
 	const jumperSprite = new Sprite({
 		anchor : 0.5,
 		x : width / 2,
@@ -82,19 +84,32 @@ export const createJumperRender = ({
 	jumperRenderable.addChild(jumperSprite);
 	jumperRenderable.addChild(face.getRenderable());
 
-	return {
-		async load() {
-			jumperSprite.texture = await Assets.load({
-				src : JumperPng,
-				data : { scaleMode : "nearest" },
-			});
-		},
+	const updatePosition = () => {
+		jumperRenderable.position.set(
+			movement.getX() + offset,
+			movement.getY(),
+		);
+	};
 
+	updatePosition();
+
+	const updateEnabled = () => {
+		if(enabled) {
+			updatePosition();
+		}
+
+		jumperRenderable.visible = enabled;
+	};
+
+	updateEnabled();
+
+	return {
 		update(dt) {
-			jumperRenderable.position.set(
-				movement.getX(),
-				movement.getY(),
-			);
+			if(!enabled) {
+				return;
+			}
+
+			updatePosition();
 
 			if(behavior.isJumpFrame()) {
 				jumperRenderable.scale.x = 1.4;
@@ -110,12 +125,99 @@ export const createJumperRender = ({
 			face.update(dt);
 		},
 
+		setOffset(newOffset) {
+			offset = newOffset;
+		},
+
+		getEnabled() {
+			return enabled;
+		},
+
+		setEnabled(newEnabled) {
+			enabled = newEnabled;
+
+			updateEnabled();
+		},
+
+		setBg(jumperBg) {
+			jumperSprite.texture = jumperBg;
+		},
+
 		getRenderable() {
 			return jumperRenderable;
 		},
 
 		destroy() {
-			jumperSprite.destroy();
+			jumperRenderable.destroy();
+		},
+	};
+};
+
+export const createJumperRender = ({
+	world,
+	movement,
+	physics,
+	behavior,
+	width,
+	height,
+}) => {
+	const jumper = createJumper({
+		width,
+		height,
+		movement,
+		getX : movement.getX,
+		getY : movement.getY,
+		physics,
+		behavior,
+	});
+
+	const mirror = createJumper({
+		width,
+		height,
+		movement,
+		physics,
+		behavior,
+		enabled : false,
+	});
+
+	return {
+		async load() {
+			const jumperBg = await Assets.load({
+				src : JumperPng,
+				data : { scaleMode : "nearest" },
+			});
+
+			jumper.setBg(jumperBg);
+			mirror.setBg(jumperBg);
+
+			const worldRenderable = world.world.getRenderable();
+
+			// insert mirror next to the real jumper
+			worldRenderable.addChildAt(
+				mirror.getRenderable(),
+				worldRenderable.getChildIndex(jumper.getRenderable()),
+			);
+		},
+
+		update(dt) {
+			if(behavior.isWrapping() && !mirror.getEnabled()) {
+				mirror.setOffset(behavior.getWrapOffset());
+				mirror.setEnabled(true);
+			} else if(!behavior.isWrapping() && mirror.getEnabled()) {
+				mirror.setEnabled(false);
+			}
+
+			jumper.update(dt);
+			mirror.update(dt);
+		},
+
+		getRenderable() {
+			return jumper.getRenderable();
+		},
+
+		destroy() {
+			jumper.destroy();
+			mirror.destroy();
 		},
 	};
 };

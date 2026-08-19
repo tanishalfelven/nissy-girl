@@ -8,7 +8,7 @@ export const createPhysics = ({
 }) => {
 	const xVelocity = createVelocity({
 		decay : 0.995,
-		smoothing : 0.021,
+		smoothing : 0.05,
 		min : 0.01,
 	});
 

@@ -16,6 +16,9 @@ const IMPACT_DUST_THRESHOLD = 38;
 const CALM_FRAMES = 14;
 const MAX_PANIC = 18;
 
+const DUST_OFFSET = 0;
+const DUST_SCALE = 0.65;
+
 export const createBehavior = ({
 	world,
 
@@ -45,10 +48,35 @@ export const createBehavior = ({
 	let crouchIntent = false;
 	let isCrouching = false;
 
+	let isWrapping = false;
+	let isWrappingLeft = false;
+
 	const platforms = world.world.get("platforms");
 	const { particles } = world;
 
-	const spawnDustTrail = (yOffset = height / 2, scale = 1) => {
+	const worldWidth = world.world.getBounds().width;
+
+	const HALFW = width / 2;
+	const HALFH = height / 2;
+
+	const leftWrapOffset = worldWidth - HALFW;
+	const rightWrapOffset = -worldWidth + HALFW;
+
+	const left = (x) => x - HALFW;
+	const right = (x) => x + HALFW;
+
+	const getWrapOffset = () => isWrappingLeft ? leftWrapOffset : rightWrapOffset;
+
+	const _isWrappingLeft = (x) => (left(x) + leftWrapOffset) < worldWidth;
+	const wrapLeftDone = (x) => (right(x) + leftWrapOffset) < worldWidth;
+
+	const _isWrappingRight = (x) => (right(x) + rightWrapOffset) > 0;
+	const wrapRightDone = (x) => (left(x) + rightWrapOffset) > 0;
+
+	const isStartWrap = (x) => _isWrappingLeft(x) || _isWrappingRight(x);
+	const isEndWrap = (x) => wrapLeftDone(x) || wrapRightDone(x);
+
+	const spawnDustTrail = (yOffset = HALFH, scale = 1) => {
 		particles.spawnDust(
 			movement.getX(),
 			movement.getY() - yOffset,
@@ -61,7 +89,7 @@ export const createBehavior = ({
 
 	const spawnLateralDust = (yOffset = height / 4, scale = 1) => {
 		particles.spawnDust(
-			movement.getX() - width / 2,
+			left(movement.getX()),
 			movement.getY() - yOffset,
 			-0.1 * Math.random(),
 			0,
@@ -70,7 +98,7 @@ export const createBehavior = ({
 		);
 
 		particles.spawnDust(
-			movement.getX() + width / 2,
+			right(movement.getX()),
 			movement.getY() - yOffset,
 			0.1 * Math.random(),
 			0,
@@ -88,7 +116,7 @@ export const createBehavior = ({
 
 		return platforms.bounds.remainsGrounded(
 			lastPlatformIndex,
-			movement.getX() - width / 2,
+			left(movement.getX()),
 			movement.getY(),
 			width,
 		);
@@ -107,7 +135,21 @@ export const createBehavior = ({
 			PROCESS_HORZ : {
 				// no X collision exists yet so... we cheat
 				actions : () => {
-					const targetX = movement.getX() + physics.getDeltaX();
+					let targetX = movement.getX() + physics.getDeltaX();
+
+					if(isStartWrap(targetX)) {
+						isWrapping = true;
+
+						// isWrappingLeft set exposes the offset in getWrapOffset internally AND externally
+						// this is how the mirrored jumper matches the target wrap position.
+						isWrappingLeft = _isWrappingLeft(targetX);
+
+						if(isEndWrap(targetX)) {
+							targetX += getWrapOffset();
+
+							isWrapping = false;
+						}
+					}
 
 					movement.setX(targetX);
 				},
@@ -174,7 +216,7 @@ export const createBehavior = ({
 							isImpact = true;
 
 							if(impactFallTime > IMPACT_DUST_THRESHOLD) {
-								spawnLateralDust(0, 0.65);
+								spawnLateralDust(DUST_OFFSET, DUST_SCALE);
 							}
 						},
 
@@ -251,9 +293,9 @@ export const createBehavior = ({
 							const targetY = movement.getY() + physics.getDeltaY();
 
 							const result = platforms.bounds.moveIntersectsPlatform(
-								x - width / 2,
+								left(x),
 								startY,
-								x - width / 2,
+								left(x),
 								targetY,
 								width,
 							);
@@ -368,6 +410,10 @@ export const createBehavior = ({
 		isCrouching : () => isCrouching,
 		isJumpFrame : () => isJumping && consecutiveJumps < 3,
 		getPanic : () => cubicInOut(clamp((fallTime - CALM_FRAMES) / MAX_PANIC, 0, 1)),
+
+		isWrapping : () => isWrapping,
+
+		getWrapOffset,
 
 		setJumpIntent(newJumpIntent) {
 			jumpIntent = newJumpIntent;

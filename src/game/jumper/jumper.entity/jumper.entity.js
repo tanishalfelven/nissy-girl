@@ -81,7 +81,7 @@ export const createJumper = ({
 			movement,
 			physics,
 			behavior,
-			render : createJumperRender({ movement, physics, behavior, width, height }),
+			render : createJumperRender({ world, movement, physics, behavior, width, height }),
 		},
 	});
 };
