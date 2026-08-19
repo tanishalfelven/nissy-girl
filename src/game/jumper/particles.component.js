@@ -58,12 +58,12 @@ export const createParticles = ({
 					continue;
 				}
 
-				particle.particle.rotation += particle.speed;
-				particle.particle.scaleX += particle.scale;
-				particle.particle.scaleY += particle.scale;
-				particle.particle.alpha += particle.alpha;
-				particle.particle.x += particle.dirX;
-				particle.particle.y += particle.dirY;
+				particle.particle.rotation += particle.speed * dt;
+				particle.particle.scaleX += particle.scale * dt;
+				particle.particle.scaleY += particle.scale * dt;
+				particle.particle.alpha += particle.alpha * dt;
+				particle.particle.x += particle.dirX * dt;
+				particle.particle.y += particle.dirY * dt;
 
 				particle.frames -= dt;
 			}
