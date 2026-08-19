@@ -60,7 +60,12 @@ export const createInput = ({
 		},
 
 		stopInput() {
+			if(inputs.size === 0) {
+				return;
+			}
+
 			inputs.clear();
+			onInputChange(inputs);
 		},
 	};
 };
