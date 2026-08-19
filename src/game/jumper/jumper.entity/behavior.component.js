@@ -7,7 +7,7 @@ import { stateLogger } from "$util/state-logger.actor.js";
 import { cubicInOut } from "svelte/easing";
 
 const HIGH_JUMP = -2.9;
-const INITIAL_JUMP = -1.9;
+const INITIAL_JUMP = -1.7;
 const CONSECUTIVE_JUMP = -0.05;
 const NUM_CONSECUTIVE_JUMPS = 20;
 
@@ -21,6 +21,8 @@ export const createBehavior = ({
 	movement,
 	physics,
 	updateCanMove,
+	landSpeed,
+	airSpeed,
 }) => {
 	let isGrounded = false;
 	let lastPlatformIndex = -1;
@@ -54,6 +56,8 @@ export const createBehavior = ({
 		);
 	};
 
+	// This is an interesting expirement - Loving the flexibility
+	// one note - `always` is a total footgun. Things need to update directly from tick.
 	const behavior = createActor(createMachine({
 		id : "jumper-behavior",
 
@@ -80,6 +84,7 @@ export const createBehavior = ({
 				entry : () => {
 					physics.cancelY();
 					physics.disableGravity();
+					movement.setSpeed(landSpeed);
 				},
 
 				on : {
@@ -137,26 +142,25 @@ export const createBehavior = ({
 						},
 
 						on : {
-							TICK_Y : {
-								guard : () => jumpIntent,
-								actions : [
-									raise({ type : "JUMP" }),
-									() => physics.addY(HIGH_JUMP),
+							TICK_Y : [
+								{
+									guard : () => jumpIntent && crouchIntent,
+									actions : [
+										raise({ type : "JUMP" }),
+										() => physics.addY(HIGH_JUMP),
 									// intentionally do not re-enable movement here
 									// it is always re-enabled at the end of rising frames
 									// this forces a stricter horizontal path
-								],
-							},
+									],
+								},
+								{
+									guard : () => !crouchIntent,
+									target : "stationary",
+									// restore allowing movement to update its position
+									actions : () => updateCanMove(true),
+								},
+							],
 						},
-
-						always : [
-							{
-								guard : () => !crouchIntent,
-								target : "stationary",
-								// restore allowing movement to update its position
-								actions : () => updateCanMove(true),
-							},
-						],
 					},
 
 					stationary : {},
@@ -169,6 +173,7 @@ export const createBehavior = ({
 				entry : () => {
 					isGrounded = false;
 					physics.enableGravity();
+					movement.setSpeed(airSpeed);
 				},
 
 				on : {
@@ -302,8 +307,11 @@ export const createBehavior = ({
 			return movement.isMoving()
 				|| physics.isMoving()
 				|| isJumping
-				|| ((jumpIntent || crouchIntent) && isGrounded)
-				|| isImpact;
+				// they should not have given gay people boolean operators
+				|| (isGrounded
+					&& (jumpIntent
+						|| (crouchIntent !== isCrouching)))
+					|| isImpact;
 		},
 
 		update() {

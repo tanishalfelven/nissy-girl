@@ -31,6 +31,9 @@ const externalResolve = () => {
 export const createJumper = ({
 	world,
 }) => {
+	const landSpeed = 0.9;
+	const airSpeed = 0.45;
+
 	const width = 6;
 	const height = 6;
 
@@ -40,7 +43,7 @@ export const createJumper = ({
 	const movement = createMovement({
 		x : CANVAS_WIDTH / 2,
 		y : CANVAS_HEIGHT * 0.7,
-		speed : 0.9,
+		speed : landSpeed,
 		canMoveTo : canMoveExternal.resolve,
 	});
 
@@ -54,6 +57,8 @@ export const createJumper = ({
 		physics,
 		width,
 		height,
+		landSpeed,
+		airSpeed,
 		updateCanMove : canMoveExternal.update,
 	});
 
