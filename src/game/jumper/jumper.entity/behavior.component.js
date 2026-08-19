@@ -135,6 +135,8 @@ export const createBehavior = ({
 				actions : () => {
 					let targetX = movement.getX() + physics.stepX();
 
+					isWrapping = false;
+
 					if(isStartWrap(targetX)) {
 						isWrapping = true;
 

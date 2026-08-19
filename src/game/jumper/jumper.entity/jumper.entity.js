@@ -17,17 +17,6 @@ import { createJumperRender } from "./render.component.js";
 
 export const JUMPER_INPUTS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_DOWN, BUTTON_A ];
 
-const externalResolve = () => {
-	let value = true;
-
-	return {
-		resolve : () => value,
-		update : (newValue) => {
-			value = newValue;
-		},
-	};
-};
-
 export const createJumper = ({
 	world,
 }) => {
@@ -37,14 +26,10 @@ export const createJumper = ({
 	const width = 6;
 	const height = 6;
 
-	// a bit of dependency injection, this is odd for sure
-	const canMoveExternal = externalResolve();
-
 	const movement = createMovement({
 		x : CANVAS_WIDTH / 2,
 		y : CANVAS_HEIGHT * 0.7,
 		speed : landSpeed,
-		canMoveTo : canMoveExternal.resolve,
 	});
 
 	const physics = createPhysics({
@@ -59,7 +44,6 @@ export const createJumper = ({
 		height,
 		landSpeed,
 		airSpeed,
-		updateCanMove : canMoveExternal.update,
 	});
 
 	const input = createInput({
