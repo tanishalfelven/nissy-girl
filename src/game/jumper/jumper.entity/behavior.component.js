@@ -103,12 +103,18 @@ export const createBehavior = ({
 
 		initial : "none",
 
-		always : {
-			// no X collision exists yet so... we cheat
-			actions : () => {
-				const targetX = movement.getX() + physics.getDeltaX();
+		on : {
+			PROCESS_HORZ : {
+				// no X collision exists yet so... we cheat
+				actions : () => {
+					const targetX = movement.getX() + physics.getDeltaX();
 
-				movement.setX(targetX);
+					movement.setX(targetX);
+				},
+			},
+
+			TICK_X : {
+				actions : raise({ type : "PROCESS_HORZ" }),
 			},
 		},
 
@@ -130,13 +136,22 @@ export const createBehavior = ({
 				},
 
 				on : {
-					TICK_X : {
-						guard : () => !stillOnPlatform(),
-						actions : () => {
-							lastPlatformIndex = -1;
+					TICK_X : [
+						{
+							guard : () => !stillOnPlatform(),
+							actions : [
+								() => {
+									lastPlatformIndex = -1;
+								},
+								raise({ type : "PROCESS_HORZ" }),
+							],
+							target : "airborne.falling",
 						},
-						target : "airborne.falling",
-					},
+						{
+							guard : () => crouchIntent,
+							target : ".crouch",
+						},
+					],
 
 					TICK_Y : {
 						guard : () => jumpIntent,
@@ -147,11 +162,6 @@ export const createBehavior = ({
 					},
 
 					JUMP : "airborne.jumping",
-				},
-
-				always : {
-					guard : () => crouchIntent,
-					target : ".crouch",
 				},
 
 				states : {
@@ -305,9 +315,11 @@ export const createBehavior = ({
 							updateCanMove(true);
 						},
 
-						always : {
-							guard : () => physics.isFalling(),
-							target : "falling",
+						on : {
+							TICK_Y : {
+								guard : () => physics.isFalling(),
+								target : "falling",
+							},
 						},
 					},
 
