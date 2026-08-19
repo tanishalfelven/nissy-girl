@@ -28,8 +28,6 @@ export const createBehavior = ({
 	movement,
 	physics,
 
-	updateCanMove,
-
 	landSpeed,
 	airSpeed,
 }) => {
@@ -135,7 +133,7 @@ export const createBehavior = ({
 			PROCESS_HORZ : {
 				// no X collision exists yet so... we cheat
 				actions : () => {
-					let targetX = movement.getX() + physics.getDeltaX();
+					let targetX = movement.getX() + physics.stepX();
 
 					if(isStartWrap(targetX)) {
 						isWrapping = true;
@@ -230,9 +228,6 @@ export const createBehavior = ({
 						entry : () => {
 							isCrouching = true;
 							physics.cancelX();
-
-							// block movement from updating position
-							updateCanMove(false);
 						},
 
 						exit : () => {
@@ -250,16 +245,11 @@ export const createBehavior = ({
 											spawnLateralDust();
 											isHighJump = true;
 										},
-									// intentionally do not re-enable movement here
-									// it is always re-enabled at the end of rising frames
-									// this forces a stricter horizontal path
 									],
 								},
 								{
 									guard : () => !crouchIntent,
 									target : "stationary",
-									// restore allowing movement to update its position
-									actions : () => updateCanMove(true),
 								},
 							],
 						},
@@ -290,7 +280,7 @@ export const createBehavior = ({
 						actions : () => {
 							const x = movement.getX();
 							const startY = movement.getLastY();
-							const targetY = movement.getY() + physics.getDeltaY();
+							const targetY = movement.getY() + physics.stepY();
 
 							const result = platforms.bounds.moveIntersectsPlatform(
 								left(x),
@@ -353,10 +343,6 @@ export const createBehavior = ({
 					},
 
 					rising : {
-						exit : () => {
-							updateCanMove(true);
-						},
-
 						on : {
 							TICK_Y : {
 								guard : () => physics.isFalling(),

@@ -80,11 +80,11 @@ export const createPhysics = ({
 			return yVelocity.value;
 		},
 
-		getDeltaX() {
+		stepX() {
 			return xVelocity.step(GAME_TICK);
 		},
 
-		getDeltaY() {
+		stepY() {
 			return yVelocity.step(GAME_TICK);
 		},
 	};
