@@ -37,6 +37,8 @@ export const createBehavior = ({
 	let crouchIntent = false;
 	let isCrouching = false;
 
+	const platforms = world.world.get("platforms");
+
 	const normalMoveX = () => {
 		const targetX = movement.getX() + physics.getDeltaX();
 
@@ -48,7 +50,7 @@ export const createBehavior = ({
 			return false;
 		}
 
-		return world.world.isAtStationaryBoundary(
+		return platforms.bounds.remainsGrounded(
 			lastPlatformIndex,
 			movement.getX() - width / 2,
 			movement.getY(),
@@ -186,7 +188,7 @@ export const createBehavior = ({
 							const startY = movement.getLastY();
 							const targetY = movement.getY() + physics.getDeltaY();
 
-							const result = world.world.getValidPosition(
+							const result = platforms.bounds.moveIntersectsPlatform(
 								x - width / 2,
 								startY,
 								x - width / 2,

@@ -34,7 +34,6 @@ const createContainerComponent = ({
 	const entities = [];
 	const entityMap = new Map();
 	const surface = new Container();
-	const boundingEntities = [];
 
 	const isInBounds = (x, y) => x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
 
@@ -47,17 +46,6 @@ const createContainerComponent = ({
 				surface.addChild(entity.render.getRenderable());
 			}
 
-			if(entity?.bounds) {
-				if(!entity.bounds.resolve) {
-					/* eslint-disable-next-line */
-					console.log("Entity does not provide required bounds contract:", entity);
-
-					throw new Error("Registered bounds component lacking api contract");
-				}
-
-				boundingEntities.push(entity);
-			}
-
 			// components get a special reference to their world component!
 			entity.world = this;
 		},
@@ -68,34 +56,9 @@ const createContainerComponent = ({
 
 		isInBounds,
 
-		isAtStationaryBoundary(boundaryIndex, x, y, width) {
-			for(const boundingEntity of boundingEntities) {
-				if(boundingEntity.bounds.isAtStationaryBoundary(boundaryIndex, x, y, width)) {
-					return true;
-				}
-			}
-
-			return false;
-		},
-
-		getValidPosition(startX, startY, targetX, targetY, width) {
-			let finalX = targetX;
-			let finalY = targetY;
-			let finalIndex = -1;
-
-			for(const boundingEntity of boundingEntities) {
-				const result = boundingEntity.bounds.resolve(startX, startY, targetX, targetY, width);
-
-				if(result.y < finalY) {
-					finalY = result.y;
-					finalIndex = result.index;
-				}
-			}
-
-			return { x : finalX, y : finalY, index : finalIndex };
-		},
-
 		get(entityId) {
+			console.log(entityMap);
+
 			return entityMap.get(entityId);
 		},
 

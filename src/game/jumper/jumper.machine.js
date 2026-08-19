@@ -8,6 +8,8 @@ import { createJumper } from "./jumper.entity/jumper.entity.js";
 import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
 import { createPlatforms } from "./platforms.entity.js";
+import { createWorld } from "$game/shared/entity/world.entity.js";
+import { createParticles } from "./particles.component.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -30,6 +32,11 @@ export const jumperMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "play",
+					world : () => createWorld({
+						components : {
+							particles : createParticles,
+						},
+					}),
 					entities : [
 						// entity ordering being decides component order as well
 						createPlatforms,
@@ -46,8 +53,10 @@ export const jumperMachine = createMachine({
 					],
 					frameOrder : [
 						"render",
+						"particles",
 					],
 				}),
+
 				invokeInput,
 				invokeInputComponent(
 					"jumper-input",

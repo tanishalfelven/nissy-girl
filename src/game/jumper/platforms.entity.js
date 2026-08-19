@@ -45,16 +45,16 @@ export const createPlatforms = () => {
 	};
 
 	return createEntity({
-		id : "walls",
+		id : "platforms",
 		components : {
 			bounds : {
-				isAtStationaryBoundary(index, x, y, width) {
+				remainsGrounded(index, x, y, width) {
 					const platform = platforms[index];
 
 					return movesThroughPlatform(platform, x, y, x, y, width) !== false;
 				},
 
-				resolve(startX, startY, targetX, targetY, width) {
+				moveIntersectsPlatform(startX, startY, targetX, targetY, width) {
 					let finalX = targetX;
 					let finalY = targetY;
 					let needleIndex = -1;
