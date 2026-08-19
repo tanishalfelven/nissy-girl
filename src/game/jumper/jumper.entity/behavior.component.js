@@ -12,15 +12,21 @@ const CONSECUTIVE_JUMP = -0.05;
 const NUM_CONSECUTIVE_JUMPS = 20;
 
 const IMPACT_FALL = 13;
+const IMPACT_DUST_THRESHOLD = 38;
 const CALM_FRAMES = 14;
 const MAX_PANIC = 18;
 
 export const createBehavior = ({
 	world,
+
 	width,
+	height,
+
 	movement,
 	physics,
+
 	updateCanMove,
+
 	landSpeed,
 	airSpeed,
 }) => {
@@ -30,19 +36,49 @@ export const createBehavior = ({
 	let jumpIntent = false;
 	let consecutiveJumps = 0;
 	let isJumping = false;
+	let isHighJump = false;
 
 	let isImpact = false;
+	let impactFallTime = 0;
 	let fallTime = 0;
 
 	let crouchIntent = false;
 	let isCrouching = false;
 
 	const platforms = world.world.get("platforms");
+	const { particles } = world;
 
-	const normalMoveX = () => {
-		const targetX = movement.getX() + physics.getDeltaX();
+	const spawnDustTrail = (yOffset = height / 2, scale = 1) => {
+		particles.spawnDust(
+			movement.getX(),
+			movement.getY() - yOffset,
+			0,
+			0.15 * Math.random(),
+			scale,
+			scale,
+		);
+	};
 
-		movement.setX(targetX);
+	const spawnLateralDust = (yOffset = height / 4, scale = 1) => {
+		particles.spawnDust(
+			movement.getX() - width / 2,
+			movement.getY() - yOffset,
+			-0.1 * Math.random(),
+			0,
+			scale,
+			scale,
+		);
+
+		particles.spawnDust(
+			movement.getX() + width / 2,
+			movement.getY() - yOffset,
+			0.1 * Math.random(),
+			0,
+			scale,
+			scale,
+		);
+
+		spawnDustTrail(yOffset, scale);
 	};
 
 	const stillOnPlatform = () => {
@@ -69,7 +105,11 @@ export const createBehavior = ({
 
 		always : {
 			// no X collision exists yet so... we cheat
-			actions : normalMoveX,
+			actions : () => {
+				const targetX = movement.getX() + physics.getDeltaX();
+
+				movement.setX(targetX);
+			},
 		},
 
 		states : {
@@ -122,11 +162,15 @@ export const createBehavior = ({
 
 						entry : () => {
 							isImpact = true;
+
+							if(impactFallTime > IMPACT_DUST_THRESHOLD) {
+								spawnLateralDust(0, 0.65);
+							}
 						},
 
 						exit : () => {
 							isImpact = false;
-							fallTime = 0;
+							impactFallTime = 0;
 						},
 					},
 
@@ -149,7 +193,11 @@ export const createBehavior = ({
 									guard : () => jumpIntent && crouchIntent,
 									actions : [
 										raise({ type : "JUMP" }),
-										() => physics.addY(HIGH_JUMP),
+										() => {
+											physics.addY(HIGH_JUMP);
+											spawnLateralDust();
+											isHighJump = true;
+										},
 									// intentionally do not re-enable movement here
 									// it is always re-enabled at the end of rising frames
 									// this forces a stricter horizontal path
@@ -176,6 +224,10 @@ export const createBehavior = ({
 					isGrounded = false;
 					physics.enableGravity();
 					movement.setSpeed(airSpeed);
+				},
+
+				exit : () => {
+					fallTime = 0;
 				},
 
 				on : {
@@ -220,6 +272,7 @@ export const createBehavior = ({
 						},
 						exit : () => {
 							isJumping = false;
+							isHighJump = false;
 							consecutiveJumps = NUM_CONSECUTIVE_JUMPS;
 						},
 
@@ -229,8 +282,12 @@ export const createBehavior = ({
 									guard : () => jumpIntent && consecutiveJumps < NUM_CONSECUTIVE_JUMPS,
 									actions : [
 										() => {
-											physics.addY(CONSECUTIVE_JUMP),
+											physics.addY(CONSECUTIVE_JUMP);
 											consecutiveJumps++;
+
+											if(((consecutiveJumps % 6) === 0) && isHighJump) {
+												spawnDustTrail();
+											}
 										},
 										raise({ type : "PROCESS_VERT" }),
 									],
@@ -260,6 +317,9 @@ export const createBehavior = ({
 								{
 									guard : () => isGrounded && fallTime > IMPACT_FALL,
 									actions : [
+										() => {
+											impactFallTime = fallTime;
+										},
 										raise({ type : "IMPACT" }),
 										raise({ type : "PROCESS_VERT" }),
 									],

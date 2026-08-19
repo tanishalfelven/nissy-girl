@@ -57,8 +57,6 @@ const createContainerComponent = ({
 		isInBounds,
 
 		get(entityId) {
-			console.log(entityMap);
-
 			return entityMap.get(entityId);
 		},
 
