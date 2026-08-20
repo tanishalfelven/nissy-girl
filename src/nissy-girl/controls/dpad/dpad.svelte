@@ -25,7 +25,6 @@ import {
 } from "$game/shared/input.consts.js";
 
 const MAX_TILT = 3;
-const MAX_XLATE = 0.66;
 const DEADZONE = 0.15;
 const DIAGONAL_RATIO = 0.55;
 const RADIUS = 0.6;
