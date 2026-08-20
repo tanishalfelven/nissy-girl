@@ -1,9 +1,12 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 @value depth from "$nissy-girl/nissy-girl.mcss";
 
+@value xlate: calc(px1 * 0.6);
+@value halfxlate: calc(xlate * 0.5);
+
 .dpad {
-	--rotate-x: 0deg;
-	--rotate-y: 0deg;
+	--xlate: xlate;
+	--halfxlate: halfxlate;
 
 	composes: touchinteractive, animates from "$util/util.mcss";
 
@@ -28,17 +31,22 @@
 }
 
 .dpadface {
-	composes: face from "$util/util.mcss";
+	composes: face, animates from "$util/util.mcss";
+
+	transform-origin: center center 4px;
+
 	aspect-ratio: 1 / 1;
 	height: 80%;
+
 	background-image: url("./assets/dpad.png");
 }
 
 .dpadbackface {
-	composes: face from "$util/util.mcss";
+	composes: face, animates from "$util/util.mcss";
 
 	position: absolute;
 	inset: 0;
+	transform-origin: center center 4px;
 	transform: translateZ(-1px);
 
 	aspect-ratio: 33 / 32;
@@ -55,7 +63,7 @@
 	top: calc(3.2 * px1);
 	bottom: 0;
 	left: 0;
-	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-12 * px1));
+	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-13 * px1));
 
 	aspect-ratio: 5 / 32;
 	height: calc(30 * px1);
@@ -65,6 +73,6 @@
 	&[data-left="true"] {
 		right: 0;
 		left: auto;
-		transform: rotateY(90deg) translateX(50%) translateZ(calc(-12 * px1));
+		transform: rotateY(90deg) translateX(50%) translateZ(calc(-13 * px1));
 	}
 }

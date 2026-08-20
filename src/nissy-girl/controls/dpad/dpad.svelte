@@ -10,7 +10,6 @@ const DIRECTIONS = [
 ];
 </script>
 <script>
-import { roundHundredths } from "$util/math.js";
 import { controls } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
@@ -26,6 +25,7 @@ import {
 } from "$game/shared/input.consts.js";
 
 const MAX_TILT = 3;
+const MAX_XLATE = 0.66;
 const DEADZONE = 0.15;
 const DIAGONAL_RATIO = 0.55;
 const RADIUS = 0.6;
@@ -103,8 +103,11 @@ const handleInput = () => {
 	}
 };
 
-const xDeg = $derived(`${roundHundredths(dpadY * MAX_TILT)}deg`);
-const yDeg = $derived(`${roundHundredths(dpadX * MAX_TILT)}deg`);
+const xDeg = $derived(`${dpadY * MAX_TILT}deg`);
+const yDeg = $derived(`${dpadX * MAX_TILT}deg`);
+
+const xXlate = $derived(dpadX);
+const yXlate = $derived(-dpadY);
 
 $effect(() =>
 	input.subscribe(() => {
@@ -131,10 +134,28 @@ $effect(() =>
 		},
 	}}
 	bind:this={dpadElement}
-	style="transform: translateZ(var(--button-plane)) rotateX({xDeg}) rotateY({yDeg}) scale(0.98);"
+	style="transform:
+		translateZ(var(--button-plane))
+		rotateX({xDeg})
+		rotateY({yDeg})
+		scale(0.98);
+	"
 >
-	<div class={css.dpadface}></div>
-	<div class={css.dpadbackface}></div>
+	<div
+		class={css.dpadface}
+		style="transform:
+			translateX(calc({xXlate} * var(--xlate)))
+			translateY(calc({yXlate} * var(--xlate)));"
+	>
+	</div>
+	<div
+		class={css.dpadbackface}
+		style="transform:
+			translateX(calc({xXlate} * var(--halfxlate)))
+			translateY(calc({yXlate} * var(--halfxlate)))
+			translateZ(-1px);"
+	>
+	</div>
 
 	<div class={css.dpadcenterside}></div>
 	<div class={css.dpadcenterside} data-left="true"></div>
