@@ -101,15 +101,6 @@ export const gameloop = {
 							REMOVE_SCENE : {
 								target : "none",
 							},
-
-							// this might be bad?
-							ENTITY_MESSAGE : {
-								actions : [
-									({ context, event }) =>
-										context.scene.send(event.entityId, event.event),
-									raise({ type : "START" }),
-								],
-							},
 						},
 					},
 				},
@@ -148,10 +139,9 @@ export const gameloop = {
 						actions : [
 							({ context }) => {
 								context.loop.stop();
-								context.scene.destroy();
+								context.scene?.destroy?.();
 								screen.clear();
 							},
-							assign({ scene : false }),
 						],
 						target : ".paused",
 					},

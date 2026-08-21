@@ -10,6 +10,7 @@ import { withScene } from "$game/shared/scene-action.js";
 import { createPlatforms } from "./platforms.entity.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createParticles } from "./particles.component.js";
+import { createGeneration } from "./generation.entity/generation.entity.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -19,12 +20,28 @@ export const jumperMachine = createMachine({
 		stateLogger,
 	],
 
-	initial : "loading",
+	initial : "waitforloop",
 
 	states : {
-		loading : {
+		waitforloop : {
 			on : {
-				GAME_READY : "play",
+				GAME_READY : "load",
+			},
+		},
+
+		load : {
+			invoke : invokeScene({
+				id : "simulate",
+				entities : [
+					createGeneration,
+				],
+				simulateOrder : [
+					"capabilities",
+				],
+			}),
+
+			on : {
+				DONE : "play",
 			},
 		},
 

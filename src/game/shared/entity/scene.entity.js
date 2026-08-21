@@ -53,6 +53,7 @@ const lifecycleOrder = [
  * @param {(() => Entity)[]} options.entities child entities in canonical rendering canonical ordering
  * @param {string[]} options.simulateOrder
  * @param {string[]} options.frameOrder
+ * @param {() => void} options.notifyGame
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
@@ -61,9 +62,13 @@ export const createScene = ({
 	entities : entityFactories,
 	simulateOrder = [],
 	frameOrder = [],
+	notifyGame,
 }) => {
 	const world = worldFactory();
 	const entities = [ world ];
+
+	// give world entrypoint to send game events if needed
+	world.world.inject(notifyGame);
 
 	let isAlive = true;
 
@@ -158,7 +163,6 @@ export const createScene = ({
 			}
 		},
 
-		// stop is maybe not semantically making sense so far
 		stop() {
 			for(const stopFunc of stop) {
 				stopFunc();

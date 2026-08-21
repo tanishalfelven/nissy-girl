@@ -37,6 +37,8 @@ const createContainerComponent = ({
 
 	const isInBounds = (x, y) => x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
 
+	let notifyGame = false;
+
 	return ({
 		add(entity) {
 			entities.push(entity);
@@ -52,6 +54,16 @@ const createContainerComponent = ({
 
 		getBounds() {
 			return { width, height };
+		},
+
+		inject(newNotifyGame) {
+			notifyGame = newNotifyGame;
+		},
+
+		notifyGame : (data) => {
+			if(notifyGame) {
+				notifyGame(data);
+			}
 		},
 
 		isInBounds,

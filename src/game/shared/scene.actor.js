@@ -13,10 +13,10 @@ export const invokeScene = ({
 }) => ({
 	systemId : "scene",
 	id,
-	src : fromObservable(({ system }) => ({
+	input : ({ self }) => ({ notifyGame : self.send }),
+	src : fromObservable(({ system, input }) => ({
 		subscribe(observer) {
 			let cancelled = false;
-
 			const gameloop = system.get("gameloop");
 
 			const scene = createScene({
@@ -25,6 +25,7 @@ export const invokeScene = ({
 				entities,
 				simulateOrder,
 				frameOrder,
+				notifyGame : input.notifyGame,
 			});
 
 			observer.next(scene);
@@ -44,9 +45,9 @@ export const invokeScene = ({
 
 					if(isActorAlive(gameloop)) {
 						gameloop.send({ type : "REMOVE_SCENE" });
-					} else {
-						scene.destroy();
 					}
+
+					scene.destroy();
 				},
 			};
 		},
