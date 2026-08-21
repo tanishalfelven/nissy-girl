@@ -8,13 +8,14 @@ export const createPhysics = ({
 }) => {
 	const xVelocity = createVelocity({
 		decay : 0.995,
-		smoothing : 0.05,
+		smoothing : 0.12,
 		min : 0.01,
 	});
 
 	const yVelocity = createVelocity({
 		decay : 0.99,
 		smoothing : 0.01,
+		min : 0.00001,
 	});
 
 	let hasGravity = true;

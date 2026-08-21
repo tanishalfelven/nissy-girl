@@ -69,6 +69,14 @@ export const createMovement = ({
 			y = Math.round(y);
 		},
 
+		setPosition(newX, newY) {
+			x = newX;
+			y = newY;
+
+			lastX = x;
+			lastY = y;
+		},
+
 		setX(newX) {
 			x = newX;
 		},

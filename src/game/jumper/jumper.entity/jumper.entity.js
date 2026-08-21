@@ -22,6 +22,7 @@ export const createJumper = ({
 }) => {
 	const landSpeed = 0.9;
 	const airSpeed = 0.45;
+	const blastAirSpeed = 0.15;
 
 	const width = 6;
 	const height = 6;
@@ -44,6 +45,7 @@ export const createJumper = ({
 		height,
 		landSpeed,
 		airSpeed,
+		blastAirSpeed,
 	});
 
 	const input = createInput({

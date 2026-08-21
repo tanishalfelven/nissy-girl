@@ -6,8 +6,8 @@ import { stateLogger } from "$util/state-logger.actor.js";
 
 import { cubicInOut } from "svelte/easing";
 
-const HIGH_JUMP = -2.9;
-const INITIAL_JUMP = -1.7;
+const HIGH_JUMP = -2.6;
+const INITIAL_JUMP = -1.4;
 const CONSECUTIVE_JUMP = -0.05;
 const NUM_CONSECUTIVE_JUMPS = 20;
 
@@ -30,6 +30,7 @@ export const createBehavior = ({
 
 	landSpeed,
 	airSpeed,
+	blastAirSpeed,
 }) => {
 	let isGrounded = false;
 	let lastPlatformIndex = -1;
@@ -244,6 +245,7 @@ export const createBehavior = ({
 										raise({ type : "JUMP" }),
 										() => {
 											physics.addY(HIGH_JUMP);
+											movement.setSpeed(blastAirSpeed);
 											spawnLateralDust();
 											isHighJump = true;
 										},
@@ -267,7 +269,10 @@ export const createBehavior = ({
 				entry : () => {
 					isGrounded = false;
 					physics.enableGravity();
-					movement.setSpeed(airSpeed);
+
+					if(movement.getSpeed() === landSpeed) {
+						movement.setSpeed(airSpeed);
+					}
 				},
 
 				exit : () => {
@@ -280,25 +285,27 @@ export const createBehavior = ({
 
 					PROCESS_VERT : {
 						actions : () => {
-							const x = movement.getX();
+							const x = left(movement.getX());
 							const startY = movement.getLastY();
 							const targetY = movement.getY() + physics.stepY();
 
+							if(targetY === movement.getY()) {
+								return false;
+							}
+
 							const result = platforms.bounds.moveIntersectsPlatform(
-								left(x),
+								x,
 								startY,
-								left(x),
+								x,
 								targetY,
 								width,
 							);
 
-							if(targetY !== movement.getY()) {
-								movement.setY(result.y);
+							movement.setY(result.y);
 
-								if(targetY !== result.y) {
-									lastPlatformIndex = result.index;
-									isGrounded = true;
-								}
+							if(targetY !== result.y) {
+								lastPlatformIndex = result.index;
+								isGrounded = true;
 							}
 						},
 					},
