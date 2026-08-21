@@ -37,6 +37,7 @@ export const jumperMachine = createMachine({
 				],
 				simulateOrder : [
 					"capabilities",
+					"generator",
 				],
 			}),
 

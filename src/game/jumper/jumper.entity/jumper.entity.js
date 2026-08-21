@@ -21,7 +21,7 @@ export const createJumper = ({
 	world,
 }) => {
 	const landSpeed = 0.9;
-	const airSpeed = 0.45;
+	const airSpeed = 0.6;
 	const blastAirSpeed = 0.15;
 
 	const width = 6;

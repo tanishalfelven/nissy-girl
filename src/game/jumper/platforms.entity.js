@@ -6,6 +6,27 @@ import { inRange } from "$util/math.js";
 
 import { Graphics } from "pixi.js";
 
+const devPlatforms = [
+	{
+		x : 20,
+		y : 70,
+		width : 15,
+		height : 3,
+	},
+	{
+		x : 40,
+		y : 50,
+		width : 15,
+		height : 3,
+	},
+	{
+		x : 55,
+		y : 25,
+		width : 15,
+		height : 3,
+	},
+];
+
 export const createPlatforms = () => {
 	const platforms = [
 		{
@@ -14,24 +35,7 @@ export const createPlatforms = () => {
 			width : 100,
 			height : 3,
 		},
-		{
-			x : 20,
-			y : 70,
-			width : 15,
-			height : 3,
-		},
-		{
-			x : 40,
-			y : 50,
-			width : 15,
-			height : 3,
-		},
-		{
-			x : 55,
-			y : 25,
-			width : 15,
-			height : 3,
-		},
+		...devPlatforms,
 	];
 
 	const graphics = new Graphics();
