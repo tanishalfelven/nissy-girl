@@ -3,8 +3,8 @@ import { inRange } from "$util/math.js";
 export const wrapsRight = (x) => x < 0;
 export const wrapsLeft = (x, bounds) => x > bounds.width;
 
-export const isOutOfBounds = (platform, bounds) => {
-	return wrapsLeft(platform.x + platform.width, bounds) || wrapsRight(platform.x);
+export const isOutOfBounds = (x, width, bounds) => {
+	return wrapsLeft(x + width, bounds) || wrapsRight(x);
 };
 
 export const matchesX = (platformX, platformWidth, targetX, targetWidth) => {
@@ -16,7 +16,8 @@ export const fallsOnPlatform = (platformY, startY, targetY) => {
 };
 
 export const movesThroughPlatform = (platform, startX, startY, targetX, targetY, width, bounds) => {
-	const checkWrap = isOutOfBounds(platform, bounds);
+	const checkWrap = isOutOfBounds(platform.x, platform.width, bounds)
+		|| isOutOfBounds(targetX, width, bounds);
 	const wrapOffset = wrapsRight(platform.x) ? bounds.width : -bounds.width;
 
 	const isValidWrap = checkWrap && matchesX(platform.x + wrapOffset, platform.width, targetX, width);

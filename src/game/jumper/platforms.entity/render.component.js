@@ -59,7 +59,7 @@ export const createRender = ({
 					.rect(platform.x, platform.y, platform.width, platform.height)
 					.fill(getZoneColor(platform.zone));
 
-				if(isOutOfBounds(platform, bounds)) {
+				if(isOutOfBounds(platform.x, platform.width, bounds)) {
 					const wrapOffset = wrapsRight(platform.x) ? bounds.width : -bounds.width;
 
 					graphics
