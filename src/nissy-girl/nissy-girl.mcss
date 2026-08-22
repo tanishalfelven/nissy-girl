@@ -39,19 +39,19 @@
 
 	composes: face from "$util/util.mcss";
 
-	top: 3%;
-	left: 5.6%;
-	transform: translateZ(calc(depth / 2.09)) rotateY(var(--rotate));
+	top: calc(6 * px1);
+	left: calc(8 * px1);
+	transform: translateZ(calc(-1 * px1)) rotateY(var(--rotate));
 
-	aspect-ratio: 2 / 100;
-	height: 44.8%;
+	width: calc(2 * px1);
+	height: calc(103 * px1);
 
 	background-image: url("./assets/screen-bevel-vert.png");
 
 	&[data-left="true"] {
 		--rotate: -90deg;
 
-		right: 4.8%;
+		right: calc(7 * px1);
 		left: auto;
 	}
 }
@@ -59,14 +59,19 @@
 .screenbevelhorz {
 	composes: face from "$util/util.mcss";
 
-	top: 2.6%;
-	left: 50%;
-	transform: translateX(-50%) translateZ(calc(depth / 2.09)) rotateX(-90deg);
+	top: calc(6 * px1 - 1px);
+	left: calc(9 * px1);
+	transform: translateZ(calc(-1 * px1)) rotateX(-90deg);
 
-	aspect-ratio: 125 / 2;
-	width: 90%;
+	width: calc(126 * px1);
+	height: calc(2 * px1);
 
 	background-image: url("./assets/screen-bevel-horz.png");
+
+	&[data-bottom="true"] {
+		top: calc(106.14 * px1);
+		transform: translateZ(calc(-1 * px1)) rotateX(90deg);
+	}
 }
 
 .mushroom {

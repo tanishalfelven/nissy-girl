@@ -66,6 +66,11 @@ let nissyGirlWidth = $state(false);
 			<FaceControls />
 
 			<div class={css.speakerback}></div>
+
+			<div class={css.screenbevelhorz}></div>
+			<div class={css.screenbevelhorz} data-bottom="true"></div>
+			<div class={css.screenbevelvert}></div>
+			<div class={css.screenbevelvert} data-left="true"></div>
 		</div>
 
 		<Cartridge />
@@ -78,9 +83,6 @@ let nissyGirlWidth = $state(false);
 			<VolumeWheel />
 		</div>
 
-		<div class={css.screenbevelhorz}></div>
-		<div class={css.screenbevelvert}></div>
-		<div class={css.screenbevelvert} data-left="true"></div>
 		<div class={css.backupper}></div>
 		<div class={css.vent}></div>
 		<div class={css.backlower}></div>
