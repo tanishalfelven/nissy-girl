@@ -54,6 +54,7 @@ const lifecycleOrder = [
  * @param {string[]} options.simulateOrder
  * @param {string[]} options.frameOrder
  * @param {() => void} options.notifyGame
+ * @param options.context
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
@@ -63,12 +64,13 @@ export const createScene = ({
 	simulateOrder = [],
 	frameOrder = [],
 	notifyGame,
+	context = false,
 }) => {
 	const world = worldFactory();
 	const entities = [ world ];
 
 	// give world entrypoint to send game events if needed
-	world.world.inject(notifyGame);
+	world.world.inject(context, notifyGame);
 
 	let isAlive = true;
 

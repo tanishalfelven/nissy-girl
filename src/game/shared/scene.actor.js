@@ -13,7 +13,7 @@ export const invokeScene = ({
 }) => ({
 	systemId : "scene",
 	id,
-	input : ({ self }) => ({ notifyGame : self.send }),
+	input : ({ self, context }) => ({ notifyGame : self.send, context }),
 	src : fromObservable(({ system, input }) => ({
 		subscribe(observer) {
 			let cancelled = false;
@@ -25,6 +25,7 @@ export const invokeScene = ({
 				entities,
 				simulateOrder,
 				frameOrder,
+				context : input.context,
 				notifyGame : input.notifyGame,
 			});
 

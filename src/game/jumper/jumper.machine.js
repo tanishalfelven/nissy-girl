@@ -1,4 +1,4 @@
-import { createMachine } from "xstate";
+import { createMachine, assign } from "xstate";
 
 import { stateLogger } from "$util/state-logger.actor.js";
 
@@ -19,6 +19,18 @@ export const jumperMachine = createMachine({
 		gameloop,
 		stateLogger,
 	],
+
+	context : {
+		generation : false,
+	},
+
+	on : {
+		CACHE_GENERATION : {
+			actions : assign({
+				generation : ({ event }) => event.data,
+			}),
+		},
+	},
 
 	initial : "waitforloop",
 

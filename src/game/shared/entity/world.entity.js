@@ -38,6 +38,7 @@ const createContainerComponent = ({
 	const isInBounds = (x, y) => x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
 
 	let notifyGame = false;
+	let context = false;
 
 	return ({
 		add(entity) {
@@ -56,8 +57,13 @@ const createContainerComponent = ({
 			return { width, height };
 		},
 
-		inject(newNotifyGame) {
+		inject(newContext, newNotifyGame) {
 			notifyGame = newNotifyGame;
+			context = newContext;
+		},
+
+		getContext() {
+			return context;
 		},
 
 		notifyGame : (data) => {
@@ -90,6 +96,7 @@ const createContainerComponent = ({
  * @param {object} options.components
  * @param {number} [options.width]
  * @param {number} [options.height]
+ * @param {{}|false} options.context
  * @returns {Entity}
  */
 export const createWorld = ({

@@ -9,7 +9,7 @@ export const createGeneration = ({ world }) => {
 		id : "generation",
 		components : {
 			capabilities,
-			generator : createGenerator({ capabilities }),
+			generator : createGenerator({ world, capabilities }),
 		},
 	});
 };

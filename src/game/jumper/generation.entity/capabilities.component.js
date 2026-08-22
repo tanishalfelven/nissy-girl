@@ -160,8 +160,6 @@ export const createCapabilities = ({
 
 				data[id] = plan(id, sim, jumper);
 			}
-
-			world.world.notifyGame({ type : "DONE" });
 		},
 
 		get() {
