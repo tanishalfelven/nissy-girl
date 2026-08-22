@@ -116,13 +116,24 @@ const measureHop = ({ holdJump, holdCrouch, maxAttempts = 500 }) => (name, sim, 
 		iterations++;
 	} while(lastHopY > jumper.movement.getY() && iterations < maxAttempts);
 
+	const horzAtMax = jumper.movement.getLastX();
+	const vertMax = hopStartY - lastHopY;
+
+	do{
+		lastHopY = jumper.movement.getY();
+		tick(jumper);
+
+		iterations++;
+	} while(lastHopY < 0);
+
 	if(iterations >= maxAttempts) {
 		throw new Error(`Simulation ${name} exceeded max attempts (${maxAttempts}).`);
 	}
 
 	return {
-		horz : jumper.movement.getLastX(),
-		vert : hopStartY - lastHopY,
+		horz : horzAtMax,
+		maxHorz : jumper.movement.getLastX(),
+		vert : vertMax,
 	};
 };
 
