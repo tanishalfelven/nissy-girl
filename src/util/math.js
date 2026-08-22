@@ -3,9 +3,9 @@ import {
 	MAX_PROGRESS,
 } from "./progress.svelte.js";
 
-export const roundDigit = (n, digits) => Math.round(n * 10 ** digits) / 10 ** digits;
+export const roundDigit = (value, digits) => Math.round(value * 10 ** digits) / 10 ** digits;
 
-export const roundHundredths = (n) => roundDigit(n, 2);
+export const roundHundredths = (value) => roundDigit(value, 2);
 
 export const clamp = (value, min, max) => Math.min(max, Math.max(value, min));
 
@@ -15,11 +15,10 @@ export const wrap = (value, min, max) => {
 	return ((value - min) % range + range) % range + min;
 };
 
-export const inRange = (num, min, max) =>
-	min <= num && num <= max;
+export const inRange = (value, min, max) =>
+	min <= value && value <= max;
 
-export const range = (progress, start, end) =>
-	clamp((progress - start) / (end - start), 0, 1);
+export const lerp = (value, min, max) => min + (max - min) * value;
 
 export const crossedThreshold = (from, to, threshold) =>
 	(from <= threshold && to >= threshold)
@@ -35,29 +34,3 @@ export const crossedThresholdWrapInclusive = (from, to, threshold) => {
 	return (!crossedWrapPoint && crossedThreshold(from, to, threshold))
 		|| (isBoundaryWrap && crossedWrapPoint);
 };
-
-export const lerp = (min, max, t) => min + (max - min) * t;
-
-export const intersectRects = (a, b) => {
-	const x = Math.max(a.x, b.x);
-	const y = Math.max(a.y, b.y);
-	const right = Math.min(a.x + a.width, b.x + b.width);
-	const bottom = Math.min(a.y + a.height, b.y + b.height);
-
-	if(right <= x || bottom <= y) {
-		return false;
-	}
-
-	return { x, y, width : right - x, height : bottom - y };
-};
-
-export const unionRects = (a, b) => {
-	const x = Math.min(a.x, b.x);
-	const y = Math.min(a.y, b.y);
-	const right = Math.max(a.x + a.width, b.x + b.width);
-	const bottom = Math.max(a.y + a.height, b.y + b.height);
-
-	return { x, y, width : right - x, height : bottom - y };
-};
-
-export const isEmptyRect = (rect) => rect.width <= 0 || rect.height <= 0;

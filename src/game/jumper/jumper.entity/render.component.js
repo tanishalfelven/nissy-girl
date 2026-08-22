@@ -33,12 +33,12 @@ const createFace = ({ physics, behavior }) => {
 
 			const eyeX = dirX * 2 + 1.5;
 			const eyeY = 1 + (isImpact ? 2 : 0);
-			const whiteSize = lerp(1.8, 2.3, panic);
-			const pupilSize = lerp(0.9, 1, 1 - panic);
+			const whiteSize = lerp(panic, 1.8, 2.3);
+			const pupilSize = lerp(1 - panic, 0.9, 1);
 
 			const mouthX = 3;
 			const mouthY = 4;
-			const mouthSize = lerp(0, 1.7, panic);
+			const mouthSize = lerp(panic, 0, 1.7);
 
 			face
 				.ellipse(mouthX, mouthY, 3, mouthSize)

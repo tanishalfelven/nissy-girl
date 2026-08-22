@@ -37,9 +37,10 @@ export const getAnimateProgress = ({
 				roundDigit(
 					wrap(
 						lerp(
+							ease(percentIdx - firstIdx),
 							firstVal,
 							nextVal,
-							ease(percentIdx - firstIdx)),
+						),
 						0,
 						1,
 					),

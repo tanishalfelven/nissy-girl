@@ -14,7 +14,7 @@ const displayCartridgeRot = $derived(
 );
 
 const displayCartridgeX = $derived(
-	roundHundredths(lerp(-150, 50, cartridgeX.progress)),
+	roundHundredths(lerp(cartridgeX.progress, -150, 50)),
 );
 
 const displayCartridgeY = $derived(
