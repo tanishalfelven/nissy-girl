@@ -6,6 +6,7 @@ import { noopFalseFunction } from "$util/noop.js";
 const noopParticles = { spawnDust : noopFalseFunction };
 
 const SIMULATE_PLATFORM_INDEX = 0;
+const SIMULATE_SPAWN = { x : 0, y : 1 };
 
 const isOnPlatform = () => true;
 const isOffPlatform = () => false;
@@ -55,7 +56,7 @@ const tick = (jumper) => {
 };
 
 const reset = (sim, jumper) => {
-	jumper.movement.setPosition(0, 1);
+	jumper.movement.setPosition(SIMULATE_SPAWN.x, SIMULATE_SPAWN.y);
 	jumper.movement.setDir(0, 0);
 	jumper.physics.cancelX();
 	jumper.physics.cancelY();
@@ -143,6 +144,7 @@ export const createCapabilities = ({
 		id : "platforms",
 		components : {
 			bounds : {
+				getSpawn : () => SIMULATE_SPAWN,
 				remainsGrounded : sim.groundedResolve,
 				moveIntersectsPlatform : sim.intersectionResolve,
 			},

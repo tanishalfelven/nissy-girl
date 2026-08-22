@@ -6,37 +6,12 @@ import { inRange } from "$util/math.js";
 
 import { Graphics } from "pixi.js";
 
-const devPlatforms = [
-	{
-		x : 20,
-		y : 70,
-		width : 15,
-		height : 3,
-	},
-	{
-		x : 40,
-		y : 50,
-		width : 15,
-		height : 3,
-	},
-	{
-		x : 55,
-		y : 25,
-		width : 15,
-		height : 3,
-	},
-];
+export const createPlatforms = ({
+	world,
+}) => {
+	const { generation } = world.world.getContext();
 
-export const createPlatforms = () => {
-	const platforms = [
-		{
-			x : 10,
-			y : 90,
-			width : 100,
-			height : 3,
-		},
-		...devPlatforms,
-	];
+	const map = generation.maps.gen_test;
 
 	const graphics = new Graphics();
 
@@ -52,8 +27,14 @@ export const createPlatforms = () => {
 		id : "platforms",
 		components : {
 			bounds : {
+				getSpawn() {
+					const startPlatform = map[0];
+
+					return { x : startPlatform.x + 5, y : startPlatform.y };
+				},
+
 				remainsGrounded(index, x, y, width) {
-					const platform = platforms[index];
+					const platform = map[index];
 
 					return movesThroughPlatform(platform, x, y, x, y, width) !== false;
 				},
@@ -65,8 +46,8 @@ export const createPlatforms = () => {
 
 					// its falling platforms so we can make a bunch of assumptions
 					// we take the lowest value and return that
-					for(let index = 0; index < platforms.length; index++) {
-						const platform = platforms[index];
+					for(let index = 0; index < map.length; index++) {
+						const platform = map[index];
 
 						if(movesThroughPlatform(
 							platform,
@@ -88,7 +69,7 @@ export const createPlatforms = () => {
 				update() {
 					graphics.clear();
 
-					for(const platform of platforms) {
+					for(const platform of map) {
 						graphics
 							.rect(platform.x, platform.y, platform.width, platform.height)
 							.fill(COLOR_RED);

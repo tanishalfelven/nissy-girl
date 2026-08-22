@@ -1,7 +1,5 @@
 import { createEntity } from "$game/shared/entity/entity.js";
 
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
-
 import { createMovement } from "$game/shared/component/movement.component.js";
 import { createInput, resolveDirectionX } from "$game/shared/component/input.component.js";
 import { createBehavior } from "./behavior.component.js";
@@ -27,9 +25,13 @@ export const createJumper = ({
 	const width = 6;
 	const height = 6;
 
+	const platforms = world.world.get("platforms");
+
+	const spawn = platforms.bounds.getSpawn();
+
 	const movement = createMovement({
-		x : CANVAS_WIDTH / 2,
-		y : CANVAS_HEIGHT * 0.7,
+		x : spawn.x,
+		y : spawn.y,
 		speed : landSpeed,
 	});
 
