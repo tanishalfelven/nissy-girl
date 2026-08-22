@@ -1,11 +1,9 @@
+import { START_ZONE } from "../generation.entity/generation.consts.js";
 import { findIntersectionInZone, movesThroughPlatform } from "./logic.js";
-import {
-	START_ZONE,
-	ZONE_1,
-	ZONE_HEIGHT,
-} from "$game/jumper/generation.entity/generation.consts.js";
 
 export const createBounds = ({ map, bounds }) => {
+	const startPlatform = map[0];
+
 	const platformsByZone = map.reduce((accPlatformByZone, platform, index) => {
 		if(!accPlatformByZone.has(platform.zone)) {
 			accPlatformByZone.set(platform.zone, []);
@@ -19,14 +17,32 @@ export const createBounds = ({ map, bounds }) => {
 		return accPlatformByZone;
 	}, new Map());
 
-	const zone1StartY = platformsByZone.get(ZONE_1)[0].platform.y;
+	const zoneBounds = [];
+
+	for(const [ zone, platforms ] of platformsByZone) {
+		zoneBounds.push({
+			zone,
+			startY : platforms[0].platform.y,
+			endY : platforms[platforms.length - 1].platform.y,
+		});
+	}
 
 	const getZoneIndex = (y) => {
-		if(zone1StartY < y) {
+		if(y >= startPlatform.y) {
 			return START_ZONE;
 		}
 
-		return Math.floor(Math.abs(y - zone1StartY) / ZONE_HEIGHT) + ZONE_1;
+		for(const zone of zoneBounds) {
+			if(y > zone.startY) {
+				continue;
+			}
+
+			if(y >= zone.endY) {
+				return zone.zone;
+			}
+		}
+
+		return -1;
 	};
 
 	return {
@@ -57,7 +73,9 @@ export const createBounds = ({ map, bounds }) => {
 				bounds,
 			);
 
-			if(foundIntersection.index === -1) {
+			if(foundIntersection.index === -1
+				&& startZoneIndex !== -1
+				&& startZoneIndex !== targetZoneIndex) {
 				const secondIntersection = findIntersectionInZone(
 					startX,
 					startY,
