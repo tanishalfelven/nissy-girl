@@ -121,7 +121,7 @@ const measureHop = ({ holdJump, holdCrouch, maxAttempts = 500 }) => (name, sim, 
 	}
 
 	return {
-		horz : jumper.movement.getX(),
+		horz : jumper.movement.getLastX(),
 		vert : hopStartY - lastHopY,
 	};
 };

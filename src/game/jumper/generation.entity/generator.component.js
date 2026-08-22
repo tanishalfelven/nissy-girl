@@ -1,4 +1,4 @@
-import { randRange, lerp } from "$util/math.js";
+import { randRange, randBool, lerp } from "$util/math.js";
 
 import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
@@ -44,9 +44,18 @@ export const DEV_MAP = [
 	platform(55, 25),
 ];
 
-const generateShortPlatform = (j, fromPlatform, zone = ZONE_1) => {
-	const jumpHeight = randRange(j.hopMin.vert, j.hopMax.vert);
-	const maxX = lerp(jumpHeight, j.hopMin.horz, j.hopMax.horz);
+const generateShortPlatform = (j, fromPlatform, zone = ZONE_1, isHop = false) => {
+	const min = isHop ? j.hopMin : j.blastMin;
+	const max = isHop ? j.hopMax : j.blastMax;
+
+	console.log({ isHop, min, max, j });
+
+	const jumpHeight = randRange(min.vert, max.vert);
+	const maxX = lerp(
+		jumpHeight / (max.vert - min.vert),
+		min.horz,
+		max.horz,
+	);
 
 	const y = fromPlatform.y - jumpHeight;
 	const x = randRange(fromPlatform.x - maxX, fromPlatform.x + fromPlatform.width + maxX);
@@ -62,7 +71,12 @@ const generateZone = (capabilities, entryPlatform, zone = ZONE_1) => {
 	let highestPlatformY = entryPlatform.y;
 
 	do{
-		const nextPlaform = generateShortPlatform(capabilities, mostRecentPlatform, zone);
+		const nextPlaform = generateShortPlatform(
+			capabilities,
+			mostRecentPlatform,
+			zone,
+			randBool(),
+		);
 
 		platforms.push(nextPlaform);
 
