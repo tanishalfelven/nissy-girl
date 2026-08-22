@@ -6,21 +6,42 @@ import { inRange } from "$util/math.js";
 
 import { Graphics } from "pixi.js";
 
+export const wrapsRight = (x) => x < 0;
+export const wrapsLeft = (x, bounds) => x > bounds.width;
+
+const isOutOfBounds = (platform, bounds) => {
+	return wrapsLeft(platform.x + platform.width, bounds) || wrapsRight(platform.x);
+};
+
+const matchesX = (platformX, platformWidth, targetX, targetWidth) => {
+	return inRange(targetX, platformX - targetWidth, platformX + platformWidth);
+};
+
+const fallsOnPlatform = (platformY, startY, targetY) => {
+	return inRange(platformY, startY, targetY) && platformY <= targetY;
+};
+
 export const createPlatforms = ({
 	world,
 }) => {
 	const { generation } = world.world.getContext();
 
 	const map = generation.maps.gen_test;
+	const bounds = world.world.getBounds();
 
 	const graphics = new Graphics();
 
 	const movesThroughPlatform = (platform, startX, startY, targetX, targetY, width) => {
-		if(!inRange(targetX, platform.x - width, platform.x + platform.width)) {
+		const checkWrap = isOutOfBounds(platform, bounds);
+		const wrapOffset = wrapsRight(platform.x) ? bounds.width : -bounds.width;
+
+		const isValidWrap = checkWrap && matchesX(platform.x + wrapOffset, platform.width, targetX, width);
+
+		if(!matchesX(platform.x, platform.width, targetX, width) && !isValidWrap) {
 			return false;
 		}
 
-		return inRange(platform.y, startY, targetY) && platform.y <= targetY;
+		return fallsOnPlatform(platform.y, startY, targetY);
 	};
 
 	return createEntity({
@@ -73,6 +94,16 @@ export const createPlatforms = ({
 						graphics
 							.rect(platform.x, platform.y, platform.width, platform.height)
 							.fill(COLOR_RED);
+
+						if(platform.x < 0) {
+							graphics
+								.rect(platform.x + bounds.width, platform.y, platform.width, platform.height)
+								.fill(COLOR_RED);
+						} else if(platform.x + platform.width > bounds.width) {
+							graphics
+								.rect(platform.x - bounds.width, platform.y, platform.width, platform.height)
+								.fill(COLOR_RED);
+						}
 					}
 				},
 

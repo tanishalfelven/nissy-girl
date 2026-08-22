@@ -7,7 +7,7 @@ const randRange = (min, max) => lerp(Math.random(), min, max);
 const RUN_HEIGHT = 600;
 
 const forceInBounds = (platform, forceWidth = CANVAS_WIDTH) => {
-	if(platform.x < 0) {
+	if((platform.x + platform.width) < 0) {
 		platform.x = forceWidth - (Math.abs(platform.x) % forceWidth);
 	}
 
