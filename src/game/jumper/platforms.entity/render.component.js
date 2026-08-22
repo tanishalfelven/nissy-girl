@@ -44,8 +44,14 @@ export const createRender = ({
 }) => {
 	const graphics = new Graphics();
 
+	let once = false;
+
 	return {
 		update() {
+			if(once) {
+				return;
+			}
+
 			graphics.clear();
 
 			for(const platform of map) {
@@ -61,6 +67,8 @@ export const createRender = ({
 						.fill(getZoneColor(platform.zone));
 				}
 			}
+
+			once = true;
 		},
 
 		getRenderable() {

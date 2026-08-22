@@ -45,8 +45,10 @@ const createFace = ({ physics, behavior }) => {
 				.fill(COLOR_BLACK);
 
 			if(mouthSize > 0.5) {
+				const tongueY = mouthY + mouthSize * 0.6;
+
 				face
-					.ellipse(mouthX - dirX, mouthY + 1, 1, 0.5)
+					.ellipse(mouthX - dirX, tongueY, 2, 0.5)
 					.fill(COLOR_RED);
 			}
 
