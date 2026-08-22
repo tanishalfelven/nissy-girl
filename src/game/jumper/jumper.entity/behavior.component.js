@@ -2,8 +2,6 @@ import { createActor, createMachine, raise } from "xstate";
 
 import { clamp } from "$util/math.js";
 
-import { stateLogger } from "$util/state-logger.actor.js";
-
 import { cubicInOut } from "svelte/easing";
 
 const HIGH_JUMP = -2.6;
@@ -125,8 +123,6 @@ export const createBehavior = ({
 	// one note - `always` is a total footgun. Things need to update directly from tick.
 	const behavior = createActor(createMachine({
 		id : "jumper-behavior",
-
-		invoke : stateLogger,
 
 		initial : "none",
 

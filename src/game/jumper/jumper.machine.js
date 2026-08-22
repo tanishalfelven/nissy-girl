@@ -1,7 +1,5 @@
 import { createMachine, assign } from "xstate";
 
-import { stateLogger } from "$util/state-logger.actor.js";
-
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
 import { createJumper } from "./jumper.entity/jumper.entity.js";
@@ -12,6 +10,7 @@ import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createParticles } from "./particles.component.js";
 import { createGeneration } from "./generation.entity/generation.entity.js";
 import { createJumperCamera } from "./camera.component.js";
+import { stateLogger } from "$util/state-logger.actor.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
