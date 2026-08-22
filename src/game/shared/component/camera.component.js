@@ -1,4 +1,5 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
+import { coordsDiffer } from "./position.js";
 
 import {
 	CAMERA,
@@ -7,16 +8,18 @@ import {
 	CAMERA_STYLE_FIXED,
 } from "./camera.consts.js";
 
-import { coordsDiffer } from "./position.js";
-
 export const createCamera = ({
 	world,
 	width = CANVAS_WIDTH,
 	height = CANVAS_HEIGHT,
 	padding = DEFAULT_PADDING,
+	leftPadding = padding,
+	rightPadding = padding,
+	topPadding = padding,
+	bottomPadding = padding,
 	config : inputConfig = FIXED_1X_CAMERA,
 } = false) => {
-	const renderable = world.world.getRenderable();
+	const { scale, position } = world.world.getRenderable();
 	const subscribers = new Set();
 
 	let configChanged = false;
@@ -39,20 +42,22 @@ export const createCamera = ({
 		lastFollow = pos;
 		configChanged = false;
 
-		renderable.position.x = CAMERA[config.style].getX(
+		position.x = CAMERA[config.style].getX(
 			width,
 			config.zoom,
 			pos.x,
-			renderable.position.x,
-			padding,
+			position.x,
+			leftPadding,
+			rightPadding,
 		);
 
-		renderable.position.y = CAMERA[config.style].getY(
+		position.y = CAMERA[config.style].getY(
 			height,
 			config.zoom,
 			pos.y,
-			renderable.position.y,
-			padding,
+			position.y,
+			topPadding,
+			bottomPadding,
 		);
 	};
 
@@ -61,8 +66,8 @@ export const createCamera = ({
 			return;
 		}
 
-		renderable.scale.x = config.zoom;
-		renderable.scale.y = config.zoom;
+		scale.x = config.zoom;
+		scale.y = config.zoom;
 	};
 
 	return {
@@ -79,8 +84,8 @@ export const createCamera = ({
 
 		cameraToScreen(posX, posY) {
 			return {
-				x : posX * config.zoom + renderable.position.x,
-				y : posY * config.zoom + renderable.position.y,
+				x : posX * config.zoom + position.x,
+				y : posY * config.zoom + position.y,
 			};
 		},
 

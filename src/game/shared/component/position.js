@@ -1,3 +1,2 @@
-export const coordsDiffer = (a, b) => (a.x !== b.x || a.y !== b.y);
-
-// eventually position/movement is maybe a component? for now we wrap logic here...
+export const coordsDiffer = (a, b) => a.x !== b.x || a.y !== b.y;
+export const coordsMatch = (a, b) => a.x === b.x && a.y === b.y;

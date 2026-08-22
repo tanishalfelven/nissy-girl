@@ -4,7 +4,7 @@ import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
 const randRange = (min, max) => lerp(Math.random(), min, max);
 
-const RUN_HEIGHT = 120;
+const RUN_HEIGHT = 600;
 
 const forceInBounds = (platform, forceWidth = CANVAS_WIDTH) => {
 	if(platform.x < 0) {

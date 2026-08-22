@@ -4,6 +4,7 @@ import { createJumper } from "../jumper.entity/jumper.entity.js";
 import { noopFalseFunction } from "$util/noop.js";
 
 const noopParticles = { spawnDust : noopFalseFunction };
+const noopCamera = { follow : noopFalseFunction };
 
 const SIMULATE_PLATFORM_INDEX = 0;
 const SIMULATE_SPAWN = { x : 0, y : 1 };
@@ -136,6 +137,7 @@ export const createCapabilities = ({
 	world,
 }) => {
 	world.particles = noopParticles;
+	world.camera = noopCamera;
 
 	const sim = createSim();
 

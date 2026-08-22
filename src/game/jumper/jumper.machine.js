@@ -11,6 +11,7 @@ import { createPlatforms } from "./platforms.entity.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createParticles } from "./particles.component.js";
 import { createGeneration } from "./generation.entity/generation.entity.js";
+import { createJumperCamera } from "./camera.component.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -64,6 +65,7 @@ export const jumperMachine = createMachine({
 					id : "play",
 					world : () => createWorld({
 						components : {
+							camera : createJumperCamera,
 							particles : createParticles,
 						},
 					}),
@@ -82,6 +84,7 @@ export const jumperMachine = createMachine({
 						"behavior",
 					],
 					frameOrder : [
+						"camera",
 						"render",
 						"particles",
 					],

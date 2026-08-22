@@ -19,10 +19,10 @@ const panCamera = {
 };
 
 const panPaddedCamera = {
-	getX : (width, zoom, x, cameraX, padding) => {
+	getX : (width, zoom, x, cameraX, leftPadding, rightPadding) => {
 		const screenX = x + cameraX;
-		const minX = padding * zoom;
-		const maxX = width - padding * zoom;
+		const minX = leftPadding * zoom;
+		const maxX = width - rightPadding * zoom;
 
 		if(screenX < minX) {
 			return cameraX + minX - screenX;
@@ -32,10 +32,10 @@ const panPaddedCamera = {
 
 		return cameraX;
 	},
-	getY : (height, zoom, y, cameraY, padding) => {
+	getY : (height, zoom, y, cameraY, topPadding, bottomPadding) => {
 		const screenY = y + cameraY;
-		const minY = padding * zoom;
-		const maxY = height - padding * zoom;
+		const minY = topPadding * zoom;
+		const maxY = height - bottomPadding * zoom;
 
 		if(screenY < minY) {
 			return cameraY + minY - screenY;

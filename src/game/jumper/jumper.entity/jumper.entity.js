@@ -26,6 +26,7 @@ export const createJumper = ({
 	const height = 6;
 
 	const platforms = world.world.get("platforms");
+	const { camera } = world;
 
 	const spawn = platforms.bounds.getSpawn();
 
@@ -34,6 +35,8 @@ export const createJumper = ({
 		y : spawn.y,
 		speed : landSpeed,
 	});
+
+	camera.follow(movement);
 
 	const physics = createPhysics({
 		movement,
