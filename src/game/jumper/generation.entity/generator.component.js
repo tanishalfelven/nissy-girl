@@ -10,12 +10,20 @@ import {
 	MAX_PLATFORM_WIDTH,
 } from "./generation.consts.js";
 
-const MAX_HOP_ODDS = 0.85;
-
 const odds = (odds) => Math.random() <= odds;
 const getRand = (min, max) => roundDigit(randRange(min, max), 4);
 
-const isHop = (difficulty = 0) => odds(MAX_HOP_ODDS - difficulty * MAX_HOP_ODDS);
+const getHopOdds = (difficulty) => {
+	if(difficulty <= 0.7) {
+		// slowly decrease hop odds
+		return lerp(difficulty / 0.7, 1, 0.6);
+	}
+
+	// start raising hops again towards high difficulty
+	return lerp((difficulty - 0.7) / 0.3, 0.6, 0.5);
+};
+
+const isHop = (difficulty) => odds(getHopOdds(difficulty));
 
 const forceInBounds = (platform, forceWidth = CANVAS_WIDTH) => {
 	if((platform.x + platform.width) < 0) {
@@ -118,7 +126,7 @@ const generateZone = ({
 			capabilities,
 			fromPlatform : mostRecentPlatform,
 			zone,
-			isHop : isHop(),
+			isHop : isHop(difficulty),
 			difficulty,
 		});
 
