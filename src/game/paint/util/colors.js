@@ -1,51 +1,54 @@
-export const COLOR_WHITE = [ 255, 255, 255, 255 ];
-export const COLOR_BLACK = [ 0, 0, 0, 255 ];
+import {
+	RGBA_ARRAY_PORCELAIN_RED,
+	RGBA_ARRAY_SOUP_RED,
+	RGBA_ARRAY_FOREST_GREEN,
+	RGBA_ARRAY_BROWN_GREEN,
+	RGBA_ARRAY_LIGHT_SEA_GREEN,
+	RGBA_ARRAY_DEEP_SEA_GREEN,
+	RGBA_ARRAY_ICY_BLUE,
+	RGBA_ARRAY_DIRT_BLUE,
+	RGBA_ARRAY_SKY_BLUE,
+	RGBA_ARRAY_MYSTERY_BROWN_PURPLE,
+	RGBA_ARRAY_PINK,
+	RGBA_ARRAY_BURNT_BARBIE,
+	RGBA_ARRAY_HEX_PURPLE,
+	RGBA_ARRAY_DANK,
+	RGBA_ARRAY_YELLOW,
+	RGBA_ARRAY_ORANGE,
+	RGBA_ARRAY_BROWN,
+	RGBA_ARRAY_FOREST_BROWN,
+	RGBA_ARRAY_LIGHT_TAN,
+	RGBA_ARRAY_TANNER_TAN,
+	RGBA_ARRAY_COLOR_WHITE,
+	RGBA_ARRAY_COLOR_BLACK,
+} from "$nissy-girl/screens/render.consts.js";
 
-// A subset of Aseprites default palette from Richard "DawnBringer" Fhager 32 colors palette
-// https://www.aseprite.org/docs/default-palette/
-// I decided this set cus I like them, and gave them silly names
-export const PORCELAIN_RED = [ 217, 87, 99, 255 ];
-export const SOUP_RED = [ 172, 50, 50, 255 ];
-export const FOREST_GREEN = [ 75, 105, 47, 255 ];
-export const BROWN_GREEN = [ 82, 75, 36, 255 ];
-export const LIGHT_SEA_GREEN = [ 55, 148, 110, 255 ];
-export const DEEP_SEA_GREEN = [ 34, 93, 69, 255 ];
-export const ICY_BLUE = [ 99, 155, 255, 255 ];
-export const DIRT_BLUE = [ 48, 96, 130, 255 ];
-export const SKY_BLUE = [ 95, 205, 228, 255 ];
-export const MYSTERY_BROWN_PURPLE = [ 63, 63, 116, 255 ];
-export const PINK = [ 215, 123, 186, 255 ];
-export const BURNT_BARBIE = [ 69, 40, 60, 255 ];
-export const HEX_PURPLE = [ 118, 66, 138, 255 ];
-export const DANK = [ 34, 32, 52, 255 ];
-export const YELLOW = [ 251, 242, 54, 255 ];
-export const ORANGE = [ 223, 113, 38, 255 ];
-export const BROWN = [ 143, 86, 59, 255 ];
-export const FOREST_BROWN = [ 102, 57, 49, 255 ];
-export const LIGHT_TAN = [ 238, 195, 154, 255 ];
-export const TANNER_TAN = [ 217, 160, 102, 255 ];
+export {
+	RGBA_ARRAY_COLOR_BLACK as COLOR_BLACK,
+	RGBA_ARRAY_COLOR_WHITE as COLOR_WHITE,
+};
 
 export const COLORS = new Map([
-	[ "white", COLOR_WHITE ],
-	[ "black", COLOR_BLACK ],
-	[ "porcelainRed", PORCELAIN_RED ],
-	[ "soupRed", SOUP_RED ],
-	[ "forestGreen", FOREST_GREEN ],
-	[ "brownGreen", BROWN_GREEN ],
-	[ "lightSeaGreen", LIGHT_SEA_GREEN ],
-	[ "deepSeaGreen", DEEP_SEA_GREEN ],
-	[ "icyBlue", ICY_BLUE ],
-	[ "dirtBlue", DIRT_BLUE ],
-	[ "skyBlue", SKY_BLUE ],
-	[ "mysteryBrownPurple", MYSTERY_BROWN_PURPLE ],
-	[ "pink", PINK ],
-	[ "burntBarbie", BURNT_BARBIE ],
-	[ "hexPurple", HEX_PURPLE ],
-	[ "dank", DANK ],
-	[ "yellow", YELLOW ],
-	[ "orange", ORANGE ],
-	[ "brown", BROWN ],
-	[ "forestBrown", FOREST_BROWN ],
-	[ "lightTan", LIGHT_TAN ],
-	[ "tannerTan", TANNER_TAN ],
+	[ "white", RGBA_ARRAY_COLOR_WHITE ],
+	[ "black", RGBA_ARRAY_COLOR_BLACK ],
+	[ "porcelainRed", RGBA_ARRAY_PORCELAIN_RED ],
+	[ "soupRed", RGBA_ARRAY_SOUP_RED ],
+	[ "forestGreen", RGBA_ARRAY_FOREST_GREEN ],
+	[ "brownGreen", RGBA_ARRAY_BROWN_GREEN ],
+	[ "lightSeaGreen", RGBA_ARRAY_LIGHT_SEA_GREEN ],
+	[ "deepSeaGreen", RGBA_ARRAY_DEEP_SEA_GREEN ],
+	[ "icyBlue", RGBA_ARRAY_ICY_BLUE ],
+	[ "dirtBlue", RGBA_ARRAY_DIRT_BLUE ],
+	[ "skyBlue", RGBA_ARRAY_SKY_BLUE ],
+	[ "mysteryBrownPurple", RGBA_ARRAY_MYSTERY_BROWN_PURPLE ],
+	[ "pink", RGBA_ARRAY_PINK ],
+	[ "burntBarbie", RGBA_ARRAY_BURNT_BARBIE ],
+	[ "hexPurple", RGBA_ARRAY_HEX_PURPLE ],
+	[ "dank", RGBA_ARRAY_DANK ],
+	[ "yellow", RGBA_ARRAY_YELLOW ],
+	[ "orange", RGBA_ARRAY_ORANGE ],
+	[ "brown", RGBA_ARRAY_BROWN ],
+	[ "forestBrown", RGBA_ARRAY_FOREST_BROWN ],
+	[ "lightTan", RGBA_ARRAY_LIGHT_TAN ],
+	[ "tannerTan", RGBA_ARRAY_TANNER_TAN ],
 ]);

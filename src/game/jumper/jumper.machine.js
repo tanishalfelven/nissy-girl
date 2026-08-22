@@ -7,7 +7,7 @@ import { invokeScene } from "$game/shared/scene.actor.js";
 import { createJumper } from "./jumper.entity/jumper.entity.js";
 import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
-import { createPlatforms } from "./platforms.entity.js";
+import { createPlatforms } from "./platforms.entity/platforms.entity.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createParticles } from "./particles.component.js";
 import { createGeneration } from "./generation.entity/generation.entity.js";
