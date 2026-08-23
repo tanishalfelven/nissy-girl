@@ -21,7 +21,7 @@
 	--zoom: 1;
 	--button-plane: calc(3 * px1);
 
-	composes: animates from "$util/util.mcss";
+	composes: touchinteractive, animates from "$util/util.mcss";
 
 	position: absolute;
 	right: 0;

@@ -33,9 +33,12 @@
 	will-change: transform;
 }
 
+html,
+body,
 .touchinteractive {
 	touch-action: none;
 	user-select: none;
+	overscroll-behavior: none;
 
 	-webkit-tap-highlight-color: transparent;
 }
