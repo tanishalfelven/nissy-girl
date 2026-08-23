@@ -36,7 +36,6 @@ export const createParticles = ({
 		async load() {
 			textures.dust = await Assets.load({
 				src : DustPng,
-				data : { scaleMode : "nearest" },
 			});
 
 			particleContainer.texture = textures.dust;

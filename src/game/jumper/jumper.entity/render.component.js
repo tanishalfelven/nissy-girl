@@ -7,9 +7,7 @@ import { lerp } from "$util/math.js";
 const RIGHT_EYE_OFFSET = 3;
 
 const createFace = ({ physics, behavior }) => {
-	const face = new Graphics({
-		scaleMode : "nearest",
-	});
+	const face = new Graphics();
 
 	return {
 		getRenderable() {
@@ -186,7 +184,6 @@ export const createJumperRender = ({
 		async load() {
 			const jumperBg = await Assets.load({
 				src : JumperPng,
-				data : { scaleMode : "nearest" },
 			});
 
 			jumper.setBg(jumperBg);

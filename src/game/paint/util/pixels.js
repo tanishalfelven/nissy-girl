@@ -29,7 +29,6 @@ export class PixelCanvas {
 			width,
 			height,
 			format : "rgba8unorm",
-			scaleMode : "nearest",
 		});
 
 		this.texture = new Texture({
