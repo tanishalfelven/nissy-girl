@@ -37,7 +37,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 11, "h": 12 },
     "sourceSize": { "w": 11, "h": 12 },
-    "duration": 90
+    "duration": 120
    },
    "5": {
     "frame": { "x": 55, "y": 0, "w": 11, "h": 12 },
@@ -93,7 +93,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 11, "h": 12 },
     "sourceSize": { "w": 11, "h": 12 },
-    "duration": 100
+    "duration": 120
    },
    "12": {
     "frame": { "x": 132, "y": 0, "w": 11, "h": 12 },

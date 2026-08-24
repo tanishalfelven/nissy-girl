@@ -55,7 +55,7 @@ export const createCoins = ({
 
 								sprite.textures = coinAnims.explode;
 								sprite.loop = false;
-								sprite.animationSpeed = 1.15;
+								sprite.animationSpeed = 1.25;
 								sprite.play();
 							}
 						}
@@ -69,7 +69,7 @@ export const createCoins = ({
 					for(const coin of coins) {
 						const coinSprite = new AnimatedSprite({
 							textures : coinAnims.idle,
-							animationSpeed : 1,
+							animationSpeed : 1.05,
 							loop : true,
 							autoUpdate : false,
 
