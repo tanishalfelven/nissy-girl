@@ -24,7 +24,7 @@ export default() => {
 				for(const tag of sheetData.meta.frameTags) {
 					const animation = [];
 
-					for(let frameIndex = tag.from; frameIndex < tag.to; frameIndex++) {
+					for(let frameIndex = tag.from; frameIndex <= tag.to; frameIndex++) {
 						const frame = sheetData.frames[frameIndex];
 
 						frameData.push({ name : tag.name, texture : frameIndex, time : frame.duration });
