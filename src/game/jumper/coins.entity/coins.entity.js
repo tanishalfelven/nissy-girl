@@ -9,7 +9,7 @@ import { getAnimations } from "$game/util/animations.js";
 
 const COIN_WIDTH = 11;
 const COIN_HEIGHT = 12;
-const OUT_ALPHA_STEP = 0.25;
+const OUT_ALPHA_STEP = 0.15;
 
 const coin = (x, y) => ({ x, y, isAlive : true });
 
