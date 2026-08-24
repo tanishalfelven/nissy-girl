@@ -37,3 +37,12 @@ export const crossedThresholdWrapInclusive = (from, to, threshold) => {
 	return (!crossedWrapPoint && crossedThreshold(from, to, threshold))
 		|| (isBoundaryWrap && crossedWrapPoint);
 };
+
+export const isAABB = (ax, ay, aw, ah, bx, by, bw, bh) => {
+	return (
+		ax < bx + bw
+		&& ax + aw > bx
+		&& ay < by + bh
+		&& ay + ah > by
+	);
+};

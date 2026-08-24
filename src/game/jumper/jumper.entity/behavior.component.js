@@ -1,6 +1,6 @@
 import { createActor, createMachine, raise } from "xstate";
 
-import { clamp } from "$util/math.js";
+import { clamp, isAABB } from "$util/math.js";
 
 import { cubicInOut } from "svelte/easing";
 
@@ -59,11 +59,14 @@ export const createBehavior = ({
 	const leftWrapOffset = worldWidth - HALFW;
 	const rightWrapOffset = -worldWidth + HALFW;
 
+	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
+	const top = (y) => y - HALFH;
 	const right = (x) => x + HALFW;
 
 	const getWrapOffset = () => isWrappingLeft ? leftWrapOffset : rightWrapOffset;
 
+	// TODO this must be shared with the platform wrap logic, it covers it and also inverts all language (fml)
 	const _isWrappingLeft = (x) => (left(x) + leftWrapOffset) < worldWidth;
 	const wrapLeftDone = (x) => (right(x) + leftWrapOffset) < worldWidth;
 
@@ -401,10 +404,24 @@ export const createBehavior = ({
 		isCrouching : () => isCrouching,
 		isJumpFrame : () => isJumping && consecutiveJumps < 3,
 		getPanic : () => cubicInOut(clamp((fallTime - CALM_FRAMES) / MAX_PANIC, 0, 1)),
+		isMoving : () => physics.isMoving() || movement.isMoving(),
 
 		isWrapping : () => isWrapping,
 
 		getWrapOffset,
+
+		intersectsBounds : (bx, by, bwidth, bheight) => {
+			return isAABB(
+				left(movement.getX()),
+				top(movement.getY()),
+				width,
+				height,
+				bx,
+				by,
+				bwidth,
+				bheight,
+			);
+		},
 
 		setJumpIntent(newJumpIntent) {
 			jumpIntent = newJumpIntent;

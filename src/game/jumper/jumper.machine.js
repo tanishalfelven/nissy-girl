@@ -11,6 +11,7 @@ import { createParticles } from "./particles.component.js";
 import { createGeneration } from "./generation.entity/generation.entity.js";
 import { createJumperCamera } from "./camera.component.js";
 import { stateLogger } from "$util/state-logger.actor.js";
+import { createCoins } from "./coins.entity/coins.entity.js";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -71,6 +72,7 @@ export const jumperMachine = createMachine({
 					entities : [
 						// entity ordering being decides component order as well
 						createPlatforms,
+						createCoins,
 						// player needs to be after walls so when player attemps to collide we have good positions
 						createJumper,
 					],
@@ -81,6 +83,7 @@ export const jumperMachine = createMachine({
 						"movement",
 						"physics",
 						"behavior",
+						"coins",
 					],
 					frameOrder : [
 						"camera",

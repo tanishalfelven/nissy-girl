@@ -1,10 +1,20 @@
 import JumperPng from "./assets/jumper.png";
 import { Assets, Sprite, Container, Graphics } from "pixi.js";
-import { COLOR_BLACK, COLOR_WHITE, COLOR_RED } from "$nissy-girl/screens/render.consts.js";
+import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/screens/render.consts.js";
 
 import { lerp } from "$util/math.js";
 
 const RIGHT_EYE_OFFSET = 3;
+const BLUSH_DURATION = 100;
+
+// equal bound smooth step
+const smoothStep = (t, bound) =>
+	Math.min(
+		1,
+		Math.min(t / bound, (1 - t) / bound),
+	);
+
+const blushTime = (blush) => smoothStep((BLUSH_DURATION - blush) / BLUSH_DURATION, 0.15);
 
 const createFace = ({ physics, behavior }) => {
 	const face = new Graphics();
@@ -14,7 +24,7 @@ const createFace = ({ physics, behavior }) => {
 			return face;
 		},
 
-		update() {
+		update(dt, blushT) {
 			face.clear();
 
 			const vx = physics.getVelocityX();
@@ -55,6 +65,19 @@ const createFace = ({ physics, behavior }) => {
 
 			face.circle(eyeX + pupilX, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
 			face.circle(eyeX + RIGHT_EYE_OFFSET + pupilX, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
+
+			if(blushT > 0) {
+				const blushX = dirX;
+				const blushSize = 1.5;
+				const blushY = 3 + dirY * 0.5;
+
+				const alpha = blushT * 0.8;
+
+				face.scale.set(1, 1 - blushT * 0.4);
+
+				face.circle(blushX, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED, alpha });
+				face.circle(blushX + 6, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED, alpha });
+			}
 		},
 	};
 };
@@ -91,8 +114,6 @@ const createJumper = ({
 		);
 	};
 
-	updatePosition();
-
 	const updateEnabled = () => {
 		if(enabled) {
 			updatePosition();
@@ -101,10 +122,11 @@ const createJumper = ({
 		jumperRenderable.visible = enabled;
 	};
 
+	updatePosition();
 	updateEnabled();
 
 	return {
-		update(dt) {
+		update(dt, blushT) {
 			if(!enabled) {
 				return;
 			}
@@ -122,7 +144,7 @@ const createJumper = ({
 				jumperRenderable.scale.y = 1;
 			}
 
-			face.update(dt);
+			face.update(dt, blushT);
 		},
 
 		setOffset(newOffset) {
@@ -180,6 +202,8 @@ export const createJumperRender = ({
 		enabled : false,
 	});
 
+	let blushDuration = 0;
+
 	return {
 		async load() {
 			const jumperBg = await Assets.load({
@@ -198,6 +222,10 @@ export const createJumperRender = ({
 			);
 		},
 
+		reactToCollect() {
+			blushDuration = BLUSH_DURATION;
+		},
+
 		update(dt) {
 			if(behavior.isWrapping() && !mirror.getEnabled()) {
 				mirror.setOffset(behavior.getWrapOffset());
@@ -206,8 +234,16 @@ export const createJumperRender = ({
 				mirror.setEnabled(false);
 			}
 
-			jumper.update(dt);
-			mirror.update(dt);
+			const isBlushing = blushDuration > 0;
+
+			const blush = isBlushing ? blushTime(blushDuration) : 0;
+
+			jumper.update(dt, blush);
+			mirror.update(dt, blush);
+
+			if(isBlushing) {
+				blushDuration = Math.max(0, blushDuration - dt);
+			}
 		},
 
 		getRenderable() {

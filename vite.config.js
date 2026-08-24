@@ -8,6 +8,8 @@ import nested from "postcss-nested";
 import autoprefixer from "autoprefixer";
 import postcssCalc from "postcss-calc";
 
+import vitePluginAsepriteAnimation from "./build/vite-plugin-aseprite-animation.js";
+
 const alias = {
 	"$game" : path.resolve("src/game"),
 	"$nissy-girl" : path.resolve("src/nissy-girl"),
@@ -16,6 +18,7 @@ const alias = {
 
 export default defineConfig({
 	plugins : [
+		vitePluginAsepriteAnimation(),
 		mcss({
 			before : [
 				nested(),
