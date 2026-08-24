@@ -245,8 +245,6 @@ const generateCoins = ({
 		}
 	}
 
-	console.log(coinsPlaced, coinsPerZone);
-
 	return coins;
 };
 
@@ -294,7 +292,8 @@ const generateZone = ({
 			continue;
 		}
 
-		if(rerolls >= MAX_REROLLS) {
+		if(rerolls >= MAX_REROLLS && import.meta.env.DEV) {
+			/* eslint-disable-next-line no-console -- dev only */
 			console.log(`failed to make difficult: ${zone} ${platforms.length}`);
 		}
 
@@ -348,7 +347,7 @@ export const createGenerator = ({
 				gen_test : generate(capabilityData),
 			};
 
-			// just in case something neat happens and I need to save it.
+			/* eslint-disable-next-line no-console -- just in case ! */
 			window.dumpMaps = () => console.log(maps);
 
 			world.world.notifyGame({ type : "CACHE_GENERATION", data : { maps } });

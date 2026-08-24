@@ -96,7 +96,6 @@ const createContainerComponent = ({
  * @param {object} options.components
  * @param {number} [options.width]
  * @param {number} [options.height]
- * @param {{}|false} options.context
  * @returns {Entity}
  */
 export const createWorld = ({

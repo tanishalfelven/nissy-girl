@@ -54,7 +54,7 @@ const lifecycleOrder = [
  * @param {string[]} options.simulateOrder
  * @param {string[]} options.frameOrder
  * @param {() => void} options.notifyGame
- * @param options.context
+ * @param {object} options.context machine context from invoked parent
  * @returns {SceneEntity} scene entity
  */
 export const createScene = ({
