@@ -39,7 +39,7 @@ const getZoneColor = (zone) => {
 };
 
 export const createRender = ({
-	map,
+	platforms,
 	bounds,
 }) => {
 	const graphics = new Graphics();
@@ -54,7 +54,7 @@ export const createRender = ({
 
 			graphics.clear();
 
-			for(const platform of map) {
+			for(const platform of platforms) {
 				graphics
 					.rect(platform.x, platform.y, platform.width, platform.height)
 					.fill(getZoneColor(platform.zone));

@@ -7,22 +7,28 @@ import CoinData from "./assets/coin.json?aseprite-animation";
 
 import { getAnimations } from "$game/util/animations.js";
 
-const COIN_WIDTH = 11;
-const COIN_HEIGHT = 12;
+export const COIN_WIDTH = 11;
+export const COIN_HEIGHT = 12;
 const OUT_ALPHA_STEP = 0.15;
 
-const coin = (x, y) => ({ x, y, isAlive : true });
+const mapCoinToCoin = (coin) => {
+	coin.isAlive = true;
+
+	return coin;
+};
 
 export const createCoins = ({
 	world,
 }) => {
+	const { generation } = world.world.getContext();
+
+	const { coins : mapCoins } = generation.maps.gen_test;
+
 	let coinAnims;
 
 	const coinLayer = new Container();
 
-	const coins = [
-		coin(40, 70),
-	];
+	const coins = mapCoins.map(mapCoinToCoin);
 
 	const sprites = [];
 

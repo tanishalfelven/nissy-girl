@@ -1,10 +1,10 @@
 import { START_ZONE } from "../generation.entity/generation.consts.js";
 import { findIntersectionInZone, movesThroughPlatform } from "./logic.js";
 
-export const createBounds = ({ map, bounds }) => {
-	const startPlatform = map[0];
+export const createBounds = ({ platforms, bounds }) => {
+	const startPlatform = platforms[0];
 
-	const platformsByZone = map.reduce((accPlatformByZone, platform, index) => {
+	const platformsByZone = platforms.reduce((accPlatformByZone, platform, index) => {
 		if(!accPlatformByZone.has(platform.zone)) {
 			accPlatformByZone.set(platform.zone, []);
 		}
@@ -47,13 +47,13 @@ export const createBounds = ({ map, bounds }) => {
 
 	return {
 		getSpawn() {
-			const startPlatform = map[0];
+			const startPlatform = platforms[0];
 
 			return { x : startPlatform.x + 5, y : startPlatform.y };
 		},
 
 		remainsGrounded(index, x, y, width) {
-			const platform = map[index];
+			const platform = platforms[index];
 
 			return movesThroughPlatform(platform, x, y, x, y, width, bounds) !== false;
 		},

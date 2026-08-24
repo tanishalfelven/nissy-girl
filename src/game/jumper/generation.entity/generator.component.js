@@ -2,6 +2,8 @@ import { randRange, roundDigit, lerp, randBool } from "$util/math.js";
 
 import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
+import { COIN_HEIGHT, COIN_WIDTH } from "../coins.entity/coins.entity.js";
+
 import {
 	MIN_ZONE_HEIGHT,
 	MIN_ZONE_PLATFORMS_LOWER,
@@ -46,19 +48,19 @@ const getMinPlatforms = (difficulty) =>
 		MIN_ZONE_PLATFORMS_UPPER,
 	));
 
-const forceInBounds = (platform, forceWidth = CANVAS_WIDTH) => {
-	if((platform.x + platform.width) < 0) {
-		platform.x = forceWidth - (Math.abs(platform.x) % forceWidth);
+const forceInBounds = (placeable, leftBound = CANVAS_WIDTH, rightBound = 0) => {
+	if((placeable.x + placeable.width) < rightBound) {
+		placeable.x = leftBound - (Math.abs(placeable.x) % leftBound);
 	}
 
-	if(platform.x > forceWidth) {
-		platform.x = platform.x % forceWidth;
+	if(placeable.x > leftBound) {
+		placeable.x = placeable.x % leftBound;
 	}
 
-	return platform;
+	return placeable;
 };
 
-const platform = (x, y, width = MIN_PLATFORM_WIDTH, zone = ZONE_1) => {
+const platform = (x, y, width = MIN_PLATFORM_WIDTH, zone = ZONE_1, isDifficult = false) => {
 	if(x === undefined || y === undefined) {
 		throw new Error(`Failed to define platform ${x} ${y}`);
 	}
@@ -70,7 +72,15 @@ const platform = (x, y, width = MIN_PLATFORM_WIDTH, zone = ZONE_1) => {
 		width : Math.abs(width),
 		height : 2,
 		zone,
+		isDifficult,
 	});
+};
+
+const coinFromPlatform = (platform) => {
+	const x = Math.round(getRand(platform.x, platform.x + platform.width - COIN_WIDTH));
+	const y = platform.y - COIN_HEIGHT - 5;
+
+	return { x, y, width : COIN_WIDTH };
 };
 
 const START_PLATFORM = platform(10, 90, 100, START_ZONE);
@@ -186,6 +196,60 @@ const generatePlatform = ({
 	);
 };
 
+const generateCoins = ({
+	platforms,
+	coinCount = 20,
+}) => {
+	let coinsPlaced = 0;
+
+	const coins = [];
+
+	const coinsPerZone = {};
+
+	let COIN_PER_ZONE = 0;
+
+	for(let i = platforms.length - 1; i > 0; i--) {
+		if(coinsPlaced >= coinCount) {
+			break;
+		}
+
+		const platform = platforms[i];
+
+		// set max coin per zone once when we know the max number of zones
+		// reverse sort so first platform is max zone
+		if(COIN_PER_ZONE === 0) {
+			COIN_PER_ZONE = coinCount / (platform.zone - 1);
+		}
+
+		if(!coinsPerZone[platform.zone]) {
+			coinsPerZone[platform.zone] = 0;
+		}
+
+		if(!platform.isDifficult || coinsPerZone[platform.zone] >= COIN_PER_ZONE) {
+			continue;
+		}
+
+		const hardPlatformCoinOdds = odds(0.35);
+
+		if(hardPlatformCoinOdds) {
+			coinsPerZone[platform.zone]++;
+			coinsPlaced++;
+
+			coins.push(
+				forceInBounds(
+					coinFromPlatform(platform),
+					CANVAS_WIDTH - COIN_WIDTH,
+					COIN_WIDTH,
+				),
+			);
+		}
+	}
+
+	console.log(coinsPlaced, coinsPerZone);
+
+	return coins;
+};
+
 const MAX_REROLLS = 5;
 
 const generateZone = ({
@@ -234,6 +298,8 @@ const generateZone = ({
 			console.log(`failed to make difficult: ${zone} ${platforms.length}`);
 		}
 
+		candidate.isDifficult = isHardJump;
+
 		platforms.push(candidate);
 
 		rerolls = 0;
@@ -263,7 +329,9 @@ const generate = (capabilities, startPlatform = START_PLATFORM) => {
 		);
 	}
 
-	return platforms;
+	const coins = generateCoins({ platforms });
+
+	return { platforms, coins };
 };
 
 export const createGenerator = ({
