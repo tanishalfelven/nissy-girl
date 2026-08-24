@@ -95,7 +95,7 @@ export const createParticles = ({
 				particle : dust,
 				speed : (Math.PI / 20) * getRandomDirection(),
 				scale : -0.03,
-				alpha : -0.05,
+				alpha : -0.029,
 				dirX,
 				dirY,
 			});
