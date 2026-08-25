@@ -8,8 +8,8 @@
 	composes: touchinteractive, face from "$util/util.mcss";
 
 	position: absolute;
-	bottom: calc(50 * px1);
-	left: calc(11 * px1);
+	bottom: calc(48 * px1);
+	left: calc(10 * px1);
 	transform-style: preserve-3d;
 
 	display: flex;
@@ -17,12 +17,12 @@
 	align-items: center;
 	justify-content: center;
 
-	width: calc(47 * px1);
-	height: calc(47 * px1);
+	width: calc(51 * px1);
+	height: calc(51 * px1);
 	border-radius: 50%;
 
 	background-image: url("./assets/dpad-housing.png");
-	background-size: calc(45 * px1) calc(45 * px1);
+	background-size: calc(49 * px1) calc(49 * px1);
 }
 
 .dpad {
@@ -52,7 +52,6 @@
 
 	width: calc(30 * px1);
 	height: calc(29.5 * px1);
-	margin-bottom: px1;
 
 	background-image: url("./assets/dpad.png");
 }
