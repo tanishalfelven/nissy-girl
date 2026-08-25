@@ -4,15 +4,33 @@
 @value xlate: calc(px1 * 0.6);
 @value halfxlate: calc(xlate * 0.5);
 
+.housing {
+	composes: touchinteractive, face from "$util/util.mcss";
+
+	position: absolute;
+	bottom: calc(50 * px1);
+	left: calc(11 * px1);
+	transform-style: preserve-3d;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	width: calc(47 * px1);
+	height: calc(47 * px1);
+	border-radius: 50%;
+
+	background-image: url("./assets/dpad-housing.png");
+	background-size: calc(45 * px1) calc(45 * px1);
+}
+
 .dpad {
 	--xlate: xlate;
 	--halfxlate: halfxlate;
 
-	composes: touchinteractive, animates from "$util/util.mcss";
+	composes: animates from "$util/util.mcss";
 
-	position: absolute;
-	bottom: calc(57.5 * px1);
-	left: calc(6 * px1);
 	transform-origin: center center 4px;
 	transform-style: preserve-3d;
 	transform: translateZ(var(--button-plane));
@@ -22,12 +40,9 @@
 	align-items: center;
 	justify-content: center;
 
-	box-sizing: content-box;
-
-	/* aspect ratio: 31 / 30 (safari doesnt like aspect ratio here so precalc it..) */
-	width: calc(34.13 * px1);
-	height: calc(32 * px1);
-	padding: calc(2 * px1);
+	width: calc(36 * px1);
+	height: calc(36 * px1);
+	border-radius: 50%;
 }
 
 .dpadface {
@@ -35,8 +50,9 @@
 
 	transform-origin: center center 4px;
 
-	aspect-ratio: 1 / 1;
-	height: 80%;
+	width: calc(30 * px1);
+	height: calc(29.5 * px1);
+	margin-bottom: px1;
 
 	background-image: url("./assets/dpad.png");
 }
@@ -66,7 +82,7 @@
 	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-13 * px1));
 
 	aspect-ratio: 5 / 32;
-	height: calc(30 * px1);
+	height: calc(29.5 * px1);
 
 	background-image: url("./assets/dpad-side.png");
 
