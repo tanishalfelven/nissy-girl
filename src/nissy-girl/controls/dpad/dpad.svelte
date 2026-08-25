@@ -132,9 +132,9 @@ $effect(() =>
 			handleInput();
 		},
 	}}
-	bind:this={dpadElement}
 >
 	<div
+		bind:this={dpadElement}
 		class={css.dpad}
 		style="transform:
 			translateZ(var(--button-plane))
