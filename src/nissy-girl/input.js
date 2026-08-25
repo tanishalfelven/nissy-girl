@@ -25,6 +25,8 @@ const state = {
 	[BUTTON_SELECT] : false,
 };
 
+const allInputs = Object.keys(state);
+
 const subs = subscribers();
 
 const startKeyListeners = (fire) => {
@@ -51,9 +53,19 @@ const startKeyListeners = (fire) => {
 	subs.add("contextmenu", domListenerSub(window, "contextmenu", (e) => {
 		e.preventDefault();
 	}));
-	subs.add("blur", domListenerSub(window, "blur", () => {
-		for(const input of Object.keys(state)) {
-			fire({ type : input, state : RELEASED });
+
+	const releaseAll = () => {
+		for(const input of allInputs) {
+			if(state[input]) {
+				fire({ type : input, state : RELEASED });
+			}
+		}
+	};
+
+	subs.add("blur", domListenerSub(window, "blur", releaseAll));
+	subs.add("visibilitychange", domListenerSub(document, "visibilitychange", () => {
+		if(document.hidden) {
+			releaseAll();
 		}
 	}));
 

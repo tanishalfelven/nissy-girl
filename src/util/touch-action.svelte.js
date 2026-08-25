@@ -124,25 +124,30 @@ export const controls = (node, {
 	let canTrigger = $state(true);
 	let activePointerId = $state(false);
 
-	const handleEnd = (e) => {
+	const endInput = (e) => {
 		if(activePointerId !== e.pointerId) {
 			return;
 		}
 
 		e.stopPropagation();
 		e.preventDefault();
-		node.releasePointerCapture(e.pointerId);
 
 		activePointerId = false;
-
 		canTrigger = false;
 
-		// A small bounded timeout for trigger end - this solves drag off triggering controls
 		requestAnimationFrame(() => {
 			canTrigger = true;
 		});
 
 		end(e);
+	};
+
+	const handleEnd = (e) => {
+		endInput(e);
+
+		if(node.hasPointerCapture(e.pointerId)) {
+			node.releasePointerCapture(e.pointerId);
+		}
 	};
 
 	const handleMove = rafThrottle((e) => {
@@ -182,6 +187,7 @@ export const controls = (node, {
 		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
 		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
 		sub.add("pointerleave", domListenerSub(node, "pointerleave", handleEnd));
+		sub.add("lostpointercapture", domListenerSub(node, "lostpointercapture", endInput));
 
 		return () => {
 			sub.removeAll();
