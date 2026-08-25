@@ -2,6 +2,8 @@ import { rafThrottle } from "./time.js";
 
 import { subscribers, domListenerSub } from "./listeners.js";
 
+import { noopFalseFunction } from "./noop.js";
+
 /**
  * Svelte action for touch delta controls
  * @param {HTMLElement} node svelte action node
@@ -194,3 +196,5 @@ export const controls = (node, {
 		};
 	});
 };
+
+export const deadzone = (node) => controls(node, { fire : noopFalseFunction, end : noopFalseFunction });

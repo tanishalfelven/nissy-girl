@@ -10,7 +10,7 @@ const DIRECTIONS = [
 ];
 </script>
 <script>
-import { controls } from "$util/touch-action.svelte.js";
+import { controls, deadzone } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
 import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
@@ -117,49 +117,54 @@ $effect(() =>
 </script>
 
 <div
-	class={css.housing}
-	use:controls={{
-		fire : (e) => {
-			storeDpadState(e);
-			handleInput();
-		},
-		end : () => {
-			pointerX = 0;
-			pointerY = 0;
-			originX = 0;
-			originY = 0;
-
-			handleInput();
-		},
-	}}
+	class={css.deadzone}
+	use:deadzone
 >
 	<div
-		bind:this={dpadElement}
-		class={css.dpad}
-		style="transform:
-			translateZ(var(--button-plane))
-			rotateX({xDeg})
-			rotateY({yDeg})
-			scale(0.98);
-		"
+		class={css.housing}
+		use:controls={{
+			fire : (e) => {
+				storeDpadState(e);
+				handleInput();
+			},
+			end : () => {
+				pointerX = 0;
+				pointerY = 0;
+				originX = 0;
+				originY = 0;
+
+				handleInput();
+			},
+		}}
 	>
 		<div
-			class={css.dpadface}
+			bind:this={dpadElement}
+			class={css.dpad}
 			style="transform:
-				translateX(calc({xXlate} * var(--xlate)))
-				translateY(calc({yXlate} * var(--xlate)));"
+				translateZ(var(--button-plane))
+				rotateX({xDeg})
+				rotateY({yDeg})
+				scale(0.98);
+			"
 		>
-		</div>
-		<div
-			class={css.dpadbackface}
-			style="transform:
-				translateX(calc({xXlate} * var(--halfxlate)))
-				translateY(calc({yXlate} * var(--halfxlate)))
-				translateZ(-1px);"
-		>
-		</div>
+			<div
+				class={css.dpadface}
+				style="transform:
+					translateX(calc({xXlate} * var(--xlate)))
+					translateY(calc({yXlate} * var(--xlate)));"
+			>
+			</div>
+			<div
+				class={css.dpadbackface}
+				style="transform:
+					translateX(calc({xXlate} * var(--halfxlate)))
+					translateY(calc({yXlate} * var(--halfxlate)))
+					translateZ(-1px);"
+			>
+			</div>
 
-		<div class={css.dpadcenterside}></div>
-		<div class={css.dpadcenterside} data-left="true"></div>
+			<div class={css.dpadcenterside}></div>
+			<div class={css.dpadcenterside} data-left="true"></div>
+		</div>
 	</div>
 </div>

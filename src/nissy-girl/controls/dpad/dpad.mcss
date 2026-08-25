@@ -4,12 +4,25 @@
 @value xlate: calc(px1 * 0.6);
 @value halfxlate: calc(xlate * 0.5);
 
-.housing {
-	composes: touchinteractive, face from "$util/util.mcss";
+.deadzone {
+	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
-	bottom: calc(48 * px1);
-	left: calc(10 * px1);
+	bottom: calc(41 * px1);
+	left: calc(3 * px1);
+	transform-style: preserve-3d;
+
+	width: calc(66 * px1);
+	height: calc(66 * px1);
+	margin: auto;
+	border-radius: 50%;
+}
+
+.housing {
+	composes: touchinteractive from "$util/util.mcss";
+
+	position: absolute;
+	inset: 0;
 	transform-style: preserve-3d;
 
 	display: flex;
@@ -19,10 +32,25 @@
 
 	width: calc(51 * px1);
 	height: calc(51 * px1);
+	margin: auto;
 	border-radius: 50%;
 
-	background-image: url("./assets/dpad-housing.png");
-	background-size: calc(49 * px1) calc(49 * px1);
+	&::after {
+		pointer-events: none;
+		content: " ";
+
+		position: absolute;
+		inset: 0;
+
+		width: calc(49 * px1);
+		height: calc(49 * px1);
+		margin: auto;
+
+		background-image: url("./assets/dpad-housing.png");
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
+		background-size: calc(49 * px1) calc(49 * px1);
+	}
 }
 
 .dpad {
@@ -30,6 +58,8 @@
 	--halfxlate: halfxlate;
 
 	composes: animates from "$util/util.mcss";
+
+	pointer-events: none;
 
 	transform-origin: center center 4px;
 	transform-style: preserve-3d;
@@ -42,7 +72,6 @@
 
 	width: calc(36 * px1);
 	height: calc(36 * px1);
-	border-radius: 50%;
 }
 
 .dpadface {
