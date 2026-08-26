@@ -151,6 +151,7 @@ export const paintMachine = createMachine({
 
 					on : {
 						[BUTTON_B] : {
+							guard : inputTriggered,
 							actions : raise({ type : "BACK_TO_DRAWING" }),
 						},
 
