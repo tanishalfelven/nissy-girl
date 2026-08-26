@@ -56,6 +56,7 @@ export const invokeInput = {
 		});
 
 		return () => {
+			input.releaseAll();
 			removeInput();
 
 			if(isActorAlive(gameloop)) {

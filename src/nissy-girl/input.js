@@ -29,49 +29,6 @@ const allInputs = Object.keys(state);
 
 const subs = subscribers();
 
-const startKeyListeners = (fire) => {
-	if(subs.has("keydown") || subs.has("keyup")) {
-		return;
-	}
-
-	const handleKeyPress = (state) => (event) => {
-		if(event.repeat) {
-			return;
-		}
-
-		const hasInput = KEYBOARD_TO_INPUT.get(event.code) || KEYBOARD_TO_INPUT.get(event.key);
-
-		if(hasInput) {
-			event.preventDefault();
-
-			fire({ type : hasInput, state });
-		}
-	};
-
-	subs.add("keydown", domListenerSub(window, "keydown", handleKeyPress(TRIGGERED)));
-	subs.add("keyup", domListenerSub(window, "keyup", handleKeyPress(RELEASED)));
-	subs.add("contextmenu", domListenerSub(window, "contextmenu", (e) => {
-		e.preventDefault();
-	}));
-
-	const releaseAll = () => {
-		for(const input of allInputs) {
-			if(state[input]) {
-				fire({ type : input, state : RELEASED });
-			}
-		}
-	};
-
-	subs.add("blur", domListenerSub(window, "blur", releaseAll));
-	subs.add("visibilitychange", domListenerSub(document, "visibilitychange", () => {
-		if(document.hidden) {
-			releaseAll();
-		}
-	}));
-
-	return () => subs.removeAll();
-};
-
 export const input = {
 	subscribers : new Set(),
 
@@ -113,9 +70,52 @@ export const input = {
 		this._notify(event);
 	},
 
+	releaseAll() {
+		for(const input of allInputs) {
+			if(state[input]) {
+				this.fire({ type : input, state : RELEASED });
+			}
+		}
+	},
+
 	get state() {
 		return state;
 	},
 };
 
-startKeyListeners((event) => input.fire(event));
+const startKeyListeners = () => {
+	if(subs.has("keydown") || subs.has("keyup")) {
+		return;
+	}
+
+	const handleKeyPress = (state) => (event) => {
+		if(event.repeat) {
+			return;
+		}
+
+		const hasInput = KEYBOARD_TO_INPUT.get(event.code) || KEYBOARD_TO_INPUT.get(event.key);
+
+		if(hasInput) {
+			event.preventDefault();
+
+			input.fire({ type : hasInput, state });
+		}
+	};
+
+	subs.add("keydown", domListenerSub(window, "keydown", handleKeyPress(TRIGGERED)));
+	subs.add("keyup", domListenerSub(window, "keyup", handleKeyPress(RELEASED)));
+	subs.add("contextmenu", domListenerSub(window, "contextmenu", (e) => {
+		e.preventDefault();
+	}));
+
+	subs.add("blur", domListenerSub(window, "blur", () => input.releaseAll()));
+	subs.add("visibilitychange", domListenerSub(document, "visibilitychange", () => {
+		if(document.hidden) {
+			input.releaseAll();
+		}
+	}));
+
+	return () => subs.removeAll();
+};
+
+startKeyListeners();
