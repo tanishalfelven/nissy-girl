@@ -7,7 +7,7 @@ import css from "./menu.mcss";
 	<div class={css.jumper}></div>
 	<div class={css.titlecard}></div>
 
-	<div class={css.start}>
+	<div class={css.start} data-selected="true">
 		START
 	</div>
 </div>
