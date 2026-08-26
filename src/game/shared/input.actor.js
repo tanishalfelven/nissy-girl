@@ -77,14 +77,16 @@ export const invokeInputComponent = (id, func) => ({
 			throw new Error("[invokeComponentInputListener] sent invalid component");
 		}
 
-		const input = system.get("input");
+		const inputActor = system.get("input");
 
-		input.send({ type : "SEND_COMPONENT_INPUT", component });
+		inputActor.send({ type : "SEND_COMPONENT_INPUT", component });
 
 		return () => {
-			if(isActorAlive(input)) {
-				input.send({ type : "REMOVE_COMPONENT_INPUT", component });
+			if(isActorAlive(inputActor)) {
+				inputActor.send({ type : "REMOVE_COMPONENT_INPUT", component });
 			}
+
+			input.releaseAll();
 		};
 	}),
 });
