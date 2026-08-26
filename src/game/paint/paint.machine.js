@@ -24,6 +24,8 @@ import {
 import { createArtboard } from "./artboard.entity.js";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
+import { inputTriggered } from "$game/util/input-guards.js";
+
 export const paintMachine = createMachine({
 	id : "paint",
 
@@ -103,16 +105,13 @@ export const paintMachine = createMachine({
 
 					on : {
 						[BUTTON_START] : {
-							guard : ({ event }) => event.state === TRIGGERED,
+							guard : inputTriggered,
 							target : "tool selection",
 						},
 
 						[BUTTON_SELECT] : {
-							actions : sceneAction(({ event }, { world }) => {
-								if(event.state === TRIGGERED) {
-									world.camera.stepZoom();
-								}
-							}),
+							guard : inputTriggered,
+							actions : sceneAction((_, { world }) => world.camera.stepZoom()),
 						},
 
 						[BUTTON_A] : {
@@ -128,14 +127,13 @@ export const paintMachine = createMachine({
 						},
 
 						[BUTTON_B] : {
-							actions : sceneAction(({ event }, { world }) => {
+							guard : inputTriggered,
+							actions : sceneAction((_, { world }) => {
 								const artboard = world.world.get("artboard");
 
 								const pixels = artboard.artboard.getContext();
 
-								if(event.state === TRIGGERED) {
-									pixels.undo();
-								}
+								pixels.undo();
 							}),
 						},
 					},
@@ -177,12 +175,12 @@ export const paintMachine = createMachine({
 
 							on : {
 								[BUTTON_A] : {
-									guard : ({ event }) => event.state === TRIGGERED,
+									guard : inputTriggered,
 									actions : raise({ type : "BACK_TO_DRAWING" }),
 								},
 
 								[BUTTON_START] : {
-									guard : ({ event }) => event.state === TRIGGERED,
+									guard : inputTriggered,
 									target : "tools",
 								},
 							},
@@ -203,7 +201,7 @@ export const paintMachine = createMachine({
 
 							on : {
 								[BUTTON_A] : {
-									guard : ({ event }) => event.state === TRIGGERED,
+									guard : inputTriggered,
 									actions : [
 										sceneAction((_, { world }) => {
 											const ui = world.world.get("ui");
@@ -215,7 +213,7 @@ export const paintMachine = createMachine({
 								},
 
 								[BUTTON_START] : {
-									guard : ({ event }) => event.state === TRIGGERED,
+									guard : inputTriggered,
 									actions : raise({ type : "BACK_TO_DRAWING" }),
 								},
 							},
