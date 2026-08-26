@@ -25,6 +25,10 @@ const state = {
 	[BUTTON_SELECT] : false,
 };
 
+const isTriggered = (event) => state[event.type] && event.state === TRIGGERED;
+const isReleased = (event) => !state[event.type] && event.state === RELEASED;
+const isEventValid = (event) => isTriggered(event) || isReleased(event);
+
 const allInputs = Object.keys(state);
 
 const subs = subscribers();
@@ -34,6 +38,10 @@ export const input = {
 
 	_notify(event) {
 		for(const subscriber of this.subscribers) {
+			if(!isEventValid(event)) {
+				continue;
+			}
+
 			subscriber(event);
 		}
 	},
