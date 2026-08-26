@@ -38,7 +38,6 @@ export const getAnimations = async (spriteSheetPng, spriteSheetData) => {
 		},
 		{
 			destroy : () => {
-				spriteAsset.destroy();
 				spritesheet.destroy();
 			},
 		},
