@@ -121,7 +121,7 @@ $effect(() =>
 	use:deadzone
 >
 	<div
-		class={css.housing}
+		class={css.interactive}
 		use:controls={{
 			fire : (e) => {
 				storeDpadState(e);
@@ -137,34 +137,36 @@ $effect(() =>
 			},
 		}}
 	>
-		<div
-			bind:this={dpadElement}
-			class={css.dpad}
-			style="transform:
-				translateZ(var(--button-plane))
-				rotateX({xDeg})
-				rotateY({yDeg})
-				scale(0.98);
-			"
-		>
+		<div class={css.housing}>
 			<div
-				class={css.dpadface}
+				bind:this={dpadElement}
+				class={css.dpad}
 				style="transform:
-					translateX(calc({xXlate} * var(--xlate)))
-					translateY(calc({yXlate} * var(--xlate)));"
+					translateZ(var(--button-plane))
+					rotateX({xDeg})
+					rotateY({yDeg})
+					scale(0.98);
+				"
 			>
-			</div>
-			<div
-				class={css.dpadbackface}
-				style="transform:
-					translateX(calc({xXlate} * var(--halfxlate)))
-					translateY(calc({yXlate} * var(--halfxlate)))
-					translateZ(-1px);"
-			>
-			</div>
+				<div
+					class={css.dpadface}
+					style="transform:
+						translateX(calc({xXlate} * var(--xlate)))
+						translateY(calc({yXlate} * var(--xlate)));"
+				>
+				</div>
+				<div
+					class={css.dpadbackface}
+					style="transform:
+						translateX(calc({xXlate} * var(--halfxlate)))
+						translateY(calc({yXlate} * var(--halfxlate)))
+						translateZ(-1px);"
+				>
+				</div>
 
-			<div class={css.dpadcenterside}></div>
-			<div class={css.dpadcenterside} data-left="true"></div>
+				<div class={css.dpadcenterside}></div>
+				<div class={css.dpadcenterside} data-left="true"></div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -87,12 +87,17 @@ $effect(() =>
 	class={css.button}
 	data-type={type}
 	data-button={button}
-	style="transform: {getTransform(isPressed)};"
 >
-	{#if type === TYPE_ROUND}
-		<div class={css.roundside}></div>
-	{:else if type === TYPE_BEAN}
-		<div class={css.beanside}></div>
-		<div class={css.beanside} data-right="true"></div>
-	{/if}
+	<div class={css.face}
+		data-type={type}
+		data-button={button}
+		style="transform: {getTransform(isPressed)};"
+	>
+		{#if type === TYPE_ROUND}
+			<div class={css.roundside}></div>
+		{:else if type === TYPE_BEAN}
+			<div class={css.beanside}></div>
+			<div class={css.beanside} data-right="true"></div>
+		{/if}
+	</div>
 </div>

@@ -1,18 +1,59 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 
 .button {
-	composes: face, backface, touchinteractive, animates from "$util/util.mcss";
-	box-sizing: content-box;
-	padding: calc(2 * px1);
-	background-origin: content-box;
+	composes: touchinteractive from "$util/util.mcss";
+	position: absolute;
+	transform-style: preserve-3d;
+
+	&[data-type="round"] {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		width: calc(28.7 * px1);
+		height: calc(28.7 * px1);
+		border-radius: 50%;
+
+		&[data-button="BUTTON_A"] {
+			right: calc(-3 * px1);
+			bottom: calc(-24.5 * px1);
+		}
+
+		&[data-button="BUTTON_B"] {
+			bottom: calc(-40.5 * px1);
+			left: calc(21 * px1);
+		}
+	}
+
+	&[data-type="bean"] {
+		bottom: calc(10 * px1);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		width: calc(22 * px1);
+		height: calc(14 * px1);
+
+		&[data-button="START"] {
+			right: calc(46 * px1);
+		}
+
+		&[data-button="SELECT"] {
+			left: calc(45 * px1);
+		}
+	}
+}
+
+.face {
+	composes: face, backface, animates from "$util/util.mcss";
+	pointer-events: none;
 
 	&[data-type="round"] {
 		position: absolute;
 		transform-style: preserve-3d;
-
 		width: calc(18 * px1);
 		height: calc(18 * px1);
-		padding: calc(5 * px1);
 
 		&::after {
 			transform: translateY(0.5px) translateZ(-1px);
@@ -21,9 +62,6 @@
 		}
 
 		&[data-button="BUTTON_A"] {
-			right: calc(8 * px1);
-			bottom: calc(65 * px1);
-			padding-left: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-a.png");
 
 			&::after {
@@ -32,9 +70,6 @@
 		}
 
 		&[data-button="BUTTON_B"] {
-			right: calc(34.5 * px1);
-			bottom: calc(54 * px1);
-			padding-right: calc(3.5 * px1) !important;
 			background-image: url("./assets/button-b.png");
 
 			&::after {
@@ -45,24 +80,14 @@
 
 	&[data-type="bean"] {
 		position: absolute;
-		bottom: calc(10 * px1);
-		transform-style: preserve-3d;
+		top: px1;
 
 		width: calc(17 * px1);
 
 		/* safari prefers this as strict height... */
 		height: calc(5 * px1);
-		padding-bottom: calc(8 * px1);
 
 		background-image: url("./assets/button-bean.png");
-
-		&[data-button="START"] {
-			right: calc(47 * px1);
-		}
-
-		&[data-button="SELECT"] {
-			left: calc(45 * px1);
-		}
 	}
 }
 
@@ -70,7 +95,6 @@
 	composes: face, backface from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(2 * px1);
 	left: calc(2 * px1);
 	transform: rotateY(-90deg) translateX(-50%);
 
