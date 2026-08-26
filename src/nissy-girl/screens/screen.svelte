@@ -24,6 +24,13 @@ export const screen = {
 			throw new Error("Render scene called before renderer init!");
 		}
 
+		if(!renderables) {
+			/* eslint-disable-next-line no-console -- debug */
+			console.warn("Tried to render falsey input", renderables);
+
+			return false;
+		}
+
 		renderer.render(renderables);
 	},
 
