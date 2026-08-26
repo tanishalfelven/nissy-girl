@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+import { createMachine, assign, raise } from "xstate";
 
 import { gameloop } from "$game/shared/game-loop.machine.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
@@ -12,6 +12,10 @@ import { createGeneration } from "./generation.entity/generation.entity.js";
 import { createJumperCamera } from "./camera.component.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { createCoins } from "./coins.entity/coins.entity.js";
+
+import { BUTTON_START, BUTTON_A } from "$game/shared/input.consts.js";
+
+import Menu from "./ui/menu.svelte";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -55,7 +59,27 @@ export const jumperMachine = createMachine({
 			}),
 
 			on : {
-				DONE : "play",
+				DONE : "menu",
+			},
+		},
+
+		menu : {
+			meta : {
+				component : Menu,
+			},
+
+			invoke : invokeInput,
+
+			on : {
+				[BUTTON_START] : {
+					actions : raise({ type : "START_GAME" }),
+				},
+
+				[BUTTON_A] : {
+					actions : raise({ type : "START_GAME" }),
+				},
+
+				START_GAME : "play",
 			},
 		},
 

@@ -1,0 +1,156 @@
+@value spx, screenheight from "$nissy-girl/screens/screens.mcss";
+
+.menu {
+	position: absolute;
+	inset: 0;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+}
+
+.jumper {
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	top: calc(10 * spx);
+	left: calc(15 * spx);
+
+	width: calc(40 * spx);
+	height: calc(42 * spx);
+
+	background-image: url("./assets/jumper.png");
+
+	animation: float 4200ms ease-in-out infinite;
+}
+
+.titlecard {
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	left: calc(8 * spx);
+
+	align-self: flex-end;
+
+	width: calc(68 * spx);
+	height: calc(37 * spx);
+	margin-bottom: calc(10 * spx);
+
+	background-image: url("./assets/titlecard.png");
+}
+
+.start {
+	position: absolute;
+	right: calc(6 * spx);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 0 calc(4 * spx);
+	border: spx solid #471515;
+
+	font-family: Pixelzone;
+	font-size: calc(12 * spx);
+	color: white;
+	text-align: center;
+
+	background-color: #ac3232;
+
+	animation: highlightborder 800ms linear infinite;
+}
+
+.platforms {
+	composes: menu;
+	z-index: -1;
+	opacity: 0.5;
+}
+
+.platform {
+	composes: img from "$util/util.mcss";
+	position: absolute;
+	animation: fall 19s linear infinite;
+}
+
+.platform1 {
+	composes: platform;
+
+	bottom: calc(20 * spx);
+	left: calc(8 * spx);
+
+	width: calc(47 * spx);
+	height: calc(36 * spx);
+
+	background-image: url("./assets/platform-1.png");
+}
+
+.platform2 {
+	composes: platform;
+
+	z-index: -2;
+	bottom: calc(81 * spx);
+	left: calc(46 * spx);
+
+	width: calc(33 * spx);
+	height: calc(31 * spx);
+
+	background-image: url("./assets/platform-2.png");
+
+	animation-duration: 23s;
+}
+
+.platform3 {
+	composes: platform;
+
+	bottom: calc(40 * spx);
+	left: calc(1 * spx);
+
+	width: calc(13 * spx);
+	height: calc(13 * spx);
+
+	background-image: url("./assets/platform-3.png");
+
+	animation-duration: 28s;
+}
+
+@keyframes highlightborder {
+	0% {
+		border-color: #471515;
+	}
+
+	50% {
+		border-color: #822727;
+	}
+
+	100% {
+		border-color: #471515;
+	}
+}
+
+@keyframes float {
+	0% {
+		transform: translate(0, 0);
+	}
+
+	50% {
+		transform: translate(calc(2.5 * spx), calc(-5 * spx));
+	}
+
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
+@keyframes fall {
+	0% {
+		transform: translate(0, calc(-1 * screenheight));
+	}
+
+	100% {
+		transform: translate(0, calc(screenheight * 2));
+	}
+}
