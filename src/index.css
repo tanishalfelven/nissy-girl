@@ -4,6 +4,12 @@
 	src: url("./assets/Cairopixel.ttf") format("truetype");
 }
 
+@font-face {
+	font-family: Pixelzone;
+
+	src: url("./assets/Pixelzone.ttf") format("truetype");
+}
+
 #root,
 body {
 	overflow: hidden;
