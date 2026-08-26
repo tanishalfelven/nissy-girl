@@ -8,7 +8,7 @@ import css from "./menu.mcss";
 	<div class={css.titlecard}></div>
 
 	<div class={css.start} data-selected="true">
-		START
+		start
 	</div>
 </div>
 
