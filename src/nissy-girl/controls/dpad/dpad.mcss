@@ -15,7 +15,7 @@
 	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
-	bottom: calc(41 * px1);
+	bottom: calc(40 * px1);
 	left: calc(1 * px1);
 	transform-style: preserve-3d;
 
@@ -81,8 +81,9 @@
 	align-items: center;
 	justify-content: center;
 
-	width: calc(36 * px1);
-	height: calc(36 * px1);
+	width: calc(37 * px1);
+	height: calc(37 * px1);
+	margin-top: calc(0.5 * px1);
 }
 
 .dpadface {
@@ -91,7 +92,7 @@
 	transform-origin: center center 4px;
 
 	width: calc(30 * px1);
-	height: calc(29.5 * px1);
+	height: calc(31 * px1);
 
 	background-image: url("./assets/dpad.png");
 }
@@ -115,13 +116,13 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(3.2 * px1);
+	top: calc(3 * px1);
 	bottom: 0;
 	left: 0;
 	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-13 * px1));
 
 	aspect-ratio: 5 / 32;
-	height: calc(29.5 * px1);
+	height: calc(31 * px1);
 
 	background-image: url("./assets/dpad-side.png");
 

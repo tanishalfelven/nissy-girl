@@ -51,7 +51,7 @@ const getTransform = (isPressed) => {
 		return "translateZ(calc(var(--button-plane) * 0.6))";
 	}
 
-	return "translateZ(var(--button-plane))";
+	return "translateZ(calc(var(--button-plane) * 0.7))";
 };
 
 $effect(() =>
