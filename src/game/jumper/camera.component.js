@@ -7,8 +7,8 @@ export const createJumperCamera = ({
 	return createCamera({
 		world,
 		config : PADPAN_1X_CAMERA,
-		leftPadding : 0,
-		rightPadding : 0,
+		leftPadding : -5,
+		rightPadding : -5,
 		topPadding : 50,
 		bottomPadding : 15,
 	});
