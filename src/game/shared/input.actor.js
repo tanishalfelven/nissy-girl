@@ -36,6 +36,10 @@ export const invokeInput = {
 
 				componentTargets.add(event.component);
 
+				if(event.component.inherit) {
+					event.component.handleInput();
+				}
+
 				return;
 			}
 

@@ -30,10 +30,17 @@ export const resolveDirectionX = resolveDirection(HORZ_AXIS);
 export const createInput = ({
 	observedInputs = ALL_AXIS,
 	onInputChange,
+
+	// receive inputs held prior to taking over handling
+	// ! Input is generally wiped when input unmounts, this only works if input has not been actively handled
+	// ! Prior to taking direct control
+	inherit = false,
 }) => {
 	const inputs = new Set();
 
 	return {
+		inherit,
+
 		handleInput() {
 			let didInputChange = false;
 

@@ -54,6 +54,8 @@ export const createJumper = ({
 	});
 
 	const input = createInput({
+		// explicitly allowing inputs buffered during startup
+		inherit : true,
 		observedInputs : JUMPER_INPUTS,
 		onInputChange : (inputs) => {
 			const xDir = resolveDirectionX(inputs);
