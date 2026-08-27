@@ -10,6 +10,9 @@ import { sceneAction, withScene } from "$game/shared/scene-action.js";
 import { createWorld } from "$game/shared/entity/world.entity.js";
 import { createPaintCamera } from "./camera.component.js";
 import { createPaintUI } from "./ui/paint-ui.entity.svelte.js";
+import { createSwirl } from "./ui/swirl.entity.js";
+
+import Menu from "./ui/menu.svelte";
 import Drawing from "./ui/drawing.svelte";
 
 import {
@@ -39,7 +42,38 @@ export const paintMachine = createMachine({
 	states : {
 		loading : {
 			on : {
-				GAME_READY : "artboard",
+				GAME_READY : "menu",
+			},
+		},
+
+		menu : {
+			invoke : [
+				invokeScene({
+					id : "titlescreen",
+					entities : [
+						createSwirl,
+					],
+					frameOrder : [
+						"render",
+					],
+				}),
+				invokeInput,
+			],
+
+			meta : {
+				component : Menu,
+			},
+
+			on : {
+				[BUTTON_START] : {
+					actions : raise({ type : "ENTER_ARTBOARD" }),
+				},
+
+				[BUTTON_A] : {
+					actions : raise({ type : "ENTER_ARTBOARD" }),
+				},
+
+				ENTER_ARTBOARD : "artboard",
 			},
 		},
 

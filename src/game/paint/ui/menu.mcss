@@ -1,0 +1,161 @@
+@value spx, screenheight, screenwidth from "$nissy-girl/screens/screens.mcss";
+
+@keyframes artvoidspin {
+	0% {
+		transform: rotate(calc(var(--offset) + 0deg));
+		opacity: 0.35;
+	}
+
+	50% {
+		opacity: 0.75;
+	}
+
+	100% {
+		transform: rotate(calc(var(--offset) + 360deg));
+		opacity: 0.35;
+	}
+}
+
+@keyframes letterfloat {
+	0% {
+		transform: translate(0, 0);
+	}
+
+	50% {
+		transform: translate(calc(2 * spx), calc(-4 * spx));
+	}
+
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
+@keyframes flashtext {
+	0% {
+		color: #a1a1a1;
+	}
+
+	50% {
+		color: #fff;
+	}
+
+	100% {
+		color: #a1a1a1;
+	}
+}
+
+.menu {
+	position: absolute;
+	inset: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: screenwidth;
+	height: screenheight;
+	margin: auto;
+}
+
+.paintpig {
+	composes: float from "$util/animations.mcss";
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	top: calc(7 * spx);
+	left: calc(5 * spx);
+
+	width: calc(spx * 69);
+	height: calc(spx * 63);
+
+	background-image: url("./assets/paint-pig.png");
+
+	animation-duration: 12s;
+}
+
+.letter {
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	right: calc(5 * spx);
+	bottom: calc(18 * spx);
+
+	animation-name: letterfloat;
+	animation-duration: 6s;
+	animation-fill-mode: both;
+	animation-iteration-count: infinite;
+}
+
+.letterp {
+	composes: letter;
+
+	right: calc(58 * spx);
+
+	width: calc(14 * spx);
+	height: calc(19 * spx);
+
+	background-image: url("./assets/letter-p.png");
+}
+
+.lettera {
+	composes: letter;
+
+	right: calc(46 * spx);
+
+	width: calc(12 * spx);
+	height: calc(17 * spx);
+
+	background-image: url("./assets/letter-a.png");
+
+	animation-delay: -300ms;
+}
+
+.letteri {
+	composes: letter;
+
+	right: calc(36 * spx);
+
+	width: calc(10 * spx);
+	height: calc(23 * spx);
+
+	background-image: url("./assets/letter-i.png");
+
+	animation-delay: -600ms;
+}
+
+.lettern {
+	composes: letter;
+
+	right: calc(20 * spx);
+
+	width: calc(16 * spx);
+	height: calc(20 * spx);
+
+	background-image: url("./assets/letter-n.png");
+
+	animation-delay: -900ms;
+}
+
+.lettert {
+	composes: letter;
+
+	width: calc(15 * spx);
+	height: calc(21 * spx);
+
+	background-image: url("./assets/letter-t.png");
+
+	animation-delay: -1200ms;
+}
+
+.cta {
+	position: absolute;
+	z-index: 1;
+	bottom: calc(4 * spx);
+
+	margin: auto;
+
+	font-size: calc(12 * spx);
+	color: #fff;
+
+	animation: flashtext 1300ms linear infinite;
+}

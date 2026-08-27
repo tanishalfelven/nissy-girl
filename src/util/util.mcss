@@ -5,19 +5,9 @@
 	image-rendering: pixelated;
 }
 
-.face {
-	composes: img;
-	position: absolute;
-	backface-visibility: hidden;
-}
-
-.backface {
-	transform-style: preserve-3d;
-
+.afterimg {
 	&::after {
 		content: "";
-
-		transform: rotateY(180deg) translateZ(1px);
 
 		display: block;
 
@@ -26,6 +16,21 @@
 		background-size: cover;
 
 		image-rendering: pixelated;
+	}
+}
+
+.face {
+	composes: img;
+	position: absolute;
+	backface-visibility: hidden;
+}
+
+.backface {
+	composes: afterimg;
+	transform-style: preserve-3d;
+
+	&::after {
+		transform: rotateY(180deg) translateZ(1px);
 	}
 }
 
