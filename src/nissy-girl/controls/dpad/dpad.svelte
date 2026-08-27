@@ -27,7 +27,6 @@ import {
 const MAX_TILT = 3;
 const DEADZONE = 0.15;
 const DIAGONAL_RATIO = 0.55;
-const RADIUS = 0.6;
 
 let pointerX = $state(0);
 let pointerY = $state(0);
@@ -94,12 +93,6 @@ const handleInput = () => {
 
 	heldX = nextX;
 	heldY = nextY;
-
-	if(dist > RADIUS) {
-		const excess = (dist - RADIUS) / dist;
-		originX += dx * excess;
-		originY += dy * excess;
-	}
 };
 
 const xDeg = $derived(`${dpadY * MAX_TILT}deg`);
