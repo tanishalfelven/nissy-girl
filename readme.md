@@ -1,6 +1,6 @@
 # NissyGirl - The Web Based Handheld Console
 
-[Live Demo](https://nissygirl.com)
+[nissygirl.com](https://nissygirl.com)
 
 ![NissyGirl Lure](/docs/assets/gifs/01-lure.gif)
 
