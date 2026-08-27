@@ -1,18 +1,20 @@
-// todo This is bad, at the least we should probably use a WeakMap
-let activeSceneRef = false;
+// ! Currently only a single scene is active at once
+// ! Current scene is also stored in gameloop machine but
+// ! Access is awkward, so we match it here and let scene.actor maintain
+let storedScene = false;
 
-const getAndCacheScene = ({ system }) => {
-	if(!activeSceneRef || !activeSceneRef?.isAlive) {
-		const scene = system.get("scene");
+export const setScene = (scene) => {
+	storedScene = scene;
+};
 
-		activeSceneRef = scene.getSnapshot().context;
+export const clearScene = (scene) => {
+	if(storedScene === scene) {
+		storedScene = false;
 	}
-
-	return activeSceneRef;
 };
 
 export const withScene = (func) => (all) => {
-	return func(getAndCacheScene(all));
+	return func(all, storedScene);
 };
 
 /**
@@ -21,7 +23,7 @@ export const withScene = (func) => (all) => {
  * @returns {() => void}
  */
 export const sceneAction = (func) => (all) => {
-	const result = func(all, getAndCacheScene(all));
+	const result = func(all, storedScene);
 
 	if(result !== false) {
 		const gameloop = all.system.get("gameloop");

@@ -21,6 +21,7 @@ import { BUTTON_START, BUTTON_A, BUTTON_B } from "$game/shared/input.consts.js";
 import { EXIT } from "./ui/paused.consts.js";
 
 import Menu from "./ui/menu.svelte";
+import PlayOverlay from "./ui/play-overlay/play-overlay.svelte";
 import Paused from "./ui/paused.svelte";
 
 export const jumperMachine = createMachine({
@@ -57,8 +58,11 @@ export const jumperMachine = createMachine({
 				id : "simulate",
 				entities : [
 					createGeneration,
+					// force preload of ui by including in lifecycle
+					createJumperUI,
 				],
 				simulateOrder : [
+					"ui",
 					"capabilities",
 					"generator",
 				],
@@ -138,17 +142,44 @@ export const jumperMachine = createMachine({
 
 			states : {
 				playing : {
-					invoke : invokeInputComponent(
-						"jumper-input",
-						withScene(
-							(scene) => scene.world.world.get("jumper").input,
-						),
-					),
+					meta : {
+						load : withScene((_, { world }) => {
+							const ui = world.world.get("ui");
+
+							return [
+								PlayOverlay,
+								{ model : ui.ui.getModel() },
+							];
+						}),
+					},
 
 					on : {
-						[BUTTON_START] : {
-							guard : inputTriggered,
-							target : "pause",
+						PAUSE : "pause",
+					},
+
+					initial : "countdown",
+
+					states : {
+						countdown : {
+							on : {
+								START_PLAY : "scoring",
+							},
+						},
+
+						scoring : {
+							invoke : invokeInputComponent(
+								"jumper-input",
+								withScene(
+									(_, { world }) => world.world.get("jumper").input,
+								),
+							),
+
+							on : {
+								[BUTTON_START] : {
+									guard : inputTriggered,
+									actions : raise({ type : "PAUSE" }),
+								},
+							},
 						},
 					},
 				},
@@ -167,7 +198,7 @@ export const jumperMachine = createMachine({
 					}),
 
 					meta : {
-						load : withScene(({ world }) => {
+						load : withScene((_, { world }) => {
 							const ui = world.world.get("ui");
 
 							return [
@@ -180,7 +211,7 @@ export const jumperMachine = createMachine({
 					invoke : invokeInputComponent(
 						"ui-input",
 						withScene(
-							(scene) => scene.world.world.get("ui").input,
+							(_, { world }) => world.world.get("ui").input,
 						),
 					),
 

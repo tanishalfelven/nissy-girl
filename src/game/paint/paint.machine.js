@@ -107,7 +107,7 @@ export const paintMachine = createMachine({
 			],
 
 			meta : {
-				load : withScene(({ world }) => {
+				load : withScene((_, { world }) => {
 					const ui = world.world.get("ui");
 
 					return [
@@ -131,8 +131,7 @@ export const paintMachine = createMachine({
 						invokeInputComponent(
 							"cursor-input",
 							withScene(
-								// this is wild...
-								(scene) => scene.world.world.get("cursor").input,
+								(_, { world }) => world.world.get("cursor").input,
 							),
 						),
 					],
@@ -178,7 +177,7 @@ export const paintMachine = createMachine({
 						invokeInputComponent(
 							"ui-input",
 							withScene(
-								({ world }) => world.world.get("ui").input,
+								(_, { world }) => world.world.get("ui").input,
 							),
 						),
 					],

@@ -1,8 +1,9 @@
-import { fromObservable } from "xstate";
+import { fromCallback } from "xstate";
 
 import { isActorAlive } from "$util/is-actor-alive.js";
 
 import { createScene } from "./entity/scene.entity.js";
+import { setScene, clearScene } from "./scene-action.js";
 
 export const invokeScene = ({
 	id,
@@ -14,42 +15,39 @@ export const invokeScene = ({
 	systemId : "scene",
 	id,
 	input : ({ self, context }) => ({ notifyGame : self.send, context }),
-	src : fromObservable(({ system, input }) => ({
-		subscribe(observer) {
-			let cancelled = false;
-			const gameloop = system.get("gameloop");
+	src : fromCallback(({ system, input }) => {
+		let cancelled = false;
+		const gameloop = system.get("gameloop");
 
-			const scene = createScene({
-				id,
-				world,
-				entities,
-				simulateOrder,
-				frameOrder,
-				context : input.context,
-				notifyGame : input.notifyGame,
-			});
+		const scene = createScene({
+			id,
+			world,
+			entities,
+			simulateOrder,
+			frameOrder,
+			context : input.context,
+			notifyGame : input.notifyGame,
+		});
 
-			observer.next(scene);
+		setScene(scene);
 
-			scene.load().then(() => {
-				if(cancelled) {
-					return;
-				}
+		scene.load().then(() => {
+			if(cancelled) {
+				return;
+			}
 
-				gameloop.send({ type : "REGISTER_SCENE", scene });
-			});
+			gameloop.send({ type : "REGISTER_SCENE", scene });
+		});
 
-			return {
-				unsubscribe() {
-					cancelled = true;
+		return () => {
+			cancelled = true;
 
-					if(isActorAlive(gameloop)) {
-						gameloop.send({ type : "REMOVE_SCENE" });
-					}
+			if(isActorAlive(gameloop)) {
+				gameloop.send({ type : "REMOVE_SCENE" });
+			}
 
-					scene.destroy();
-				},
-			};
-		},
-	})),
+			clearScene(scene);
+			scene.destroy();
+		};
+	}),
 });
