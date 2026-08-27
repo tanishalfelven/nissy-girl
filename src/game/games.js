@@ -6,6 +6,7 @@ import { jumperMachine } from "./jumper/jumper.machine.js";
 
 export const gameOrder = [
 	GAME_PAINT_ID,
+	GAME_JUMPER_ID,
 ];
 
 export const games = new Map([
