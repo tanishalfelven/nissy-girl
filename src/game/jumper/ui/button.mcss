@@ -12,7 +12,6 @@
 	padding: 0 calc(4 * spx);
 	border: spx solid shadowred;
 
-	font-size: calc(12 * spx);
 	color: white;
 	text-align: center;
 

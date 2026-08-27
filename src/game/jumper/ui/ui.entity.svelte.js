@@ -2,7 +2,9 @@ import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
 
-export const createJumperUI = () => {
+export const createJumperUI = ({
+	world,
+}) => {
 	const navComponent = createUINav();
 
 	const input = createInput({
@@ -20,6 +22,8 @@ export const createJumperUI = () => {
 
 			return newNav;
 		},
+
+		startGame : () => world.world.notifyGame({ type : "START_PLAY" }),
 	};
 
 	return createEntity({
@@ -28,6 +32,10 @@ export const createJumperUI = () => {
 			input,
 			movement : navComponent,
 			ui : {
+				async load() {
+					await document.fonts.load("16px Pixelzone");
+				},
+
 				getModel() {
 					return model;
 				},
