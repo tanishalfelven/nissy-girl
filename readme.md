@@ -1,4 +1,4 @@
-# NissyGirl - The Web Based Handheld Console
+# NissyGirl - The web-based handheld console
 
 [nissygirl.com](https://nissygirl.com)
 
