@@ -36,7 +36,7 @@ export default defineConfig({
 	resolve : {
 		alias,
 	},
-	base : "/nissy-girl/",
+	base : "/",
 	server : {
 		host : true,
 		allowedHosts : [ "nissy.local" ],
