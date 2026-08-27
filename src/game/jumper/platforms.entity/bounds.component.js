@@ -49,7 +49,7 @@ export const createBounds = ({ platforms, bounds }) => {
 		getSpawn() {
 			const startPlatform = platforms[0];
 
-			return { x : startPlatform.x + 5, y : startPlatform.y };
+			return { x : startPlatform.x + startPlatform.width / 2, y : startPlatform.y };
 		},
 
 		remainsGrounded(index, x, y, width) {

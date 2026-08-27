@@ -83,7 +83,7 @@ const coinFromPlatform = (platform) => {
 	return { x, y, width : COIN_WIDTH };
 };
 
-const START_PLATFORM = platform(10, 90, 100, START_ZONE);
+const START_PLATFORM = platform(0, 90, CANVAS_WIDTH, START_ZONE);
 
 export const DEV_MAP = [
 	START_PLATFORM,
