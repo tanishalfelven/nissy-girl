@@ -19,5 +19,7 @@ export const createRenderer = async (canvas, { width = CANVAS_WIDTH, height = CA
 		antialias : false,
 	});
 
+	renderer.clear();
+
 	return renderer;
 };

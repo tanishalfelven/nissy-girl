@@ -131,6 +131,14 @@ export const createScene = ({
 			);
 		},
 
+		getRenderable() {
+			if(!isAlive) {
+				return false;
+			}
+
+			return world.world.getRenderable();
+		},
+
 		hasUpdate() {
 			for(const hasUpdateFunc of hasUpdate) {
 				if(!isAlive) {
