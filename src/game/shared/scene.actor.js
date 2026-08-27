@@ -37,7 +37,6 @@ export const invokeScene = ({
 				}
 
 				gameloop.send({ type : "REGISTER_SCENE", scene });
-				gameloop.send({ type : "START" });
 			});
 
 			return {

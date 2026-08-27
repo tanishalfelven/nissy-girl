@@ -97,6 +97,10 @@ export const gameloop = {
 					},
 
 					active : {
+						entry : [
+							raise({ type : "START" }),
+						],
+
 						on : {
 							REMOVE_SCENE : {
 								target : "none",
@@ -166,6 +170,9 @@ export const gameloop = {
 							// emitted by loop directly, match its state
 							LOOP_PAUSE : "paused",
 
+							REGISTER_SCENE : {
+								actions : raise({ type : "UPDATE_SESSION" }),
+							},
 							REGISTER_INPUT : {
 								actions : raise({ type : "UPDATE_SESSION" }),
 							},
