@@ -1,9 +1,0 @@
-export const MIN_ZONE_HEIGHT = 200;
-export const MIN_ZONE_PLATFORMS_LOWER = 20;
-export const MIN_ZONE_PLATFORMS_UPPER = 30;
-export const START_ZONE = 0;
-export const ZONE_1 = 1;
-export const MAX_PLATFORM_WIDTH = 30;
-export const MIN_PLATFORM_WIDTH = 8;
-export const MIN_PLATFORM_X_GAP = 5;
-export const MIN_PLATFORM_Y_GAP = 5;
