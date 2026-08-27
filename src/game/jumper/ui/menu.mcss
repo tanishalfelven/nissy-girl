@@ -16,6 +16,7 @@
 }
 
 .jumper {
+	composes: float from "$util/animations.mcss";
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
@@ -27,7 +28,8 @@
 
 	background-image: url("./assets/jumper.png");
 
-	animation: float 4200ms ease-in-out infinite;
+	animation-duration: 4200ms;
+	animation-timing-function: ease-in-out;
 }
 
 .titlecard {
@@ -104,20 +106,6 @@
 	background-image: url("./assets/platform-3.png");
 
 	animation-duration: 52s;
-}
-
-@keyframes float {
-	0% {
-		transform: translate(0, 0);
-	}
-
-	50% {
-		transform: translate(calc(2.5 * spx), calc(-5 * spx));
-	}
-
-	100% {
-		transform: translate(0, 0);
-	}
 }
 
 @keyframes fall {
