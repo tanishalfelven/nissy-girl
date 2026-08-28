@@ -29,7 +29,7 @@ export const createCoins = ({
 		id : "coins",
 		components : {
 			coins : {
-				getMaxCoins : () => coins.length - 1,
+				getMaxCoins : () => coins.length,
 
 				async load() {
 					jumper = world.world.get("jumper");
