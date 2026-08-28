@@ -96,6 +96,8 @@ export const jumperMachine = createMachine({
 		},
 
 		game : {
+			exit : withScene((_, { world }) => world.world.get("ui").ui.stopPlay()),
+
 			invoke : [
 				invokeScene({
 					id : "play",
@@ -126,6 +128,7 @@ export const jumperMachine = createMachine({
 						"camera",
 						"render",
 						"particles",
+						"ui",
 					],
 				}),
 
@@ -232,7 +235,7 @@ export const jumperMachine = createMachine({
 						},
 
 						BACK_TO_PLAY : {
-							target : "playing",
+							target : "playing.scoring",
 						},
 
 						MENU_OPTION : {

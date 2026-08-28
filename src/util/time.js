@@ -16,6 +16,8 @@ export const calcDt = (prev, now) => {
 	return dt;
 };
 
+export const msFromDt = (dt) => dt * FPS60;
+
 export const rafThrottle = (func) => {
 	let scheduled = false;
 	let lastArgs;

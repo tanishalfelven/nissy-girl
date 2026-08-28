@@ -1,42 +1,34 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
-
-@keyframes count {
-	0% {
-		transform: translate(-70%) scale(1);
-		opacity: 0.2;
-	}
-
-	10% {
-		transform: translate(0) scale(1.3);
-		opacity: 1;
-	}
-
-	90% {
-		transform: translate(0) scale(1.4);
-		opacity: 1;
-	}
-
-	100% {
-		transform: translate(70%) scale(1.2);
-		opacity: 0.2;
-	}
-}
+@value spx, screenwidth from "$nissy-girl/screens/screens.mcss";
 
 .game {
 	composes: menu from "../menu.mcss";
 }
 
-.count {
-	position: absolute;
-	top: calc(5 * spx);
-
-	width: 100%;
-
-	font-size: calc(24 * spx);
+.overlaytext {
 	color: #fff;
-	text-align: center;
 	text-shadow: 1px 1px 2px #000;
+}
 
-	animation: count 1s linear 1;
-	animation-fill-mode: both;
+.timer {
+	composes: overlaytext;
+
+	position: absolute;
+	top: 0;
+	left: calc(0.83 * screenwidth);
+
+	font-size: calc(12 * spx);
+	color: #d9d9d9;
+	text-align: left;
+}
+
+.coins {
+	composes: overlaytext;
+
+	position: absolute;
+	top: calc(11 * spx);
+	right: calc(1.75 * spx);
+
+	font-size: calc(10 * spx);
+	color: #d9d9d9;
+	text-align: right;
 }

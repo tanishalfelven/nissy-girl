@@ -1,15 +1,9 @@
 import { createEntity } from "$game/shared/entity/entity.js";
 
-import { AnimatedSprite, Container } from "pixi.js";
-
-import CoinPng from "./assets/coin.png";
-import CoinData from "./assets/coin.json?aseprite-animation";
-
-import { getAnimations } from "$game/util/animations.js";
+import { createRender } from "./render.component.js";
 
 export const COIN_WIDTH = 11;
 export const COIN_HEIGHT = 12;
-const OUT_ALPHA_STEP = 0.15;
 
 const mapCoinToCoin = (coin) => {
 	coin.isAlive = true;
@@ -24,20 +18,24 @@ export const createCoins = ({
 
 	const { coins : mapCoins } = generation.maps.gen_test;
 
-	let coinAnims;
-
-	const coinLayer = new Container();
-
 	const coins = mapCoins.map(mapCoinToCoin);
 
-	const sprites = [];
+	const render = createRender({ coins, world });
 
 	let jumper;
+	let ui;
 
 	return createEntity({
 		id : "coins",
 		components : {
 			coins : {
+				getMaxCoins : () => coins.length - 1,
+
+				async load() {
+					jumper = world.world.get("jumper");
+					ui = world.world.get("ui").ui;
+				},
+
 				// TODO share logic for on screen check with render
 				hasUpdate : () => jumper.behavior.isMoving(),
 
@@ -55,80 +53,16 @@ export const createCoins = ({
 							if(hit) {
 								jumper.render.reactToCollect();
 
-								const sprite = sprites[i];
-
 								coin.isAlive = false;
-
-								sprite.textures = coinAnims.explode;
-								sprite.loop = false;
-								sprite.animationSpeed = 1.25;
-								sprite.play();
+								render.outroCoin(i);
+								ui.collectCoin();
 							}
 						}
 					}
 				},
 			},
-			render : {
-				async load() {
-					coinAnims = await getAnimations(CoinPng, CoinData);
 
-					for(const coin of coins) {
-						const coinSprite = new AnimatedSprite({
-							textures : coinAnims.idle,
-							animationSpeed : 1.05,
-							loop : true,
-							autoUpdate : false,
-
-							position : coin,
-						});
-
-						sprites.push(coinSprite);
-						coinLayer.addChild(coinSprite);
-
-						coinSprite.play();
-					}
-
-					jumper = world.world.get("jumper");
-				},
-
-				getRenderable() {
-					return coinLayer;
-				},
-
-				// TODO we should only track and update if living coins are in camera bounds
-				hasUpdate() {
-					return true;
-				},
-
-				update(dt) {
-					for(let i = 0; i < coins.length; i++) {
-						const coin = coins[i];
-						const sprite = sprites[i];
-
-						if(sprite.playing) {
-							sprite.update({ deltaTime : dt });
-						} else if(!coin.isAlive && !sprite.destroyed) {
-							if(sprite.alpha > 0) {
-								sprite.alpha -= OUT_ALPHA_STEP * dt;
-							} else {
-								sprite.destroy();
-							}
-						}
-					}
-				},
-
-				destroy() {
-					if(coinAnims) {
-						coinAnims.destroy();
-					}
-
-					coinLayer.destroy();
-
-					for(const sprite of sprites) {
-						sprite.destroy();
-					}
-				},
-			},
+			render,
 		},
 	});
 };
