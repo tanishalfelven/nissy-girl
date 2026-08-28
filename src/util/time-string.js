@@ -10,8 +10,8 @@ const padStart = (n, len) => String(n).padStart(len, "0");
  */
 export const toString = (time) => {
 	const ms = Math.floor((time % MS) / 100);
-	const s = Math.floor(time / MS);
+	const s = Math.floor(time / MS) % 60;
 	const min = Math.floor(time / MS_IN_MIN);
 
-	return `${padStart(min % MS_IN_MIN, 2)}:${padStart(s % MS, 2)}.${padStart(ms, 1)}`;
+	return `${padStart(min, 2)}:${padStart(s, 2)}.${padStart(ms, 1)}`;
 };
