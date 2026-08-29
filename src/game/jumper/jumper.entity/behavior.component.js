@@ -66,6 +66,8 @@ export const createBehavior = ({
 	const coyoteJumpWindow = createTemporalWindow(COYOTE_JUMP_DURATION);
 	const jumpBufferWindow = createTemporalWindow(BUFFER_JUMP_DURATION);
 
+	let isFinished = false;
+
 	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
 	const top = (y) => y - height;
@@ -169,6 +171,10 @@ export const createBehavior = ({
 			EXIT : ".done",
 
 			JUMP : [
+				{
+					// noop jumps if we are finished
+					guard : () => isFinished,
+				},
 				{
 					guard : () => crouchIntent,
 					actions : () => {
@@ -326,6 +332,8 @@ export const createBehavior = ({
 								isGrounded = true;
 
 								if(platforms.bounds.getIsFinishPlatform(lastPlatformIndex)) {
+									isFinished = true;
+
 									world.world.notifyGame({ type : "JUMPER_SUCCESS" });
 								}
 							}
