@@ -9,7 +9,7 @@ export const createJumperCamera = ({
 		config : PADPAN_1X_CAMERA,
 		leftPadding : -5,
 		rightPadding : -5,
-		topPadding : 65,
+		topPadding : 50,
 		bottomPadding : 15,
 	});
 };

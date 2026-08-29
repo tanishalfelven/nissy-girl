@@ -103,14 +103,13 @@ const createStageLights = ({
 }) => {
 	const { camera } = world;
 
-	const cameraX = camera.getWorldX();
-	const cameraY = camera.getWorldY();
-
 	const stageLight = new Container();
 	const mask = new Graphics();
 	const darkness = new Graphics()
-		.rect(cameraX, cameraY, CANVAS_WIDTH, CANVAS_HEIGHT)
+		.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 		.fill({ color : COLOR_BLACK, alpha : 0.75 });
+
+	stageLight.position.set(camera.getWorldX(), camera.getWorldY());
 
 	stageLight.alpha = 0;
 
@@ -119,7 +118,7 @@ const createStageLights = ({
 	const updateMask = (scale = 8) => {
 		mask
 			.clear()
-			.rect(cameraX, cameraY, CANVAS_WIDTH, CANVAS_HEIGHT)
+			.rect(camera.getWorldX(), camera.getWorldY(), CANVAS_WIDTH, CANVAS_HEIGHT)
 			.fill(COLOR_WHITE)
 			.ellipse(movement.getX(), movement.getY(), width * scale, height * scale)
 			.cut();
@@ -135,6 +134,8 @@ const createStageLights = ({
 
 	return {
 		update(dt) {
+			stageLight.position.set(camera.getWorldX(), camera.getWorldY());
+
 			max = Math.max(0, max - dt);
 
 			const maxT = max / SPOTLIGHT_DURATION;

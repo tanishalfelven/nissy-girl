@@ -47,6 +47,11 @@ const panPaddedCamera = {
 	},
 };
 
+export const animateToPos = {
+	getX : (width, x) => -x + width / 2,
+	getY : (height, y) => -y + height / 2,
+};
+
 export const CAMERA = {
 	[CAMERA_STYLE_FIXED] : fixedCamera,
 	[CAMERA_STYLE_PAN] : panCamera,

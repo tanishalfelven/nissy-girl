@@ -158,6 +158,8 @@ export const createBehavior = ({
 			TICK_X : {
 				actions : raise({ type : "PROCESS_HORZ" }),
 			},
+
+			EXIT : ".done",
 		},
 
 		states : {
@@ -396,6 +398,10 @@ export const createBehavior = ({
 					},
 				},
 			},
+
+			done : {
+				type : "final",
+			},
 		},
 	}));
 
@@ -451,6 +457,10 @@ export const createBehavior = ({
 			behavior.send({ type : "TICK_Y" });
 
 			return true;
+		},
+
+		stop() {
+			behavior.send({ type : "EXIT" });
 		},
 
 		destroy() {

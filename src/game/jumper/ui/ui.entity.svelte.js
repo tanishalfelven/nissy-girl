@@ -2,6 +2,7 @@ import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
 import { toString, MINUTE_MS } from "$util/time-string.js";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
 const WORST_TIME = MINUTE_MS * 7;
 
@@ -113,6 +114,12 @@ export const createJumperUI = ({
 
 					jumper.render.finishGame();
 					navComponent.setActiveNav("score");
+
+					world.camera.animateTo({
+						x : CANVAS_WIDTH / 2,
+						y : jumper.movement.getY() - (CANVAS_HEIGHT * 0.33),
+						duration : 300,
+					});
 				},
 
 				exitPlay() {
