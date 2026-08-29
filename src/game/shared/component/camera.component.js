@@ -62,24 +62,21 @@ export const createCamera = ({
 			animateToTarget.zoom.y,
 		);
 
-		const targetX = animateToPos.getX(width, scale.x, animateToTarget.x);
-		const targetY = animateToPos.getY(height, scale.y, animateToTarget.y);
-
 		position.x = lerp(
 			eased,
 			animateToTarget.fromX,
-			targetX,
+			animateToTarget.targetX,
 		);
 
 		position.y = lerp(
 			eased,
 			animateToTarget.fromY,
-			targetY,
+			animateToTarget.targetY,
 		);
 
 		if(animateToTarget.elapsed >= animateToTarget.duration) {
-			position.x = targetX;
-			position.y = targetY;
+			position.x = animateToTarget.targetX;
+			position.y = animateToTarget.targetY;
 
 			scale.x = animateToTarget.zoom.x;
 			scale.y = animateToTarget.zoom.y;
@@ -155,14 +152,15 @@ export const createCamera = ({
 			duration = 300,
 		}) {
 			animateToTarget = {
-				x,
-				y,
 				duration,
 				elapsed : 0,
 				zoom,
 				fromZoom : { x : scale.x, y : scale.y },
 				fromX : position.x,
 				fromY : position.y,
+
+				targetX : animateToPos.getX(width, zoom.x, x),
+				targetY : animateToPos.getY(height, zoom.y, y),
 			};
 		},
 
@@ -188,6 +186,10 @@ export const createCamera = ({
 			for(const subscriber of subscribers) {
 				subscriber(config);
 			}
+		},
+
+		getScale() {
+			return scale;
 		},
 
 		getZoom() {

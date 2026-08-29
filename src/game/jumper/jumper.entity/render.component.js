@@ -93,7 +93,7 @@ const createFace = ({ physics, behavior }) => {
 	};
 };
 
-const SPOTLIGHT_DURATION = 500 / FPS60;
+const SPOTLIGHT_DURATION = 2000 / FPS60;
 
 const createStageLights = ({
 	world,
@@ -135,6 +135,9 @@ const createStageLights = ({
 	return {
 		update(dt) {
 			stageLight.position.set(camera.getWorldX(), camera.getWorldY());
+			const scale = camera.getScale();
+			// this is fucked
+			stageLight.scale.set(1 / scale.x, 1 / scale.y);
 
 			max = Math.max(0, max - dt);
 
