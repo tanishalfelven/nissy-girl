@@ -26,7 +26,7 @@ import {
 
 const MAX_TILT = 3;
 const DEADZONE = 0.15;
-const DIAGONAL_RATIO = 0.55;
+const DIAGONAL_RATIO = 0.65;
 
 let pointerX = $state(0);
 let pointerY = $state(0);
@@ -77,8 +77,8 @@ const handleInput = () => {
 	const dist = Math.hypot(dx, dy);
 	const live = dist > DEADZONE;
 
-	const nextX = live && Math.abs(dx) > Math.abs(dy) * DIAGONAL_RATIO ? Math.sign(dx) : 0;
-	const nextY = live && Math.abs(dy) > Math.abs(dx) * DIAGONAL_RATIO ? Math.sign(dy) : 0;
+	const nextX = live && (Math.abs(dx) > Math.abs(dy) * DIAGONAL_RATIO) ? Math.sign(dx) : 0;
+	const nextY = live && (Math.abs(dy) > Math.abs(dx) * DIAGONAL_RATIO) ? Math.sign(dy) : 0;
 
 	for(const { type, isHorzAxis, sign } of DIRECTIONS) {
 		const active = (isHorzAxis ? nextX : nextY) === sign;
