@@ -131,14 +131,6 @@ export const createCamera = ({
 				|| configChanged;
 		},
 
-		getWorldX() {
-			return -position.x / scale.x;
-		},
-
-		getWorldY() {
-			return -position.y / scale.y;
-		},
-
 		follow(movement) {
 			target = movement;
 
@@ -166,8 +158,8 @@ export const createCamera = ({
 
 		cameraToScreen(posX, posY) {
 			return {
-				x : posX * config.zoom + position.x,
-				y : posY * config.zoom + position.y,
+				x : posX * scale.x + position.x,
+				y : posY * scale.y + position.y,
 			};
 		},
 
