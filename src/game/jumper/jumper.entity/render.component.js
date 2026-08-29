@@ -5,7 +5,7 @@ import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.j
 
 import { lerp } from "$util/math.js";
 import { FPS60 } from "$util/time.js";
-import { quadOut } from "svelte/easing";
+import { quadInOut } from "svelte/easing";
 
 const RIGHT_EYE_OFFSET = 3;
 const BLUSH_DURATION = 100;
@@ -106,28 +106,21 @@ const createStageLights = ({
 	const stageLight = new Container();
 	const mask = new Graphics();
 	const darkness = new Graphics()
-		.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+		.rect(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2)
 		.fill({ color : COLOR_BLACK, alpha : 0.75 });
-
-	const matchStageLight = () => {
-		stageLight.position.set(camera.getWorldX(), camera.getWorldY());
-		const scale = camera.getScale();
-		// this is fucked
-		stageLight.scale.set(1 / scale.x, 1 / scale.y);
-	};
-
-	matchStageLight();
 
 	stageLight.alpha = 0;
 
 	let max = SPOTLIGHT_DURATION;
 
 	const updateMask = (scale = 8) => {
+		const target = camera.cameraToScreen(movement.getX(), movement.getY());
+
 		mask
 			.clear()
-			.rect(camera.getWorldX(), camera.getWorldY(), CANVAS_WIDTH, CANVAS_HEIGHT)
+			.rect(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2)
 			.fill(COLOR_WHITE)
-			.ellipse(movement.getX(), movement.getY(), width * scale, height * scale)
+			.ellipse(target.x, target.y, width * scale, height * scale)
 			.cut();
 	};
 
@@ -137,12 +130,10 @@ const createStageLights = ({
 
 	stageLight.addChild(darkness);
 
-	world.world.getRenderable().addChild(stageLight);
+	world.world.getScreen().addChild(stageLight);
 
 	return {
 		update(dt) {
-			matchStageLight();
-
 			max = Math.max(0, max - dt);
 
 			const maxT = max / SPOTLIGHT_DURATION;
@@ -151,7 +142,7 @@ const createStageLights = ({
 				stageLight.alpha += 0.08 * dt;
 			}
 
-			updateMask(2 + quadOut(maxT) * 2.6);
+			updateMask(4 + quadInOut(maxT) * 2);
 		},
 
 		destroy() {

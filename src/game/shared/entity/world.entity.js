@@ -33,7 +33,10 @@ const createContainerComponent = ({
 }) => {
 	const entities = [];
 	const entityMap = new Map();
-	const surface = new Container();
+	const screenSurface = new Container();
+	const worldSurface = new Container();
+
+	screenSurface.addChild(worldSurface);
 
 	const isInBounds = (x, y) => x >= 0 && x <= (width - 1) && y >= 0 && y <= (height - 1);
 
@@ -46,7 +49,7 @@ const createContainerComponent = ({
 			entityMap.set(entity.id, entity);
 
 			if(entity?.render?.getRenderable) {
-				surface.addChild(entity.render.getRenderable());
+				worldSurface.addChild(entity.render.getRenderable());
 			}
 
 			// components get a special reference to their world component!
@@ -81,11 +84,15 @@ const createContainerComponent = ({
 		// remove(){} > no removal for the moment
 
 		getRenderable() {
-			return surface;
+			return worldSurface;
+		},
+
+		getScreen() {
+			return screenSurface;
 		},
 
 		destroy() {
-			surface.destroy();
+			screenSurface.destroy();
 		},
 	});
 };

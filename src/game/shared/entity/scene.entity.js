@@ -136,7 +136,7 @@ export const createScene = ({
 				return false;
 			}
 
-			return world.world.getRenderable();
+			return world.world.getScreen();
 		},
 
 		hasUpdate() {
