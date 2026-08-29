@@ -364,7 +364,7 @@ export const createGenerator = ({
 			daily.seed = createdDate.string;
 
 			const maps = {
-				dev : { platforms : DEV_MAP, coins : [] },
+				dev : { platforms : DEV_MAP, coins : [ coinFromPlatform(START_PLATFORM) ], seed : "dev" },
 
 				daily,
 			};
