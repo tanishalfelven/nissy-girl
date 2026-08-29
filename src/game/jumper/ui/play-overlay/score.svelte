@@ -1,5 +1,5 @@
 <script>
-import { SCORE_OPTIONS, EXIT } from "./score.consts.js";
+import { SCORE_OPTIONS, AGAIN } from "./score.consts.js";
 
 import css from "./score.mcss";
 
@@ -7,7 +7,7 @@ const { model } = $props();
 
 const scoreNav = model.createNav({
 	id : "score",
-	initial : EXIT,
+	initial : AGAIN,
 	keys : SCORE_OPTIONS,
 });
 </script>

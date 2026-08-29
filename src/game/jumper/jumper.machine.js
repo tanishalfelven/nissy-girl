@@ -18,7 +18,7 @@ import { inputTriggered } from "$game/util/input-guards.js";
 
 import { BUTTON_START, BUTTON_A, BUTTON_B } from "$game/shared/input.consts.js";
 
-import { EXIT } from "./ui/paused.consts.js";
+import { EXIT, START_OVER } from "./ui/paused.consts.js";
 
 import Menu from "./ui/menu.svelte";
 import Paused from "./ui/paused.svelte";
@@ -279,6 +279,11 @@ export const jumperMachine = createMachine({
 										return;
 									}
 
+									if(option === START_OVER) {
+										enqueue.raise({ type : "RESTART" });
+										return;
+									}
+
 									enqueue.raise({ type : "BACK_TO_PLAY" });
 								}),
 							),
@@ -289,50 +294,62 @@ export const jumperMachine = createMachine({
 				scoring : {
 					entry : withScene((_, { world }) => world.world.get("ui").ui.stopPlay()),
 
-					meta : {
-						load : withScene((_, { world }) => {
-							const ui = world.world.get("ui");
+					initial : "zooming",
 
-							return [
-								Score,
-								{ model : ui.ui.getModel() },
-							];
-						}),
-					},
-
-					invoke : invokeInputComponent(
-						"ui-input",
-						withScene(
-							(_, { world }) => world.world.get("ui").input,
-						),
-					),
-
-					on : {
-						[BUTTON_A] : {
-							guard : inputTriggered,
-							actions : raise({ type : "MENU_OPTION" }),
+					states : {
+						zooming : {
+							after : {
+								2000 : "display",
+							},
 						},
 
-						[BUTTON_START] : {
-							guard : inputTriggered,
-							actions : raise({ type : "MENU_OPTION" }),
-						},
-
-						MENU_OPTION : {
-							actions : enqueueActions(
-								sceneAction(({ enqueue }, { world }) => {
+						display : {
+							meta : {
+								load : withScene((_, { world }) => {
 									const ui = world.world.get("ui");
 
-									const option = ui.ui.getScoreOption();
-
-									if(option === EXIT) {
-										enqueue.raise({ type : "EXIT" });
-										return;
-									}
-
-									enqueue.raise({ type : "RESTART" });
+									return [
+										Score,
+										{ model : ui.ui.getModel() },
+									];
 								}),
+							},
+
+							invoke : invokeInputComponent(
+								"ui-input",
+								withScene(
+									(_, { world }) => world.world.get("ui").input,
+								),
 							),
+
+							on : {
+								[BUTTON_A] : {
+									guard : inputTriggered,
+									actions : raise({ type : "MENU_OPTION" }),
+								},
+
+								[BUTTON_START] : {
+									guard : inputTriggered,
+									actions : raise({ type : "MENU_OPTION" }),
+								},
+
+								MENU_OPTION : {
+									actions : enqueueActions(
+										sceneAction(({ enqueue }, { world }) => {
+											const ui = world.world.get("ui");
+
+											const option = ui.ui.getScoreOption();
+
+											if(option === EXIT) {
+												enqueue.raise({ type : "EXIT" });
+												return;
+											}
+
+											enqueue.raise({ type : "RESTART" });
+										}),
+									),
+								},
+							},
 						},
 					},
 				},

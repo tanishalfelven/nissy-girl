@@ -10,7 +10,7 @@
 	flex-direction: column;
 	align-items: center;
 
-	animation-delay: 2000ms;
+	animation-duration: 80ms;
 }
 
 .score {
@@ -27,6 +27,7 @@
 	margin-bottom: 0;
 	border-color: #006161;
 
+	font-size: calc(23 * spx);
 	color: #dcdcdc;
 
 	background-color: #008080;
@@ -34,17 +35,19 @@
 
 .scorevalue {
 	composes: overlaytext from "./play-overlay.mcss";
-	font-size: calc(20 * spx);
+	font-size: calc(28 * spx);
 	color: #fff;
 }
 
 .scorenav {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: flex-end;
+
+	margin-top: calc(5 * spx);
+	margin-right: calc(60 * spx);
 }
 
 .button {
 	composes: button from "../button.mcss";
-	margin: 0 calc(3 * spx);
 }
