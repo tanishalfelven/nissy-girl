@@ -5,7 +5,7 @@ import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.j
 
 import { lerp } from "$util/math.js";
 import { FPS60 } from "$util/time.js";
-import { quadInOut } from "svelte/easing";
+import { quadOut } from "svelte/easing";
 
 const RIGHT_EYE_OFFSET = 3;
 const BLUSH_DURATION = 100;
@@ -109,7 +109,14 @@ const createStageLights = ({
 		.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 		.fill({ color : COLOR_BLACK, alpha : 0.75 });
 
-	stageLight.position.set(camera.getWorldX(), camera.getWorldY());
+	const matchStageLight = () => {
+		stageLight.position.set(camera.getWorldX(), camera.getWorldY());
+		const scale = camera.getScale();
+		// this is fucked
+		stageLight.scale.set(1 / scale.x, 1 / scale.y);
+	};
+
+	matchStageLight();
 
 	stageLight.alpha = 0;
 
@@ -134,10 +141,7 @@ const createStageLights = ({
 
 	return {
 		update(dt) {
-			stageLight.position.set(camera.getWorldX(), camera.getWorldY());
-			const scale = camera.getScale();
-			// this is fucked
-			stageLight.scale.set(1 / scale.x, 1 / scale.y);
+			matchStageLight();
 
 			max = Math.max(0, max - dt);
 
@@ -147,7 +151,7 @@ const createStageLights = ({
 				stageLight.alpha += 0.08 * dt;
 			}
 
-			updateMask(2 + quadInOut(maxT) * 6);
+			updateMask(2 + quadOut(maxT) * 2.6);
 		},
 
 		destroy() {
