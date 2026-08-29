@@ -61,7 +61,7 @@ export const createBehavior = ({
 
 	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
-	const top = (y) => y - HALFH;
+	const top = (y) => y - height;
 	const right = (x) => x + HALFW;
 
 	const getWrapOffset = () => isWrappingLeft ? leftWrapOffset : rightWrapOffset;
