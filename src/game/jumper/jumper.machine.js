@@ -21,8 +21,10 @@ import { BUTTON_START, BUTTON_A, BUTTON_B } from "$game/shared/input.consts.js";
 import { EXIT } from "./ui/paused.consts.js";
 
 import Menu from "./ui/menu.svelte";
-import PlayOverlay from "./ui/play-overlay/play-overlay.svelte";
 import Paused from "./ui/paused.svelte";
+import PlayOverlay from "./ui/play-overlay/play-overlay.svelte";
+import Countdown from "./ui/play-overlay/countdown.svelte";
+import Score from "./ui/play-overlay/score.svelte";
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -41,6 +43,10 @@ export const jumperMachine = createMachine({
 			actions : assign({
 				generation : ({ event }) => event.data,
 			}),
+		},
+
+		RESTART : {
+			target : ".restart",
 		},
 	},
 
@@ -95,8 +101,26 @@ export const jumperMachine = createMachine({
 			},
 		},
 
+		restart : {
+			after : {
+				// ! xstate bug when using always with reenter true, this seems to force correct teardown
+				1 : "game",
+			},
+		},
+
 		game : {
-			exit : withScene((_, { world }) => world.world.get("ui").ui.stopPlay()),
+			exit : withScene((_, { world }) => world.world.get("ui").ui.exitPlay()),
+
+			meta : {
+				load : withScene((_, { world }) => {
+					const ui = world.world.get("ui");
+
+					return [
+						PlayOverlay,
+						{ model : ui.ui.getModel() },
+					];
+				}),
+			},
 
 			invoke : [
 				invokeScene({
@@ -136,6 +160,10 @@ export const jumperMachine = createMachine({
 			],
 
 			on : {
+				JUMPER_SUCCESS : {
+					target : ".scoring",
+				},
+
 				EXIT : {
 					target : "menu",
 				},
@@ -145,17 +173,6 @@ export const jumperMachine = createMachine({
 
 			states : {
 				playing : {
-					meta : {
-						load : withScene((_, { world }) => {
-							const ui = world.world.get("ui");
-
-							return [
-								PlayOverlay,
-								{ model : ui.ui.getModel() },
-							];
-						}),
-					},
-
 					on : {
 						PAUSE : "pause",
 					},
@@ -164,12 +181,23 @@ export const jumperMachine = createMachine({
 
 					states : {
 						countdown : {
+							meta : {
+								load : withScene((_, { world }) => {
+									const ui = world.world.get("ui");
+
+									return [
+										Countdown,
+										{ model : ui.ui.getModel() },
+									];
+								}),
+							},
+
 							on : {
-								START_PLAY : "scoring",
+								START_PLAY : "active",
 							},
 						},
 
-						scoring : {
+						active : {
 							invoke : invokeInputComponent(
 								"jumper-input",
 								withScene(
@@ -235,7 +263,7 @@ export const jumperMachine = createMachine({
 						},
 
 						BACK_TO_PLAY : {
-							target : "playing.scoring",
+							target : "playing.active",
 						},
 
 						MENU_OPTION : {
@@ -251,6 +279,57 @@ export const jumperMachine = createMachine({
 									}
 
 									enqueue.raise({ type : "BACK_TO_PLAY" });
+								}),
+							),
+						},
+					},
+				},
+
+				scoring : {
+					entry : withScene((_, { world }) => world.world.get("ui").ui.stopPlay()),
+
+					meta : {
+						load : withScene((_, { world }) => {
+							const ui = world.world.get("ui");
+
+							return [
+								Score,
+								{ model : ui.ui.getModel() },
+							];
+						}),
+					},
+
+					invoke : invokeInputComponent(
+						"ui-input",
+						withScene(
+							(_, { world }) => world.world.get("ui").input,
+						),
+					),
+
+					on : {
+						[BUTTON_A] : {
+							guard : inputTriggered,
+							actions : raise({ type : "MENU_OPTION" }),
+						},
+
+						[BUTTON_START] : {
+							guard : inputTriggered,
+							actions : raise({ type : "MENU_OPTION" }),
+						},
+
+						MENU_OPTION : {
+							actions : enqueueActions(
+								sceneAction(({ enqueue }, { world }) => {
+									const ui = world.world.get("ui");
+
+									const option = ui.ui.getScoreOption();
+
+									if(option === EXIT) {
+										enqueue.raise({ type : "EXIT" });
+										return;
+									}
+
+									enqueue.raise({ type : "RESTART" });
 								}),
 							),
 						},

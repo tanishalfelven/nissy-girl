@@ -76,6 +76,14 @@ export const createCamera = ({
 				|| configChanged;
 		},
 
+		getWorldX() {
+			return -position.x;
+		},
+
+		getWorldY() {
+			return -position.y;
+		},
+
 		follow(movement) {
 			target = movement;
 

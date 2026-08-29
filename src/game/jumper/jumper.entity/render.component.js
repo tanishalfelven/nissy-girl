@@ -1,11 +1,18 @@
 import JumperPng from "./assets/jumper.png";
 import { Assets, Sprite, Container, Graphics } from "pixi.js";
 import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/screens/render.consts.js";
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
 
 import { lerp } from "$util/math.js";
+import { FPS60 } from "$util/time.js";
+import { quadInOut } from "svelte/easing";
 
 const RIGHT_EYE_OFFSET = 3;
 const BLUSH_DURATION = 100;
+
+// halfway thru blush is max animation
+// save it as a reference and use that to determine stop time for ending it (finish game just leaves it on indefiniteyl)
+const BLUSH_FINISH_FREEZE = BLUSH_DURATION / 2;
 
 // equal bound smooth step
 const smoothStep = (t, bound) =>
@@ -22,6 +29,10 @@ const createFace = ({ physics, behavior }) => {
 	return {
 		getRenderable() {
 			return face;
+		},
+
+		destroy() {
+			face.destroy();
 		},
 
 		update(dt, blushT) {
@@ -82,14 +93,75 @@ const createFace = ({ physics, behavior }) => {
 	};
 };
 
+const SPOTLIGHT_DURATION = 500 / FPS60;
+
+const createStageLights = ({
+	world,
+	movement,
+	width,
+	height,
+}) => {
+	const { camera } = world;
+
+	const cameraX = camera.getWorldX();
+	const cameraY = camera.getWorldY();
+
+	const stageLight = new Container();
+	const mask = new Graphics();
+	const darkness = new Graphics()
+		.rect(cameraX, cameraY, CANVAS_WIDTH, CANVAS_HEIGHT)
+		.fill({ color : COLOR_BLACK, alpha : 0.75 });
+
+	stageLight.alpha = 0;
+
+	let max = SPOTLIGHT_DURATION;
+
+	const updateMask = (scale = 8) => {
+		mask
+			.clear()
+			.rect(cameraX, cameraY, CANVAS_WIDTH, CANVAS_HEIGHT)
+			.fill(COLOR_WHITE)
+			.ellipse(movement.getX(), movement.getY(), width * scale, height * scale)
+			.cut();
+	};
+
+	updateMask();
+
+	darkness.mask = mask;
+
+	stageLight.addChild(darkness);
+
+	world.world.getRenderable().addChild(stageLight);
+
+	return {
+		update(dt) {
+			max = Math.max(0, max - dt);
+
+			const maxT = max / SPOTLIGHT_DURATION;
+
+			if(stageLight.alpha < 1) {
+				stageLight.alpha += 0.08 * dt;
+			}
+
+			updateMask(2 + quadInOut(maxT) * 6);
+		},
+
+		destroy() {
+			stageLight.destroy();
+		},
+	};
+};
+
 const createJumper = ({
 	width,
 	height,
 	movement,
 	physics,
 	behavior,
-	offset = 0,
 	enabled = true,
+	world,
+	// offset used for mirrored jumper
+	offset = 0,
 }) => {
 	const jumperRenderable = new Container({
 		width,
@@ -103,6 +175,8 @@ const createJumper = ({
 		y : height / 2,
 	});
 	const face = createFace({ physics, behavior });
+
+	let stageLights = false;
 
 	jumperRenderable.addChild(jumperSprite);
 	jumperRenderable.addChild(face.getRenderable());
@@ -131,6 +205,10 @@ const createJumper = ({
 				return;
 			}
 
+			if(stageLights) {
+				stageLights.update(dt);
+			}
+
 			updatePosition();
 
 			if(behavior.isJumpFrame()) {
@@ -145,6 +223,15 @@ const createJumper = ({
 			}
 
 			face.update(dt, blushT);
+		},
+
+		stageLights() {
+			stageLights = createStageLights({
+				movement,
+				world,
+				width,
+				height,
+			});
 		},
 
 		setOffset(newOffset) {
@@ -171,6 +258,11 @@ const createJumper = ({
 
 		destroy() {
 			jumperRenderable.destroy();
+			face.destroy();
+
+			if(stageLights) {
+				stageLights.destroy();
+			}
 		},
 	};
 };
@@ -191,6 +283,7 @@ export const createJumperRender = ({
 		getY : movement.getY,
 		physics,
 		behavior,
+		world,
 	});
 
 	const mirror = createJumper({
@@ -203,6 +296,7 @@ export const createJumperRender = ({
 	});
 
 	let blushDuration = 0;
+	let isGameFinished = false;
 
 	return {
 		async load() {
@@ -226,6 +320,12 @@ export const createJumperRender = ({
 			blushDuration = BLUSH_DURATION;
 		},
 
+		finishGame() {
+			blushDuration = BLUSH_DURATION;
+			isGameFinished = true;
+			jumper.stageLights();
+		},
+
 		update(dt) {
 			if(behavior.isWrapping() && !mirror.getEnabled()) {
 				mirror.setOffset(behavior.getWrapOffset());
@@ -242,6 +342,10 @@ export const createJumperRender = ({
 			mirror.update(dt, blush);
 
 			if(isBlushing) {
+				if(isGameFinished && blushDuration <= BLUSH_FINISH_FREEZE) {
+					return;
+				}
+
 				blushDuration = Math.max(0, blushDuration - dt);
 			}
 		},

@@ -305,6 +305,10 @@ export const createBehavior = ({
 							if(targetY !== result.y) {
 								lastPlatformIndex = result.index;
 								isGrounded = true;
+
+								if(platforms.bounds.getIsFinishPlatform(lastPlatformIndex)) {
+									world.world.notifyGame({ type : "JUMPER_SUCCESS" });
+								}
 							}
 						},
 					},

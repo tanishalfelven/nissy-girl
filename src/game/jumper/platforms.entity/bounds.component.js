@@ -3,6 +3,7 @@ import { findIntersectionInZone, movesThroughPlatform } from "./logic.js";
 
 export const createBounds = ({ platforms, bounds }) => {
 	const startPlatform = platforms[0];
+	const endPlatformIndex = platforms.length - 1;
 
 	const platformsByZone = platforms.reduce((accPlatformByZone, platform, index) => {
 		if(!accPlatformByZone.has(platform.zone)) {
@@ -19,11 +20,11 @@ export const createBounds = ({ platforms, bounds }) => {
 
 	const zoneBounds = [];
 
-	for(const [ zone, platforms ] of platformsByZone) {
+	for(const [ zone, zonePlatforms ] of platformsByZone) {
 		zoneBounds.push({
 			zone,
-			startY : platforms[0].platform.y,
-			endY : platforms[platforms.length - 1].platform.y,
+			startY : zonePlatforms[0].platform.y,
+			endY : zonePlatforms[zonePlatforms.length - 1].platform.y,
 		});
 	}
 
@@ -50,6 +51,10 @@ export const createBounds = ({ platforms, bounds }) => {
 			const startPlatform = platforms[0];
 
 			return { x : startPlatform.x + startPlatform.width / 2, y : startPlatform.y };
+		},
+
+		getIsFinishPlatform(index) {
+			return index === endPlatformIndex;
 		},
 
 		remainsGrounded(index, x, y, width) {

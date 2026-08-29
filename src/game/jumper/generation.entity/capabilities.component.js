@@ -160,6 +160,7 @@ export const createCapabilities = ({
 				getSpawn : () => SIMULATE_SPAWN,
 				remainsGrounded : sim.groundedResolve,
 				moveIntersectsPlatform : sim.intersectionResolve,
+				getIsFinishPlatform : noopFalseFunction,
 			},
 		},
 	}));

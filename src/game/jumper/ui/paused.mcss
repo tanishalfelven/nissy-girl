@@ -14,5 +14,4 @@
 
 .button {
 	composes: button from "./button.mcss";
-	margin-bottom: calc(5 * spx);
 }

@@ -1,0 +1,24 @@
+@value spx from "$nissy-girl/screens/screens.mcss";
+
+.scorecontainer {
+	position: absolute;
+	top: calc(15 * spx);
+	display: flex;
+	flex-direction: row;
+}
+
+.score {
+	composes: button from "../button.mcss";
+	display: flex;
+	flex-direction: column;
+	margin-right: calc(5 * spx);
+}
+
+.scorenav {
+	display: flex;
+	flex-direction: column;
+}
+
+.button {
+	composes: button from "../button.mcss";
+}

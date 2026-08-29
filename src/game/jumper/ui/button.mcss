@@ -9,6 +9,7 @@
 	align-items: center;
 	justify-content: center;
 
+	margin-bottom: calc(5 * spx);
 	padding: 0 calc(4 * spx);
 	border: spx solid shadowred;
 

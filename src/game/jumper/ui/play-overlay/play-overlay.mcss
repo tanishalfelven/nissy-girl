@@ -14,21 +14,36 @@
 
 	position: absolute;
 	top: 0;
-	left: calc(0.83 * screenwidth);
+	left: 43%;
 
 	font-size: calc(12 * spx);
-	color: #d9d9d9;
 	text-align: left;
 }
 
 .coins {
+	composes: afterimg from "$util/util.mcss";
 	composes: overlaytext;
 
 	position: absolute;
-	top: calc(11 * spx);
+	top: 0;
 	right: calc(1.75 * spx);
 
-	font-size: calc(10 * spx);
-	color: #d9d9d9;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	font-size: calc(7 * spx);
 	text-align: right;
+
+	&::after {
+		content: "";
+
+		display: block;
+
+		width: calc(5 * spx);
+		height: calc(6 * spx);
+		margin-left: calc(1 * spx);
+
+		background-image: url("./assets/coin.png");
+	}
 }

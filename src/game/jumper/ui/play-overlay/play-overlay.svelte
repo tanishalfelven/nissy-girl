@@ -1,17 +1,17 @@
 <script>
-import Countdown from "./countdown.svelte";
-
-const { model } = $props();
+const { model, children } = $props();
 
 import css from "./play-overlay.mcss";
 </script>
 
 <div class={css.game}>
-	<div class={css.timer}>{model.elapsedTime}</div>
+	{@render children?.()}
 
-	<div class={css.coins}>{model.collectedCoins} / {model.maxCoins}</div>
+	{#if model.displayTime()}
+		<div class={css.timer}>{model.elapsedTime}</div>
+	{/if}
 
-	{#if !model.isPlaying}
-		<Countdown { model } />
+	{#if model.collectedCoins > 0}
+		<div class={css.coins}>{model.collectedCoins}</div>
 	{/if}
 </div>
