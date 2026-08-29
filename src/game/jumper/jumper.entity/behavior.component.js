@@ -400,6 +400,12 @@ export const createBehavior = ({
 			},
 
 			done : {
+				entry : () => {
+					physics.cancelX();
+					physics.cancelY();
+					physics.disableGravity();
+				},
+
 				type : "final",
 			},
 		},
