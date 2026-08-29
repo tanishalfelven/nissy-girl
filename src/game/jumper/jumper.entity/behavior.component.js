@@ -3,6 +3,7 @@ import { createActor, createMachine, raise } from "xstate";
 import { clamp, isAABB } from "$util/math.js";
 
 import { cubicInOut } from "svelte/easing";
+import { createTemporalWindow } from "$game/util/temporal.js";
 
 const HIGH_JUMP = -2.6;
 const INITIAL_JUMP = -1.4;
@@ -16,6 +17,9 @@ const MAX_PANIC = 18;
 
 const DUST_OFFSET = 0;
 const DUST_SCALE = 0.65;
+
+const COYOTE_JUMP_DURATION = 75;
+const BUFFER_JUMP_DURATION = 75;
 
 export const createBehavior = ({
 	world,
@@ -58,6 +62,9 @@ export const createBehavior = ({
 
 	const leftWrapOffset = worldWidth - HALFW;
 	const rightWrapOffset = -worldWidth + HALFW;
+
+	const coyoteJumpWindow = createTemporalWindow(COYOTE_JUMP_DURATION);
+	const jumpBufferWindow = createTemporalWindow(BUFFER_JUMP_DURATION);
 
 	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
@@ -160,6 +167,25 @@ export const createBehavior = ({
 			},
 
 			EXIT : ".done",
+
+			JUMP : [
+				{
+					guard : () => crouchIntent,
+					actions : () => {
+						physics.addY(HIGH_JUMP);
+						movement.setSpeed(blastAirSpeed);
+						spawnLateralDust();
+						isHighJump = true;
+					},
+					target : ".airborne.jumping",
+				},
+				{
+					actions : () => {
+						physics.addY(INITIAL_JUMP);
+					},
+					target : ".airborne.jumping",
+				},
+			],
 		},
 
 		states : {
@@ -186,6 +212,7 @@ export const createBehavior = ({
 							actions : [
 								() => {
 									lastPlatformIndex = -1;
+									coyoteJumpWindow.start();
 								},
 								raise({ type : "PROCESS_HORZ" }),
 							],
@@ -198,14 +225,12 @@ export const createBehavior = ({
 					],
 
 					TICK_Y : {
-						guard : () => jumpIntent,
+						guard : () => jumpIntent || jumpBufferWindow.active(),
 						actions : [
 							raise({ type : "JUMP" }),
-							() => physics.addY(INITIAL_JUMP),
+							() => jumpBufferWindow.stop(),
 						],
 					},
-
-					JUMP : "airborne.jumping",
 				},
 
 				states : {
@@ -241,16 +266,8 @@ export const createBehavior = ({
 						on : {
 							TICK_Y : [
 								{
-									guard : () => jumpIntent && crouchIntent,
-									actions : [
-										raise({ type : "JUMP" }),
-										() => {
-											physics.addY(HIGH_JUMP);
-											movement.setSpeed(blastAirSpeed);
-											spawnLateralDust();
-											isHighJump = true;
-										},
-									],
+									guard : () => jumpIntent,
+									actions : raise({ type : "JUMP" }),
 								},
 								{
 									guard : () => !crouchIntent,
@@ -366,6 +383,8 @@ export const createBehavior = ({
 					},
 
 					falling : {
+						exit : () => coyoteJumpWindow.stop(),
+
 						on : {
 							TICK_Y : [
 								{
@@ -386,8 +405,16 @@ export const createBehavior = ({
 									],
 								},
 								{
+									guard : () => coyoteJumpWindow.active() && jumpIntent,
+									actions : raise({ type : "JUMP" }),
+								},
+								{
 									actions : [
 										() => {
+											if(jumpIntent) {
+												jumpBufferWindow.start();
+											}
+
 											fallTime++;
 										},
 										raise({ type : "PROCESS_VERT" }),
@@ -458,7 +485,10 @@ export const createBehavior = ({
 					|| isImpact;
 		},
 
-		update() {
+		update(dt) {
+			coyoteJumpWindow.update(dt);
+			jumpBufferWindow.update(dt);
+
 			behavior.send({ type : "TICK_X" });
 			behavior.send({ type : "TICK_Y" });
 
