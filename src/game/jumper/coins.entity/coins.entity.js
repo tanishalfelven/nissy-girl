@@ -14,9 +14,9 @@ const mapCoinToCoin = (coin) => {
 export const createCoins = ({
 	world,
 }) => {
-	const { generation } = world.world.getContext();
+	const { generation, selected } = world.world.getContext();
 
-	const { coins : mapCoins } = generation.maps.daily;
+	const { coins : mapCoins } = generation.maps[selected];
 
 	const coins = mapCoins.map(mapCoinToCoin);
 

@@ -36,6 +36,7 @@ export const jumperMachine = createMachine({
 
 	context : {
 		generation : false,
+		selected : "daily",
 	},
 
 	on : {

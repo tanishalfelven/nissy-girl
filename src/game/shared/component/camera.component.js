@@ -50,8 +50,20 @@ export const createCamera = ({
 		const t = animateToTarget.elapsed / animateToTarget.duration;
 		const eased = quadInOut(t);
 
-		const targetX = animateToPos.getX(width, animateToTarget.x);
-		const targetY = animateToPos.getY(height, animateToTarget.y);
+		scale.x = lerp(
+			eased,
+			animateToTarget.fromZoom.x,
+			animateToTarget.zoom.x,
+		);
+
+		scale.y = lerp(
+			eased,
+			animateToTarget.fromZoom.y,
+			animateToTarget.zoom.y,
+		);
+
+		const targetX = animateToPos.getX(width, scale.x, animateToTarget.x);
+		const targetY = animateToPos.getY(height, scale.y, animateToTarget.y);
 
 		position.x = lerp(
 			eased,
@@ -68,16 +80,13 @@ export const createCamera = ({
 		if(animateToTarget.elapsed >= animateToTarget.duration) {
 			position.x = targetX;
 			position.y = targetY;
+
+			scale.x = animateToTarget.zoom.x;
+			scale.y = animateToTarget.zoom.y;
 		}
 	};
 
-	const setTransform = (dt) => {
-		if(animateToTarget) {
-			animateTo(dt);
-
-			return;
-		}
-
+	const setTransform = () => {
 		if(!configChanged && !target) {
 			return;
 		}
@@ -126,11 +135,11 @@ export const createCamera = ({
 		},
 
 		getWorldX() {
-			return -position.x;
+			return -position.x / scale.x;
 		},
 
 		getWorldY() {
-			return -position.y;
+			return -position.y / scale.y;
 		},
 
 		follow(movement) {
@@ -142,6 +151,7 @@ export const createCamera = ({
 		animateTo({
 			x,
 			y,
+			zoom,
 			duration = 300,
 		}) {
 			animateToTarget = {
@@ -149,6 +159,8 @@ export const createCamera = ({
 				y,
 				duration,
 				elapsed : 0,
+				zoom,
+				fromZoom : { x : scale.x, y : scale.y },
 				fromX : position.x,
 				fromY : position.y,
 			};
@@ -187,6 +199,12 @@ export const createCamera = ({
 		},
 
 		update(dt) {
+			if(animateToTarget) {
+				animateTo(dt);
+
+				return;
+			}
+
 			updateZoom();
 
 			setTransform(dt);

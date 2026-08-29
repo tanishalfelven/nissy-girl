@@ -16,6 +16,8 @@ const calculateScore = (elapsedTime, coins) => {
 export const createJumperUI = ({
 	world,
 }) => {
+	const { generation, selected } = world.world.getContext();
+
 	const navComponent = createUINav();
 
 	let isPlaying = $state(false);
@@ -53,6 +55,10 @@ export const createJumperUI = ({
 
 		get score() {
 			return score;
+		},
+
+		get seed() {
+			return generation.maps[selected].seed || "";
 		},
 
 		displayTime() {
@@ -117,7 +123,8 @@ export const createJumperUI = ({
 
 					world.camera.animateTo({
 						x : CANVAS_WIDTH / 2,
-						y : jumper.movement.getY() - (CANVAS_HEIGHT * 0.33),
+						y : jumper.movement.getY() - (CANVAS_HEIGHT * 0.16),
+						zoom : { x : 2, y : 2 },
 						duration : 300,
 					});
 				},

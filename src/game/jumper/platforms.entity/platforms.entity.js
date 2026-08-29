@@ -6,9 +6,9 @@ import { createBounds } from "./bounds.component.js";
 export const createPlatforms = ({
 	world,
 }) => {
-	const { generation } = world.world.getContext();
+	const { generation, selected } = world.world.getContext();
 
-	const { platforms } = generation.maps.daily;
+	const { platforms } = generation.maps[selected];
 	const bounds = world.world.getBounds();
 
 	return createEntity({

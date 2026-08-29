@@ -357,11 +357,11 @@ export const createGenerator = ({
 
 			const createdDate = getDate();
 
-			const daily = generate(capabilityData, getSeededRandom(hash(createdDate)));
+			const daily = generate(capabilityData, getSeededRandom(hash(createdDate.date)));
 
 			// not quite to the point where we force a new day on the user if it occurs during play
 			// but lets at least avoid saying the wrong one...
-			daily.seed = createdDate;
+			daily.seed = createdDate.string;
 
 			const maps = {
 				dev : { platforms : DEV_MAP, coins : [] },

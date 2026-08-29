@@ -51,7 +51,7 @@
 .start {
 	composes: button from "./button.mcss";
 	position: absolute;
-	right: calc(6 * spx);
+	right: calc(3 * spx);
 }
 
 .platforms {

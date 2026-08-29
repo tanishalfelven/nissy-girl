@@ -17,3 +17,23 @@
 		transform: translate(0, 0);
 	}
 }
+
+@keyframes fadein {
+	0% {
+		transform: scale(1.1);
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.fadein {
+	animation-name: fadein;
+	animation-duration: 150ms;
+	animation-timing-function: linear;
+	animation-fill-mode: backwards;
+	animation-iteration-count: 1;
+}

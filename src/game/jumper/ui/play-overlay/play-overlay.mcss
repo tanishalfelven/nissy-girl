@@ -10,6 +10,7 @@
 }
 
 .timer {
+	composes: fadein from "$util/animations.mcss";
 	composes: overlaytext;
 
 	position: absolute;
@@ -18,6 +19,8 @@
 
 	font-size: calc(12 * spx);
 	text-align: left;
+
+	opacity: 0.9;
 }
 
 .coins {
@@ -26,14 +29,16 @@
 
 	position: absolute;
 	top: 0;
-	right: calc(1.75 * spx);
+	right: calc(3 * spx);
 
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 
-	font-size: calc(7 * spx);
+	font-size: calc(9 * spx);
 	text-align: right;
+
+	opacity: 0.8;
 
 	&::after {
 		content: "";
@@ -46,4 +51,16 @@
 
 		background-image: url("./assets/coin.png");
 	}
+}
+
+.seed {
+	composes: overlaytext;
+
+	position: absolute;
+	top: 0;
+	left: calc(3 * spx);
+
+	font-size: calc(9 * spx);
+
+	opacity: 0.5;
 }

@@ -7,6 +7,12 @@ import css from "./play-overlay.mcss";
 <div class={css.game}>
 	{@render children?.()}
 
+	{#if model.seed}
+		<div class={css.seed}>
+			{model.seed}
+		</div>
+	{/if}
+
 	{#if model.displayTime()}
 		<div class={css.timer}>{model.elapsedTime}</div>
 	{/if}

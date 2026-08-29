@@ -6,4 +6,4 @@ export {
 
 export const AGAIN = "try again";
 
-export const SCORE_OPTIONS = [ EXIT, AGAIN ];
+export const SCORE_OPTIONS = [ AGAIN, EXIT ];

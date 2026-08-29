@@ -48,8 +48,8 @@ const panPaddedCamera = {
 };
 
 export const animateToPos = {
-	getX : (width, x) => -x + width / 2,
-	getY : (height, y) => -y + height / 2,
+	getX : (width, zoom, x) => -x * zoom + width / 2,
+	getY : (height, zoom, y) => -y * zoom + height / 2,
 };
 
 export const CAMERA = {

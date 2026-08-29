@@ -13,8 +13,6 @@ const pauseNav = model.createNav({
 </script>
 
 <div class={css.paused}>
-	<div class={css.header}>PAUSED</div>
-
 	<div class={css.options}>
 		{#each PAUSED_OPTIONS as option}
 			<div class={css.button} use:pauseNav.navPoint>

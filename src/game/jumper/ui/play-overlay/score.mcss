@@ -1,24 +1,53 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
 
 .scorecontainer {
+	composes: fadein from "$util/animations.mcss";
+
 	position: absolute;
 	top: calc(15 * spx);
+
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+	align-items: center;
+
+	animation-delay: 2000ms;
 }
 
 .score {
-	composes: button from "../button.mcss";
 	display: flex;
-	flex-direction: column;
-	margin-right: calc(5 * spx);
+	flex-direction: row;
+
+	margin-bottom: calc(5 * spx);
+	padding-right: calc(5 * spx);
+	padding-left: calc(5 * spx);
+}
+
+.scorelabel {
+	composes: overlaytext from "./play-overlay.mcss";
+	composes: button from "../button.mcss";
+
+	margin-right: calc(2 * spx);
+	margin-bottom: 0;
+	border-color: #006161;
+
+	color: #dcdcdc;
+
+	background-color: #008080;
+}
+
+.scorevalue {
+	composes: overlaytext from "./play-overlay.mcss";
+	font-size: calc(18 * spx);
+	color: #fff;
 }
 
 .scorenav {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	justify-content: flex-end;
 }
 
 .button {
 	composes: button from "../button.mcss";
+	margin: 0 calc(3 * spx);
 }

@@ -16,8 +16,13 @@ export const toString = (time) => {
 	return `${padStart(min, 2)}:${padStart(s, 2)}.${padStart(ms, 1)}`;
 };
 
-export const getDate = () => {
-	const today = new Date();
+const todayMT = () => new Date(new Date().toLocaleString("en-US", { timeZone : "America/Denver" }));
 
-	return `${today.getMonth()} ${today.getDate()}`;
+export const getDate = () => {
+	const today = todayMT();
+
+	return {
+		date : `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
+		string : `${today.toLocaleString("default", { month : "short" })} ${today.getDate()}`,
+	};
 };

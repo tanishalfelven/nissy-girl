@@ -13,12 +13,13 @@
 	padding: 0 calc(4 * spx);
 	border: spx solid shadowred;
 
-	color: white;
+	color: rgb(255 255 255 / 50%);
 	text-align: center;
 
 	background-color: bgred;
 
 	&[data-selected="true"] {
+		color: rgb(255 255 255 / 90%);
 		background-color: highlightred;
 		animation: highlightborder 800ms linear infinite;
 	}
