@@ -16,17 +16,14 @@
 .score {
 	display: flex;
 	flex-direction: row;
-
 	margin-bottom: calc(5 * spx);
-	padding-right: calc(5 * spx);
-	padding-left: calc(5 * spx);
 }
 
 .scorelabel {
 	composes: overlaytext from "./play-overlay.mcss";
 	composes: button from "../button.mcss";
 
-	margin-right: calc(2 * spx);
+	margin-right: calc(3 * spx);
 	margin-bottom: 0;
 	border-color: #006161;
 
@@ -37,7 +34,7 @@
 
 .scorevalue {
 	composes: overlaytext from "./play-overlay.mcss";
-	font-size: calc(18 * spx);
+	font-size: calc(20 * spx);
 	color: #fff;
 }
 

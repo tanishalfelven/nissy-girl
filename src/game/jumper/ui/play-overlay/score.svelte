@@ -14,7 +14,7 @@ const scoreNav = model.createNav({
 
 <div class={css.scorecontainer}>
 	<div class={css.score}>
-		<div class={css.scorelabel}>score</div>
+		<div class={css.scorelabel}>SCORE</div>
 		<div class={css.scorevalue}>{model.score}</div>
 	</div>
 
