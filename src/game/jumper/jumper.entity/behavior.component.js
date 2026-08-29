@@ -66,8 +66,6 @@ export const createBehavior = ({
 	const coyoteJumpWindow = createTemporalWindow(COYOTE_JUMP_DURATION);
 	const jumpBufferWindow = createTemporalWindow(BUFFER_JUMP_DURATION);
 
-	let isFinished = false;
-
 	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
 	const top = (y) => y - height;
@@ -84,6 +82,17 @@ export const createBehavior = ({
 
 	const isStartWrap = (x) => _isWrappingLeft(x) || _isWrappingRight(x);
 	const isEndWrap = (x) => wrapLeftDone(x) || wrapRightDone(x);
+
+	const stop = () => {
+		coyoteJumpWindow.stop();
+		jumpBufferWindow.stop();
+		physics.cancelX();
+		physics.cancelY();
+		physics.disableGravity();
+
+		jumpIntent = false;
+		crouchIntent = false;
+	};
 
 	const spawnDustTrail = (yOffset = HALFH, scale = 1) => {
 		particles.spawnDust(
@@ -171,10 +180,6 @@ export const createBehavior = ({
 			EXIT : ".done",
 
 			JUMP : [
-				{
-					// noop jumps if we are finished
-					guard : () => isFinished,
-				},
 				{
 					guard : () => crouchIntent,
 					actions : () => {
@@ -332,7 +337,7 @@ export const createBehavior = ({
 								isGrounded = true;
 
 								if(platforms.bounds.getIsFinishPlatform(lastPlatformIndex)) {
-									isFinished = true;
+									stop();
 
 									world.world.notifyGame({ type : "JUMPER_SUCCESS" });
 								}
@@ -435,12 +440,6 @@ export const createBehavior = ({
 			},
 
 			done : {
-				entry : () => {
-					physics.cancelX();
-					physics.cancelY();
-					physics.disableGravity();
-				},
-
 				type : "final",
 			},
 		},
