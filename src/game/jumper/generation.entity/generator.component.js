@@ -342,7 +342,7 @@ export const createGenerator = ({
 			const capabilityData = capabilities.get();
 
 			const maps = {
-				dev : DEV_MAP,
+				dev : { platforms : DEV_MAP, coins : [] },
 
 				gen_test : generate(capabilityData),
 			};
