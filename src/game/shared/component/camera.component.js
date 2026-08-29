@@ -34,6 +34,8 @@ export const createCamera = ({
 	// { x, y } of target postion
 	let lastFollow = false;
 
+	let lastCameraY = position.y;
+
 	// animate to camera position, independent of target and takes precedence
 	let animateToTarget = false;
 
@@ -83,19 +85,17 @@ export const createCamera = ({
 		}
 	};
 
-	const setTransform = () => {
+	const setTransform = (dt, alpha) => {
 		if(!configChanged && !target) {
 			return;
 		}
 
 		const pos = target.getPosition();
+		const needsLerp = config.interpolateY && alpha > 0 && lastFollow.y !== pos.y;
 
-		if(!configChanged && !coordsDiffer(lastFollow, pos)) {
+		if(!configChanged && !needsLerp && !coordsDiffer(lastFollow, pos)) {
 			return;
 		}
-
-		lastFollow = pos;
-		configChanged = false;
 
 		position.x = CAMERA[config.style].getX(
 			width,
@@ -106,7 +106,7 @@ export const createCamera = ({
 			rightPadding,
 		);
 
-		position.y = CAMERA[config.style].getY(
+		const nextY = CAMERA[config.style].getY(
 			height,
 			config.zoom,
 			pos.y,
@@ -114,6 +114,25 @@ export const createCamera = ({
 			topPadding,
 			bottomPadding,
 		);
+
+		if(needsLerp) {
+			const lastY = CAMERA[config.style].getY(
+				height,
+				config.zoom,
+				lastFollow.y,
+				lastCameraY,
+				topPadding,
+				bottomPadding,
+			);
+
+			position.y = lerp(alpha, lastY, nextY);
+		} else {
+			position.y = nextY;
+		}
+
+		lastCameraY = position.y;
+		lastFollow = pos;
+		configChanged = false;
 	};
 
 	const updateZoom = () => {
@@ -192,7 +211,7 @@ export const createCamera = ({
 			return config.style === CAMERA_STYLE_FIXED;
 		},
 
-		update(dt) {
+		update(dt, alpha) {
 			if(animateToTarget) {
 				animateTo(dt);
 
@@ -201,7 +220,7 @@ export const createCamera = ({
 
 			updateZoom();
 
-			setTransform(dt);
+			setTransform(dt, alpha);
 		},
 	};
 };

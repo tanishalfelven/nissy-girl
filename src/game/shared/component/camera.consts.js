@@ -4,9 +4,11 @@ export const CAMERA_STYLE_FIXED = 0;
 export const CAMERA_STYLE_PAN = 1;
 export const CAMERA_STYLE_PAN_PADDED = 2;
 
-export const FIXED_1X_CAMERA = { zoom : 1, style : CAMERA_STYLE_FIXED };
-export const PADPAN_1X_CAMERA = { zoom : 1, style : CAMERA_STYLE_PAN_PADDED };
-export const PAN_3X_CAMERA = { zoom : 3, style : CAMERA_STYLE_PAN };
+export const cameraConfig = ({ zoom, style, interpolateY = false }) => ({ zoom, style, interpolateY });
+
+export const FIXED_1X_CAMERA = cameraConfig({ zoom : 1, style : CAMERA_STYLE_FIXED });
+export const PADPAN_1X_CAMERA = cameraConfig({ zoom : 1, style : CAMERA_STYLE_PAN_PADDED });
+export const PAN_3X_CAMERA = cameraConfig({ zoom : 3, style : CAMERA_STYLE_PAN });
 
 const fixedCamera = {
 	getX : (width, zoom) => width * (1 - zoom) / 2,

@@ -163,13 +163,13 @@ export const createScene = ({
 			}
 		},
 
-		frame(dt) {
+		frame(dt, alpha) {
 			for(const [ entity, updateFunc ] of frameUpdate) {
 				if(!isAlive) {
 					return;
 				}
 
-				updateFunc(dt, entity);
+				updateFunc(dt, alpha, entity);
 			}
 		},
 

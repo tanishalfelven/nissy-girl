@@ -45,7 +45,7 @@ export const gameloop = {
 							simulationSteps++;
 						}
 
-						scene.frame(dt);
+						scene.frame(dt, acc / GAME_TICK);
 
 						screen.render(scene?.getRenderable?.());
 					}

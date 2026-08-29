@@ -180,10 +180,13 @@ const createJumper = ({
 	jumperRenderable.addChild(jumperSprite);
 	jumperRenderable.addChild(face.getRenderable());
 
-	const updatePosition = () => {
+	const updatePosition = (alpha) => {
+		let y = movement.getY();
+		const lastY = movement.getLastY();
+
 		jumperRenderable.position.set(
 			movement.getX() + offset,
-			movement.getY(),
+			lerp(alpha, lastY, y),
 		);
 	};
 
@@ -199,7 +202,7 @@ const createJumper = ({
 	updateEnabled();
 
 	return {
-		update(dt, blushT) {
+		update(dt, alpha, blushT) {
 			if(!enabled) {
 				return;
 			}
@@ -208,7 +211,7 @@ const createJumper = ({
 				stageLights.update(dt);
 			}
 
-			updatePosition();
+			updatePosition(alpha);
 
 			if(behavior.isJumpFrame()) {
 				jumperRenderable.scale.x = 1.4;
@@ -292,6 +295,7 @@ export const createJumperRender = ({
 		physics,
 		behavior,
 		enabled : false,
+		world,
 	});
 
 	let blushDuration = 0;
@@ -325,7 +329,7 @@ export const createJumperRender = ({
 			jumper.stageLights();
 		},
 
-		update(dt) {
+		update(dt, alpha) {
 			if(behavior.isWrapping() && !mirror.getEnabled()) {
 				mirror.setOffset(behavior.getWrapOffset());
 				mirror.setEnabled(true);
@@ -337,8 +341,8 @@ export const createJumperRender = ({
 
 			const blush = isBlushing ? blushTime(blushDuration) : 0;
 
-			jumper.update(dt, blush);
-			mirror.update(dt, blush);
+			jumper.update(dt, alpha, blush);
+			mirror.update(dt, alpha, blush);
 
 			if(isBlushing) {
 				if(isGameFinished && blushDuration <= BLUSH_FINISH_FREEZE) {
