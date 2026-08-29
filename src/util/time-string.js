@@ -1,5 +1,5 @@
 export const MS = 1000;
-export const MS_IN_MIN = 60 * MS;
+export const MINUTE_MS = 60 * MS;
 
 const padStart = (n, len) => String(n).padStart(len, "0");
 
@@ -11,7 +11,7 @@ const padStart = (n, len) => String(n).padStart(len, "0");
 export const toString = (time) => {
 	const ms = Math.floor((time % MS) / 100);
 	const s = Math.floor(time / MS) % 60;
-	const min = Math.floor(time / MS_IN_MIN);
+	const min = Math.floor(time / MINUTE_MS);
 
 	return `${padStart(min, 2)}:${padStart(s, 2)}.${padStart(ms, 1)}`;
 };
