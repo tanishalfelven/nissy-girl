@@ -20,9 +20,6 @@ export const inRange = (value, min, max) =>
 
 export const lerp = (value, min, max) => min + (max - min) * value;
 
-export const randRange = (min, max) => lerp(Math.random(), min, max);
-export const randBool = () => Math.round(Math.random()) === 0;
-
 export const crossedThreshold = (from, to, threshold) =>
 	(from <= threshold && to >= threshold)
 	|| (from >= threshold && to <= threshold);

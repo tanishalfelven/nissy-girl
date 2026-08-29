@@ -15,3 +15,9 @@ export const toString = (time) => {
 
 	return `${padStart(min, 2)}:${padStart(s, 2)}.${padStart(ms, 1)}`;
 };
+
+export const getDate = () => {
+	const today = new Date();
+
+	return `${today.getMonth()} ${today.getDate()}`;
+};

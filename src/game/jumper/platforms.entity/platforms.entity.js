@@ -8,7 +8,7 @@ export const createPlatforms = ({
 }) => {
 	const { generation } = world.world.getContext();
 
-	const { platforms } = generation.maps.gen_test;
+	const { platforms } = generation.maps.daily;
 	const bounds = world.world.getBounds();
 
 	return createEntity({

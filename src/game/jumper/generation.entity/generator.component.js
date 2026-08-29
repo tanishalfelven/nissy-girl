@@ -1,4 +1,13 @@
-import { randRange, roundDigit, lerp, randBool } from "$util/math.js";
+import { roundDigit, lerp } from "$util/math.js";
+import {
+	hash,
+	getSeededRandom,
+	randRange,
+	randBool,
+	odds,
+} from "$util/random.js";
+
+import { getDate } from "$util/time-string.js";
 
 import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
@@ -18,14 +27,13 @@ import {
 
 import { matchesX } from "../platforms.entity/logic.js";
 
-const odds = (odds) => Math.random() <= odds;
-const getRand = (min, max) => roundDigit(randRange(min, max), 4);
+const getRand = (min, max, getRandom) => roundDigit(randRange(min, max, getRandom), 4);
 
 // #region Difficulty Tuning
 const getHopOdds = (difficulty) => lerp(difficulty, 0.8, 0.5);
 const getMinXDistance = (difficulty, maxDistance) => lerp(difficulty, MIN_PLATFORM_X_GAP, maxDistance);
-const isHop = (difficulty) => odds(getHopOdds(difficulty));
-const selectHardJump = (difficulty) => odds(difficulty);
+const isHop = (difficulty, getRandom) => odds(getHopOdds(difficulty), getRandom);
+const selectHardJump = (difficulty, getRandom) => odds(difficulty, getRandom);
 // platform min steadily decreases
 const getMaxPlatformSize = (difficulty) =>
 	lerp(
@@ -33,13 +41,13 @@ const getMaxPlatformSize = (difficulty) =>
 		MAX_PLATFORM_WIDTH,
 		MIN_PLATFORM_WIDTH + (MAX_PLATFORM_WIDTH - MIN_PLATFORM_WIDTH) * (1 - difficulty),
 	);
-const isLateralJump = (difficulty) => odds(lerp(difficulty, 0.5, 0.8));
-const getJumpHeight = ({ difficulty, min, max }) => {
-	if(isLateralJump(difficulty)) {
-		return getRand(MIN_PLATFORM_Y_GAP, min.vert);
+const isLateralJump = (difficulty, getRandom) => odds(lerp(difficulty, 0.5, 0.8), getRandom);
+const getJumpHeight = ({ difficulty, min, max, getRandom }) => {
+	if(isLateralJump(difficulty, getRandom)) {
+		return getRand(MIN_PLATFORM_Y_GAP, min.vert, getRandom);
 	}
 
-	return getRand(min.vert, max.vert);
+	return getRand(min.vert, max.vert, getRandom);
 };
 const getMinPlatforms = (difficulty) =>
 	Math.floor(lerp(
@@ -76,8 +84,8 @@ const platform = (x, y, width = MIN_PLATFORM_WIDTH, zone = ZONE_1, isDifficult =
 	});
 };
 
-const coinFromPlatform = (platform) => {
-	const x = Math.round(getRand(platform.x, platform.x + platform.width - COIN_WIDTH));
+const coinFromPlatform = (platform, getRandom) => {
+	const x = Math.round(getRand(platform.x, platform.x + platform.width - COIN_WIDTH, getRandom));
 	const y = platform.y - COIN_HEIGHT - 5;
 
 	return { x, y, width : COIN_WIDTH };
@@ -158,13 +166,14 @@ const generateX = ({
 	fromPlatform,
 	maxX,
 	difficulty,
+	getRandom,
 }) => {
 	const center = fromPlatform.x + (fromPlatform.width / 2);
 	const maxDistance = (fromPlatform.width / 2) + maxX;
 	const minDistance = getMinXDistance(difficulty, maxDistance);
 
-	const distance = getRand(minDistance, maxDistance);
-	const direction = randBool() ? 1 : -1;
+	const distance = getRand(minDistance, maxDistance, getRandom);
+	const direction = randBool(getRandom) ? 1 : -1;
 
 	return { x : center + distance * direction, direction };
 };
@@ -175,18 +184,19 @@ const generatePlatform = ({
 	zone = ZONE_1,
 	isHop = false,
 	difficulty,
+	getRandom,
 }) => {
 	const min = isHop ? j.hopMin : j.blastMin;
 	const max = isHop ? j.hopMax : j.blastMax;
 
-	const jumpHeight = getJumpHeight({ difficulty, min, max });
+	const jumpHeight = getJumpHeight({ difficulty, min, max, getRandom });
 
 	const maxX = getMaxXForHeight({ jumpHeight, min, max });
 
 	const y = fromPlatform.y - jumpHeight;
-	const { x, direction } = generateX({ fromPlatform, maxX, difficulty });
+	const { x, direction } = generateX({ fromPlatform, maxX, difficulty, getRandom });
 
-	const platformSize = getRand(MIN_PLATFORM_WIDTH, getMaxPlatformSize(difficulty));
+	const platformSize = getRand(MIN_PLATFORM_WIDTH, getMaxPlatformSize(difficulty), getRandom);
 
 	return platform(
 		x,
@@ -199,6 +209,7 @@ const generatePlatform = ({
 const generateCoins = ({
 	platforms,
 	coinCount = 20,
+	getRandom,
 }) => {
 	let coinsPlaced = 0;
 
@@ -229,7 +240,7 @@ const generateCoins = ({
 			continue;
 		}
 
-		const hardPlatformCoinOdds = odds(0.35);
+		const hardPlatformCoinOdds = odds(0.35, getRandom);
 
 		if(hardPlatformCoinOdds) {
 			coinsPerZone[platform.zone]++;
@@ -237,7 +248,7 @@ const generateCoins = ({
 
 			coins.push(
 				forceInBounds(
-					coinFromPlatform(platform),
+					coinFromPlatform(platform, getRandom),
 					CANVAS_WIDTH - COIN_WIDTH,
 					COIN_WIDTH,
 				),
@@ -256,13 +267,14 @@ const generateZone = ({
 	zone = ZONE_1,
 	difficulty = 0,
 	history = [],
+	getRandom,
 }) => {
 	const platforms = [];
 
 	const minY = fromPlatform.y - MIN_ZONE_HEIGHT;
 	let mostRecentPlatform = fromPlatform;
 	let highestPlatformY = fromPlatform.y;
-	let isHardJump = selectHardJump(difficulty);
+	let isHardJump = selectHardJump(difficulty, getRandom);
 	let rerolls = 0;
 	const minPlatforms = getMinPlatforms(difficulty);
 
@@ -271,8 +283,9 @@ const generateZone = ({
 			capabilities,
 			fromPlatform : mostRecentPlatform,
 			zone,
-			isHop : isHop(difficulty),
+			isHop : isHop(difficulty, getRandom),
 			difficulty,
+			getRandom,
 		});
 
 		rerolls++;
@@ -302,7 +315,7 @@ const generateZone = ({
 		platforms.push(candidate);
 
 		rerolls = 0;
-		isHardJump = selectHardJump(difficulty);
+		isHardJump = selectHardJump(difficulty, getRandom);
 
 		mostRecentPlatform = candidate;
 		highestPlatformY = candidate.y;
@@ -311,7 +324,7 @@ const generateZone = ({
 	return platforms;
 };
 
-const generate = (capabilities, startPlatform = START_PLATFORM) => {
+const generate = (capabilities, getRandom, startPlatform = START_PLATFORM) => {
 	const platforms = [ startPlatform ];
 
 	const NUM_ZONES = 8;
@@ -324,11 +337,12 @@ const generate = (capabilities, startPlatform = START_PLATFORM) => {
 				zone,
 				difficulty : zone / NUM_ZONES,
 				history : platforms,
+				getRandom,
 			}),
 		);
 	}
 
-	const coins = generateCoins({ platforms });
+	const coins = generateCoins({ platforms, getRandom });
 
 	return { platforms, coins };
 };
@@ -341,10 +355,18 @@ export const createGenerator = ({
 		async load() {
 			const capabilityData = capabilities.get();
 
+			const createdDate = getDate();
+
+			const daily = generate(capabilityData, getSeededRandom(hash(createdDate)));
+
+			// not quite to the point where we force a new day on the user if it occurs during play
+			// but lets at least avoid saying the wrong one...
+			daily.seed = createdDate;
+
 			const maps = {
 				dev : { platforms : DEV_MAP, coins : [] },
 
-				gen_test : generate(capabilityData),
+				daily,
 			};
 
 			/* eslint-disable-next-line no-console -- just in case ! */
