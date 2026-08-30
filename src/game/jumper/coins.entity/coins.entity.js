@@ -5,11 +5,10 @@ import { createRender } from "./render.component.js";
 export const COIN_WIDTH = 11;
 export const COIN_HEIGHT = 12;
 
-const mapCoinToCoin = (coin) => {
-	coin.isAlive = true;
-
-	return coin;
-};
+const mapCoinToCoin = (coin) => ({
+	...coin,
+	isAlive : true,
+});
 
 export const createCoins = ({
 	world,

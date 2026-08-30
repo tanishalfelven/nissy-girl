@@ -4,6 +4,8 @@ import { coordsDiffer } from "./position.js";
 import { quadInOut } from "svelte/easing";
 import { lerp } from "$util/math.js";
 
+const identity = (a) => a;
+
 import {
 	CAMERA,
 	FIXED_1X_CAMERA,
@@ -22,6 +24,9 @@ export const createCamera = ({
 	topPadding = padding,
 	bottomPadding = padding,
 	config : inputConfig = FIXED_1X_CAMERA,
+
+	beforeAssignX = identity,
+	beforeAssignY = identity,
 } = false) => {
 	const { scale, position } = world.world.getRenderable();
 	const subscribers = new Set();
@@ -83,7 +88,7 @@ export const createCamera = ({
 		}
 	};
 
-	const setTransform = (dt = 1, alpha = 1) => {
+	const setTransform = (_ = 1, alpha = 1) => {
 		if(!configChanged && !target) {
 			return;
 		}
@@ -96,7 +101,7 @@ export const createCamera = ({
 			return;
 		}
 
-		position.x = CAMERA[config.style].getX(
+		let nextX = CAMERA[config.style].getX(
 			width,
 			config.zoom,
 			pos.x,
@@ -105,8 +110,10 @@ export const createCamera = ({
 			rightPadding,
 		);
 
+		let nextY;
+
 		if(needsLerp) {
-			const nextY = CAMERA[config.style].getY(
+			nextY = CAMERA[config.style].getY(
 				height,
 				config.zoom,
 				lerp(alpha, lastFollow.y, pos.y),
@@ -114,10 +121,8 @@ export const createCamera = ({
 				topPadding,
 				bottomPadding,
 			);
-
-			position.y = nextY;
 		} else {
-			position.y = CAMERA[config.style].getY(
+			nextY = CAMERA[config.style].getY(
 				height,
 				config.zoom,
 				pos.y,
@@ -126,6 +131,12 @@ export const createCamera = ({
 				bottomPadding,
 			);
 		}
+
+		nextX = beforeAssignX(nextX);
+		nextY = beforeAssignY(nextY);
+
+		position.x = nextX;
+		position.y = nextY;
 
 		lastFollow = pos;
 		configChanged = false;

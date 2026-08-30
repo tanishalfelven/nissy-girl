@@ -5,6 +5,8 @@ export const COLOR_OFF_BLACK = 0x0a0a0a;
 export const COLOR_WHITE = 0xffffff;
 export const COLOR_RED = 0xac0022;
 export const COLOR_MUTE_LIME = 0x6abe30;
+export const COLOR_SILVER = 0x9badb7;
+export const COLOR_GOLD = 0xefd71f;
 
 // A subset of Aseprites default palette from Richard "DawnBringer" Fhager 32 colors palette
 // https://www.aseprite.org/docs/default-palette/

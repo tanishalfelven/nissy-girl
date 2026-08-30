@@ -1,13 +1,12 @@
 import JumperPng from "./assets/jumper.png";
 import { Assets, Sprite, Container, Graphics } from "pixi.js";
 import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/screens/render.consts.js";
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
 
 import { lerp } from "$util/math.js";
 import { FPS60 } from "$util/time.js";
 import { quadInOut } from "svelte/easing";
 
-const RIGHT_EYE_OFFSET = 3;
+const RIGHT_EYE_OFFSET = 2.5;
 const BLUSH_DURATION = 100;
 
 // halfway thru blush is max animation
@@ -24,7 +23,57 @@ const smoothStep = (t, bound) =>
 const blushTime = (blush) => smoothStep((BLUSH_DURATION - blush) / BLUSH_DURATION, 0.15);
 
 const createFace = ({ physics, behavior }) => {
-	const face = new Graphics();
+	const pupils = new Graphics();
+	const eyes = new Graphics();
+	const blush = new Graphics({ visible : false });
+	const tongue = new Graphics({ visible : false });
+	const mouth = new Graphics({ visible : true });
+
+	const face = new Container({
+		children : [
+			mouth,
+			tongue,
+			eyes,
+			pupils,
+			blush,
+		],
+
+		y : 1,
+	});
+
+	const eyeX = 1.6;
+	const eyeY = 0;
+	const whiteSize = 2.35;
+	const pupilSize = 1.25;
+
+	const mouthX = 3;
+	const mouthY = 4;
+	const mouthSize = 1.5;
+
+	mouth
+		.ellipse(mouthX, mouthY, 2.5, mouthSize)
+		.fill(COLOR_BLACK);
+
+	const tongueY = mouthY;
+
+	tongue
+		.rect(mouthX - 1, tongueY, 2, 0.75)
+		.fill(COLOR_RED);
+
+	eyes.ellipse(eyeX, eyeY, 3, whiteSize).fill(COLOR_WHITE);
+	eyes.ellipse(eyeX + RIGHT_EYE_OFFSET, eyeY, 2.25, whiteSize).fill(COLOR_WHITE);
+
+	const pupilY = -0.25;
+
+	pupils.circle(eyeX - 0.5, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
+	pupils.circle(eyeX + RIGHT_EYE_OFFSET, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
+
+	const blushX = 0;
+	const blushSize = 1.5;
+	const blushY = 3;
+
+	blush.circle(blushX, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED });
+	blush.circle(blushX + 6, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED });
 
 	return {
 		getRenderable() {
@@ -36,58 +85,45 @@ const createFace = ({ physics, behavior }) => {
 		},
 
 		update(dt, blushT) {
-			face.clear();
-
 			const vx = physics.getVelocityX();
 			const vy = physics.getVelocityY();
-
-			const isImpact = behavior.isImpact();
-			const panic = behavior.getPanic();
 
 			const dirX = Math.sign(vx);
 			const dirY = Math.sign(vy);
 
-			const pupilX = dirX;
-			const pupilY = dirY;
+			const isImpact = behavior.isImpact();
+			const panic = behavior.getPanic();
 
-			const eyeX = dirX * 2 + 1.5;
-			const eyeY = 1 + (isImpact ? 2 : 0);
-			const whiteSize = lerp(panic, 1.8, 2.3);
-			const pupilSize = lerp(1 - panic, 0.9, 1);
+			const whiteSize = lerp(panic, 1, 1.05);
 
-			const mouthX = 3;
-			const mouthY = 4;
-			const mouthSize = lerp(panic, 0, 1.7);
+			const eyeOffsetY = isImpact ? 2 : 0;
 
-			face
-				.ellipse(mouthX, mouthY, 3, mouthSize)
-				.fill(COLOR_BLACK);
+			eyes.scale.set(1, whiteSize);
+			eyes.position.set(dirX * 1.2, eyeOffsetY);
 
-			if(mouthSize > 0.5) {
-				const tongueY = mouthY + mouthSize * 0.6;
+			const pupilXScale = lerp(panic, 1, 1.2);
+			const pupilYScale = lerp(panic, 1, 0.8);
 
-				face
-					.ellipse(mouthX - dirX, tongueY, 2, 0.5)
-					.fill(COLOR_RED);
+			pupils.scale.set(pupilXScale, pupilYScale);
+			pupils.position.set(dirX * 1.6, eyeOffsetY + dirY);
+
+			mouth.visible = panic > 0;
+			if(mouth.visible) {
+				mouth.scale.y = panic;
 			}
 
-			face.ellipse(eyeX, eyeY, 2.25, whiteSize).fill(COLOR_WHITE);
-			face.ellipse(eyeX + RIGHT_EYE_OFFSET, eyeY, 2.25, whiteSize).fill(COLOR_WHITE);
+			tongue.visible = panic > 0.5;
+			if(tongue.visible) {
+				tongue.position.x = dirX * -1.2;
+			}
 
-			face.circle(eyeX + pupilX, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
-			face.circle(eyeX + RIGHT_EYE_OFFSET + pupilX, eyeY + pupilY, pupilSize).fill(COLOR_BLACK);
+			blush.visible = blushT > 0;
 
-			if(blushT > 0) {
-				const blushX = dirX;
-				const blushSize = 1.5;
-				const blushY = 3 + dirY * 0.5;
+			if(blush.visible) {
+				blush.alpha = blushT * 0.8;
+				blush.position.set(0, dirY * 0.5);
 
-				const alpha = blushT * 0.8;
-
-				face.scale.set(1, 1 - blushT * 0.4);
-
-				face.circle(blushX, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED, alpha });
-				face.circle(blushX + 6, blushY, blushSize).fill({ color : COLOR_PORCELAIN_RED, alpha });
+				face.updateTransform({ scaleY : 1 - blushT * 0.4 });
 			}
 		},
 	};
@@ -103,34 +139,18 @@ const createStageLights = ({
 }) => {
 	const { camera } = world;
 
-	const stageLight = new Container();
-	const mask = new Graphics();
-	const darkness = new Graphics()
-		.rect(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2)
-		.fill({ color : COLOR_BLACK, alpha : 0.75 });
+	let x = 0;
+	let y = 0;
 
-	stageLight.alpha = 0;
+	const spotlight = new Graphics()
+		.ellipse(x, y, width * 3, height * 3)
+		.fill({ color : COLOR_WHITE, alpha : 0.05 });
+
+	spotlight.alpha = 0;
 
 	let max = SPOTLIGHT_DURATION;
 
-	const updateMask = (scale = 8) => {
-		const target = camera.cameraToScreen(movement.getX(), movement.getY());
-
-		mask
-			.clear()
-			.rect(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2)
-			.fill(COLOR_WHITE)
-			.ellipse(target.x, target.y, width * scale, height * scale)
-			.cut();
-	};
-
-	updateMask();
-
-	darkness.mask = mask;
-
-	stageLight.addChild(darkness);
-
-	world.world.getScreen().addChild(stageLight);
+	world.world.getScreen().addChild(spotlight);
 
 	return {
 		update(dt) {
@@ -138,15 +158,21 @@ const createStageLights = ({
 
 			const maxT = max / SPOTLIGHT_DURATION;
 
-			if(stageLight.alpha < 1) {
-				stageLight.alpha += 0.08 * dt;
+			if(spotlight.alpha < 1) {
+				spotlight.alpha += 0.08 * dt;
 			}
 
-			updateMask(4 + quadInOut(maxT) * 2);
+			const target = camera.cameraToScreen(movement.getX(), movement.getY());
+
+			x = lerp(1 - maxT, x, target.x);
+			y = lerp(1 - maxT, y, target.y);
+
+			spotlight.scale.set(quadInOut(maxT) + 1);
+			spotlight.position.set(x, y);
 		},
 
 		destroy() {
-			stageLight.destroy();
+			spotlight.destroy();
 		},
 	};
 };

@@ -4,7 +4,19 @@ import { cameraConfig, CAMERA_STYLE_PAN_PADDED } from "$game/shared/component/ca
 export const createJumperCamera = ({
 	world,
 }) => {
-	return createCamera({
+	let minY = false;
+
+	const beforeAssignY = (cameraY) => {
+		if(minY === false) {
+			return cameraY;
+		} else if(cameraY < minY) {
+			return Math.max(cameraY, minY);
+		}
+
+		return cameraY;
+	};
+
+	const camera = createCamera({
 		world,
 		config : cameraConfig({
 			zoom : 1,
@@ -15,5 +27,13 @@ export const createJumperCamera = ({
 		rightPadding : -5,
 		topPadding : 50,
 		bottomPadding : 15,
+
+		beforeAssignY,
 	});
+
+	camera.setMinY = (newMinY) => {
+		minY = newMinY;
+	};
+
+	return camera;
 };

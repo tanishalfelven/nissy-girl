@@ -37,6 +37,8 @@ export const createRender = ({
 					loop : true,
 					autoUpdate : false,
 
+					cullable : true,
+
 					position : coin,
 				});
 

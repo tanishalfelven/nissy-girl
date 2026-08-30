@@ -9,13 +9,20 @@ export const createPlatforms = ({
 	const { generation, selected } = world.world.getContext();
 
 	const { platforms } = generation.maps[selected];
-	const bounds = world.world.getBounds();
+	const worldBounds = world.world.getBounds();
+
+	const bounds = createBounds({ platforms, worldBounds });
+
+	const startPlatform = bounds.getStartPlatform();
+
+	// make camera never show under start platform
+	world.camera.setMinY(startPlatform.height);
 
 	return createEntity({
 		id : "platforms",
 		components : {
-			bounds : createBounds({ platforms, bounds }),
-			render : createRender({ platforms, bounds }),
+			bounds,
+			render : createRender({ platforms, bounds, world, worldBounds }),
 		},
 	});
 };

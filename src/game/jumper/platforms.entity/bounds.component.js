@@ -1,7 +1,7 @@
 import { START_ZONE } from "../generation.entity/generation.consts.js";
 import { findIntersectionInZone, movesThroughPlatform } from "./logic.js";
 
-export const createBounds = ({ platforms, bounds }) => {
+export const createBounds = ({ platforms, worldBounds }) => {
 	const startPlatform = platforms[0];
 	const endPlatformIndex = platforms.length - 1;
 
@@ -47,9 +47,11 @@ export const createBounds = ({ platforms, bounds }) => {
 	};
 
 	return {
-		getSpawn() {
-			const startPlatform = platforms[0];
+		getStartPlatform() {
+			return startPlatform;
+		},
 
+		getSpawn() {
 			return { x : startPlatform.x + startPlatform.width / 2, y : startPlatform.y };
 		},
 
@@ -60,8 +62,10 @@ export const createBounds = ({ platforms, bounds }) => {
 		remainsGrounded(index, x, y, width) {
 			const platform = platforms[index];
 
-			return movesThroughPlatform(platform, x, y, x, y, width, bounds) !== false;
+			return movesThroughPlatform(platform, x, y, x, y, width, worldBounds) !== false;
 		},
+
+		getZoneIndex,
 
 		moveIntersectsPlatform(startX, startY, targetX, targetY, width) {
 			const startZoneIndex = getZoneIndex(startY);
@@ -75,7 +79,7 @@ export const createBounds = ({ platforms, bounds }) => {
 				targetY,
 				width,
 				platformsByZone.get(targetZoneIndex),
-				bounds,
+				worldBounds,
 			);
 
 			if(foundIntersection.index === -1
@@ -88,7 +92,7 @@ export const createBounds = ({ platforms, bounds }) => {
 					targetY,
 					width,
 					platformsByZone.get(startZoneIndex),
-					bounds,
+					worldBounds,
 				);
 
 				if(secondIntersection.index !== -1) {
