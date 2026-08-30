@@ -33,7 +33,7 @@ const createContainerComponent = ({
 }) => {
 	const entities = [];
 	const entityMap = new Map();
-	const screenSurface = new Container();
+	const screenSurface = new Container({ interactiveChildren : false });
 	const worldSurface = new Container();
 
 	screenSurface.addChild(worldSurface);
