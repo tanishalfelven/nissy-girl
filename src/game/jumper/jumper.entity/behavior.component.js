@@ -18,7 +18,7 @@ const MAX_PANIC = 18;
 const DUST_OFFSET = 0;
 const DUST_SCALE = 0.65;
 
-const COYOTE_JUMP_DURATION = 75;
+const COYOTE_JUMP_DURATION = 110;
 const BUFFER_JUMP_DURATION = 75;
 
 export const createBehavior = ({
