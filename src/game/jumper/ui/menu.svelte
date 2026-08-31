@@ -1,16 +1,10 @@
 <script>
 import css from "./menu.mcss";
 
+const { children } = $props();
 </script>
 
-<div class={css.menu}>
-	<div class={css.jumper}></div>
-	<div class={css.titlecard}></div>
-
-	<div class={css.start} data-selected="true">
-		daily trial
-	</div>
-</div>
+{@render children?.()}
 
 <div class={css.platforms}>
 	<div class={css.platform1}></div>

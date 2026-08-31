@@ -1,7 +1,7 @@
 @value spx from "$nissy-girl/screens/screens.mcss";
 
 .paused {
-	composes: menu from "./menu.mcss";
+	composes: menu from "./main.mcss";
 	background-color: rgb(0 0 0 / 60%);
 }
 

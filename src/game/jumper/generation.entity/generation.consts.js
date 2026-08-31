@@ -7,3 +7,7 @@ export const MAX_PLATFORM_WIDTH = 30;
 export const MIN_PLATFORM_WIDTH = 8;
 export const MIN_PLATFORM_X_GAP = 5;
 export const MIN_PLATFORM_Y_GAP = 5;
+
+export const MAP_ID_DAILY = "daily";
+export const MAP_ID_DEV = "dev";
+export const MAP_ID_SEED = "seed";

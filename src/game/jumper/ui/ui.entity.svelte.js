@@ -92,6 +92,12 @@ export const createJumperUI = ({
 				},
 
 				update() {
+					const coins = world.world.get("coins");
+
+					if(!coins) {
+						return;
+					}
+
 					if(maxCoins === 0) {
 						maxCoins = world.world.get("coins").coins.getMaxCoins();
 					}
@@ -137,12 +143,30 @@ export const createJumperUI = ({
 					score = 0;
 				},
 
+				openMainMenu() {
+					navComponent.setActiveNav("menu");
+				},
+
+				closeMainMenu() {
+					navComponent.clearActiveNav();
+				},
+
 				openPauseMenu() {
 					navComponent.setActiveNav("paused");
 				},
 
 				closePauseMenu() {
 					navComponent.clearActiveNav();
+				},
+
+				getMenuOption() {
+					const menuNav = navComponent.getNav("menu");
+
+					if(!menuNav) {
+						return false;
+					}
+
+					return menuNav.active;
 				},
 
 				getPausedOption() {

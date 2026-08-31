@@ -8,11 +8,11 @@ const REPEAT_TIME = 150 / FPS60;
 
 /** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
 
-export const createUINav = () => {
+export const createUINav = ({ selectedNav = false } = false) => {
 	const dir = createDirection();
 	const navs = new Map();
 
-	let activeNav = false;
+	let activeNav = selectedNav;
 	let repeat = 0;
 
 	return {

@@ -13,6 +13,7 @@ import { createJumperCamera } from "./camera.component.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { createCoins } from "./coins.entity/coins.entity.js";
 import { createJumperUI } from "./ui/ui.entity.svelte.js";
+import { createSeedUI } from "./ui/seed.entity.svelte.js";
 
 import { inputTriggered } from "$game/util/input-guards.js";
 
@@ -21,10 +22,24 @@ import { BUTTON_START, BUTTON_A, BUTTON_B } from "$game/shared/input.consts.js";
 import { EXIT, START_OVER } from "./ui/paused.consts.js";
 
 import Menu from "./ui/menu.svelte";
+import MainMenu from "./ui/main.svelte";
 import Paused from "./ui/paused.svelte";
 import PlayOverlay from "./ui/play-overlay/play-overlay.svelte";
 import Countdown from "./ui/play-overlay/countdown.svelte";
 import Score from "./ui/play-overlay/score.svelte";
+import SeedSelect from "./ui/seed-select.svelte";
+
+import { MAP_ID_DAILY, MAP_ID_SEED } from "./generation.entity/generation.consts.js";
+import { DAILY_TRIAL, SEED_OPTION } from "./ui/main.consts.js";
+
+const withModel = (component) => withScene((_, { world }) => {
+	const ui = world.world.get("ui");
+
+	return [
+		component,
+		{ model : ui.ui.getModel() },
+	];
+});
 
 export const jumperMachine = createMachine({
 	id : "jumper",
@@ -36,7 +51,8 @@ export const jumperMachine = createMachine({
 
 	context : {
 		generation : false,
-		selected : "daily",
+		selected : MAP_ID_DAILY,
+		seed : false,
 	},
 
 	on : {
@@ -81,24 +97,185 @@ export const jumperMachine = createMachine({
 		},
 
 		menu : {
+			initial : "main",
+
 			meta : {
-				component : Menu,
+				load : withModel(Menu),
 			},
 
-			invoke : invokeInput,
+			on : {
+				GENERATE : "generate",
+			},
+
+			states : {
+				main : {
+					exit : [
+						withScene((_, { world }) => {
+							const ui = world.world.get("ui");
+
+							ui.ui.closeMainMenu();
+						}),
+						assign({
+							selected : withScene((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								const selectedOption = ui.ui.getMenuOption();
+
+								if(selectedOption === DAILY_TRIAL) {
+									return MAP_ID_DAILY;
+								}
+
+								return MAP_ID_SEED;
+							}),
+						}),
+					],
+
+					meta : {
+						load : withModel(MainMenu),
+					},
+
+					invoke : [
+						invokeScene({
+							id : "mainmenu",
+							entities : [
+								createJumperUI,
+							],
+							simulateOrder : [
+								"world",
+								"input",
+								"movement",
+							],
+							frameOrder : [
+								"ui",
+							],
+						}),
+
+						invokeInput,
+						invokeInputComponent(
+							"ui-input",
+							withScene(
+								(_, scene) => {
+									const ui = scene.world.world.get("ui");
+
+									// ! This is getting awkward - entry actions are proving to be too fast for
+									// ! scene contstruction and may get old cached data - invokes are becoming the correct
+									// ! home for this kind of lifecycle
+									ui.ui.openMainMenu();
+
+									return ui.input;
+								},
+							),
+						),
+					],
+
+					on : {
+						[BUTTON_START] : {
+							guard : inputTriggered,
+							actions : raise({ type : "SELECT_OPTION" }),
+						},
+
+						[BUTTON_A] : {
+							guard : inputTriggered,
+							actions : raise({ type : "SELECT_OPTION" }),
+						},
+
+						SELECT_OPTION : [
+							{
+								guard : withScene((_, { world }) => {
+									const ui = world.world.get("ui");
+
+									return ui.ui.getMenuOption() === SEED_OPTION;
+								}),
+								target : "seed",
+							},
+							{
+								actions : [
+									assign({
+										seed : false,
+									}),
+									raise({ type : "GENERATE" }),
+								],
+							},
+						],
+					},
+				},
+
+				seed : {
+					meta : {
+						load : withModel(SeedSelect),
+					},
+
+					invoke : [
+						invokeScene({
+							id : "seed",
+							entities : [
+								createSeedUI,
+							],
+							simulateOrder : [
+								"world",
+								"input",
+								"movement",
+							],
+							frameOrder : [
+								"ui",
+							],
+						}),
+
+						invokeInput,
+						invokeInputComponent(
+							"ui-input",
+							withScene(
+								(_, scene) => scene.world.world.get("ui").input,
+							),
+						),
+					],
+
+					on : {
+						[BUTTON_B] : {
+							guard : inputTriggered,
+							target : "main",
+						},
+
+						[BUTTON_START] : {
+							guard : inputTriggered,
+							actions : raise({ type : "SELECT_SEED" }),
+						},
+
+						[BUTTON_A] : {
+							guard : inputTriggered,
+							actions : raise({ type : "SELECT_SEED" }),
+						},
+
+						SELECT_SEED : {
+							actions : [
+								assign({
+									seed : withScene((_, { world }) => {
+										const ui = world.world.get("ui");
+
+										return ui.ui.getSeed();
+									}),
+								}),
+								raise({ type : "GENERATE" }),
+							],
+						},
+					},
+				},
+			},
+		},
+
+		generate : {
+			invoke : invokeScene({
+				id : "generate",
+				entities : [
+					createGeneration,
+				],
+				simulateOrder : [
+					"generator",
+				],
+			}),
 
 			on : {
-				[BUTTON_START] : {
-					guard : inputTriggered,
-					actions : raise({ type : "START_GAME" }),
-				},
-
-				[BUTTON_A] : {
-					guard : inputTriggered,
-					actions : raise({ type : "START_GAME" }),
-				},
-
-				START_GAME : "game",
+				DONE : "game",
 			},
 		},
 
@@ -113,14 +290,7 @@ export const jumperMachine = createMachine({
 			exit : withScene((_, { world }) => world.world.get("ui").ui.exitPlay()),
 
 			meta : {
-				load : withScene((_, { world }) => {
-					const ui = world.world.get("ui");
-
-					return [
-						PlayOverlay,
-						{ model : ui.ui.getModel() },
-					];
-				}),
+				load : withModel(PlayOverlay),
 			},
 
 			invoke : [
@@ -158,6 +328,13 @@ export const jumperMachine = createMachine({
 				}),
 
 				invokeInput,
+
+				invokeInputComponent(
+					"ui-input",
+					withScene(
+						(_, { world }) => world.world.get("ui").input,
+					),
+				),
 			],
 
 			on : {
@@ -183,14 +360,7 @@ export const jumperMachine = createMachine({
 					states : {
 						countdown : {
 							meta : {
-								load : withScene((_, { world }) => {
-									const ui = world.world.get("ui");
-
-									return [
-										Countdown,
-										{ model : ui.ui.getModel() },
-									];
-								}),
+								load : withModel(Countdown),
 							},
 
 							on : {
@@ -230,14 +400,7 @@ export const jumperMachine = createMachine({
 					}),
 
 					meta : {
-						load : withScene((_, { world }) => {
-							const ui = world.world.get("ui");
-
-							return [
-								Paused,
-								{ model : ui.ui.getModel() },
-							];
-						}),
+						load : withModel(Paused),
 					},
 
 					invoke : invokeInputComponent(
@@ -305,14 +468,7 @@ export const jumperMachine = createMachine({
 
 						display : {
 							meta : {
-								load : withScene((_, { world }) => {
-									const ui = world.world.get("ui");
-
-									return [
-										Score,
-										{ model : ui.ui.getModel() },
-									];
-								}),
+								load : withModel(Score),
 							},
 
 							invoke : invokeInputComponent(

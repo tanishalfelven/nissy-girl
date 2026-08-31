@@ -1,0 +1,50 @@
+@value spx from "$nissy-girl/screens/screens.mcss";
+
+.seed {
+	composes: menu from "./main.mcss";
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.prompt {
+	composes: scorelabel from "./play-overlay/score.mcss";
+	position: absolute;
+	top: calc(5 * spx);
+	font-size: calc(16 * spx);
+}
+
+.seednav {
+	display: flex;
+	flex-direction: row;
+	margin-top: calc(5 * spx);
+}
+
+.seedindex {
+	display: flex;
+	flex-direction: column;
+	margin: 0 calc(2 * spx);
+}
+
+.button {
+	composes: button from "./button.mcss";
+	width: calc(10 * spx);
+	margin-bottom: 0;
+	color: rgb(255 255 255 / 70%);
+}
+
+.increment,
+.decrement {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	color: rgb(255 255 255 / 40%);
+	text-align: center;
+
+	transition: color 100ms;
+
+	&[data-bling="true"] {
+		color: rgb(255 255 255 / 100%);
+	}
+}

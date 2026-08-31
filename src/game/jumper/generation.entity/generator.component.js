@@ -23,6 +23,9 @@ import {
 	MAX_PLATFORM_WIDTH,
 	MIN_PLATFORM_X_GAP,
 	MIN_PLATFORM_Y_GAP,
+	MAP_ID_DEV,
+	MAP_ID_DAILY,
+	MAP_ID_SEED,
 } from "./generation.consts.js";
 
 import { matchesX } from "../platforms.entity/logic.js";
@@ -93,7 +96,7 @@ const coinFromPlatform = (platform, getRandom) => {
 
 const START_PLATFORM = platform(0, 90, CANVAS_WIDTH, START_ZONE);
 
-export const DEV_MAP = [
+export const DEV_PLATFORMS = [
 	START_PLATFORM,
 	platform(20, 70),
 	platform(40, 50),
@@ -347,32 +350,72 @@ const generate = (capabilities, getRandom, startPlatform = START_PLATFORM) => {
 	return { platforms, coins };
 };
 
+const DEV_MAP = { platforms : DEV_PLATFORMS, coins : [ coinFromPlatform(START_PLATFORM) ], seed : "dev" };
+
+const getRandomSeed = () => {
+	const seedNum = Math.floor(randRange(0, 999999));
+	const seedString = seedNum.toString().padStart(6, "0");
+
+	return seedString;
+};
+
 export const createGenerator = ({
 	world,
-	capabilities,
+	capabilities : gapabilityComponent,
 }) => {
+	const context = world.world.getContext();
+
+	const maps = context?.generation?.maps || { [MAP_ID_DEV] : DEV_MAP };
+	let capabilities = context?.generation?.capabilities || false;
+
+	const initDaily = () => {
+		const createdDate = getDate();
+
+		if(maps?.daily?.seed === createdDate.string) {
+			return;
+		}
+
+		const daily = generate(capabilities, getSeededRandom(hash(createdDate.date)));
+
+		// not quite to the point where we force a new day on the user if it occurs during play
+		// but lets at least avoid saying the wrong one...
+		daily.seed = createdDate.string;
+
+		maps[MAP_ID_DAILY] = daily;
+	};
+
+	const initSeed = () => {
+		const { seed : selectedSeed } = context;
+
+		let seed = selectedSeed;
+
+		if(!seed) {
+			seed = getRandomSeed();
+		}
+
+		const seedMap = generate(capabilities, getSeededRandom(hash(seed)));
+
+		seedMap.seed = seed;
+
+		maps[MAP_ID_SEED] = seedMap;
+	};
+
 	return {
 		async load() {
-			const capabilityData = capabilities.get();
+			if(!capabilities) {
+				capabilities = gapabilityComponent.get();
+			}
 
-			const createdDate = getDate();
-
-			const daily = generate(capabilityData, getSeededRandom(hash(createdDate.date)));
-
-			// not quite to the point where we force a new day on the user if it occurs during play
-			// but lets at least avoid saying the wrong one...
-			daily.seed = createdDate.string;
-
-			const maps = {
-				dev : { platforms : DEV_MAP, coins : [ coinFromPlatform(START_PLATFORM) ], seed : "dev" },
-
-				daily,
-			};
+			if(context.selected === MAP_ID_DAILY) {
+				initDaily();
+			} else if(context.selected === MAP_ID_SEED) {
+				initSeed();
+			}
 
 			/* eslint-disable-next-line no-console -- just in case ! */
 			window.dumpMaps = () => console.log(maps);
 
-			world.world.notifyGame({ type : "CACHE_GENERATION", data : { maps } });
+			world.world.notifyGame({ type : "CACHE_GENERATION", data : { maps, capabilities } });
 			world.world.notifyGame({ type : "DONE" });
 		},
 	};

@@ -19,14 +19,18 @@ export const createTemporalWindow = (maxTime) => {
 
 		update(dt) {
 			if(!running) {
-				return;
+				return false;
 			}
 
 			counter = Math.max(counter - dt, 0);
 
 			if(counter === 0) {
 				stop();
+
+				return true;
 			}
+
+			return false;
 		},
 
 		stop,

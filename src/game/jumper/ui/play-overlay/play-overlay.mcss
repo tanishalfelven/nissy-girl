@@ -1,7 +1,7 @@
 @value spx, screenwidth from "$nissy-girl/screens/screens.mcss";
 
 .game {
-	composes: menu from "../menu.mcss";
+	composes: menu from "../main.mcss";
 }
 
 .overlaytext {

@@ -1,0 +1,60 @@
+@value spx, screenheight from "$nissy-girl/screens/screens.mcss";
+
+.menu {
+	position: absolute;
+	inset: 0;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+
+	font-family: Pixelzone;
+	font-size: calc(12 * spx);
+}
+
+.jumper {
+	composes: float from "$util/animations.mcss";
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	top: calc(10 * spx);
+	left: calc(15 * spx);
+
+	width: calc(40 * spx);
+	height: calc(42 * spx);
+
+	background-image: url("./assets/jumper.png");
+
+	animation-duration: 4200ms;
+	animation-timing-function: ease-in-out;
+}
+
+.titlecard {
+	composes: img from "$util/util.mcss";
+
+	position: absolute;
+	left: calc(5 * spx);
+
+	align-self: flex-end;
+
+	width: calc(68 * spx);
+	height: calc(37 * spx);
+	margin-bottom: calc(10 * spx);
+
+	background-image: url("./assets/titlecard.png");
+}
+
+.menunav {
+	position: absolute;
+	right: calc(2 * spx);
+	display: flex;
+	flex-direction: column;
+}
+
+.button {
+	composes: button from "./button.mcss";
+}
