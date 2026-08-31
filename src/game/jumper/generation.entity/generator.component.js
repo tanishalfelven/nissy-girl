@@ -30,6 +30,8 @@ import {
 
 import { matchesX } from "../platforms.entity/logic.js";
 
+const DEBUG_GENERATION = false;
+
 const getRand = (min, max, getRandom) => roundDigit(randRange(min, max, getRandom), 4);
 
 // #region Difficulty Tuning
@@ -308,7 +310,7 @@ const generateZone = ({
 			continue;
 		}
 
-		if(rerolls >= MAX_REROLLS && import.meta.env.DEV) {
+		if(rerolls >= MAX_REROLLS && DEBUG_GENERATION) {
 			/* eslint-disable-next-line no-console -- dev only */
 			console.log(`failed to make difficult: ${zone} ${platforms.length}`);
 		}
