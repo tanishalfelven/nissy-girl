@@ -1,0 +1,15 @@
+{
+	"name": "nissy-girl",
+	"main": "src/worker.js",
+	"compatibility_date": "2026-08-30",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+	"analytics_engine_datasets": [
+		{
+			"binding": "ANALYTICS",
+			"dataset": "nissygirl_events"
+		}
+	]
+}

@@ -1,18 +1,18 @@
 import { fromCallback } from "xstate";
+import { track } from "./analytics.js";
 
-const toStateString = ({ machine, value }) => `${machine.config.id}:${JSON.stringify(value)}`;
+const machineToId = ({ machine }) => machine.config.id;
+const toState = ({ value }) => JSON.stringify(value);
 
 export const stateLogger = {
 	id : "state-logger",
-	src : fromCallback(({ self }) => {
-		if(import.meta.env.PROD) {
-			return;
-		}
-
+	input : { analytics : true },
+	src : fromCallback(({ self, input }) => {
 		let prevState;
 
 		const unsub = self._parent.subscribe((parent) => {
-			const state = toStateString(parent);
+			const machineId = machineToId(parent);
+			const state = toState(parent);
 
 			if(prevState === state) {
 				return;
@@ -20,8 +20,14 @@ export const stateLogger = {
 
 			prevState = state;
 
-			/* eslint-disable-next-line */
-			console.log(`${parent.machine.config.id}:${JSON.stringify(parent.value)}`);
+			if(import.meta.env.PROD) {
+				if(input.analytics) {
+					track(machineId, { state });
+				}
+			} else {
+				/* eslint-disable-next-line */
+				console.log(`${machineId}:${state}`);
+			}
 		});
 
 		return unsub;

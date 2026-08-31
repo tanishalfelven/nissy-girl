@@ -77,7 +77,11 @@ export const gameloop = {
 					};
 				}),
 			},
-			stateLogger,
+			{
+				...stateLogger,
+				input : { analytics : false },
+			},
+
 		],
 
 		type : "parallel",
