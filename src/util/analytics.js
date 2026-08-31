@@ -1,7 +1,11 @@
-const sessionId = crypto.randomUUID();
+let sessionId;
 
 export const track = (event, data = {}) => {
 	try{
+		if(!sessionId) {
+			sessionId = crypto.randomUUID();
+		}
+
 		fetch("/analytics", {
 			method : "POST",
 			headers : {
