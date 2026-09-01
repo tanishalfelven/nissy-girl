@@ -14,6 +14,7 @@ import { stateLogger } from "$util/state-logger.actor.js";
 import { createCoins } from "./coins.entity/coins.entity.js";
 import { createJumperUI } from "./ui/ui.entity.svelte.js";
 import { createSeedUI } from "./ui/seed.entity.svelte.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 import { inputTriggered } from "$game/util/input-guards.js";
 
@@ -63,6 +64,7 @@ export const jumperMachine = createMachine({
 		},
 
 		RESTART : {
+			actions : () => audio.jumper.playUIConfirm(),
 			target : ".restart",
 		},
 	},
@@ -187,6 +189,7 @@ export const jumperMachine = createMachine({
 									return ui.ui.getMenuOption() === SEED_OPTION;
 								}),
 								target : "seed",
+								actions : () => audio.jumper.playUIConfirm(),
 							},
 							{
 								actions : [
@@ -233,6 +236,7 @@ export const jumperMachine = createMachine({
 					on : {
 						[BUTTON_B] : {
 							guard : inputTriggered,
+							actions : () => audio.jumper.playUIBack(),
 							target : "main",
 						},
 
@@ -275,14 +279,22 @@ export const jumperMachine = createMachine({
 			}),
 
 			on : {
-				DONE : "game",
+				DONE : "pregame",
 			},
 		},
 
 		restart : {
 			after : {
 				// ! xstate bug when using always with reenter true, this seems to force correct teardown
-				1 : "game",
+				1 : "pregame",
+			},
+		},
+
+		pregame : {
+			entry : () => audio.jumper.playUIConfirm(),
+
+			after : {
+				400 : "game",
 			},
 		},
 
@@ -343,6 +355,7 @@ export const jumperMachine = createMachine({
 				},
 
 				EXIT : {
+					actions : () => audio.jumper.playUIBack(),
 					target : "menu",
 				},
 			},
@@ -390,11 +403,15 @@ export const jumperMachine = createMachine({
 					entry : sceneAction((_, { world }) => {
 						const ui = world.world.get("ui");
 
+						audio.jumper.playUIPause(),
+
 						ui.ui.openPauseMenu();
 					}),
 
 					exit : sceneAction((_, { world }) => {
 						const ui = world.world.get("ui");
+
+						audio.jumper.playUIBack(),
 
 						ui.ui.closePauseMenu();
 					}),

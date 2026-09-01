@@ -6,6 +6,7 @@ const PLAY_COUNT = 0;
 </script>
 <script>
 import css from "./countdown.mcss";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 import { Tween } from "svelte/motion";
 
@@ -19,11 +20,14 @@ countdownTween.target = END_COUNT;
 $effect(() => {
 	if(count === PLAY_COUNT) {
 		model.startGame();
+		audio.jumper.playFinishCountBeep();
+	} else {
+		audio.jumper.playCountBeep();
 	}
 });
 </script>
 
-{#if count > END_COUNT}
+{#if count >= END_COUNT}
 	{@const finishCount = count <= PLAY_COUNT}
 
 	{#key finishCount ? "done" : count}

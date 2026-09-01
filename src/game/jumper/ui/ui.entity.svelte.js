@@ -2,6 +2,7 @@ import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
 import { toString, MINUTE_MS } from "$util/time-string.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 const WORST_TIME = MINUTE_MS * 7;
 
@@ -17,7 +18,9 @@ export const createJumperUI = ({
 }) => {
 	const { generation, selected } = world.world.getContext();
 
-	const navComponent = createUINav();
+	const navComponent = createUINav({
+		onNavigation : () => audio.jumper.playUIMove(),
+	});
 
 	let isPlaying = $state(false);
 	let startTime = $state(false);
@@ -85,6 +88,7 @@ export const createJumperUI = ({
 			ui : {
 				async load() {
 					await document.fonts.load("16px Pixelzone");
+					await audio.jumper.load();
 				},
 
 				collectCoin() {

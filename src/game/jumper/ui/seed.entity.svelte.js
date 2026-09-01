@@ -1,6 +1,7 @@
 import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/component/input.component.js";
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 import { wrap } from "$util/math.js";
 
@@ -9,6 +10,7 @@ import { createTemporalWindow } from "$game/util/temporal.js";
 export const createSeedUI = () => {
 	const navComponent = createUINav({
 		selectedNav : "seed",
+		onNavigation : () => audio.jumper.playUIMove(),
 	});
 
 	const seed = $state([ 0, 0, 0, 0, 0, 0 ]);
@@ -36,6 +38,8 @@ export const createSeedUI = () => {
 
 		increment = yHeldDir > 0;
 		decrement = yHeldDir < 0;
+
+		audio.jumper.playUITick();
 
 		seed[seedNav.active] = wrap(seed[seedNav.active] + yHeldDir, 0, 10);
 	};

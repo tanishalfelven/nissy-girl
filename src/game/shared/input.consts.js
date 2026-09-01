@@ -25,6 +25,7 @@ export const KEYBOARD_TO_INPUT = new Map([
 	[ "KeyJ", BUTTON_A ],
 	[ "KeyX", BUTTON_B ],
 	[ "KeyK", BUTTON_B ],
+	[ "Backspace", BUTTON_B ],
 	[ "Enter", BUTTON_START ],
 	[ "Shift", BUTTON_SELECT ],
 ]);
