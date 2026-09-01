@@ -97,6 +97,6 @@ export const audio = {
 		playUIPause : () => jumperPlay("pause", {}),
 		playUITick : () => jumperPlay("tick", {}),
 		playCountBeep : () => jumperPlay("beep", {}),
-		playFinishCountBeep : () => jumperPlay("beep", { detune : 600 }),
+		playFinishCountBeep : () => jumperPlay("beep-finish", {}),
 	},
 };

@@ -294,7 +294,7 @@ export const jumperMachine = createMachine({
 			entry : () => audio.jumper.playUIConfirm(),
 
 			after : {
-				400 : "game",
+				300 : "game",
 			},
 		},
 

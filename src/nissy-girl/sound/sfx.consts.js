@@ -12,7 +12,9 @@ import jumperConfirm from "$nissy-girl/assets/sound/jumper-confirm.opus";
 import jumperPause from "$nissy-girl/assets/sound/jumper-pause.opus";
 // MATUSTRM | Casual Game Sounds | CC0
 import jumperTick from "$nissy-girl/assets/sound/jumper-tick.opus";
+// https://freesound.org/people/magnuswaker/sounds/641042/
 import jumperCountdownBeep from "$nissy-girl/assets/sound/jumper-countdown-beep.opus";
+import jumperCountdownFinish from "$nissy-girl/assets/sound/jumper-countdown-finish.opus";
 
 export const nissyGirlAudio = new Map([
 	[ "volumeWheel", { url : volumeWheel, gain : 1 }],
@@ -30,4 +32,5 @@ export const jumperAudio = new Map([
 	[ "pause", { url : jumperPause, gain : 1 }],
 	[ "tick", { url : jumperTick, gain : 1 }],
 	[ "beep", { url : jumperCountdownBeep, gain : 0.45 }],
+	[ "beep-finish", { url : jumperCountdownFinish, gain : 0.45 }],
 ]);
