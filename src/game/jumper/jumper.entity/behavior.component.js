@@ -33,6 +33,8 @@ export const createBehavior = ({
 	landSpeed,
 	airSpeed,
 	blastAirSpeed,
+
+	audio,
 }) => {
 	let isGrounded = false;
 	let lastPlatformIndex = -1;
@@ -65,6 +67,12 @@ export const createBehavior = ({
 
 	const coyoteJumpWindow = createTemporalWindow(COYOTE_JUMP_DURATION);
 	const jumpBufferWindow = createTemporalWindow(BUFFER_JUMP_DURATION);
+
+	let panic = 0;
+
+	const updatePanic = () => {
+		panic = cubicInOut(clamp((fallTime - CALM_FRAMES) / MAX_PANIC, 0, 1));
+	};
 
 	// TODO this is getting very tedious - we need to stop letting render dictate boxes
 	const left = (x) => x - HALFW;
@@ -187,11 +195,13 @@ export const createBehavior = ({
 						movement.setSpeed(blastAirSpeed);
 						spawnLateralDust();
 						isHighJump = true;
+						audio.blast();
 					},
 					target : ".airborne.jumping",
 				},
 				{
 					actions : () => {
+						audio.jump();
 						physics.addY(INITIAL_JUMP);
 					},
 					target : ".airborne.jumping",
@@ -255,6 +265,7 @@ export const createBehavior = ({
 
 							if(impactFallTime > IMPACT_DUST_THRESHOLD) {
 								spawnLateralDust(DUST_OFFSET, DUST_SCALE);
+								audio.impact();
 							}
 						},
 
@@ -306,6 +317,7 @@ export const createBehavior = ({
 
 				exit : () => {
 					fallTime = 0;
+					updatePanic();
 				},
 
 				on : {
@@ -429,6 +441,8 @@ export const createBehavior = ({
 											}
 
 											fallTime++;
+
+											updatePanic();
 										},
 										raise({ type : "PROCESS_VERT" }),
 									],
@@ -453,7 +467,7 @@ export const createBehavior = ({
 		isJumping : () => isJumping,
 		isCrouching : () => isCrouching,
 		isJumpFrame : () => isJumping && consecutiveJumps < 3,
-		getPanic : () => cubicInOut(clamp((fallTime - CALM_FRAMES) / MAX_PANIC, 0, 1)),
+		getPanic : () => panic,
 		isMoving : () => physics.isMoving() || movement.isMoving(),
 
 		isWrapping : () => isWrapping,

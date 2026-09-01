@@ -9,7 +9,7 @@
 		"build": "vite build",
 		"preview": "vite preview --host 0.0.0.0 --port 3000",
 		"lint": "eslint ./src && stylelint \"./src/**/*.mcss\"",
-		"convert-wavs": "for %f in (source-assets\\sound\\*.wav) do ffmpeg -i \"%f\" -c:a libopus -b:a 64k \"src\\nissy-girl\\assets\\sound\\%~nf.opus\""
+		"convert-sound": "for %f in (source-assets\\sound\\*) do ffmpeg -i \"%f\" -c:a libopus -b:a 64k \"src\\nissy-girl\\assets\\sound\\%~nf.opus\""
 	},
 	"browserslist": [
 		"baseline widely available",

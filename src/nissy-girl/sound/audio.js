@@ -3,6 +3,7 @@ import { nissyGirlAudio, jumperAudio } from "./sfx.consts.js";
 import { overwriteChannel, stopChannel } from "./channels.js";
 
 import { volume } from "./volume.svelte.js";
+import { step } from "$util/math.js";
 
 let _audioContext = false;
 let gainNode = false;
@@ -72,6 +73,8 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 
 	sfx.connect(assetChain);
 	sfx.start();
+
+	return sfx;
 };
 
 const nissyGirlPlay = makePlayer(nissyGirlAudio);
@@ -98,5 +101,10 @@ export const audio = {
 		playUITick : () => jumperPlay("tick", {}),
 		playCountBeep : () => jumperPlay("beep", {}),
 		playFinishCountBeep : () => jumperPlay("beep-finish", {}),
+		playJumperImpact : () => jumperPlay("impact-reaction", { detune : Math.random() * 100 }, "jumper-impact"),
+		playJumperJump : () => jumperPlay("jump", { detune : step(Math.random(), 0.10) * 100 }, "jumper-jump"),
+		playJumperBlast : () => jumperPlay("blast", { detune : step(Math.random(), 0.10) * 100 }),
+		playCoin : () => jumperPlay("coin", {}),
+		playWin : () => jumperPlay("win", {}),
 	},
 };

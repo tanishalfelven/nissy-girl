@@ -5,6 +5,11 @@ import { noopFalseFunction } from "$util/noop.js";
 
 const noopParticles = { spawnDust : noopFalseFunction };
 const noopCamera = { follow : noopFalseFunction };
+const audio = {
+	impact : noopFalseFunction,
+	jump : noopFalseFunction,
+	blast : noopFalseFunction,
+};
 
 const SIMULATE_PLATFORM_INDEX = 0;
 const SIMULATE_SPAWN = { x : 0, y : 1 };
@@ -165,7 +170,7 @@ export const createCapabilities = ({
 		},
 	}));
 
-	const jumper = createJumper({ world });
+	const jumper = createJumper({ world, audio });
 
 	const data = {};
 

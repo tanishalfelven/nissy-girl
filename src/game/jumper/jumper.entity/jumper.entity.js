@@ -12,11 +12,19 @@ import {
 	DPAD_RIGHT,
 } from "$game/shared/input.consts.js";
 import { createJumperRender } from "./render.component.js";
+import { audio } from "$nissy-girl/sound/audio.js";
+
+const jumperAudio = {
+	impact : () => audio.jumper.playJumperImpact(),
+	jump : () => audio.jumper.playJumperJump(),
+	blast : () => audio.jumper.playJumperBlast(),
+};
 
 export const JUMPER_INPUTS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_DOWN, BUTTON_A ];
 
 export const createJumper = ({
 	world,
+	audio = jumperAudio,
 }) => {
 	const landSpeed = 0.9;
 	const airSpeed = 0.6;
@@ -51,6 +59,7 @@ export const createJumper = ({
 		landSpeed,
 		airSpeed,
 		blastAirSpeed,
+		audio,
 	});
 
 	const input = createInput({

@@ -4,10 +4,11 @@ import css from "./volume-wheel.mcss";
 import { volume } from "$nissy-girl/sound/volume.svelte.js";
 import { audio } from "$nissy-girl/sound/audio.js";
 
+import { step } from "$util/math.js";
+
 const MAX_ROT = 105;
 const ANGLE_OFFSET = 7;
 
-const step = (val, stepBy) => Math.round(val / stepBy) * stepBy;
 const volumeToSteppedRotation = () => (MAX_ROT - step(volume.value * MAX_ROT, 7) - ANGLE_OFFSET);
 
 let sliderHeight = $state(false);

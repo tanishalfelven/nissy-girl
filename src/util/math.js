@@ -43,3 +43,5 @@ export const isAABB = (ax, ay, aw, ah, bx, by, bw, bh) => {
 		&& ay + ah > by
 	);
 };
+
+export const step = (val, stepBy) => Math.round(val / stepBy) * stepBy;

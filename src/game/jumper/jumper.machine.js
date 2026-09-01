@@ -279,22 +279,14 @@ export const jumperMachine = createMachine({
 			}),
 
 			on : {
-				DONE : "pregame",
+				DONE : "game",
 			},
 		},
 
 		restart : {
 			after : {
 				// ! xstate bug when using always with reenter true, this seems to force correct teardown
-				1 : "pregame",
-			},
-		},
-
-		pregame : {
-			entry : () => audio.jumper.playUIConfirm(),
-
-			after : {
-				300 : "game",
+				1 : "game",
 			},
 		},
 
@@ -368,9 +360,17 @@ export const jumperMachine = createMachine({
 						PAUSE : "pause",
 					},
 
-					initial : "countdown",
+					initial : "pregame",
 
 					states : {
+						pregame : {
+							entry : () => audio.jumper.playUIConfirm(),
+
+							after : {
+								100 : "countdown",
+							},
+						},
+
 						countdown : {
 							meta : {
 								load : withModel(Countdown),
@@ -472,7 +472,10 @@ export const jumperMachine = createMachine({
 				},
 
 				scoring : {
-					entry : withScene((_, { world }) => world.world.get("ui").ui.stopPlay()),
+					entry : withScene((_, { world }) => {
+						audio.jumper.playWin();
+						world.world.get("ui").ui.stopPlay();
+					}),
 
 					initial : "zooming",
 

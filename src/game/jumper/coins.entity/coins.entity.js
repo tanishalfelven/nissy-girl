@@ -2,6 +2,8 @@ import { createEntity } from "$game/shared/entity/entity.js";
 
 import { createRender } from "./render.component.js";
 
+import { audio } from "$nissy-girl/sound/audio.js";
+
 export const COIN_WIDTH = 11;
 export const COIN_HEIGHT = 12;
 
@@ -51,6 +53,7 @@ export const createCoins = ({
 
 							if(hit) {
 								jumper.render.reactToCollect();
+								audio.jumper.playCoin();
 
 								coin.isAlive = false;
 								render.outroCoin(i);
