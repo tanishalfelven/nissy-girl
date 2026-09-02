@@ -134,7 +134,13 @@ export const audio = {
 			paintPlay("scribble", { detune : detune() - 200 }, "scribble");
 		},
 		playLineStart : () => paintPlay("line", { detune : detune(100) + 100 }, "line"),
-		playLineEnd : () => paintPlay("line", { detune : detune(100) + 100 }, "lineend"),
+		playLineEnd : () => {
+			if(channelActive("lineend")) {
+				return;
+			}
+
+			paintPlay("line", { detune : detune(100) + 100 }, "lineend");
+		},
 		playLineContinue : () => {
 			if(channelActive("line")) {
 				return;

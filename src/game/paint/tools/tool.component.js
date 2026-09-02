@@ -47,6 +47,7 @@ export const createTool = ({ artboard, movement }) => {
 		},
 
 		begin() {
+			pixels.commit();
 			tools[currentTool].begin();
 		},
 

@@ -32,17 +32,13 @@ export const createPencil = ({ pixels, movement }) => {
 
 			const nextPos = movement.getPosition();
 
-			if(deadStack.size > 0 && deadStack.has(pointToString(nextPos))) {
-				return;
-			}
-
 			if(pos.length === 0 || coordsDiffer(nextPos, pos.at(-1))) {
 				pos.push(nextPos);
 			}
 		},
 
 		render() {
-			if(isDrawing && pos.length) {
+			if(isDrawing || pos.length) {
 				for(let i = 0; i < pos.length; i++) {
 					const first = pos[i];
 					const second = pos[i + 1] || first;
@@ -57,11 +53,15 @@ export const createPencil = ({ pixels, movement }) => {
 
 				const paintedPoints = pos.splice(0, Math.max(pos.length - 1, 1));
 
+				const deadStackSize = deadStack.size;
+
 				for(const point of paintedPoints) {
 					deadStack.add(pointToString(point));
 				}
 
-				audio.paint.playScribble();
+				if(deadStackSize !== deadStack.size) {
+					audio.paint.playScribble();
+				}
 			}
 
 			if(!isDrawing) {
