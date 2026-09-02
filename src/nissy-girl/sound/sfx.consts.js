@@ -16,14 +16,14 @@ import jumperTick from "$nissy-girl/assets/sound/jumper-tick.opus";
 import jumperCountdownBeep from "$nissy-girl/assets/sound/jumper-countdown-beep.opus";
 import jumperCountdownFinish from "$nissy-girl/assets/sound/jumper-countdown-finish.opus";
 import jumperImpactReaction from "$nissy-girl/assets/sound/jumper-impact-reaction.opus";
-// https://freesound.org/people/kaygrum/sounds/464433/
 import jumperJump from "$nissy-girl/assets/sound/jumper-jump.opus";
-// https://pixabay.com/sound-effects/film-special-effects-pixel-explosion-319166/
-import jumperBlast from "$nissy-girl/assets/sound/jumper-blast.opus";
-// https://freesound.org/people/Selector/sounds/250200/
+import jumperBlast from "$nissy-girl/assets/sound/jumper-blast2.opus";
+// https://freesound.org/people/clairinski/sounds/184372/?client_id=1430886896.1772668802&session_id=1772668802
 import jumperCoin from "$nissy-girl/assets/sound/jumper-coin.opus";
 // https://freesound.org/people/jhyland/sounds/539679/
 import jumperWin from "$nissy-girl/assets/sound/jumper-win.opus";
+// https://opengameart.org/content/jump-landing-sound
+import jumpLanding from "$nissy-girl/assets/sound/jumpland.opus";
 
 export const nissyGirlAudio = new Map([
 	[ "volumeWheel", { url : volumeWheel, gain : 1 }],
@@ -40,11 +40,12 @@ export const jumperAudio = new Map([
 	[ "confirm", { url : jumperConfirm, gain : 1 }],
 	[ "pause", { url : jumperPause, gain : 1 }],
 	[ "tick", { url : jumperTick, gain : 1 }],
-	[ "beep", { url : jumperCountdownBeep, gain : 0.45 }],
-	[ "beep-finish", { url : jumperCountdownFinish, gain : 0.45 }],
-	[ "impact-reaction", { url : jumperImpactReaction, gain : 1.2 }],
-	[ "jump", { url : jumperJump, gain : 0.4 }],
-	[ "blast", { url : jumperBlast, gain : 0.2 }],
-	[ "coin", { url : jumperCoin, gain : 0.8 }],
-	[ "win", { url : jumperWin, gain : 0.8 }],
+	[ "beep", { url : jumperCountdownBeep, gain : 0.09 }],
+	[ "beep-finish", { url : jumperCountdownFinish, gain : 0.09 }],
+	[ "impact-reaction", { url : jumperImpactReaction, gain : 0.8 }],
+	[ "jump", { url : jumperJump, gain : 0.5 }],
+	[ "land", { url : jumpLanding, gain : 0.14 }],
+	[ "blast", { url : jumperBlast, gain : 0.3 }],
+	[ "coin", { url : jumperCoin, gain : 0.65 }],
+	[ "win", { url : jumperWin, gain : 0.35 }],
 ]);

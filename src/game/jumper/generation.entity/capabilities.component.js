@@ -9,6 +9,7 @@ const audio = {
 	impact : noopFalseFunction,
 	jump : noopFalseFunction,
 	blast : noopFalseFunction,
+	land : noopFalseFunction,
 };
 
 const SIMULATE_PLATFORM_INDEX = 0;

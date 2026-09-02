@@ -18,6 +18,7 @@ const jumperAudio = {
 	impact : () => audio.jumper.playJumperImpact(),
 	jump : () => audio.jumper.playJumperJump(),
 	blast : () => audio.jumper.playJumperBlast(),
+	land : () => audio.jumper.playLand(),
 };
 
 export const JUMPER_INPUTS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_DOWN, BUTTON_A ];

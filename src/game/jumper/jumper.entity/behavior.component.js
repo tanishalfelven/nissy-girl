@@ -263,6 +263,8 @@ export const createBehavior = ({
 						entry : () => {
 							isImpact = true;
 
+							audio.land();
+
 							if(impactFallTime > IMPACT_DUST_THRESHOLD) {
 								spawnLateralDust(DUST_OFFSET, DUST_SCALE);
 								audio.impact();
