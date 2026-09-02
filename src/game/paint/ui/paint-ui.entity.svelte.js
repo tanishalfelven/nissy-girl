@@ -1,6 +1,7 @@
 import { createInput, resolveDirectionX, resolveDirectionY } from "$game/shared/component/input.component.js";
 import { createUINav } from "$game/shared/ui/ui-nav.component.svelte.js";
 import { createEntity } from "$game/shared/entity/entity.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 export const createPaintUI = ({
 	world,
@@ -25,7 +26,11 @@ export const createPaintUI = ({
 		isFixedCamera = camera.getIsFixedStyle();
 	});
 
-	const navComponent = createUINav();
+	const navComponent = createUINav({
+		onNavigation() {
+			audio.paint.playNavOink();
+		},
+	});
 
 	const input = createInput({
 		onInputChange(inputs) {

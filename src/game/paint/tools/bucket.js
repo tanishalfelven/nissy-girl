@@ -1,3 +1,5 @@
+import { audio } from "$nissy-girl/sound/audio.js";
+
 export const createBucket = ({ pixels, movement }) => {
 	let isFilling = false;
 	let pos = false;
@@ -26,6 +28,8 @@ export const createBucket = ({ pixels, movement }) => {
 
 		render() {
 			if(isFilling && pos) {
+				audio.paint.playSplash();
+
 				pixels.floodFill(pos.x, pos.y);
 
 				isFilling = false;

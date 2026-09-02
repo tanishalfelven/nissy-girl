@@ -1,6 +1,6 @@
-import { nissyGirlAudio, jumperAudio } from "./sfx.consts.js";
+import { nissyGirlAudio, jumperAudio, paintAudio } from "./sfx.consts.js";
 
-import { overwriteChannel, stopChannel } from "./channels.js";
+import { channelActive, overwriteChannel, stopChannel } from "./channels.js";
 
 import { volume } from "./volume.svelte.js";
 import { step } from "$util/math.js";
@@ -34,17 +34,19 @@ const loadAudioSet = async (audioSet) => {
 	return await Promise.all([ ...audioSet ].map(async ([ id, data ]) => {
 		const response = await fetch(data.url);
 
-		audioSet.get(id).src = await audioContext.decodeAudioData(
+		const audioAsset = audioSet.get(id);
+
+		audioAsset.src = await audioContext.decodeAudioData(
 			await response.arrayBuffer(),
 		);
 
-		const assetGain = audioContext.createGain();
+		audioAsset.gainNode = audioContext.createGain();
 
-		assetGain.gain.setValueAtTime(data?.gain ?? 1, 0);
+		audioAsset.gainNode.gain.setValueAtTime(data?.gain ?? 1, 0);
 
-		assetGain.connect(gainNode);
+		audioAsset.gainNode.connect(gainNode);
 
-		assetChains.set(id, assetGain);
+		assetChains.set(id, audioAsset.gainNode);
 	}));
 };
 
@@ -53,20 +55,21 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 		throw new Error(`Tried to play nonexistent sound with id "${id}"`);
 	}
 
-	const { src } = audioSet.get(id);
+	const audioAsset = audioSet.get(id);
 
-	if(!src) {
+	if(!audioAsset.src) {
 		throw new Error(`No audio src for id ${id}`);
 	}
 
 	const audioContext = getAudioContext();
 
-	const sfx = new AudioBufferSourceNode(audioContext, { buffer : src, ...options });
+	const sfx = new AudioBufferSourceNode(audioContext, { buffer : audioAsset.src, ...options });
 
 	if(channel) {
-		overwriteChannel(channel, sfx);
+		overwriteChannel(channel, { sfx, gain : audioAsset.gainNode });
 	}
 
+	audioAsset.gainNode.gain.setValueAtTime(audioAsset.gain ?? 1, 0);
 	gainNode.gain.setValueAtTime(volume.getGain(), 0);
 
 	const assetChain = assetChains.get(id);
@@ -79,6 +82,9 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 
 const nissyGirlPlay = makePlayer(nissyGirlAudio);
 const jumperPlay = makePlayer(jumperAudio);
+const paintPlay = makePlayer(paintAudio);
+
+const detune = (range = 500, steps = 10) => step(Math.random(), 1 / steps) * range;
 
 export const audio = {
 	playVolumeKnob : () => nissyGirlPlay("volumeWheel", { detune : volume.value * -30 + Math.random() * 15 }, "volume"),
@@ -101,11 +107,40 @@ export const audio = {
 		playUITick : () => jumperPlay("tick", {}),
 		playCountBeep : () => jumperPlay("beep", {}),
 		playFinishCountBeep : () => jumperPlay("beep-finish", {}),
-		playJumperImpact : () => jumperPlay("impact-reaction", { detune : Math.random() * 500 }, "jumper-impact"),
-		playJumperJump : () => jumperPlay("jump", { detune : step(Math.random(), 0.10) * 500 }, "jumper-jump"),
-		playJumperBlast : () => jumperPlay("blast", { detune : step(Math.random(), 0.10) * 500 }),
+		playJumperImpact : () => jumperPlay("impact-reaction", { detune : detune() }, "jumper-impact"),
+		playJumperJump : () => jumperPlay("jump", { detune : detune() }, "jumper-jump"),
+		playJumperBlast : () => jumperPlay("blast", { detune : detune() }),
 		playLand : () => jumperPlay("land", {}),
 		playCoin : () => jumperPlay("coin", {}),
 		playWin : () => jumperPlay("win", {}),
+	},
+
+	paint : {
+		load : () => loadAudioSet(paintAudio),
+
+		playOink : () => paintPlay("oink", {}),
+		playNavOink : () => paintPlay("navoink", { detune : 300 }),
+		playOinkConfirm : () => paintPlay("oink", { detune : -200 }),
+		playWinnie : () => paintPlay("winnie", {}),
+		playWinnieZoom : (idx) => paintPlay("winnie", { detune : idx * 150 }),
+		playGrunt : () => paintPlay("grunt", {}),
+		playSplash : () => paintPlay("splash", {}),
+		playPop : () => paintPlay("pop", {}),
+		playScribble : () => {
+			if(channelActive("scribble")) {
+				return;
+			}
+
+			paintPlay("scribble", { detune : detune() - 200 }, "scribble");
+		},
+		playLineStart : () => paintPlay("line", { detune : detune(100) + 100 }, "line"),
+		playLineEnd : () => paintPlay("line", { detune : detune(100) + 100 }, "lineend"),
+		playLineContinue : () => {
+			if(channelActive("line")) {
+				return;
+			}
+
+			paintPlay("line", { detune : detune(100) - 200 }, "line");
+		},
 	},
 };

@@ -8,6 +8,7 @@ import {
 import { createPencil } from "./pencil.js";
 import { createLine } from "./line.js";
 import { createBucket } from "./bucket.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 export const createTool = ({ artboard, movement }) => {
 	const pixels = artboard.getContext();
@@ -28,12 +29,14 @@ export const createTool = ({ artboard, movement }) => {
 		selectTool(tool) {
 			// new page isn't equipped
 			if(tool === NEW_ARTBOARD) {
+				audio.paint.playWinnie();
 				artboard.clear();
 
 				return;
 			}
 
 			if(tools[tool]) {
+				audio.paint.playOinkConfirm();
 				tools[currentTool].stop();
 				currentTool = tool;
 			}
@@ -44,7 +47,6 @@ export const createTool = ({ artboard, movement }) => {
 		},
 
 		begin() {
-			pixels.commit();
 			tools[currentTool].begin();
 		},
 

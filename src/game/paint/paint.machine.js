@@ -1,4 +1,4 @@
-import { createMachine, raise } from "xstate";
+import { createMachine, fromPromise, raise } from "xstate";
 
 import { stateLogger } from "$util/state-logger.actor.js";
 
@@ -28,6 +28,7 @@ import { createArtboard } from "./artboard.entity.js";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
 import { inputTriggered } from "$game/util/input-guards.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
@@ -41,9 +42,45 @@ export const paintMachine = createMachine({
 
 	states : {
 		loading : {
-			on : {
-				GAME_READY : "menu",
+			type : "parallel",
+
+			states : {
+				screen : {
+					initial : "pending",
+
+					states : {
+						pending : {
+							on : {
+								GAME_READY : "ready",
+							},
+						},
+
+						ready : {
+							type : "final",
+						},
+					},
+				},
+
+				preload : {
+					initial : "pending",
+
+					states : {
+						pending : {
+							invoke : {
+								id : "load-sfx",
+								src : fromPromise(audio.paint.load),
+								onDone : "ready",
+							},
+						},
+
+						ready : {
+							type : "final",
+						},
+					},
+				},
 			},
+
+			onDone : "menu",
 		},
 
 		menu : {
@@ -75,6 +112,8 @@ export const paintMachine = createMachine({
 
 				ENTER_ARTBOARD : "artboard",
 			},
+
+			exit : () => audio.paint.playOink(),
 		},
 
 		artboard : {
@@ -144,7 +183,11 @@ export const paintMachine = createMachine({
 
 						[BUTTON_SELECT] : {
 							guard : inputTriggered,
-							actions : sceneAction((_, { world }) => world.camera.stepZoom()),
+							actions : sceneAction((_, { world }) => {
+								const cameraIdx = world.camera.stepZoom();
+
+								audio.paint.playWinnieZoom(cameraIdx);
+							}),
 						},
 
 						[BUTTON_A] : {
@@ -166,7 +209,9 @@ export const paintMachine = createMachine({
 
 								const pixels = artboard.artboard.getContext();
 
-								pixels.undo();
+								if(pixels.undo()) {
+									audio.paint.playPop();
+								}
 							}),
 						},
 					},
@@ -197,7 +242,7 @@ export const paintMachine = createMachine({
 						palette : {
 							entry : sceneAction((_, { world }) => {
 								const ui = world.world.get("ui");
-
+								audio.paint.playGrunt();
 								ui.ui.openPaletteMenu();
 							}),
 
@@ -210,7 +255,10 @@ export const paintMachine = createMachine({
 							on : {
 								[BUTTON_A] : {
 									guard : inputTriggered,
-									actions : raise({ type : "BACK_TO_DRAWING" }),
+									actions : [
+										raise({ type : "BACK_TO_DRAWING" }),
+										() => audio.paint.playOinkConfirm(),
+									],
 								},
 
 								[BUTTON_START] : {
@@ -223,7 +271,7 @@ export const paintMachine = createMachine({
 						tools : {
 							entry : sceneAction((_, { world }) => {
 								const ui = world.world.get("ui");
-
+								audio.paint.playGrunt();
 								ui.ui.openToolsMenu();
 							}),
 
@@ -248,7 +296,10 @@ export const paintMachine = createMachine({
 
 								[BUTTON_START] : {
 									guard : inputTriggered,
-									actions : raise({ type : "BACK_TO_DRAWING" }),
+									actions : [
+										() => audio.paint.playGrunt(),
+										raise({ type : "BACK_TO_DRAWING" }),
+									],
 								},
 							},
 						},

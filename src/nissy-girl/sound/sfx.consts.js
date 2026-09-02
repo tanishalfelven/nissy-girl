@@ -5,6 +5,15 @@ import cartridgeRemoveClick from "$nissy-girl/assets/sound/release-and-click-4.o
 import cartridgeScrape from "$nissy-girl/assets/sound/scrape-3.opus";
 import nissyGirlBoot from "$nissy-girl/assets/sound/nissygirl-boot-4.opus";
 
+export const nissyGirlAudio = new Map([
+	[ "volumeWheel", { url : volumeWheel, gain : 1 }],
+	[ "powerToggle", { url : powerToggle, gain : 0.8 }],
+	[ "cartridgeInsert", { url : cartridgeInsertClick, gain : 1 }],
+	[ "scrape", { url : cartridgeScrape, gain : 0.5 }],
+	[ "cartridgeRemove", { url : cartridgeRemoveClick, gain : 1 }],
+	[ "nissyGirlBoot", { url : nissyGirlBoot, gain : 0.35 }],
+]);
+
 // MATUSTRM | PACK Sounds RPG | CC0
 import jumperBack from "$nissy-girl/assets/sound/jumper/jumper-back.opus";
 import jumperButton from "$nissy-girl/assets/sound/jumper/jumper-button.opus";
@@ -25,15 +34,6 @@ import jumperWin from "$nissy-girl/assets/sound/jumper/jumper-win.opus";
 // https://opengameart.org/content/jump-landing-sound
 import jumpLanding from "$nissy-girl/assets/sound/jumper/jumpland.opus";
 
-export const nissyGirlAudio = new Map([
-	[ "volumeWheel", { url : volumeWheel, gain : 1 }],
-	[ "powerToggle", { url : powerToggle, gain : 0.8 }],
-	[ "cartridgeInsert", { url : cartridgeInsertClick, gain : 1 }],
-	[ "scrape", { url : cartridgeScrape, gain : 0.5 }],
-	[ "cartridgeRemove", { url : cartridgeRemoveClick, gain : 1 }],
-	[ "nissyGirlBoot", { url : nissyGirlBoot, gain : 0.35 }],
-]);
-
 export const jumperAudio = new Map([
 	[ "back", { url : jumperBack, gain : 1 }],
 	[ "button", { url : jumperButton, gain : 1 }],
@@ -48,4 +48,26 @@ export const jumperAudio = new Map([
 	[ "blast", { url : jumperBlast, gain : 0.3 }],
 	[ "coin", { url : jumperCoin, gain : 0.65 }],
 	[ "win", { url : jumperWin, gain : 0.35 }],
+]);
+
+// pig sty https://freesound.org/people/Kulanen/sounds/556788/
+import paintOink from "$nissy-girl/assets/sound/paint/oink.opus";
+import paintGrunt from "$nissy-girl/assets/sound/paint/grunt.opus";
+import paintWinnie from "$nissy-girl/assets/sound/paint/winnie.opus";
+// https://freesound.org/people/aglinder/sounds/265582/
+import paintSplash from "$nissy-girl/assets/sound/paint/splash.opus";
+import paintScribble from "$nissy-girl/assets/sound/paint/jfxr-scribble.opus";
+import paintLine from "$nissy-girl/assets/sound/paint/line.opus";
+// pop https://freesound.org/people/musselmox/sounds/846281/
+import paintPop from "$nissy-girl/assets/sound/paint/pop.opus";
+
+export const paintAudio = new Map([
+	[ "oink", { url : paintOink, gain : 2 }],
+	[ "navoink", { url : paintOink, gain : 1.9 }],
+	[ "grunt", { url : paintGrunt, gain : 2.2 }],
+	[ "winnie", { url : paintWinnie, gain : 2.9 }],
+	[ "splash", { url : paintSplash, gain : 0.8 }],
+	[ "scribble", { url : paintScribble, gain : 0.08 }],
+	[ "line", { url : paintLine, gain : 0.1 }],
+	[ "pop", { url : paintPop, gain : 0.3 }],
 ]);

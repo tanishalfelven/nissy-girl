@@ -1,8 +1,14 @@
+import { audio } from "$nissy-girl/sound/audio.js";
+import { coordsDiffer } from "$game/shared/component/position.js";
+
+const floorPoint = ({ x, y }) => ({ x : Math.floor(x), y : Math.floor(y) });
+
 export const createLine = ({ pixels, movement }) => {
 	let isDrawing = false;
 	let snapshot = false;
 	let startPos = false;
 	let endPos = false;
+	let lastPos = false;
 
 	return {
 		get active() {
@@ -11,9 +17,14 @@ export const createLine = ({ pixels, movement }) => {
 
 		begin() {
 			isDrawing = true;
+			audio.paint.playLineStart();
 		},
 
 		stop() {
+			if(isDrawing) {
+				audio.paint.playLineEnd();
+			}
+
 			isDrawing = false;
 			startPos = false;
 			endPos = false;
@@ -27,16 +38,23 @@ export const createLine = ({ pixels, movement }) => {
 
 			if(!startPos) {
 				snapshot = pixels.snapshot();
-				startPos = movement.getPosition();
+				startPos = floorPoint(movement.getPosition());
 
 				return;
 			}
 
-			endPos = movement.getPosition();
+			endPos = floorPoint(movement.getPosition());
 		},
 
 		render() {
-			if(isDrawing && startPos) {
+			if(!isDrawing) {
+				startPos = false;
+				snapshot = false;
+				endPos = false;
+				return;
+			}
+
+			if(startPos) {
 				let target = endPos || startPos;
 
 				pixels.restore(snapshot);
@@ -47,12 +65,12 @@ export const createLine = ({ pixels, movement }) => {
 					target.x,
 					target.y,
 				);
-			}
 
-			if(!isDrawing) {
-				startPos = false;
-				snapshot = false;
-				endPos = false;
+				if(coordsDiffer(lastPos, endPos) && isDrawing) {
+					audio.paint.playLineContinue();
+				}
+
+				lastPos = endPos;
 			}
 		},
 	};

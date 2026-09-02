@@ -37,6 +37,8 @@ export const createPaintCamera = ({
 			cameraIdx = wrap(cameraIdx + 1, 0, PAINT_CAMERA_ORDER.length);
 
 			camera.setCameraConfig(PAINT_CAMERA_ORDER[cameraIdx]);
+
+			return cameraIdx;
 		},
 	};
 };
