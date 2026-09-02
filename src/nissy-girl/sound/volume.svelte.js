@@ -1,3 +1,4 @@
+import { untrack } from "svelte";
 import { clamp } from "$util/math.js";
 
 let volume = $state(0.65);
@@ -12,7 +13,7 @@ const volumeView = {
 	},
 
 	getGain() {
-		return volume ** 2;
+		return untrack(() => volume ** 2);
 	},
 };
 

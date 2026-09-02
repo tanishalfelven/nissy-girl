@@ -5,10 +5,10 @@ const COUNT_DURATION = (START_COUNT + Math.abs(END_COUNT)) * 1000;
 const PLAY_COUNT = 0;
 </script>
 <script>
+import { Tween } from "svelte/motion";
+
 import css from "./countdown.mcss";
 import { audio } from "$nissy-girl/sound/audio.js";
-
-import { Tween } from "svelte/motion";
 
 const { model } = $props();
 
