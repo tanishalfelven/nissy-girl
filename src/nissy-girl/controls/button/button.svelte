@@ -44,15 +44,19 @@ let isPressed = $state(false);
 const type = $derived(getButtonType(button));
 
 const getTransform = (isPressed) => {
-	if(isPressed) {
-		return "translateZ(calc(var(--button-plane) * 0.4)) scale(0.92)";
-	}
-
 	if(type === TYPE_BEAN) {
-		return "translateZ(calc(var(--button-plane) * 0.6))";
+		if(isPressed) {
+			return "translateZ(calc(var(--button-plane) * 0.4)) scale(0.92)";
+		}
+
+		return "translateZ(calc(var(--button-plane) * 0.72))";
 	}
 
-	return "translateZ(calc(var(--button-plane) * 0.7))";
+	if(isPressed) {
+		return "translateZ(calc(var(--button-plane) * -0.15)) scale(0.92)";
+	}
+
+	return "translateZ(calc(var(--button-plane) * 0.55))";
 };
 
 $effect(() =>
