@@ -94,6 +94,8 @@ export const audio = {
 	playCartridgeRemove : () => nissyGirlPlay("cartridgeRemove", {}, "cartridge"),
 	playBootJingle : () => nissyGirlPlay("nissyGirlBoot", {}, "boot"),
 	stopBootJingle : () => stopChannel("boot"),
+	playButton : () => nissyGirlPlay("button"),
+	playDpad : () => nissyGirlPlay("dpad"),
 
 	loadNissyGirlSfx : () => loadAudioSet(nissyGirlAudio),
 
@@ -111,7 +113,7 @@ export const audio = {
 		playJumperJump : () => jumperPlay("jump", { detune : detune() }, "jumper-jump"),
 		playJumperBlast : () => jumperPlay("blast", { detune : detune() }),
 		playLand : () => jumperPlay("land", {}),
-		playCoin : () => jumperPlay("coin", {}),
+		playCoin : (idx) => jumperPlay("coin", { detune : (idx % 3) * 150 }),
 		playWin : () => jumperPlay("win", {}),
 	},
 

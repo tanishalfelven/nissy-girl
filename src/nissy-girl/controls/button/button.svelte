@@ -1,6 +1,7 @@
 <script module>
 import { controls } from "$util/touch-action.svelte.js";
 import { input } from "$nissy-girl/input.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 import {
 	BUTTON_A,
 	BUTTON_B,
@@ -57,7 +58,12 @@ const getTransform = (isPressed) => {
 $effect(() =>
 	input.subscribe(({ type, state }) => {
 		if(type === button) {
+			const prevPressed = isPressed;
 			isPressed = state === TRIGGERED;
+
+			if(prevPressed !== isPressed) {
+				audio.playButton();
+			}
 		}
 	}),
 );

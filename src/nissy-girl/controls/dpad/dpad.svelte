@@ -15,6 +15,7 @@ import { controls, deadzone } from "$util/touch-action.svelte.js";
 import css from "./dpad.mcss";
 import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
 import { input } from "$nissy-girl/input.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 import {
 	DPAD_DOWN,
 	DPAD_LEFT,
@@ -103,8 +104,15 @@ const yXlate = $derived(-dpadY);
 
 $effect(() =>
 	input.subscribe(() => {
+		const prevDpadX = dpadX;
+		const prevDpadY = dpadY;
+
 		dpadX = -Number(input.state[DPAD_LEFT]) + Number(input.state[DPAD_RIGHT]);
 		dpadY = Number(input.state[DPAD_UP]) + -Number(input.state[DPAD_DOWN]);
+
+		if(prevDpadX !== dpadX || prevDpadY !== dpadY) {
+			audio.playDpad();
+		}
 	}),
 );
 </script>

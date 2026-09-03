@@ -93,6 +93,7 @@ export const createJumperUI = ({
 
 				collectCoin() {
 					collectedCoins++;
+					audio.jumper.playCoin(collectedCoins);
 				},
 
 				update() {
