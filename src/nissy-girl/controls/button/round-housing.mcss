@@ -1,4 +1,3 @@
-@value px1 from "$nissy-girl/nissy-girl.mcss";
 @value deadzonesize from "$nissy-girl/controls/dpad/dpad.mcss";
 
 @value facebuttondeadzoneheight: calc(deadzonesize * 0.66);
@@ -7,17 +6,17 @@
 	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
-	right: calc(2 * px1);
-	bottom: calc(50 * px1);
+	right: 2rem;
+	bottom: 50rem;
 	transform-style: preserve-3d;
 
 	/* pixel offset helps make sure deadzone always is hit by mouse */
 	transform: rotate(-30deg) translateZ(1px);
 
-	width: calc(deadzonesize * px1);
-	height: calc(facebuttondeadzoneheight * px1);
+	width: deadzonesize;
+	height: facebuttondeadzoneheight;
 	margin: auto;
-	border-radius: calc(15 * px1);
+	border-radius: 15rem;
 }
 
 .unrotate {
@@ -29,13 +28,13 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	right: calc(4 * px1);
-	bottom: calc(-1 * px1);
+	right: 4rem;
+	bottom: -1rem;
 	transform-style: preserve-3d;
 	transform: rotate(30deg) translateZ(-4px);
 
-	width: calc(60 * px1);
-	height: calc(52 * px1);
+	width: 60rem;
+	height: 52rem;
 
 	background-image: url("./assets/ab-housing.png");
 }

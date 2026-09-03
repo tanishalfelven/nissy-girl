@@ -1,7 +1,6 @@
 @value height: 105rem;
 @value width: 112rem;
 @value depth: 6rem;
-@value px1: 1rem;
 
 .cartridge {
 	--pcb-y: -3%;
@@ -172,7 +171,7 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(17 * px1);
+	top: 17rem;
 	left: 16.2%;
 	transform: translateZ(calc(depth * -0.08)) rotateY(90deg);
 
@@ -202,7 +201,7 @@
 		scaleX(1.05);
 
 	width: depth;
-	height: calc(84 * px1);
+	height: 84rem;
 
 	background-image: url("./assets/cartridge-slat-top.png");
 
@@ -236,7 +235,7 @@
 		scaleX(1.05);
 
 	width: depth;
-	height: calc(21 * px1);
+	height: 21rem;
 
 	background-image: url("./assets/cartridge-slat-bottom.png");
 
@@ -274,7 +273,7 @@
 		rotateZ(90deg)
 		scaleX(1.03);
 
-	width: calc(9 * px1);
+	width: 9rem;
 	height: depth;
 
 	background-image: url("./assets/cartridge-slat-under.png");
@@ -329,7 +328,7 @@
 		rotateX(-90deg);
 
 	width: 80%;
-	height: px1;
+	height: 1rem;
 	margin: auto;
 
 	background-image: url("./assets/pcb-under.png");

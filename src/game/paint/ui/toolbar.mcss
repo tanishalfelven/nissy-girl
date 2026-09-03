@@ -1,8 +1,4 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
 @value cursorred from "./drawing.mcss";
-
-@value quarterspx: calc(0.25 * spx);
-@value halfspx: calc(0.5 * spx);
 
 .toolbarmenu {
 	composes: offmenu from "./drawing.mcss";
@@ -11,10 +7,10 @@
 	flex-direction: column;
 	align-items: center;
 
-	width: calc(14 * spx);
+	width: 14rem;
 	height: auto;
-	padding: 0 calc(2 * spx);
-	border: calc(2 * spx) solid black;
+	padding: 0 2rem;
+	border: 2rem solid black;
 
 	background-color: #639bff;
 }
@@ -22,14 +18,14 @@
 .tooloption {
 	composes: toolimg from "./drawing.mcss";
 
-	width: calc(8 * spx);
-	height: calc(8 * spx);
-	margin: spx 0;
+	width: 8rem;
+	height: 8rem;
+	margin: 1rem 0;
 
-	background-size: calc(7 * spx) calc(7 * spx);
+	background-size: 7rem 7rem;
 
 	&[data-selected="true"] {
 		z-index: 1;
-		outline: spx solid black;
+		outline: 1rem solid black;
 	}
 }

@@ -1,10 +1,9 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
 @value cursorred: #bf0000;
 
 .offmenu {
 	position: absolute;
-	top: calc(24 * spx);
-	right: calc(1.5 * spx);
+	top: 24rem;
+	right: 1.5rem;
 	transform: translateX(200%);
 
 	transition: transform 200ms;
@@ -16,14 +15,13 @@
 
 .cursor {
 	--scale: 1;
-	--spx: spx;
 
 	will-change: transform;
 
 	position: absolute;
 
-	width: calc(var(--spx) * var(--scale));
-	height: calc(var(--spx) * var(--scale));
+	width: var(--scale);
+	height: var(--scale);
 
 	outline: 3px solid cursorred;
 
@@ -43,7 +41,7 @@
 
 	width: auto;
 	height: 100%;
-	padding: calc(1.5 * spx);
+	padding: 1.5rem;
 
 	opacity: 0;
 
@@ -60,13 +58,13 @@
 	align-self: flex-end;
 	justify-content: center;
 
-	width: calc(12 * spx);
-	height: calc(12 * spx);
-	margin-bottom: calc(2 * spx);
-	padding: calc(1 * spx);
-	border: spx solid black;
+	width: 12rem;
+	height: 12rem;
+	margin-bottom: 2rem;
+	padding: 1rem;
+	border: 1rem solid black;
 
-	outline: spx solid white;
+	outline: 1rem solid white;
 }
 
 .toolimg {
@@ -85,7 +83,7 @@
 
 .selectedcolor {
 	composes: tool, color;
-	width: calc(6 * spx);
-	height: calc(6 * spx);
+	width: 6rem;
+	height: 6rem;
 	padding: 0;
 }

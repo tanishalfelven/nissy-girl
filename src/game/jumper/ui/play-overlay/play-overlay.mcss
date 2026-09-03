@@ -1,4 +1,4 @@
-@value spx, screenwidth from "$nissy-girl/screens/screens.mcss";
+@value screenwidth from "$nissy-girl/screens/screens.mcss";
 
 .game {
 	composes: menu from "../main.mcss";
@@ -17,7 +17,7 @@
 	top: 0;
 	left: 43%;
 
-	font-size: calc(12 * spx);
+	font-size: 12rem;
 	text-align: left;
 
 	opacity: 0.9;
@@ -29,13 +29,13 @@
 
 	position: absolute;
 	top: 0;
-	right: calc(3 * spx);
+	right: 3rem;
 
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 
-	font-size: calc(9 * spx);
+	font-size: 9rem;
 	text-align: right;
 
 	opacity: 0.8;
@@ -45,9 +45,9 @@
 
 		display: block;
 
-		width: calc(5 * spx);
-		height: calc(6 * spx);
-		margin-left: calc(1 * spx);
+		width: 5rem;
+		height: 6rem;
+		margin-left: 1rem;
 
 		background-image: url("./assets/coin.png");
 	}
@@ -58,9 +58,9 @@
 
 	position: absolute;
 	top: 0;
-	left: calc(3 * spx);
+	left: 3rem;
 
-	font-size: calc(9 * spx);
+	font-size: 9rem;
 
 	opacity: 0.5;
 }

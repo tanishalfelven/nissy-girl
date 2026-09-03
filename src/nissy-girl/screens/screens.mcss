@@ -1,10 +1,6 @@
-@value px1 from "$nissy-girl/nissy-girl.mcss";
 @value depth from "$nissy-girl/nissy-girl.mcss";
 @value screenheight: 96rem;
 @value screenwidth: 120rem;
-
-/* ripped from "./screen.consts.js" */
-@value spx: 1rem;
 
 .screen {
 	composes: animates from "$util/util.mcss";
@@ -75,9 +71,9 @@
 
 	width: 100%;
 	height: screenheight;
-	padding: calc(0.3 * px1);
+	padding: 0.3rem;
 
-	font-size: calc(8.5 * px1);
+	font-size: 8.5rem;
 	color: #afa;
 	word-break: break-all;
 	white-space: pre-wrap;
@@ -93,11 +89,11 @@
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(3.5 * px1);
-	left: calc(3.5 * px1);
+	top: 3.5rem;
+	left: 3.5rem;
 
-	width: calc(10.5 * px1);
-	height: calc(10.5 * px1);
+	width: 10.5rem;
+	height: 10.5rem;
 
 	background-image: url("$nissy-girl/assets/power-shroom.png");
 }

@@ -1,5 +1,3 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
-
 @value highlightred: #ac3232;
 @value shadowred: #471515;
 @value bgred: #822727;
@@ -9,9 +7,9 @@
 	align-items: center;
 	justify-content: center;
 
-	margin-bottom: calc(5 * spx);
-	padding: 0 calc(4 * spx);
-	border: spx solid shadowred;
+	margin-bottom: 5rem;
+	padding: 0 4rem;
+	border: 1rem solid shadowred;
 
 	color: rgb(255 255 255 / 50%);
 	text-align: center;

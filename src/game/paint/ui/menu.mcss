@@ -1,4 +1,4 @@
-@value spx, screenheight, screenwidth from "$nissy-girl/screens/screens.mcss";
+@value screenheight, screenwidth from "$nissy-girl/screens/screens.mcss";
 
 @keyframes artvoidspin {
 	0% {
@@ -22,7 +22,7 @@
 	}
 
 	50% {
-		transform: translate(calc(2 * spx), calc(-4 * spx));
+		transform: translate(2rem, -4rem);
 	}
 
 	100% {
@@ -62,11 +62,11 @@
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(7 * spx);
-	left: calc(5 * spx);
+	top: 7rem;
+	left: 5rem;
 
-	width: calc(spx * 69);
-	height: calc(spx * 63);
+	width: 69rem;
+	height: 63rem;
 
 	background-image: url("./assets/paint-pig.png");
 
@@ -77,8 +77,8 @@
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
-	right: calc(5 * spx);
-	bottom: calc(18 * spx);
+	right: 5rem;
+	bottom: 18rem;
 
 	animation-name: letterfloat;
 	animation-duration: 6s;
@@ -89,10 +89,10 @@
 .letterp {
 	composes: letter;
 
-	right: calc(58 * spx);
+	right: 58rem;
 
-	width: calc(14 * spx);
-	height: calc(19 * spx);
+	width: 14rem;
+	height: 19rem;
 
 	background-image: url("./assets/letter-p.png");
 }
@@ -100,10 +100,10 @@
 .lettera {
 	composes: letter;
 
-	right: calc(46 * spx);
+	right: 46rem;
 
-	width: calc(12 * spx);
-	height: calc(17 * spx);
+	width: 12rem;
+	height: 17rem;
 
 	background-image: url("./assets/letter-a.png");
 
@@ -113,10 +113,10 @@
 .letteri {
 	composes: letter;
 
-	right: calc(36 * spx);
+	right: 36rem;
 
-	width: calc(10 * spx);
-	height: calc(23 * spx);
+	width: 10rem;
+	height: 23rem;
 
 	background-image: url("./assets/letter-i.png");
 
@@ -126,10 +126,10 @@
 .lettern {
 	composes: letter;
 
-	right: calc(20 * spx);
+	right: 20rem;
 
-	width: calc(16 * spx);
-	height: calc(20 * spx);
+	width: 16rem;
+	height: 20rem;
 
 	background-image: url("./assets/letter-n.png");
 
@@ -139,8 +139,8 @@
 .lettert {
 	composes: letter;
 
-	width: calc(15 * spx);
-	height: calc(21 * spx);
+	width: 15rem;
+	height: 21rem;
 
 	background-image: url("./assets/letter-t.png");
 
@@ -150,11 +150,11 @@
 .cta {
 	position: absolute;
 	z-index: 1;
-	bottom: calc(4 * spx);
+	bottom: 4rem;
 
 	margin: auto;
 
-	font-size: calc(12 * spx);
+	font-size: 12rem;
 	color: #fff;
 
 	animation: flashtext 1300ms linear infinite;

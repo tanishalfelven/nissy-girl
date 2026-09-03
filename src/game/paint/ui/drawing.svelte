@@ -22,11 +22,11 @@ const activeToolPng = $derived(TOOLS.get(model.tool).lined);
 	style:--color={selectedColorRGB}
 	data-toolactive={model.toolActive}
 	style="
-		--scale: {model.scale};
+		--scale: {model.scale}rem;
 		transform:
 			translate(
-				calc({model.cursor.x} * var(--spx)),
-				calc({model.cursor.y} * var(--spx))
+				{model.cursor.x}rem,
+				{model.cursor.y}rem
 			)
 			scale(0.9);"
 >

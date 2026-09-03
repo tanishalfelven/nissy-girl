@@ -1,5 +1,3 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
-
 @keyframes count {
 	0% {
 		transform: translate(-70%) scale(1);
@@ -26,11 +24,11 @@
 	composes: overlaytext from "./play-overlay.mcss";
 
 	position: absolute;
-	top: calc(5 * spx);
+	top: 5rem;
 
 	width: 100%;
 
-	font-size: calc(24 * spx);
+	font-size: 24rem;
 	text-align: center;
 
 	animation: count 1s linear 1;

@@ -1,4 +1,4 @@
-@value spx, screenheight from "$nissy-girl/screens/screens.mcss";
+@value screenheight from "$nissy-girl/screens/screens.mcss";
 
 .menu {
 	position: absolute;
@@ -13,7 +13,7 @@
 	height: 100%;
 
 	font-family: Pixelzone;
-	font-size: calc(12 * spx);
+	font-size: 12rem;
 }
 
 .jumper {
@@ -21,11 +21,11 @@
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(10 * spx);
-	left: calc(15 * spx);
+	top: 10rem;
+	left: 15rem;
 
-	width: calc(40 * spx);
-	height: calc(42 * spx);
+	width: 40rem;
+	height: 42rem;
 
 	background-image: url("./assets/jumper.png");
 
@@ -37,20 +37,20 @@
 	composes: img from "$util/util.mcss";
 
 	position: absolute;
-	left: calc(5 * spx);
+	left: 5rem;
 
 	align-self: flex-end;
 
-	width: calc(68 * spx);
-	height: calc(37 * spx);
-	margin-bottom: calc(10 * spx);
+	width: 68rem;
+	height: 37rem;
+	margin-bottom: 10rem;
 
 	background-image: url("./assets/titlecard.png");
 }
 
 .menunav {
 	position: absolute;
-	right: calc(2 * spx);
+	right: 2rem;
 	display: flex;
 	flex-direction: column;
 }

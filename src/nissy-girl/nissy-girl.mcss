@@ -1,7 +1,6 @@
 @value height: 224rem;
 @value width: 142rem;
 @value depth: 46rem;
-@value px1: 1rem;
 
 .camera {
 	composes: touchinteractive from "$util/util.mcss";
@@ -23,7 +22,7 @@
 .nissygirl {
 	--rotation: 0;
 	--zoom: 1;
-	--button-plane: calc(3 * px1);
+	--button-plane: 3rem;
 
 	composes: touchinteractive, animates from "$util/util.mcss";
 
@@ -40,19 +39,19 @@
 
 	composes: face from "$util/util.mcss";
 
-	top: calc(6 * px1);
-	left: calc(8 * px1);
-	transform: translateZ(calc(-1 * px1)) rotateY(var(--rotate));
+	top: 6rem;
+	left: 8rem;
+	transform: translateZ(-1rem) rotateY(var(--rotate));
 
-	width: calc(2 * px1);
-	height: calc(103 * px1);
+	width: 2rem;
+	height: 103rem;
 
 	background-image: url("./assets/screen-bevel-vert.png");
 
 	&[data-left="true"] {
 		--rotate: -90deg;
 
-		right: calc(7 * px1);
+		right: 7rem;
 		left: auto;
 	}
 }
@@ -60,18 +59,18 @@
 .screenbevelhorz {
 	composes: face from "$util/util.mcss";
 
-	top: calc(6 * px1 - 1px);
-	left: calc(9 * px1);
-	transform: translateZ(calc(-1 * px1)) rotateX(-90deg);
+	top: calc(6rem - 1px);
+	left: 9rem;
+	transform: translateZ(-1rem) rotateX(-90deg);
 
-	width: calc(126 * px1);
-	height: calc(2 * px1);
+	width: 126rem;
+	height: 2rem;
 
 	background-image: url("./assets/screen-bevel-horz.png");
 
 	&[data-bottom="true"] {
-		top: calc(106.14 * px1);
-		transform: translateZ(calc(-1 * px1)) rotateX(90deg);
+		top: 106rem;
+		transform: translateZ(-1rem) rotateX(90deg);
 	}
 }
 
@@ -116,13 +115,13 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	right: calc(1.01 * px1);
-	bottom: calc(3.0015 * px1);
+	right: 1.01rem;
+	bottom: 3.0015rem;
 	transform-style: preserve-3d;
 	transform: translateZ(-2px);
 
 	aspect-ratio: 39 / 38;
-	height: calc(38 * px1);
+	height: 38rem;
 
 	background-image: url("./assets/nissygirl-speaker-back.png");
 }

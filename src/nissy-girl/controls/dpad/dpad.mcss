@@ -1,26 +1,25 @@
-@value px1 from "$nissy-girl/nissy-girl.mcss";
 @value depth from "$nissy-girl/nissy-girl.mcss";
 
-@value xlate: calc(px1 * 0.6);
+@value xlate: 0.6rem;
 @value halfxlate: calc(xlate * 0.5);
 
-@value dpadhousingpadding: 2;
-@value dpadhousingbg: 53;
+@value dpadhousingpadding: 2rem;
+@value dpadhousingbg: 53rem;
 @value dpadhousingsize: calc(dpadhousingpadding + dpadhousingbg);
 
-@value deadzonepadding: 16;
+@value deadzonepadding: 16rem;
 @value deadzonesize: calc(dpadhousingsize + deadzonepadding);
 
 .deadzone {
 	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
-	bottom: calc(40 * px1);
-	left: calc(1 * px1);
+	bottom: 40rem;
+	left: 1rem;
 	transform-style: preserve-3d;
 
-	width: calc(deadzonesize * px1);
-	height: calc(deadzonesize * px1);
+	width: deadzonesize;
+	height: deadzonesize;
 	margin: auto;
 	border-radius: 50%;
 }
@@ -37,8 +36,8 @@
 	align-items: center;
 	justify-content: center;
 
-	width: calc(dpadhousingsize * px1);
-	height: calc(dpadhousingsize * px1);
+	width: dpadhousingsize;
+	height: dpadhousingsize;
 	margin: auto;
 	border-radius: 50%;
 }
@@ -56,8 +55,8 @@
 	align-items: center;
 	justify-content: center;
 
-	width: calc(dpadhousingbg * px1);
-	height: calc(dpadhousingbg * px1);
+	width: dpadhousingbg;
+	height: dpadhousingbg;
 	margin: auto;
 
 	background-image: url("./assets/dpad-housing.png");
@@ -81,9 +80,9 @@
 	align-items: center;
 	justify-content: center;
 
-	width: calc(37 * px1);
-	height: calc(37 * px1);
-	margin-top: calc(0.5 * px1);
+	width: 37rem;
+	height: 37rem;
+	margin-top: 0.5rem;
 }
 
 .dpadface {
@@ -91,8 +90,8 @@
 
 	transform-origin: center center 4px;
 
-	width: calc(30 * px1);
-	height: calc(31 * px1);
+	width: 30rem;
+	height: 31rem;
 
 	background-image: url("./assets/dpad.png");
 }
@@ -106,7 +105,7 @@
 	transform: translateZ(-1px);
 
 	aspect-ratio: 33 / 32;
-	width: calc(31 * px1);
+	width: 31rem;
 	margin: auto;
 
 	background-image: url("./assets/dpad-backface.png");
@@ -116,19 +115,19 @@
 	composes: face from "$util/util.mcss";
 
 	position: absolute;
-	top: calc(3 * px1);
+	top: 3rem;
 	bottom: 0;
 	left: 0;
-	transform: rotateY(-90deg) translateX(-52%) translateZ(calc(-13 * px1));
+	transform: rotateY(-90deg) translateX(-52%) translateZ(-13rem);
 
 	aspect-ratio: 5 / 32;
-	height: calc(31 * px1);
+	height: 31rem;
 
 	background-image: url("./assets/dpad-side.png");
 
 	&[data-left="true"] {
 		right: 0;
 		left: auto;
-		transform: rotateY(90deg) translateX(50%) translateZ(calc(-13 * px1));
+		transform: rotateY(90deg) translateX(50%) translateZ(-13rem);
 	}
 }

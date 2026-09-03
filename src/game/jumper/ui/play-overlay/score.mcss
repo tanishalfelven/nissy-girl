@@ -1,10 +1,8 @@
-@value spx from "$nissy-girl/screens/screens.mcss";
-
 .scorecontainer {
 	composes: fadein from "$util/animations.mcss";
 
 	position: absolute;
-	top: calc(15 * spx);
+	top: 15rem;
 
 	display: flex;
 	flex-direction: column;
@@ -16,18 +14,18 @@
 .score {
 	display: flex;
 	flex-direction: row;
-	margin-bottom: calc(5 * spx);
+	margin-bottom: 5rem;
 }
 
 .scorelabel {
 	composes: overlaytext from "./play-overlay.mcss";
 	composes: button from "../button.mcss";
 
-	margin-right: calc(3 * spx);
+	margin-right: 3rem;
 	margin-bottom: 0;
 	border-color: #006161;
 
-	font-size: calc(23 * spx);
+	font-size: 23rem;
 	color: #dcdcdc;
 
 	background-color: #008080;
@@ -35,7 +33,7 @@
 
 .scorevalue {
 	composes: overlaytext from "./play-overlay.mcss";
-	font-size: calc(28 * spx);
+	font-size: 28rem;
 	color: #fff;
 }
 
@@ -44,8 +42,8 @@
 	flex-direction: column;
 	justify-content: flex-end;
 
-	margin-top: calc(5 * spx);
-	margin-right: calc(60 * spx);
+	margin-top: 5rem;
+	margin-right: 60rem;
 }
 
 .button {

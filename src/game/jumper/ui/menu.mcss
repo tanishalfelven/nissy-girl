@@ -1,4 +1,4 @@
-@value spx, screenheight from "$nissy-girl/screens/screens.mcss";
+@value screenheight from "$nissy-girl/screens/screens.mcss";
 
 .platforms {
 	composes: menu from "./main.mcss";
@@ -15,11 +15,11 @@
 .platform1 {
 	composes: platform;
 
-	top: calc(-40 * spx);
-	left: calc(8 * spx);
+	top: -40rem;
+	left: 8rem;
 
-	width: calc(47 * spx);
-	height: calc(36 * spx);
+	width: 47rem;
+	height: 36rem;
 
 	background-image: url("./assets/platform-1.png");
 
@@ -30,11 +30,11 @@
 	composes: platform;
 
 	z-index: -2;
-	top: calc(-35 * spx);
-	left: calc(46 * spx);
+	top: -35rem;
+	left: 46rem;
 
-	width: calc(33 * spx);
-	height: calc(31 * spx);
+	width: 33rem;
+	height: 31rem;
 
 	background-image: url("./assets/platform-2.png");
 
@@ -44,11 +44,11 @@
 .platform3 {
 	composes: platform;
 
-	top: calc(-40 * spx);
-	left: calc(1 * spx);
+	top: -40rem;
+	left: 1rem;
 
-	width: calc(13 * spx);
-	height: calc(13 * spx);
+	width: 13rem;
+	height: 13rem;
 
 	background-image: url("./assets/platform-3.png");
 
