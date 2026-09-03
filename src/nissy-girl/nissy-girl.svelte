@@ -7,6 +7,8 @@ import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
 import VolumeWheel from "./controls/volume/volume-wheel.svelte";
 import Screen from "./screens/screen.svelte";
+// TODO sizing pass :)
+// import Prompts from "./prompts/prompts.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { camera, zoom } from "./camera.viewmodel.svelte.js";
@@ -21,6 +23,9 @@ const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 let nissyGirlWidth = $state(false);
 </script>
+
+<!-- SOON! -->
+<!-- <Prompts /> -->
 
 <div
 	class={css.camera}

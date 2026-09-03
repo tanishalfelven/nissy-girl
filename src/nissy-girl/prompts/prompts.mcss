@@ -1,0 +1,58 @@
+@value nissygirlhighlight: #738a6e;
+@value nissygirlbg: rgb(41 52 40 / 75%);
+@value promptsheight: 5vh;
+@value prompticonheight: 4vh;
+
+.prompts {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	left: 0;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	height: promptsheight;
+	border-bottom: 1px solid nissygirlhighlight;
+
+	font-family: Cairopixel;
+	font-size: promptsheight;
+	color: nissygirlhighlight;
+
+	background-color: nissygirlbg;
+}
+
+.prompt {
+	position: relative;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	white-space: nowrap;
+}
+
+.rotate {
+	composes: afterimg, beforeimg from "$util/util.mcss";
+	composes: prompt;
+
+	&::before,
+	&::after {
+		content: "";
+
+		display: block;
+
+		aspect-ratio: 53 / 28;
+		height: prompticonheight;
+		margin: 0 2vh;
+
+		background-image: url("./assets/rotate-arrow.png");
+	}
+
+	&::before {
+		transform: scaleX(-1);
+	}
+}
