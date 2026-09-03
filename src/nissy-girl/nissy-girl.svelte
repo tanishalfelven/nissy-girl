@@ -57,7 +57,7 @@ let nissyGirlWidth = $state(false);
 		style="transform:
 			rotateY({camera.displayRotation}deg)
 				translateZ(calc({displayZoom} * 12rem))
-				translateY(calc({displayZoom} * 6rem));"
+				translateY(calc({displayZoom} * 12rem));"
 	>
 		<Screen>
 			{@render children?.()}
