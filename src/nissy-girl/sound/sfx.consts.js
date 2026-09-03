@@ -14,8 +14,8 @@ export const nissyGirlAudio = new Map([
 	[ "scrape", { url : cartridgeScrape, gain : 0.5 }],
 	[ "cartridgeRemove", { url : cartridgeRemoveClick, gain : 1 }],
 	[ "nissyGirlBoot", { url : nissyGirlBoot, gain : 0.35 }],
-	[ "button", { url : button, gain : 0.09 }],
-	[ "dpad", { url : dpad, gain : 0.09 }],
+	[ "button", { url : button, gain : 0.05 }],
+	[ "dpad", { url : dpad, gain : 0.05 }],
 ]);
 
 // MATUSTRM | PACK Sounds RPG | CC0
