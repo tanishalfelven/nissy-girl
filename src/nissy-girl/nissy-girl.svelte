@@ -22,6 +22,7 @@ let { children } = $props();
 const displayZoom = $derived(roundHundredths(zoom.progress * 10));
 
 let nissyGirlWidth = $state(false);
+
 </script>
 
 <!-- SOON! -->
@@ -55,8 +56,8 @@ let nissyGirlWidth = $state(false);
 		bind:clientWidth={nissyGirlWidth}
 		style="transform:
 			rotateY({camera.displayRotation}deg)
-				translateZ(calc({displayZoom} * 3vw))
-				translateY(calc({displayZoom} * 2.7vh));"
+				translateZ(calc({displayZoom} * 12rem))
+				translateY(calc({displayZoom} * 6rem));"
 	>
 		<Screen>
 			{@render children?.()}

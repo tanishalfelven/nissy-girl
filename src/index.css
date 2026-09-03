@@ -1,13 +1,9 @@
-@font-face {
-	font-family: Cairopixel;
-
-	src: url("./assets/Cairopixel.ttf") format("truetype");
-}
-
-@font-face {
-	font-family: Pixelzone;
-
-	src: url("./assets/Pixelzone.ttf") format("truetype");
+:root {
+	font-size:
+		min(
+			calc(80vh / 224),
+			calc(92vw / 142)
+		);
 }
 
 #root,
@@ -32,4 +28,16 @@ body {
 *::after,
 *::before {
 	box-sizing: inherit;
+}
+
+@font-face {
+	font-family: Cairopixel;
+
+	src: url("./assets/Cairopixel.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Pixelzone;
+
+	src: url("./assets/Pixelzone.ttf") format("truetype");
 }

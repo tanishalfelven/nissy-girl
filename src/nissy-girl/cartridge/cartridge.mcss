@@ -1,10 +1,13 @@
-@value height: 32vh;
-@value width: calc(height * 112 / 105);
-@value depth: calc(height * 6 / 105);
-@value px1: calc(height / 105);
+@value height: 105rem;
+@value width: 112rem;
+@value depth: 6rem;
+@value px1: 1rem;
 
 .cartridge {
 	--pcb-y: -3%;
+	--cartridgex: 0vw;
+	--cartridgey: 0;
+	--rotatey: 0deg;
 
 	composes: touchinteractive, animates from "$util/util.mcss";
 
@@ -13,6 +16,11 @@
 	right: 0;
 	left: 0;
 	transform-style: preserve-3d;
+	transform:
+		translateX(calc(50vw + var(--cartridgex)))
+		translateY(calc(-110rem + var(--cartridgey) * 114rem))
+		translateZ(-14rem)
+		rotateY(var(--rotatey));
 
 	aspect-ratio: 112 / 105;
 	width: width;
@@ -169,7 +177,7 @@
 	transform: translateZ(calc(depth * -0.08)) rotateY(90deg);
 
 	aspect-ratio: 1 / 72;
-	width: 0.31vh;
+	width: 1rem;
 	margin: auto;
 
 	background-image: url("./assets/cartridge-art-side.png");
@@ -339,7 +347,7 @@
 		rotateY(-90deg)
 		rotateX(-90deg)
 		rotateZ(90deg)
-		translateZ(0.86vh)
+		translateZ(2rem)
 		scaleY(1.05);
 
 	aspect-ratio: 96 / 6;

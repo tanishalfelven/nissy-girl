@@ -1,13 +1,17 @@
-@value height: 65vh;
-@value width: calc(height * 142 / 224);
-@value depth: calc(height * 46 / 224);
-@value px1: calc(height / 224);
+@value height: 224rem;
+@value width: 142rem;
+@value depth: 46rem;
+@value px1: 1rem;
 
 .camera {
 	composes: touchinteractive from "$util/util.mcss";
 
 	position: absolute;
 	inset: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
 	width: 100%;
 	height: 100%;
@@ -23,15 +27,12 @@
 
 	composes: touchinteractive, animates from "$util/util.mcss";
 
-	position: absolute;
-	right: 0;
-	bottom: 12%;
-	left: 0;
 	transform-style: preserve-3d;
 
 	width: width;
 	height: height;
-	margin: auto;
+	margin-top: 15rem;
+	margin-left: 2rem;
 }
 
 .screenbevelvert {

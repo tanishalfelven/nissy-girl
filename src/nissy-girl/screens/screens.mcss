@@ -1,10 +1,10 @@
 @value px1 from "$nissy-girl/nissy-girl.mcss";
 @value depth from "$nissy-girl/nissy-girl.mcss";
-@value screenheight: 28vh;
-@value screenwidth: 35vh;
+@value screenheight: 96rem;
+@value screenwidth: 120rem;
 
 /* ripped from "./screen.consts.js" */
-@value spx: calc(screenheight / 96);
+@value spx: 1rem;
 
 .screen {
 	composes: animates from "$util/util.mcss";
@@ -55,10 +55,8 @@
 	aspect-ratio: 5 / 4;
 	width: screenwidth;
 	height: screenheight;
-	margin-top: 0.5vh;
-
-	/* probably going to move this, idk why the screen is offset so slightly { updateCounter: 1 } */
-	margin-left: 0.4vh;
+	margin-top: 1rem;
+	margin-left: 0.5rem;
 }
 
 .screenoverlay {

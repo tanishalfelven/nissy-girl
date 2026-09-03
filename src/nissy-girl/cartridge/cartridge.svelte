@@ -1,5 +1,5 @@
 <script>
-import { roundHundredths, lerp } from "$util/math.js";
+import { roundHundredths, lerp, clamp } from "$util/math.js";
 import { touch } from "$util/touch-action.svelte.js";
 import { cameraActor } from "$nissy-girl/nissy-girl.machine.js";
 
@@ -7,11 +7,31 @@ import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte
 
 import css from "./cartridge.mcss";
 
-const displayCartridgeRot = $derived(
-	roundHundredths(
-		((Math.cos(cartridgeX.progress * Math.PI)) / 4) * 720 + 180,
-	),
-);
+const ROTATION_EDGE_OFFSET = 0.25;
+const ROTATION_RANGE = 0.23;
+
+const displayCartridgeRot = $derived.by(() => {
+	const progress = cartridgeX.progress;
+
+	const rotationProgress = progress < 0.5
+		? clamp(
+			(progress - ROTATION_EDGE_OFFSET) / ROTATION_RANGE,
+			0,
+			1,
+		)
+		: clamp(
+			(progress - (1 - ROTATION_EDGE_OFFSET - ROTATION_RANGE))
+			/ ROTATION_RANGE,
+			0,
+			1,
+		);
+
+	return roundHundredths(
+		progress < 0.5
+			? lerp(rotationProgress, 360, 180)
+			: lerp(rotationProgress, 180, 0),
+	);
+});
 
 const displayCartridgeX = $derived(
 	roundHundredths(lerp(cartridgeX.progress, -150, 50)),
@@ -29,10 +49,9 @@ const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 
 <div
 	class={css.cartridge}
-	style="transform: translateX(calc(50vw + {displayCartridgeX}vw))
-		translateY(calc(-40vh + {displayCartridgeY} * 42vh))
-			translateZ(-4.18vh)
-			rotateY({displayCartridgeRot}deg);"
+	style="--cartridgex: {displayCartridgeX}vw;
+	--cartridgey: {displayCartridgeY};
+	--rotatey: {displayCartridgeRot}deg;"
 	data-visibility={cartridges.isVisible}
 	bind:clientHeight={cartridgeHeight}
 	bind:clientWidth={cartridgeWidth}
