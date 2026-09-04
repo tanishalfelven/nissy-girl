@@ -2,7 +2,7 @@
 	font-size:
 		min(
 			calc(80vh / 224),
-			calc(92vw / 142)
+			calc(91vw / 142)
 		);
 }
 
