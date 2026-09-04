@@ -30,6 +30,14 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { crossedThreshold } from "$util/math.js";
 import { getAnimateProgress } from "$util/animate-progress.js";
+import {
+	invokePromptLayer,
+	CARTRIDGE_INSERT,
+	CARTRIDGE_EJECT,
+	ROTATE,
+	POWER_OFF,
+	POWER_ON,
+} from "./prompts/prompts.svelte";
 
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });
@@ -177,6 +185,24 @@ export const cameraMachine = createMachine({
 
 		"cartridge select" : {
 			entry : () => cartridges.show(),
+
+			invoke : invokePromptLayer(
+				"cartridge",
+				[
+					[ POWER_ON, {
+						display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered,
+					}],
+					[ POWER_OFF, {
+						display : () => nissyGirl.hasInsertedCartridge() && nissyGirl.isPowered,
+					}],
+					[ ROTATE, {
+						display : () => nissyGirl.hasInsertedCartridge() && nissyGirl.isPowered,
+						prompt : "play",
+					}],
+					[ CARTRIDGE_INSERT, { display : () => !nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+				],
+			),
 
 			on : {
 				BACK_TO_ZOOM : {

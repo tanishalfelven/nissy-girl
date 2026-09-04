@@ -2,6 +2,7 @@
 /** @import { ContainerComponent } from "$game/shared/entity/world.entity.js" */
 
 import { createEntity } from "$game/shared/entity/entity.js";
+import { COLOR_WHITE } from "./util/colors.js";
 
 import { PixelCanvas } from "./util/pixels.js";
 
@@ -9,14 +10,18 @@ const createArtboardComponent = ({
 	pixels,
 }) => {
 	return ({
-		clear() {
-			pixels.clear();
+		clear(commit = true) {
+			pixels.clear(COLOR_WHITE, { commit });
 
 			return true;
 		},
 
 		getContext() {
 			return pixels;
+		},
+
+		getHasUndo() {
+			return pixels.hasUndo();
 		},
 	});
 };
@@ -50,7 +55,7 @@ export const createArtboard = ({ world }) => {
 		},
 	});
 
-	artboard.artboard.clear();
+	artboard.artboard.clear(false);
 
 	return artboard;
 };

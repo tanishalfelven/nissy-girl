@@ -15,10 +15,17 @@ import { createCoins } from "./coins.entity/coins.entity.js";
 import { createJumperUI } from "./ui/ui.entity.svelte.js";
 import { createSeedUI } from "./ui/seed.entity.svelte.js";
 import { audio } from "$nissy-girl/sound/audio.js";
+import {
+	invokePromptLayer,
+	BUTTON_START,
+	BUTTON_A,
+	BUTTON_B,
+	DPAD_DOWN,
+	DPAD_VERT,
+	DPAD_HORZ,
+} from "$nissy-girl/prompts/prompts.svelte";
 
 import { inputTriggered } from "$game/util/input-guards.js";
-
-import { BUTTON_START, BUTTON_A, BUTTON_B } from "$game/shared/input.consts.js";
 
 import { EXIT, START_OVER } from "./ui/paused.consts.js";
 
@@ -168,14 +175,14 @@ export const jumperMachine = createMachine({
 								},
 							),
 						),
+
+						invokePromptLayer("jumper-mainmenu", [
+							[ DPAD_VERT, {}],
+							[ BUTTON_A, { prompt : "select" }],
+						]),
 					],
 
 					on : {
-						[BUTTON_START] : {
-							guard : inputTriggered,
-							actions : raise({ type : "SELECT_OPTION" }),
-						},
-
 						[BUTTON_A] : {
 							guard : inputTriggered,
 							actions : raise({ type : "SELECT_OPTION" }),
@@ -231,6 +238,12 @@ export const jumperMachine = createMachine({
 								(_, scene) => scene.world.world.get("ui").input,
 							),
 						),
+
+						invokePromptLayer("jumper-seed select", [
+							[ DPAD_HORZ, { prompt : "" }],
+							[ DPAD_VERT, { prompt : "input seed" }],
+							[ BUTTON_A, { prompt : "start" }],
+						]),
 					],
 
 					on : {
@@ -339,6 +352,28 @@ export const jumperMachine = createMachine({
 						(_, { world }) => world.world.get("ui").input,
 					),
 				),
+
+				invokePromptLayer(
+					"jumper-playing",
+					withScene(
+						(_, { world }) => {
+							const jumper = world.world.get("jumper");
+
+							return [
+								[ BUTTON_START, { prompt : "menu" }],
+								[ DPAD_HORZ, { prompt : "shmoove" }],
+								[ DPAD_DOWN, {
+									prompt : "crouch",
+									disable : () => !jumper.behavior.runeIsGrounded(),
+								}],
+								[ BUTTON_A, {
+									prompt : () => jumper.behavior.runeIsCrouching() ? "blast" : "jump",
+									disable : () => jumper.behavior.runeIsFalling(),
+								}],
+							];
+						},
+					),
+				),
 			],
 
 			on : {
@@ -420,12 +455,22 @@ export const jumperMachine = createMachine({
 						load : withModel(Paused),
 					},
 
-					invoke : invokeInputComponent(
-						"ui-input",
-						withScene(
-							(_, { world }) => world.world.get("ui").input,
+					invoke : [
+						invokeInputComponent(
+							"ui-input",
+							withScene(
+								(_, { world }) => world.world.get("ui").input,
+							),
 						),
-					),
+
+						invokePromptLayer(
+							"jumper-pause",
+							[
+								[ BUTTON_B, { prompt : "close" }],
+								[ BUTTON_A, { prompt : "select" }],
+							],
+						),
+					],
 
 					on : {
 						[BUTTON_B] : {
@@ -433,18 +478,18 @@ export const jumperMachine = createMachine({
 							actions : raise({ type : "BACK_TO_PLAY" }),
 						},
 
-						[BUTTON_A] : {
-							guard : inputTriggered,
-							actions : raise({ type : "MENU_OPTION" }),
-						},
-
 						[BUTTON_START] : {
 							guard : inputTriggered,
-							actions : raise({ type : "MENU_OPTION" }),
+							actions : raise({ type : "BACK_TO_PLAY" }),
 						},
 
 						BACK_TO_PLAY : {
 							target : "playing.active",
+						},
+
+						[BUTTON_A] : {
+							guard : inputTriggered,
+							actions : raise({ type : "MENU_OPTION" }),
 						},
 
 						MENU_OPTION : {
@@ -491,12 +536,21 @@ export const jumperMachine = createMachine({
 								load : withModel(Score),
 							},
 
-							invoke : invokeInputComponent(
-								"ui-input",
-								withScene(
-									(_, { world }) => world.world.get("ui").input,
+							invoke : [
+								invokeInputComponent(
+									"ui-input",
+									withScene(
+										(_, { world }) => world.world.get("ui").input,
+									),
 								),
-							),
+								invokePromptLayer(
+									"jumper-scoring",
+									[
+										[ BUTTON_START, { prompt : "exit" }],
+										[ BUTTON_A, { prompt : "select" }],
+									],
+								),
+							],
 
 							on : {
 								[BUTTON_A] : {
@@ -506,7 +560,7 @@ export const jumperMachine = createMachine({
 
 								[BUTTON_START] : {
 									guard : inputTriggered,
-									actions : raise({ type : "MENU_OPTION" }),
+									actions : raise({ type : "EXIT" }),
 								},
 
 								MENU_OPTION : {

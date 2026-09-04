@@ -10,12 +10,6 @@ const paletteNav = model.createNav({
 	initial : model.getColor(),
 	keys : [ ...COLORS.keys() ],
 });
-
-$effect(() => {
-	if(paletteNav.active) {
-		model.setColor(paletteNav.active);
-	}
-});
 </script>
 
 <div class={css.palette} data-show={model.showPalette}>

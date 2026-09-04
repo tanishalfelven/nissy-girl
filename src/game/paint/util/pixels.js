@@ -125,6 +125,10 @@ export class PixelCanvas {
 		this.redoStack.length = 0;
 	}
 
+	hasUndo() {
+		return this.undoStack.length > 0;
+	}
+
 	undo() {
 		const previous = this.undoStack.pop();
 

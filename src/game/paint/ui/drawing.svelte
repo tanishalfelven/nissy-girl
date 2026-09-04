@@ -8,9 +8,7 @@ import { TOOLS } from "./tools.consts.js";
 
 const { model } = $props();
 
-const selectedColor = $derived.by(() => model.selectedColor);
-
-const selectedColorValue = $derived(COLORS.get(selectedColor));
+const selectedColorValue = $derived(COLORS.get(model.getColor()));
 
 const selectedColorRGB = $derived(`rgb(${selectedColorValue[0]}, ${selectedColorValue[1]}, ${selectedColorValue[2]})`);
 

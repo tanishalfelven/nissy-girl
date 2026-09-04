@@ -8,6 +8,7 @@ export const createPaintUI = ({
 } = false) => {
 	const { camera } = world;
 	const cursor = world.world.get("cursor");
+	const artboard = world.world.get("artboard");
 
 	const getActiveTool = () => cursor.tool.getTool();
 
@@ -20,6 +21,8 @@ export const createPaintUI = ({
 	let cursorY = $state(cursor.movement.getY());
 	let toolActive = $state(false);
 	let tool = $state(getActiveTool());
+	let hasUndo = $state(artboard.artboard.getHasUndo());
+	let selectedColor = $state(artboard.artboard.getContext().getColor());
 
 	camera.onCameraChange(() => {
 		scale = camera.getZoom();
@@ -41,6 +44,32 @@ export const createPaintUI = ({
 		},
 	});
 
+	const setColor = (color) => {
+		selectedColor = color;
+
+		artboard.artboard.getContext().setColor(color);
+	};
+
+	const getNavColor = () => {
+		const paletteNav = navComponent.getNav("palette");
+
+		if(!paletteNav) {
+			return false;
+		}
+
+		return paletteNav.active;
+	};
+
+	const getNavTool = () => {
+		const toolNav = navComponent.getNav("tool");
+
+		if(!toolNav) {
+			return false;
+		}
+
+		return toolNav.active;
+	};
+
 	const model = {
 		get showUI() {
 			return !isFixedCamera || showPalette || showTools;
@@ -52,16 +81,6 @@ export const createPaintUI = ({
 
 		get showTools() {
 			return showTools;
-		},
-
-		get selectedColor() {
-			const paletteNav = navComponent.getNav("palette");
-
-			if(!paletteNav) {
-				return false;
-			}
-
-			return paletteNav.active;
 		},
 
 		get scale() {
@@ -87,15 +106,7 @@ export const createPaintUI = ({
 		},
 
 		getColor() {
-			const artboard = world.world.get("artboard");
-
-			return artboard.artboard.getContext().getColor();
-		},
-
-		setColor(color) {
-			const artboard = world.world.get("artboard");
-
-			return artboard.artboard.getContext().setColor(color);
+			return selectedColor;
 		},
 
 		createNav(navOptions) {
@@ -127,6 +138,19 @@ export const createPaintUI = ({
 
 					toolActive = cursor.tool.active;
 					tool = getActiveTool();
+					hasUndo = artboard.artboard.getHasUndo();
+				},
+
+				getNavTool() {
+					return getNavTool();
+				},
+
+				getActiveTool() {
+					return tool;
+				},
+
+				getHasUndo() {
+					return hasUndo;
 				},
 
 				getModel() {
@@ -134,13 +158,13 @@ export const createPaintUI = ({
 				},
 
 				selectTool() {
-					const toolNav = navComponent.getNav("tool");
+					const navTool = getNavTool();
 
-					if(!toolNav) {
+					if(!navTool) {
 						return false;
 					}
 
-					cursor.tool.selectTool(toolNav.active);
+					cursor.tool.selectTool(navTool);
 				},
 
 				openPaletteMenu() {
@@ -148,7 +172,11 @@ export const createPaintUI = ({
 					navComponent.setActiveNav("palette");
 				},
 
-				closePaletteMenu() {
+				closePaletteMenu({ saveColor = false } = false) {
+					if(saveColor) {
+						setColor(getNavColor());
+					}
+
 					showPalette = false;
 					navComponent.clearActiveNav();
 				},

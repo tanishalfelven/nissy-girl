@@ -19,5 +19,12 @@ export default{
 		"declaration-property-value-disallowed-list" : {
 			"backface-visibility" : "visible",
 		},
+
+		"declaration-block-no-redundant-longhand-properties" : [
+			true,
+			{
+				ignoreLonghands : [ "flex-direction", "flex-wrap" ],
+			},
+		],
 	},
 };

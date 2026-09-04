@@ -2,7 +2,7 @@ import { createEntity } from "$game/shared/entity/entity.js";
 
 import { createMovement } from "$game/shared/component/movement.component.js";
 import { createInput, resolveDirectionX } from "$game/shared/component/input.component.js";
-import { createBehavior } from "./behavior.component.js";
+import { createBehavior } from "./behavior.component.svelte.js";
 
 import { createPhysics } from "./physics.component.js";
 import {

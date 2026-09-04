@@ -19,6 +19,7 @@ import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { audio } from "./sound/audio.js";
+import { invokePromptLayer, ROTATE, POWER_ON, POWER_OFF, MUSHROOM } from "./prompts/prompts.svelte";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -34,6 +35,14 @@ const nissyGirlMachine = createMachine({
 			src : cameraMachine,
 		},
 		stateLogger,
+
+		invokePromptLayer(
+			"nissy-girl",
+			[
+				[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() || !nissyGirl.isPowered }],
+				[ POWER_ON, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+			],
+		),
 	],
 
 	on : {
@@ -131,6 +140,8 @@ const nissyGirlMachine = createMachine({
 						START_GAME : "game",
 					},
 
+					invoke : invokePromptLayer("booting", [[ MUSHROOM, {}]]),
+
 					initial : "none",
 
 					states : {
@@ -147,20 +158,36 @@ const nissyGirlMachine = createMachine({
 								component : StartupScreenComponent,
 							},
 
-							initial : "nogame",
+							initial : "waitforgame",
 
 							states : {
 								// I *love* that we just get wedged here if theres no game in.
 								// ux. be damned.
-								nogame : {
+								waitforgame : {
 									entry : raise({ type : "GAME_ON_BOOT" }),
 
 									on : {
-										GAME_ON_BOOT : {
-											guard : () => nissyGirl.hasInsertedCartridge(),
-											target : "hasgame",
-										},
+										GAME_ON_BOOT : [
+											{
+												guard : () => nissyGirl.hasInsertedCartridge(),
+												target : "hasgame",
+											},
+											{
+												target : "nogame",
+											},
+										],
 									},
+								},
+
+								nogame : {
+									invoke : invokePromptLayer(
+										"nissy-girl",
+										[
+											[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() }],
+											// if the user is staring at a hanging screen, recommend a power cycle (I'm *so* nice`)
+											[ POWER_OFF, { display : () => nissyGirl.hasInsertedCartridge(), prompt : "try rebooting?" }],
+										],
+									),
 								},
 
 								hasgame : {
@@ -208,6 +235,13 @@ const nissyGirlMachine = createMachine({
 					meta : {
 						component : ErrorScreen,
 					},
+
+					invoke : invokePromptLayer(
+						"nissy-girl-errant",
+						[
+							[ POWER_OFF, { prompt : "be more careful?" }],
+						],
+					),
 				},
 			},
 		},

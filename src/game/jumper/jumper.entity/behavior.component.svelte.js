@@ -51,6 +51,10 @@ export const createBehavior = ({
 	let crouchIntent = false;
 	let isCrouching = false;
 
+	let runeIsCrouching = $state(false);
+	let runeIsGrounded = $state(false);
+	let runeIsFalling = $state(false);
+
 	let isWrapping = false;
 	let isWrappingLeft = false;
 
@@ -90,6 +94,16 @@ export const createBehavior = ({
 
 	const isStartWrap = (x) => _isWrappingLeft(x) || _isWrappingRight(x);
 	const isEndWrap = (x) => wrapLeftDone(x) || wrapRightDone(x);
+
+	const updateCrouching = (newIsCrouching) => {
+		isCrouching = newIsCrouching;
+		runeIsCrouching = newIsCrouching;
+	};
+
+	const updateGrounded = (newIsGrounded) => {
+		isGrounded = newIsGrounded;
+		runeIsGrounded = newIsGrounded;
+	};
 
 	const stop = () => {
 		coyoteJumpWindow.stop();
@@ -279,12 +293,12 @@ export const createBehavior = ({
 
 					crouch : {
 						entry : () => {
-							isCrouching = true;
+							updateCrouching(true);
 							physics.cancelX();
 						},
 
 						exit : () => {
-							isCrouching = false;
+							updateCrouching(false);
 						},
 
 						on : {
@@ -309,7 +323,7 @@ export const createBehavior = ({
 				initial : "falling",
 
 				entry : () => {
-					isGrounded = false;
+					updateGrounded(false);
 					physics.enableGravity();
 
 					if(movement.getSpeed() === landSpeed) {
@@ -348,7 +362,7 @@ export const createBehavior = ({
 
 							if(targetY !== result.y) {
 								lastPlatformIndex = result.index;
-								isGrounded = true;
+								updateGrounded(true);
 
 								if(platforms.bounds.getIsFinishPlatform(lastPlatformIndex)) {
 									stop();
@@ -410,7 +424,14 @@ export const createBehavior = ({
 					},
 
 					falling : {
-						exit : () => coyoteJumpWindow.stop(),
+						entry : () => {
+							runeIsFalling = true;
+						},
+
+						exit : () => {
+							runeIsFalling = false;
+							coyoteJumpWindow.stop();
+						},
 
 						on : {
 							TICK_Y : [
@@ -471,6 +492,10 @@ export const createBehavior = ({
 		isJumpFrame : () => isJumping && consecutiveJumps < 3,
 		getPanic : () => panic,
 		isMoving : () => physics.isMoving() || movement.isMoving(),
+
+		runeIsFalling : () => runeIsFalling,
+		runeIsGrounded : () => runeIsGrounded,
+		runeIsCrouching : () => runeIsCrouching,
 
 		isWrapping : () => isWrapping,
 

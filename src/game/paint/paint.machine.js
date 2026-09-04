@@ -14,21 +14,21 @@ import { createSwirl } from "./ui/swirl.entity.js";
 
 import Menu from "./ui/menu.svelte";
 import Drawing from "./ui/drawing.svelte";
-
 import {
-	BUTTON_A,
-	BUTTON_B,
 	BUTTON_START,
 	BUTTON_SELECT,
-	RELEASED,
-	TRIGGERED,
-} from "$game/shared/input.consts.js";
+	BUTTON_A,
+	BUTTON_B,
+	invokePromptLayer,
+	DPAD_FULL,
+} from "$nissy-girl/prompts/prompts.svelte";
 
 import { createArtboard } from "./artboard.entity.js";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
 
-import { inputTriggered } from "$game/util/input-guards.js";
+import { inputReleased, inputTriggered } from "$game/util/input-guards.js";
 import { audio } from "$nissy-girl/sound/audio.js";
+import { NEW_ARTBOARD } from "./ui/tools.consts.js";
 
 export const paintMachine = createMachine({
 	id : "paint",
@@ -95,6 +95,11 @@ export const paintMachine = createMachine({
 					],
 				}),
 				invokeInput,
+
+				invokePromptLayer(
+					"paint-start",
+					[[ BUTTON_START, { prompt : "paint" }]],
+				),
 			],
 
 			meta : {
@@ -173,6 +178,21 @@ export const paintMachine = createMachine({
 								(_, { world }) => world.world.get("cursor").input,
 							),
 						),
+
+						invokePromptLayer(
+							"paint-drawing",
+							withScene((_, { world }) => {
+								const ui = world.world.get("ui");
+
+								return [
+									[ BUTTON_SELECT, { prompt : "zoom" }],
+									[ BUTTON_START, { prompt : "menu" }],
+									[ BUTTON_B, { prompt : "undo", disable : () => !ui.ui.getHasUndo() }],
+									[ DPAD_FULL, {}],
+									[ BUTTON_A, { prompt : () => `use ${ui.ui.getActiveTool()}` }],
+								];
+							}),
+						),
 					],
 
 					on : {
@@ -190,17 +210,24 @@ export const paintMachine = createMachine({
 							}),
 						},
 
-						[BUTTON_A] : {
-							actions : sceneAction(({ event }, { world }) => {
-								const cursor = world.world.get("cursor");
+						[BUTTON_A] : [
+							{
+								guard : inputTriggered,
+								actions : sceneAction((_, { world }) => {
+									const cursor = world.world.get("cursor");
 
-								if(event.state === RELEASED) {
-									cursor.tool.stop();
-								} else if(!cursor.tool.active && event.state === TRIGGERED) {
 									cursor.tool.begin();
-								}
-							}),
-						},
+								}),
+							},
+							{
+								guard : inputReleased,
+								actions : sceneAction((_, { world }) => {
+									const cursor = world.world.get("cursor");
+
+									cursor.tool.stop();
+								}),
+							},
+						],
 
 						[BUTTON_B] : {
 							guard : inputTriggered,
@@ -228,12 +255,15 @@ export const paintMachine = createMachine({
 					],
 
 					on : {
-						[BUTTON_B] : {
-							guard : inputTriggered,
-							actions : raise({ type : "BACK_TO_DRAWING" }),
+						EXIT_TO_DRAWING : {
+							actions : () => audio.paint.playGrunt(),
+							target : "drawing",
 						},
 
-						BACK_TO_DRAWING : "drawing",
+						CONFIRM_TO_DRAWING : {
+							actions : () => audio.paint.playOinkConfirm(),
+							target : "drawing",
+						},
 					},
 
 					initial : "palette",
@@ -246,23 +276,47 @@ export const paintMachine = createMachine({
 								ui.ui.openPaletteMenu();
 							}),
 
-							exit : sceneAction((_, { world }) => {
-								const ui = world.world.get("ui");
-
-								ui.ui.closePaletteMenu();
-							}),
+							invoke : invokePromptLayer(
+								"paint-palette", [
+									[ BUTTON_B, { prompt : "close" }],
+									[ DPAD_FULL, {}],
+									[ BUTTON_A, { prompt : "select" }],
+									[ BUTTON_START, { prompt : "tools" }],
+								],
+							),
 
 							on : {
+								[BUTTON_B] : {
+									guard : inputTriggered,
+									actions : [
+										sceneAction((_, { world }) => {
+											const ui = world.world.get("ui");
+
+											ui.ui.closePaletteMenu();
+										}),
+										raise({ type : "EXIT_TO_DRAWING" }),
+									],
+								},
+
 								[BUTTON_A] : {
 									guard : inputTriggered,
 									actions : [
-										raise({ type : "BACK_TO_DRAWING" }),
-										() => audio.paint.playOinkConfirm(),
+										sceneAction((_, { world }) => {
+											const ui = world.world.get("ui");
+
+											ui.ui.closePaletteMenu({ saveColor : true });
+										}),
+										raise({ type : "CONFIRM_TO_DRAWING" }),
 									],
 								},
 
 								[BUTTON_START] : {
 									guard : inputTriggered,
+									actions : sceneAction((_, { world }) => {
+										const ui = world.world.get("ui");
+
+										ui.ui.closePaletteMenu({ saveColor : true });
+									}),
 									target : "tools",
 								},
 							},
@@ -281,7 +335,29 @@ export const paintMachine = createMachine({
 								ui.ui.closeToolsMenu();
 							}),
 
+							invoke : invokePromptLayer(
+								"paint-tools",
+								withScene((_, { world }) => {
+									const ui = world.world.get("ui");
+
+									return [
+										[ BUTTON_B, { prompt : "close" }],
+										[ DPAD_FULL, {}],
+										[ BUTTON_A, {
+											prompt : () => ui.ui.getNavTool() === NEW_ARTBOARD
+												? "clear artboard"
+												: "select",
+										}],
+									];
+								}),
+							),
+
 							on : {
+								[BUTTON_B] : {
+									guard : inputTriggered,
+									actions : raise({ type : "EXIT_TO_DRAWING" }),
+								},
+
 								[BUTTON_A] : {
 									guard : inputTriggered,
 									actions : [
@@ -290,16 +366,13 @@ export const paintMachine = createMachine({
 
 											ui.ui.selectTool();
 										}),
-										raise({ type : "BACK_TO_DRAWING" }),
+										raise({ type : "CONFIRM_TO_DRAWING" }),
 									],
 								},
 
 								[BUTTON_START] : {
 									guard : inputTriggered,
-									actions : [
-										() => audio.paint.playGrunt(),
-										raise({ type : "BACK_TO_DRAWING" }),
-									],
+									actions : raise({ type : "EXIT_TO_DRAWING" }),
 								},
 							},
 						},

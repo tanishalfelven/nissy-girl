@@ -44,6 +44,8 @@ const createContainerComponent = ({
 	let context = false;
 
 	return ({
+		_entities : entities,
+
 		add(entity) {
 			entities.push(entity);
 			entityMap.set(entity.id, entity);

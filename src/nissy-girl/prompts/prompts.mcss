@@ -1,54 +1,202 @@
 @value nissygirlhighlight: #738a6e;
 @value nissygirlbg: rgb(41 52 40 / 75%);
-@value promptsheight: 5vh;
-@value prompticonheight: 4vh;
+
+@value promptimgheight: 7.5rem;
+@value promptimgmargin: 0 1.25rem;
 
 .prompts {
 	position: absolute;
-	z-index: 1;
 	top: 0;
 	right: 0;
 	left: 0;
 
 	display: flex;
+	flex-flow: row wrap balance;
 	flex-direction: row;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
 
-	height: promptsheight;
-	border-bottom: 1px solid nissygirlhighlight;
+	max-width: 100vw;
+	min-height: 12rem;
+	padding: 0 1rem 1rem;
+	border-bottom: 0.25rem solid nissygirlhighlight;
 
-	font-family: Cairopixel;
-	font-size: promptsheight;
-	color: nissygirlhighlight;
-
-	background-color: nissygirlbg;
+	background-color: rgb(0 0 0 / 20%);
 }
 
 .prompt {
+	composes: img, beforeimg from "$util/util.mcss";
+
 	position: relative;
 
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 
+	height: 10rem;
+	margin: 1rem 1rem 0;
+	padding: 0 2.5rem;
+	border-image-source: url("./assets/prompt-bg.png");
+	border-image-slice: 10 2 0 2 fill;
+	border-image-width: 10rem 2rem 0 2rem;
+	border-image-repeat: stretch;
+
 	white-space: nowrap;
+
+	&::before {
+		height: promptimgheight;
+		margin: promptimgmargin;
+		background-size: auto 100%;
+	}
+
+	&[data-disabled="true"]::before {
+		opacity: 0.5;
+	}
+}
+
+.text {
+	transform: translateY(-1rem);
+	font-family: Cairopixel;
+	font-size: 10rem;
+	color: #293428;
+}
+
+.insert {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 37 / 47;
+		background-image: url("./assets/cartridge-insert.png");
+	}
+}
+
+.eject {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 37 / 42;
+		background-image: url("./assets/cartridge-eject.png");
+	}
+}
+
+.mushroom {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 18 / 19;
+		background-image: url("./assets/mushroom.png");
+	}
+}
+
+.poweron {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 28 / 44;
+		background-image: url("./assets/power-on.png");
+	}
+}
+
+.poweroff {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 29 / 44;
+		background-image: url("./assets/power-off.png");
+	}
+}
+
+.dpad {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 1/1;
+		background-image: url("./assets/dpad.png");
+	}
+}
+
+.dpaddown {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 37/42;
+		background-image: url("./assets/dpad-down.png");
+	}
+}
+
+.dpadhorz {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 53/37;
+		background-image: url("./assets/dpad-axis-horz.png");
+	}
+}
+
+.dpadvert {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 37/48;
+		background-image: url("./assets/dpad-axis-vert.png");
+	}
+}
+
+.dpadfull {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 53/49;
+		background-image: url("./assets/dpad-axis-full.png");
+	}
+}
+
+.buttona {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 1/1;
+		background-image: url("./assets/button-a.png");
+	}
+}
+
+.buttonb {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 1/1;
+		background-image: url("./assets/button-b.png");
+	}
+}
+
+.buttonselect {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 27/19;
+		background-image: url("./assets/button-select.png");
+	}
+}
+
+.buttonstart {
+	composes: prompt;
+
+	&::before {
+		aspect-ratio: 27/19;
+		background-image: url("./assets/button-start.png");
+	}
 }
 
 .rotate {
-	composes: afterimg, beforeimg from "$util/util.mcss";
+	composes: afterimg from "$util/util.mcss";
 	composes: prompt;
 
 	&::before,
 	&::after {
-		content: "";
-
-		display: block;
-
 		aspect-ratio: 53 / 28;
-		height: prompticonheight;
-		margin: 0 2vh;
-
+		height: 6rem;
+		margin: promptimgmargin;
 		background-image: url("./assets/rotate-arrow.png");
 	}
 
