@@ -4,7 +4,15 @@
 	top: 0;
 	right: 0;
 	left: 0;
-	transform: scale(0.5);
+	transform: scale(0.35) translateY(-150rem);
 
-	opacity: 0.35;
+	opacity: 0;
+
+	transition: transform 100ms, opacity 2s;
+
+	&[data-visible="true"] {
+		transform: scale(0.35) translateY(45rem);
+		opacity: 0.35;
+		transition: transform 100ms, opacity 0s;
+	}
 }

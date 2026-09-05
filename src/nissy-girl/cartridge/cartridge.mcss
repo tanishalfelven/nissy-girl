@@ -29,10 +29,6 @@
 	&[data-visibility="false"] {
 		visibility: hidden;
 	}
-
-	&[data-background="true"] {
-		/* --rotatey: 180deg; */
-	}
 }
 
 .cartridgeheader {

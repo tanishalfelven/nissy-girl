@@ -207,8 +207,6 @@
 .cartridgeback {
 	composes: face from "$util/util.mcss";
 
-	pointer-events: none;
-
 	top: 21.5%;
 	transform: rotateY(180deg) translateZ(calc(width / 6.2));
 
