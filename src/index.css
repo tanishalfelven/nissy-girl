@@ -33,11 +33,11 @@ body {
 @font-face {
 	font-family: Cairopixel;
 
-	src: url("./assets/Cairopixel.ttf") format("truetype");
+	src: url("./assets/cairopixel.woff2") format("woff2");
 }
 
 @font-face {
 	font-family: Pixelzone;
 
-	src: url("./assets/Pixelzone.ttf") format("truetype");
+	src: url("./assets/pixelzone.woff2") format("woff2");
 }

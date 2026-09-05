@@ -87,7 +87,7 @@ export const createJumperUI = ({
 			movement : navComponent,
 			ui : {
 				async load() {
-					await document.fonts.load("16px Pixelzone");
+					await document.fonts.load("12rem Pixelzone");
 					await audio.jumper.load();
 				},
 

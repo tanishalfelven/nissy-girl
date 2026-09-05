@@ -2,6 +2,7 @@ import { createEntity } from "$game/shared/entity/entity.js";
 import { createJumper } from "../jumper.entity/jumper.entity.js";
 
 import { noopFalseFunction } from "$util/noop.js";
+import { createDeferred } from "$util/deferred.js";
 
 const noopParticles = { spawnDust : noopFalseFunction };
 const noopCamera = { follow : noopFalseFunction };
@@ -175,6 +176,8 @@ export const createCapabilities = ({
 
 	const data = {};
 
+	const deferredCapabilities = createDeferred();
+
 	return {
 		async load() {
 			for(const [ id, plan ] of simulationPlan) {
@@ -182,10 +185,12 @@ export const createCapabilities = ({
 
 				data[id] = plan(id, sim, jumper);
 			}
+
+			deferredCapabilities.resolve(data);
 		},
 
 		get() {
-			return data;
+			return deferredCapabilities;
 		},
 	};
 };

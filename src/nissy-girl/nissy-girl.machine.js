@@ -55,54 +55,21 @@ const nissyGirlMachine = createMachine({
 
 	states : {
 		"initializing" : {
-			type : "parallel",
-
-			onDone : [
-				{
-					guard : () => hasParam("game"),
-					actions : () => nissyGirl.forceLoad(getParam("game")),
-					target : "wait-for-force-load-game",
-				},
-				{
-					target : "off",
-				},
-			],
-
-			states : {
-				render : {
-					initial : "none",
-
-					states : {
-						none : {
-							on : {
-								RENDERER_READY : "done",
-							},
-						},
-
-						done : {
-							type : "final",
-						},
+			invoke : {
+				id : "load-audio",
+				src : fromPromise(audio.loadNissyGirlSfx),
+				onDone : [
+					{
+						guard : () => hasParam("game"),
+						actions : () => nissyGirl.forceLoad(getParam("game")),
+						target : "wait-for-force-load-game",
 					},
-				},
-
-				audio : {
-					initial : "loading",
-
-					states : {
-						loading : {
-							invoke : {
-								id : "load-audio",
-								src : fromPromise(audio.loadNissyGirlSfx),
-								onDone : "done",
-							},
-						},
-
-						done : {
-							type : "final",
-						},
+					{
+						target : "off",
 					},
-				},
+				],
 			},
+
 		},
 
 		"wait-for-force-load-game" : {
@@ -191,6 +158,13 @@ const nissyGirlMachine = createMachine({
 								},
 
 								hasgame : {
+									entry : async () => {
+										const renderModule = await import("$nissy-girl/screens/render.js");
+
+										// kick off render init for game but we don't need to wait for this here
+										renderModule.initRenderer();
+									},
+
 									on : {
 										CARTRIDGE_EJECTED : {
 											actions : raise({ type : "CARTRIDGE_ERROR" }),
@@ -212,7 +186,7 @@ const nissyGirlMachine = createMachine({
 				game : {
 					invoke : {
 						id : "game-machine",
-						src : fromMachine(() => nissyGirl.getGame().machine),
+						src : fromMachine(() => nissyGirl.getGame().machine()),
 					},
 
 					on : {

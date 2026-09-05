@@ -1,64 +1,14 @@
 <script module>
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./screen.consts.js";
-import { COLOR_OFF_BLACK } from "./render.consts.js";
-import { createRenderer } from "./render.js";
-import { nissyGirlActor } from "$nissy-girl/nissy-girl.machine.js";
-import { Assets } from "pixi.js";
+let canvasEl = $state(false);
 
-/** @import { Renderer } from "pixi.js"; */
-
-/** @type {Renderer} */
-let renderer = false;
-
-const initRenderer = async (canvas) => {
-	renderer = await createRenderer(canvas, { width : CANVAS_WIDTH, height : CANVAS_HEIGHT });
-
-	await Assets.init();
-
-	nissyGirlActor.send({ type : "RENDERER_READY" });
-};
-
-export const screen = {
-	render(renderables) {
-		if(!renderer) {
-			throw new Error("Render scene called before renderer init!");
-		}
-
-		if(!renderables) {
-			/* eslint-disable-next-line no-console -- debug */
-			console.warn("Tried to render falsey input", renderables);
-
-			return false;
-		}
-
-		renderer.render(renderables);
-	},
-
-	clear() {
-		if(!renderer) {
-			throw new Error("Clear scene called before renderer init!");
-		}
-
-		renderer.clear({ clearColor : COLOR_OFF_BLACK });
-	},
-
-	isReady() {
-		return Boolean(renderer);
-	},
+export const getCanvas = () => {
+	return canvasEl;
 };
 </script>
 <script>
 import css from "./screens.mcss";
 
 let { children } = $props();
-
-let canvasEl = $state(false);
-
-$effect(() => {
-	if(canvasEl && !renderer) {
-		initRenderer(canvasEl);
-	}
-});
 </script>
 
 <div class={css.screenborder}>

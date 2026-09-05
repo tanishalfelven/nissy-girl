@@ -4,14 +4,14 @@ import {
 	assign,
 	raise,
 	sendParent,
+	fromPromise,
 } from "xstate";
 
 import { rafLooper } from "$util/time.js";
-
-import { screen } from "$nissy-girl/screens/screen.svelte";
 import { stateLogger } from "$util/state-logger.actor.js";
 
 import { GAME_TICK } from "./game.consts.js";
+import { initRenderer, screen } from "$nissy-girl/screens/render.js";
 
 const MAX_SIMULATION_STEPS = 4;
 
@@ -63,134 +63,148 @@ export const gameloop = {
 			});
 		},
 
-		entry : sendParent({ type : "GAME_READY" }),
+		invoke : {
+			...stateLogger,
+			input : { analytics : false },
+		},
 
-		invoke : [
-			{
-				id : "gameloop-lifecycle",
-				src : fromCallback(({ context }) => {
-					// machine exit lifecycle is more safely stored in an actor
-					return () => {
-						screen.clear();
-						context?.loop?.stop?.();
-						context?.scene?.destroy?.();
-					};
-				}),
-			},
-			{
-				...stateLogger,
-				input : { analytics : false },
-			},
-
-		],
-
-		type : "parallel",
+		initial : "load",
 
 		states : {
-			scene : {
-				initial : "none",
-
-				states : {
-					none : {
-						on : {
-							REGISTER_SCENE : {
-								actions : assign(({ event }) => ({ scene : event.scene })),
-								target : "active",
-							},
-						},
-					},
-
-					active : {
-						entry : [
-							raise({ type : "START" }),
-						],
-
-						on : {
-							REMOVE_SCENE : {
-								target : "none",
-							},
-						},
-					},
-				},
-			},
-
-			input : {
-				initial : "none",
-
-				states : {
-					none : {
-						on : {
-							REGISTER_INPUT : {
-								actions : assign(({ event }) => ({ input : event.input })),
-								target : "active",
-							},
-						},
-					},
-
-					active : {
-						on : {
-							REMOVE_INPUT : {
-							// no teardown for input
-								actions : assign({ input : false }),
-								target : "none",
-							},
-						},
-					},
+			load : {
+				invoke : {
+					id : "init-screen",
+					src : fromPromise(initRenderer),
+					onDone : "loop",
 				},
 			},
 
 			loop : {
-				initial : "paused",
+				entry : sendParent({ type : "GAME_READY" }),
 
-				on : {
-					REMOVE_SCENE : {
-						actions : [
-							({ context }) => {
-								context.loop.stop();
-								context.scene?.destroy?.();
+				invoke : [
+					{
+						id : "gameloop-lifecycle",
+						src : fromCallback(({ context }) => {
+							// machine exit lifecycle is more safely stored in an actor
+							return () => {
 								screen.clear();
-							},
-						],
-						target : ".paused",
+								context?.loop?.stop?.();
+								context?.scene?.destroy?.();
+							};
+						}),
 					},
-				},
+				],
+
+				type : "parallel",
 
 				states : {
-					paused : {
-						on : {
-							START : "active",
+					scene : {
+						initial : "none",
+
+						states : {
+							none : {
+								on : {
+									REGISTER_SCENE : {
+										actions : assign(({ event }) => ({ scene : event.scene })),
+										target : "active",
+									},
+								},
+							},
+
+							active : {
+								entry : [
+									raise({ type : "START" }),
+								],
+
+								on : {
+									REMOVE_SCENE : {
+										target : "none",
+									},
+								},
+							},
 						},
 					},
 
-					active : {
-						entry : ({ context, self }) =>
-							context.loop.start({
-								parent : self,
-								scene : context.scene,
-								input : context.input,
-							}),
+					input : {
+						initial : "none",
+
+						states : {
+							none : {
+								on : {
+									REGISTER_INPUT : {
+										actions : assign(({ event }) => ({ input : event.input })),
+										target : "active",
+									},
+								},
+							},
+
+							active : {
+								on : {
+									REMOVE_INPUT : {
+										// no teardown for input
+										actions : assign({ input : false }),
+										target : "none",
+									},
+								},
+							},
+						},
+					},
+
+					loop : {
+						initial : "paused",
 
 						on : {
-							// emitted by loop directly, match its state
-							LOOP_PAUSE : "paused",
+							REMOVE_SCENE : {
+								actions : [
+									({ context }) => {
+										context.loop.stop();
+										context.scene?.destroy?.();
+										screen.clear();
+									},
+								],
+								target : ".paused",
+							},
+						},
 
-							REGISTER_SCENE : {
-								actions : raise({ type : "UPDATE_SESSION" }),
-							},
-							REGISTER_INPUT : {
-								actions : raise({ type : "UPDATE_SESSION" }),
-							},
-							REMOVE_INPUT : {
-								actions : raise({ type : "UPDATE_SESSION" }),
+						states : {
+							paused : {
+								on : {
+									START : "active",
+								},
 							},
 
-							UPDATE_SESSION : {
-								actions : ({ context, self }) =>
-									context.loop.updateSession({
+							active : {
+								entry : ({ context, self }) =>
+									context.loop.start({
 										parent : self,
 										scene : context.scene,
 										input : context.input,
 									}),
+
+								on : {
+									// emitted by loop directly, match its state
+									LOOP_PAUSE : "paused",
+
+									REGISTER_SCENE : {
+										actions : raise({ type : "UPDATE_SESSION" }),
+									},
+									REGISTER_INPUT : {
+										actions : raise({ type : "UPDATE_SESSION" }),
+									},
+									REMOVE_INPUT : {
+										actions : raise({ type : "UPDATE_SESSION" }),
+									},
+
+									UPDATE_SESSION : {
+										actions : ({ context, self }) =>
+											context.loop.updateSession({
+												parent : self,
+												scene : context.scene,
+												input : context.input,
+											}),
+									},
+								},
 							},
 						},
 					},

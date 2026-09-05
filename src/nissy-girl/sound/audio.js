@@ -1,4 +1,4 @@
-import { nissyGirlAudio, jumperAudio, paintAudio } from "./sfx.consts.js";
+import { nissyGirlAudio } from "./sfx.consts.js";
 
 import { channelActive, overwriteChannel, stopChannel } from "./channels.js";
 
@@ -81,8 +81,9 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 };
 
 const nissyGirlPlay = makePlayer(nissyGirlAudio);
-const jumperPlay = makePlayer(jumperAudio);
-const paintPlay = makePlayer(paintAudio);
+
+let jumperPlay = false;
+let paintPlay = false;
 
 const detune = (range = 500, steps = 10) => step(Math.random(), 1 / steps) * range;
 
@@ -100,7 +101,13 @@ export const audio = {
 	loadNissyGirlSfx : () => loadAudioSet(nissyGirlAudio),
 
 	jumper : {
-		load : () => loadAudioSet(jumperAudio),
+		load : async () => {
+			const { audioSet } = await import("$nissy-girl/sound/jumper-audio.consts.js");
+
+			await loadAudioSet(audioSet);
+
+			jumperPlay = makePlayer(audioSet);
+		},
 
 		playUIBack : () => jumperPlay("back", {}),
 		playUIMove : () => jumperPlay("button", {}),
@@ -118,7 +125,13 @@ export const audio = {
 	},
 
 	paint : {
-		load : () => loadAudioSet(paintAudio),
+		load : async () => {
+			const { audioSet } = await import("$nissy-girl/sound/paint-audio.consts.js");
+
+			await loadAudioSet(audioSet);
+
+			paintPlay = makePlayer(audioSet);
+		},
 
 		playOink : () => paintPlay("oink", {}),
 		playNavOink : () => paintPlay("navoink", { detune : 300 }),

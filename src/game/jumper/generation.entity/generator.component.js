@@ -363,7 +363,7 @@ const getRandomSeed = () => {
 
 export const createGenerator = ({
 	world,
-	capabilities : gapabilityComponent,
+	capabilities : capabilityComponent,
 }) => {
 	const context = world.world.getContext();
 
@@ -405,7 +405,7 @@ export const createGenerator = ({
 	return {
 		async load() {
 			if(!capabilities) {
-				capabilities = gapabilityComponent.get();
+				capabilities = await capabilityComponent.get();
 			}
 
 			if(context.selected === MAP_ID_DAILY) {
@@ -418,7 +418,6 @@ export const createGenerator = ({
 			window.dumpMaps = () => console.log(maps);
 
 			world.world.notifyGame({ type : "CACHE_GENERATION", data : { maps, capabilities } });
-			world.world.notifyGame({ type : "DONE" });
 		},
 	};
 };

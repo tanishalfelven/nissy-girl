@@ -26,11 +26,10 @@ export const touch = (node, {
 	const sub = subscribers();
 
 	const handleEnd = (e) => {
-		if(activePointerId !== false && activePointerId !== e.pointerId) {
+		if(activePointerId !== e.pointerId) {
 			return;
 		}
 
-		node.releasePointerCapture(e.pointerId);
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -156,10 +155,6 @@ export const controls = (node, {
 
 	const handleEnd = (e) => {
 		endInput(e);
-
-		if(node.hasPointerCapture(e.pointerId)) {
-			node.releasePointerCapture(e.pointerId);
-		}
 	};
 
 	const handleMove = rafThrottle((e) => {

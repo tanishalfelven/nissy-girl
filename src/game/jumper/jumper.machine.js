@@ -101,7 +101,7 @@ export const jumperMachine = createMachine({
 			}),
 
 			on : {
-				DONE : "menu",
+				SCENE_READY : "menu",
 			},
 		},
 
@@ -292,7 +292,7 @@ export const jumperMachine = createMachine({
 			}),
 
 			on : {
-				DONE : "game",
+				SCENE_READY : "game",
 			},
 		},
 
@@ -401,8 +401,8 @@ export const jumperMachine = createMachine({
 						pregame : {
 							entry : () => audio.jumper.playUIConfirm(),
 
-							after : {
-								100 : "countdown",
+							on : {
+								SCENE_READY : "countdown",
 							},
 						},
 

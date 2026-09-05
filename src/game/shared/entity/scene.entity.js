@@ -125,7 +125,7 @@ export const createScene = ({
 			return isAlive;
 		},
 
-		async load() {
+		load() {
 			return Promise.all(
 				load.map((loadFunc) => loadFunc()),
 			);
