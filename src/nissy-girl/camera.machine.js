@@ -201,7 +201,7 @@ export const cameraMachine = createMachine({
 						prompt : "play",
 					}],
 					[ CARTRIDGE_INSERT, { display : () => !nissyGirl.hasInsertedCartridge() }],
-					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() }],
+					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
 				],
 			),
 
