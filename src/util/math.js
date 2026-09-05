@@ -15,6 +15,13 @@ export const wrap = (value, min, max) => {
 	return ((value - min) % range + range) % range + min;
 };
 
+/**
+ * inclusive
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {boolean}
+ */
 export const inRange = (value, min, max) =>
 	min <= value && value <= max;
 
