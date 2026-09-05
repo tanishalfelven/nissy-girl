@@ -5,8 +5,7 @@
 .screen {
 	composes: animates from "$util/util.mcss";
 
-	transform-style: preserve-3d;
-	transform: translateZ(0);
+	z-index: 1;
 
 	width: screenwidth;
 	height: screenheight;
@@ -18,10 +17,7 @@
 
 /* Safari seems to have a lot of problems with this hierarchy so LOTS of layer hints.. */
 .screenborder {
-	composes: animates from "$util/util.mcss";
-
 	position: absolute;
-	transform-style: preserve-3d;
 	transform: translateZ(calc(depth / 2.3));
 
 	display: flex;
@@ -36,11 +32,8 @@
 }
 
 .screencontainer {
-	composes: animates from "$util/util.mcss";
-
 	position: relative;
-	transform-style: preserve-3d;
-	transform: translateZ(0);
+	z-index: 0;
 
 	overflow: hidden;
 	display: flex;
