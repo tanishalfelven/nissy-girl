@@ -30,7 +30,7 @@ export const cartridgeX = createProgress({
 	},
 	velocity : {
 		decay : 0.98,
-		smoothing : 0.6,
+		smoothing : 0.3,
 		min : 0.00001,
 	},
 });

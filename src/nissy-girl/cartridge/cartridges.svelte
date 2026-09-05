@@ -1,5 +1,5 @@
 <script>
-import { roundHundredths, lerp, clamp } from "$util/math.js";
+import { lerp, clamp } from "$util/math.js";
 import { touch } from "$util/touch-action.svelte.js";
 import { cameraActor } from "$nissy-girl/nissy-girl.machine.js";
 
@@ -28,11 +28,9 @@ const displayCartridgeRot = $derived.by(() => {
 			1,
 		);
 
-	return roundHundredths(
-		cartridgeX.progress < 0.5
-			? lerp(rotationProgress, 360, 180)
-			: lerp(rotationProgress, 180, 0),
-	);
+	return cartridgeX.progress < 0.5
+		? lerp(rotationProgress, 360, 180)
+		: lerp(rotationProgress, 180, 0);
 });
 
 let cartridgeHeight = $state(0);

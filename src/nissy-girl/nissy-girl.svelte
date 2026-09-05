@@ -1,6 +1,5 @@
 <script>
 import { touch } from "$util/touch-action.svelte.js";
-import { roundHundredths } from "$util/math.js";
 import Cartridges from "$nissy-girl/cartridge/cartridges.svelte";
 
 import FaceControls from "./controls/front-controls.svelte";
@@ -18,7 +17,7 @@ import css from "./nissy-girl.mcss";
 
 let { children } = $props();
 
-const displayZoom = $derived(roundHundredths(zoom.progress * 10));
+const displayZoom = $derived(zoom.progress * 10);
 
 let nissyGirlWidth = $state(false);
 
