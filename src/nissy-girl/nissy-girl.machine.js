@@ -39,8 +39,8 @@ const nissyGirlMachine = createMachine({
 		invokePromptLayer(
 			"nissy-girl",
 			[
-				[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() || !nissyGirl.isPowered }],
 				[ POWER_ON, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+				[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() || !nissyGirl.isPowered }],
 			],
 		),
 	],

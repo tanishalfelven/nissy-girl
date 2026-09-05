@@ -186,6 +186,7 @@ export const cameraMachine = createMachine({
 		"cartridge select" : {
 			entry : () => cartridges.show(),
 
+			// #region: prompts
 			invoke : invokePromptLayer(
 				"cartridge",
 				[
@@ -199,8 +200,8 @@ export const cameraMachine = createMachine({
 						display : () => nissyGirl.hasInsertedCartridge() && nissyGirl.isPowered,
 						prompt : "play",
 					}],
-					[ CARTRIDGE_INSERT, { display : () => !nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
-					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+					[ CARTRIDGE_INSERT, { display : () => !nissyGirl.hasInsertedCartridge() }],
+					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() }],
 				],
 			),
 
