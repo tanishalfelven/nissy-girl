@@ -1,15 +1,10 @@
 .cartridges {
 	position: absolute;
+	z-index: 0;
 	top: 0;
 	right: 0;
 	left: 0;
-	transform:
-		translate3d(
-			0,
-			-250rem,
-			300rem
-		)
-		scaleX(-1);
+	transform: scale(0.5);
 
 	opacity: 0.35;
 }
