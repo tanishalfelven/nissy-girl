@@ -110,16 +110,27 @@ export const touch = (node, {
 	});
 };
 
+const _handleEvent = (e) => {
+	e.stopPropagation();
+	e.preventDefault();
+};
+
+export {
+	_handleEvent as handleEvent,
+};
+
 /**
  * Svelte action for physical buttons that only have an on/off state
  * @param {HTMLElement} node svelte action node
  * @param {object} options event handlers for action
  * @param {(e: PointerEvent) => void} options.fire triggers on move/down
  * @param {(e: PointerEvent) => void} options.end triggers on up/cancel/leave
+ * @param {() => false} options.handleEvent
  */
 export const controls = (node, {
 	fire,
 	end,
+	handleEvent = _handleEvent,
 }) => {
 	const sub = subscribers();
 
@@ -131,8 +142,7 @@ export const controls = (node, {
 			return;
 		}
 
-		e.stopPropagation();
-		e.preventDefault();
+		handleEvent(e);
 
 		activePointerId = false;
 		canTrigger = false;
@@ -163,8 +173,7 @@ export const controls = (node, {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
+		handleEvent(e);
 
 		activePointerId = e.pointerId;
 		node.setPointerCapture(e.pointerId);
@@ -197,4 +206,9 @@ export const controls = (node, {
 	});
 };
 
-export const deadzone = (node) => controls(node, { fire : noopFalseFunction, end : noopFalseFunction });
+export const deadzone = (node, handleEvent = _handleEvent) =>
+	controls(node, {
+		fire : noopFalseFunction,
+		end : noopFalseFunction,
+		handleEvent,
+	});

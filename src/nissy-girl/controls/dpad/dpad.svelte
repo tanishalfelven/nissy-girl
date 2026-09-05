@@ -10,7 +10,7 @@ const DIRECTIONS = [
 ];
 </script>
 <script>
-import { controls, deadzone } from "$util/touch-action.svelte.js";
+import { controls, deadzone, handleEvent } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
 import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
@@ -119,7 +119,11 @@ $effect(() =>
 
 <div
 	class={css.deadzone}
-	use:deadzone
+	use:deadzone={(e) => {
+		if(nissyGirl.isPowered) {
+			handleEvent(e);
+		}
+	}}
 >
 	<div
 		class={css.interactive}
