@@ -49,9 +49,6 @@ let rotationValue = 0;
 let originX = 0;
 let originY = 0;
 
-let heldX = 0;
-let heldY = 0;
-
 const storeDpadState = (e) => {
 	if(!dpadElement) {
 		return false;
@@ -85,7 +82,7 @@ const handleInput = () => {
 
 	for(const { type, isHorzAxis, sign } of DIRECTIONS) {
 		const active = (isHorzAxis ? nextX : nextY) === sign;
-		const wasActive = (isHorzAxis ? heldX : heldY) === sign;
+		const wasActive = input.state[type];
 
 		if(active && !wasActive) {
 			input.fire({ type, state : TRIGGERED });
@@ -93,9 +90,6 @@ const handleInput = () => {
 			input.fire({ type, state : RELEASED });
 		}
 	}
-
-	heldX = nextX;
-	heldY = nextY;
 };
 
 const xDeg = $derived(`${dpadY * MAX_TILT}deg`);
