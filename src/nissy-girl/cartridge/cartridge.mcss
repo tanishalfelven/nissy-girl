@@ -129,7 +129,13 @@
 	width: 97%;
 	margin: auto;
 
-	background-image: var(--image);
+	&[data-cartridge="paint"] {
+		background-image: url("$game/assets/paint-art.png");
+	}
+
+	&[data-cartridge="jumper"] {
+		background-image: url("$game/assets/jumper-art.png");
+	}
 }
 
 .cartridgetop {

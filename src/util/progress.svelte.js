@@ -22,6 +22,7 @@ export const MAX_PROGRESS = 1;
  * @param {number[]} [options.anchors] stop points that velocity adheres to
  * @param {(cur: number, movement: number) => number} options.update pure value derivation func
  * @param {VelocityConfig} options.velocity velocity options
+ * @param {boolean} options.engageY if velocity should interpret Y as absolute additive movement
  * @returns {Progress} progress manager
  */
 export const createProgress = ({
@@ -30,6 +31,7 @@ export const createProgress = ({
 	anchors : anchorInput = [],
 	update : updateFunc,
 	velocity,
+	engageY = false,
 }) => {
 	if(start < 0 || start > 1) {
 		throw new Error(`Cannot create progress with start value ${start}`);
@@ -58,6 +60,10 @@ export const createProgress = ({
 	const progress = {
 		get progress() {
 			return _progress;
+		},
+
+		getEngageY() {
+			return engageY;
 		},
 
 		getVelocityConfig() {

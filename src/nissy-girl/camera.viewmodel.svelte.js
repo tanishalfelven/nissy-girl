@@ -29,6 +29,7 @@ const backfaceHidden = $derived(displayRotation < VISIBLE_ROTATION_SWEEP
 export const zoom = createProgress({
 	start : 0,
 	speed : 1.8,
+	engageY : true,
 	update : (cur, movement) =>
 		clamp(
 			cur + Math.abs(movement) * (returnFromCartridgeFlow ? -1 : 1),

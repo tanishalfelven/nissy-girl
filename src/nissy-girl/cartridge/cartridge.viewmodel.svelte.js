@@ -1,20 +1,33 @@
 import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelte.js";
-import { clamp } from "$util/math.js";
+import { clamp, crossedThreshold } from "$util/math.js";
 import { gameOrder, games, getGameIndex } from "$game/games.js";
 import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
 import { camera } from "$nissy-girl/camera.viewmodel.svelte.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 
+let hasPassedFirstCartridgeAnchor = $state(false);
+let cartridgeDir = $state(1);
+
 export const cartridgeX = createProgress({
 	start : 0,
 	speed : -0.9,
 	anchors : [ CARTRIDGE_SELECTION_THRESHOLD ],
-	update : (cur, movement) => clamp(
-		cur + movement,
-		MIN_PROGRESS,
-		MAX_PROGRESS,
-	),
+	engageY : true,
+	update : (cur, movement) => {
+		const absMove = Math.abs(movement);
+
+		if(crossedThreshold(cur, cur + absMove, CARTRIDGE_SELECTION_THRESHOLD) && !hasPassedFirstCartridgeAnchor) {
+			cartridgeDir = Math.sign(movement);
+			hasPassedFirstCartridgeAnchor = true;
+		}
+
+		return clamp(
+			cur + (hasPassedFirstCartridgeAnchor ? cartridgeDir * movement : absMove),
+			MIN_PROGRESS,
+			MAX_PROGRESS,
+		);
+	},
 	velocity : {
 		decay : 0.98,
 		smoothing : 0.3,
@@ -38,7 +51,6 @@ export const cartridgeY = createProgress({
 	},
 });
 
-let dir = $state(0);
 let index = $state(0);
 let isVisible = $state(false);
 let finishedIteratingCartridge = $state(false);
@@ -46,6 +58,10 @@ let finishedIteratingCartridge = $state(false);
 export const cartridges = {
 	get isVisible() {
 		return isVisible && !camera.backfaceHidden;
+	},
+
+	get cartridgeDir() {
+		return cartridgeDir;
 	},
 
 	show() {
@@ -85,17 +101,17 @@ export const cartridges = {
 		return games.get(id);
 	},
 
-	resetCartridgePosition() {
-		cartridgeX.set(dir < 0 ? MIN_PROGRESS : MAX_PROGRESS);
+	resetCartridgePosition(step) {
+		cartridgeX.set(step < 0 ? MAX_PROGRESS : MIN_PROGRESS);
 	},
 
-	setDirection(newDir) {
-		dir = newDir;
+	setDirection() {
+		cartridgeDir = -1;
+		hasPassedFirstCartridgeAnchor = false;
 
 		this.resetCartridgePosition();
 
-		// index starts from same swiping direction
-		index = dir < 0 ? gameOrder.length - 1 : 0;
+		index = 0;
 
 		finishedIteratingCartridge = false;
 	},
@@ -108,9 +124,11 @@ export const cartridges = {
 			return false;
 		}
 
-		this.resetCartridgePosition();
+		const resolvedStep = stepDir === cartridgeDir ? -1 : 1;
 
-		index += stepDir;
+		this.resetCartridgePosition(resolvedStep);
+
+		index += resolvedStep;
 
 		if(index === -1 || index === gameOrder.length) {
 			index = 0;

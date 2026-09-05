@@ -7,8 +7,8 @@ import { cartridges, cartridgeX, cartridgeY } from "./cartridge.viewmodel.svelte
 
 import css from "./cartridge.mcss";
 
-const ROTATION_EDGE_OFFSET = 0.25;
-const ROTATION_RANGE = 0.23;
+const ROTATION_EDGE_OFFSET = 0.05;
+const ROTATION_RANGE = 0.4;
 
 const displayCartridgeRot = $derived.by(() => {
 	const progress = cartridgeX.progress;
@@ -34,7 +34,11 @@ const displayCartridgeRot = $derived.by(() => {
 });
 
 const displayCartridgeX = $derived(
-	roundHundredths(lerp(cartridgeX.progress, -150, 50)),
+	roundHundredths(lerp(
+		cartridgeX.progress,
+		-150,
+		50,
+	)),
 );
 
 const displayCartridgeY = $derived(
@@ -44,7 +48,7 @@ const displayCartridgeY = $derived(
 let cartridgeHeight = $state(0);
 let cartridgeWidth = $state(0);
 
-const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
+const { id : cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 </script>
 
 <div
@@ -93,7 +97,7 @@ const { cartridge } = $derived(cartridges.getCurrentCartridgeGame());
 >
 	<div class={css.cartridgeface}></div>
 	<div class={css.cartridgefaceartback}>
-		<div class={css.cartridgefaceart} style:--image={`url(${cartridge})`}></div>
+		<div class={css.cartridgefaceart} data-cartridge={cartridge}></div>
 	</div>
 
 	<div class={css.cartridgeheader}></div>

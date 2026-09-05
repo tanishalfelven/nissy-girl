@@ -1,5 +1,3 @@
-import PaintCartridgeArt from "./assets/paint-art.png";
-import JumperCartridgeArt from "./assets/jumper-art.png";
 import { GAME_PAINT_ID, GAME_JUMPER_ID } from "./games.consts.js";
 import { paintMachine } from "./paint/paint.machine.js";
 import { jumperMachine } from "./jumper/jumper.machine.js";
@@ -14,7 +12,6 @@ export const games = new Map([
 		GAME_PAINT_ID,
 		{
 			id : GAME_PAINT_ID,
-			cartridge : PaintCartridgeArt,
 			machine : paintMachine,
 		},
 	],
@@ -22,7 +19,6 @@ export const games = new Map([
 		GAME_JUMPER_ID,
 		{
 			id : GAME_JUMPER_ID,
-			cartridge : JumperCartridgeArt,
 			machine : jumperMachine,
 		},
 	],

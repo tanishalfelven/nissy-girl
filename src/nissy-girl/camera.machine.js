@@ -60,7 +60,7 @@ export const cameraMachine = createMachine({
 		},
 
 		DRAG_DELTA : {
-			actions : sendTo(ROTATE_VELOCITYID, ({ event }) => ({ type : "DRAG_DELTA", delta : event.delta })),
+			actions : sendTo(ROTATE_VELOCITYID, ({ event }) => event),
 		},
 	},
 
@@ -232,7 +232,7 @@ export const cameraMachine = createMachine({
 						},
 
 						CART_XDRAG_DELTA : {
-							actions : raise(({ event }) => ({ type : "ROTATE_SWIPE", delta : event.delta })),
+							actions : raise(({ event }) => ({ type : "ROTATE_SWIPE", delta : Math.abs(event.delta) })),
 						},
 
 						ROTATE_SWIPE : {

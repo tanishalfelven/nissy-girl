@@ -76,9 +76,16 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 					return;
 				}
 
-				velocity.sample(event.delta);
+				let delta = event.delta;
 
-				sendBack({ type : eventName, delta : event.delta });
+				if(progress.getEngageY()) {
+					// X axis is always authoritative on the direction, add Y when configured to do so
+					delta = Math.sign(event.delta) * (Math.abs(event.delta) + Math.abs(event.deltaY));
+				}
+
+				velocity.sample(delta);
+
+				sendBack({ type : eventName, delta });
 
 				return;
 			}
