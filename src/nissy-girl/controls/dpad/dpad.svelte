@@ -25,6 +25,8 @@ import {
 	RELEASED,
 } from "$game/shared/input.consts.js";
 
+import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
+
 const MAX_TILT = 3;
 const DEADZONE = 0.15;
 const DIAGONAL_RATIO = 0.65;
