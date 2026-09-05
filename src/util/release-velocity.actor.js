@@ -10,7 +10,7 @@ export const VERT_VELOCITYID = "vert-velocity";
 
 /**
  * Velocity actor consumes the following events and funnels back as a collected *_SWIPE event
- * including velocity outpus
+ * including velocity outputs
  * - DRAG_START
  * - DRAG_END
  * - DRAG_DELTA
@@ -33,6 +33,12 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 			const movement = velocity.step(dt);
 
 			const previous = progress.progress;
+
+			if(progress?.isAnchor?.(previous)) {
+				velocity.stop();
+
+				return;
+			}
 
 			const next = progress.project(movement);
 
@@ -78,7 +84,7 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 
 				let delta = event.delta;
 
-				if(progress.getEngageY()) {
+				if(progress.getEngageY() && event.deltaY) {
 					// X axis is always authoritative on the direction, add Y when configured to do so
 					delta = Math.sign(event.delta) * (Math.abs(event.delta) + Math.abs(event.deltaY));
 				}

@@ -57,17 +57,24 @@ let cartridgeWidth = $state(0);
 				});
 			},
 			move : (distX, distY) => {
-				if(distY !== 0 && cartridgeHeight > 0) {
+				const deltaX = distX / cartridgeWidth;
+				const deltaY = distY / cartridgeHeight;
+
+				const horzAxis = Math.abs(deltaX) > Math.abs(deltaY);
+
+				if(distY !== 0 && cartridgeHeight > 0 && !horzAxis) {
 					cameraActor.send({
 						type : "CART_DRAG_DELTA",
-						delta : distY / cartridgeHeight,
+						delta : deltaY,
+						deltaX,
 					});
 				}
 
-				if(distX !== 0 && cartridgeWidth > 0) {
+				if(distX !== 0 && cartridgeWidth > 0 && horzAxis) {
 					cameraActor.send({
 						type : "CART_XDRAG_DELTA",
-						delta : distX / cartridgeWidth,
+						delta : deltaX,
+						deltaY,
 					});
 				}
 			},

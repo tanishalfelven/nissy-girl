@@ -227,17 +227,38 @@ export const cameraMachine = createMachine({
 
 					on : {
 						CART_DRAG_DELTA : {
-							guard : ({ event }) => event.delta > 0,
+							// guard : ({ event }) => event.delta > 0,
 							actions : raise(() => ({ type : "SELECT_CARTRIDGE" })),
 						},
 
+						CART_XDRAG_START : {
+							actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_START" }),
+						},
+
+						CART_XDRAG_END : {
+							actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_END" }),
+						},
+
 						CART_XDRAG_DELTA : {
-							actions : raise(({ event }) => ({ type : "ROTATE_SWIPE", delta : Math.abs(event.delta) })),
+							actions : sendTo(ROTATE_VELOCITYID, ({ event }) => ({ ...event, type : "DRAG_DELTA" })),
 						},
 
 						ROTATE_SWIPE : {
 							actions : [
-								({ event }) => cartridgeX.update(event.delta),
+								({ event }) => {
+									if(cartridgeX.progress !== 0.5
+										&& crossedThreshold(
+											cartridgeX.progress,
+											cartridgeX.project(event.delta),
+											0.5,
+										)
+									) {
+										cartridgeX.set(0.5);
+										return;
+									}
+
+									cartridgeX.update(event.delta);
+								},
 								raise(({ event }) => ({
 									type : "CARTRIDGE_IS_OFF_SCREEN",
 									dir : Math.sign(event.delta),
@@ -284,6 +305,18 @@ export const cameraMachine = createMachine({
 							actions : sendTo(VERT_VELOCITYID, { type : "DRAG_END" }),
 						},
 
+						CART_XDRAG_START : {
+							actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_START" }),
+						},
+
+						CART_XDRAG_END : {
+							actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_END" }),
+						},
+
+						CART_XDRAG_DELTA : {
+							actions : sendTo(ROTATE_VELOCITYID, ({ event }) => ({ ...event, type : "DRAG_DELTA" })),
+						},
+
 						CART_DRAG_DELTA : {
 							actions : sendTo(
 								VERT_VELOCITYID,
@@ -323,12 +356,8 @@ export const cameraMachine = createMachine({
 							},
 						],
 
-						// proxying horizontal swipe to cartridge progress is tough
-						// I dislike canonical entry direction as "yes" or opposite as "no"
 						ROTATE_SWIPE : {
-							actions : [
-								raise({ type : "CARTRIDGE_INSERTED_OR_RETURNED" }),
-							],
+							actions : raise(({ event }) => ({ ...event, type : "CARTRIDGE_INSERTED_OR_RETURNED" })),
 						},
 
 						CARTRIDGE_INSERTED_OR_RETURNED : [
