@@ -62,19 +62,21 @@ let cartridgeWidth = $state(0);
 
 				const horzAxis = Math.abs(deltaX) > Math.abs(deltaY);
 
-				if(distY !== 0 && cartridgeHeight > 0 && !horzAxis) {
+				if(distY !== 0 && cartridgeHeight > 0) {
 					cameraActor.send({
 						type : "CART_DRAG_DELTA",
 						delta : deltaY,
 						deltaX,
+						bias : !horzAxis,
 					});
 				}
 
-				if(distX !== 0 && cartridgeWidth > 0 && horzAxis) {
+				if(distX !== 0 && cartridgeWidth > 0) {
 					cameraActor.send({
 						type : "CART_XDRAG_DELTA",
 						delta : deltaX,
 						deltaY,
+						bias : horzAxis,
 					});
 				}
 			},

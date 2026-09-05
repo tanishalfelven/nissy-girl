@@ -227,7 +227,7 @@ export const cameraMachine = createMachine({
 
 					on : {
 						CART_DRAG_DELTA : {
-							// guard : ({ event }) => event.delta > 0,
+							guard : ({ event }) => event.bias,
 							actions : raise(() => ({ type : "SELECT_CARTRIDGE" })),
 						},
 
@@ -297,6 +297,7 @@ export const cameraMachine = createMachine({
 					],
 
 					on : {
+						/* proxy vert cartridge movement to vert release velocity actor */
 						CART_DRAG_START : {
 							actions : sendTo(VERT_VELOCITYID, { type : "DRAG_START" }),
 						},
@@ -305,6 +306,16 @@ export const cameraMachine = createMachine({
 							actions : sendTo(VERT_VELOCITYID, { type : "DRAG_END" }),
 						},
 
+						CART_DRAG_DELTA : {
+							actions : sendTo(
+								VERT_VELOCITYID,
+								({ event }) => ({
+									...event,
+									type : "DRAG_DELTA",
+								})),
+						},
+
+						/* proxy horizontal cartridge movement to horizontal rotate velocity actor */
 						CART_XDRAG_START : {
 							actions : sendTo(ROTATE_VELOCITYID, { type : "DRAG_START" }),
 						},
@@ -317,16 +328,8 @@ export const cameraMachine = createMachine({
 							actions : sendTo(ROTATE_VELOCITYID, ({ event }) => ({ ...event, type : "DRAG_DELTA" })),
 						},
 
-						CART_DRAG_DELTA : {
-							actions : sendTo(
-								VERT_VELOCITYID,
-								({ event }) => ({
-									type : "DRAG_DELTA",
-									delta : event.delta,
-								})),
-						},
-
 						CART_SWIPE : {
+							guard : ({ event }) => event.bias !== false,
 							actions : [
 								({ event }) => {
 									if(
@@ -357,6 +360,7 @@ export const cameraMachine = createMachine({
 						],
 
 						ROTATE_SWIPE : {
+							guard : ({ event }) => event.bias !== false,
 							actions : raise(({ event }) => ({ ...event, type : "CARTRIDGE_INSERTED_OR_RETURNED" })),
 						},
 

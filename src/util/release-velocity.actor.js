@@ -91,7 +91,7 @@ export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 
 				velocity.sample(delta);
 
-				sendBack({ type : eventName, delta });
+				sendBack({ ...event, type : eventName, delta });
 
 				return;
 			}
