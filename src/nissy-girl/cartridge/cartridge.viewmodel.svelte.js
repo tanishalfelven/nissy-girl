@@ -30,7 +30,8 @@ export const cartridgeX = createProgress({
 	},
 	velocity : {
 		decay : 0.98,
-		smoothing : 0.3,
+		smoothing : 0.6,
+		min : 0.00001,
 	},
 });
 
@@ -62,6 +63,10 @@ export const cartridges = {
 
 	get cartridgeDir() {
 		return cartridgeDir;
+	},
+
+	get cartridgeIndex() {
+		return index;
 	},
 
 	show() {
@@ -126,13 +131,12 @@ export const cartridges = {
 
 		const resolvedStep = stepDir === cartridgeDir ? -1 : 1;
 
-		this.resetCartridgePosition(resolvedStep);
-
 		index += resolvedStep;
 
 		if(index === -1 || index === gameOrder.length) {
-			index = 0;
 			finishedIteratingCartridge = true;
+		} else {
+			this.resetCartridgePosition(resolvedStep);
 		}
 	},
 

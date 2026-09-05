@@ -1,0 +1,19 @@
+.cartridges {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	transform:
+		translate3d(
+			0,
+			-250rem,
+			300rem
+		)
+		scaleX(-1);
+
+	opacity: 0.35;
+
+	&[data-prev="true"] {
+
+	}
+}

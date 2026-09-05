@@ -1,7 +1,7 @@
 <script>
 import { touch } from "$util/touch-action.svelte.js";
 import { roundHundredths } from "$util/math.js";
-import Cartridge from "$nissy-girl/cartridge/cartridge.svelte";
+import Cartridges from "$nissy-girl/cartridge/cartridges.svelte";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
@@ -80,7 +80,7 @@ let nissyGirlWidth = $state(false);
 			<div class={css.screenbevelvert} data-left="true"></div>
 		</div>
 
-		<Cartridge />
+		<Cartridges />
 
 		<div class={css.panelside} data-right="true">
 			<PowerSwitch />

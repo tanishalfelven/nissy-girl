@@ -16,7 +16,7 @@
 	left: 0;
 	transform-style: preserve-3d;
 	transform:
-		translateX(calc(50vw + var(--cartridgex)))
+		translateX(calc(-100vw + 200vw * var(--cartridgex)))
 		translateY(calc(-130rem + var(--cartridgey) * 134rem))
 		translateZ(-14rem)
 		rotateY(var(--rotatey));
@@ -28,6 +28,10 @@
 
 	&[data-visibility="false"] {
 		visibility: hidden;
+	}
+
+	&[data-background="true"] {
+		/* --rotatey: 180deg; */
 	}
 }
 
