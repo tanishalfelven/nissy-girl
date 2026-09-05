@@ -1,7 +1,7 @@
 :root {
 	font-size:
 		min(
-			calc(80vh / 224),
+			calc(80dvh / 224),
 			calc(91vw / 142)
 		);
 }

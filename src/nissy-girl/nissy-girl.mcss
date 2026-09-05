@@ -1,4 +1,5 @@
-@value height: 224rem;
+@value nissygirlheight: 224rem;
+@value nissygirloffset: 18rem;
 @value width: 142rem;
 @value depth: 46rem;
 
@@ -16,7 +17,7 @@
 	height: 100%;
 	margin: auto;
 
-	perspective: calc(height * 3);
+	perspective: calc(nissygirlheight * 3);
 }
 
 .nissygirl {
@@ -26,11 +27,12 @@
 
 	composes: touchinteractive, animates from "$util/util.mcss";
 
+	position: absolute;
+	bottom: nissygirloffset;
 	transform-style: preserve-3d;
 
 	width: width;
-	height: height;
-	margin-top: 15rem;
+	height: nissygirlheight;
 	margin-left: 2rem;
 }
 
