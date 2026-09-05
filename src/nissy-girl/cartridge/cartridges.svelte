@@ -8,10 +8,6 @@ import { gameOrder } from "$game/games.js";
 
 import cartridgeCss from "./cartridge.mcss";
 import cartridgesCss from "./cartridges.mcss";
-
-$effect(() => {
-	console.log(cartridges.cartridgeIndex);
-});
 </script>
 
 <div class={cartridgesCss.cartridges} data-visible={cartridges.isVisible}>
@@ -19,7 +15,7 @@ $effect(() => {
 		{#each { length : cartridges.cartridgeIndex } as _, cartridgeIndex}
 			{@const isOnFinal = cartridges.cartridgeIndex === gameOrder.length - 1}
 			{@const inEnding = cartridgeX.progress >= 0.5}
-			{@const x = isOnFinal && inEnding ? 0.2 : -0.3 + cartridgeX.progress}
+			{@const x = isOnFinal && inEnding ? 0.2 : -0.4 + (cartridgeX.progress / 0.5) * 0.6}
 			{@const backProgress = (cartridgeX.progress - 0.5) / 0.5}
 			{@const y = isOnFinal && inEnding ? lerp(1 - backProgress, -0.5, 1) : 1}
 			{@const cartridge = gameOrder[cartridgeIndex]}
@@ -52,7 +48,7 @@ $effect(() => {
 
 			{#if cartridge}
 				<div
-					style="--cartridgex: {0.7 + x * 0.6};
+					style="--cartridgex: {0.7 + x * 0.7};
 					--cartridgey: {y * 1};
 					--rotatey: 0deg;"
 					class={cartridgeCss.cartridge}
