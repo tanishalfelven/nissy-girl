@@ -163,6 +163,12 @@ export const controls = (node, {
 	};
 
 	const handleMove = rafThrottle((e) => {
+		if(activePointerId === e.pointerId && e.buttons === 0) {
+			endInput(e);
+
+			return;
+		}
+
 		if(e.buttons === 1 && canTrigger) {
 			fire(e);
 		}
