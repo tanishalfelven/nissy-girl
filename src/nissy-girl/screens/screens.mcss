@@ -17,8 +17,6 @@
 
 /* Safari seems to have a lot of problems with this hierarchy so LOTS of layer hints.. */
 .screenborder {
-	composes: animates from "$util/util.mcss";
-
 	position: absolute;
 	transform: translateZ(calc(depth / 2.3));
 
