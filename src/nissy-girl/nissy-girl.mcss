@@ -114,6 +114,54 @@
 	background-image: url("./assets/nissygirl-front.png");
 }
 
+.speakeroverlay {
+	composes: face from "$util/util.mcss";
+
+	position: absolute;
+	right: 3rem;
+	bottom: 4rem;
+	transform-style: preserve-3d;
+	transform: translateZ(0.8rem);
+
+	width: 36rem;
+	height: 36rem;
+
+	opacity: 0.15;
+	background-image: url("./assets/speaker-highlight.png");
+}
+
+.speakermushroom {
+	composes: face from "$util/util.mcss";
+
+	position: absolute;
+	right: 2rem;
+	bottom: 3rem;
+	transform-style: preserve-3d;
+	transform: translateZ(-0.3rem);
+
+	width: 38rem;
+	height: 38rem;
+
+	opacity: 0.83;
+	background-image: url("./assets/mushroom-mark.png");
+}
+
+.speakergrill {
+	composes: face from "$util/util.mcss";
+
+	position: absolute;
+	right: 2rem;
+	bottom: 3rem;
+	transform-style: preserve-3d;
+	transform: translateZ(0.6rem);
+
+	width: 38rem;
+	height: 38rem;
+
+	opacity: 0.15;
+	background-image: url("./assets/speaker-grill.png");
+}
+
 .speakerback {
 	composes: face from "$util/util.mcss";
 
@@ -121,7 +169,7 @@
 	right: 1.01rem;
 	bottom: 3.0015rem;
 	transform-style: preserve-3d;
-	transform: translateZ(-2px);
+	transform: translateZ(-0.75rem);
 
 	aspect-ratio: 39 / 38;
 	height: 38rem;

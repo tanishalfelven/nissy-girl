@@ -101,6 +101,9 @@ let cartridgeWidth = $state(0);
 
 			<FaceControls />
 
+			<div class={css.speakeroverlay}></div>
+			<div class={css.speakermushroom}></div>
+			<div class={css.speakergrill}></div>
 			<div class={css.speakerback}></div>
 
 			<div class={css.screenbevelhorz}></div>
