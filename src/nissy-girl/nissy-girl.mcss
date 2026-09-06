@@ -126,7 +126,7 @@
 	width: 36rem;
 	height: 36rem;
 
-	opacity: 0.15;
+	opacity: 0.08;
 	background-image: url("./assets/speaker-highlight.png");
 }
 
@@ -142,7 +142,7 @@
 	width: 38rem;
 	height: 38rem;
 
-	opacity: 0.83;
+	opacity: 0.92;
 	background-image: url("./assets/mushroom-mark.png");
 }
 
@@ -158,7 +158,7 @@
 	width: 38rem;
 	height: 38rem;
 
-	opacity: 0.15;
+	opacity: 0.1;
 	background-image: url("./assets/speaker-grill.png");
 }
 
