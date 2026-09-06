@@ -8,6 +8,8 @@
 
 #root,
 body {
+	pointer-events: none;
+
 	overflow: hidden;
 
 	width: 100vw;
