@@ -4,7 +4,7 @@ export const MINUTE_MS = 60 * MS;
 const padStart = (n, len) => String(n).padStart(len, "0");
 
 /**
- * given time input return 00:00.0000
+ * given time input return 00:00.0
  * @param {number} time
  * @returns {string}
  */

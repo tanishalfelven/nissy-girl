@@ -182,7 +182,7 @@ export const createPaintUI = ({
 				},
 
 				openToolsMenu() {
-					const toolNav = navComponent.getNav("tool"); ;
+					const toolNav = navComponent.getNav("tool");
 					toolNav.setActive(getActiveTool());
 
 					navComponent.setActiveNav("tool");

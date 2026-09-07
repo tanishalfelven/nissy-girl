@@ -9,7 +9,7 @@ const SCALE_TO_SPEED = {
 	3 : 0.3,
 };
 
-/** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
+/** @import { WorldEntity } from "$game/shared/entity/world.entity.js" */
 
 /**
  * @param {object} options

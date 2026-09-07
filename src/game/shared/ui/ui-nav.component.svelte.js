@@ -9,7 +9,7 @@ const REPEAT_TIME = 150 / FPS60;
 
 const INVALID_NAV = new Set([ undefined, false ]);
 
-/** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
+/** @import { WorldEntity } from "$game/shared/entity/world.entity.js" */
 
 export const createUINav = ({ selectedNav = false, onNavigation = noopFalseFunction } = false) => {
 	const dir = createDirection();

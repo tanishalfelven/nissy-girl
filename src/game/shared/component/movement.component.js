@@ -1,6 +1,6 @@
 import { createDirection } from "./direction.js";
 
-/** @import { WorldEntity } from "$src/game/shared/entity/world.entity.js" */
+/** @import { WorldEntity } from "$game/shared/entity/world.entity.js" */
 
 const noopTrue = () => true;
 

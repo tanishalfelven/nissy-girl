@@ -9,7 +9,7 @@ import { noopFalseFunction } from "./noop.js";
  * @param {HTMLElement} node svelte action node
  * @param {object} options handlers for touch actions
  * @param {(e: PointerEvent) => void} options.move triggered on move
- * @param {(e: PointerEvent) => void} [options.start] triggerd on pointerdown
+ * @param {(e: PointerEvent) => void} [options.start] triggered on pointerdown
  * @param {(e: PointerEvent) => void} options.end triggered on cancel/up
  */
 export const touch = (node, {
@@ -124,7 +124,7 @@ export {
  * @param {object} options event handlers for action
  * @param {(e: PointerEvent) => void} options.fire triggers on move/down
  * @param {(e: PointerEvent) => void} options.end triggers on up/cancel/leave
- * @param {() => false} options.handleEvent
+ * @param {(e: PointerEvent) => void} options.handleEvent default event handling (propagation/default handling)
  */
 export const controls = (node, {
 	fire,

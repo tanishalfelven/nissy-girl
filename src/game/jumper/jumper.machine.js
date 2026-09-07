@@ -167,7 +167,7 @@ export const jumperMachine = createMachine({
 									const ui = scene.world.world.get("ui");
 
 									// ! This is getting awkward - entry actions are proving to be too fast for
-									// ! scene contstruction and may get old cached data - invokes are becoming the correct
+									// ! scene construction and may get old cached data - invokes are becoming the correct
 									// ! home for this kind of lifecycle
 									ui.ui.openMainMenu();
 
@@ -320,10 +320,10 @@ export const jumperMachine = createMachine({
 						},
 					}),
 					entities : [
-						// entity ordering being decides component order as well
+						// entity ordering dictates component order as well
 						createPlatforms,
 						createCoins,
-						// player needs to be after walls so when player attemps to collide we have good positions
+						// player needs to be after platforms so when player attempts to collide we have good positions
 						createJumper,
 						createJumperUI,
 					],

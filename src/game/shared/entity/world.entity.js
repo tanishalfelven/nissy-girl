@@ -16,7 +16,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.j
 /**
  * @typedef {object} ContainerComponent
  * @property {(Entity) => void} add
- * \@property {() => void} remove
+ * @property {() => void} remove
  * @property {() => Container} getRenderable
  * @property {() => void} destroy
  */
