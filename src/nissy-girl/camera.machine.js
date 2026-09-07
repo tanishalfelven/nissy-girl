@@ -35,8 +35,6 @@ import {
 	CARTRIDGE_INSERT,
 	CARTRIDGE_EJECT,
 	ROTATE,
-	POWER_OFF,
-	POWER_ON,
 } from "./prompts/prompts.svelte";
 
 const updateVelocityTarget = (target, progress) =>
@@ -190,18 +188,13 @@ export const cameraMachine = createMachine({
 			invoke : invokePromptLayer(
 				"cartridge",
 				[
-					[ POWER_ON, {
-						display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered,
-					}],
-					[ POWER_OFF, {
-						display : () => nissyGirl.hasInsertedCartridge() && nissyGirl.isPowered,
-					}],
-					[ ROTATE, {
-						display : () => nissyGirl.hasInsertedCartridge() && nissyGirl.isPowered,
-						prompt : "play",
-					}],
 					[ CARTRIDGE_INSERT, { display : () => !nissyGirl.hasInsertedCartridge() }],
-					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
+					[ CARTRIDGE_EJECT, { display : () => nissyGirl.hasInsertedCartridge() }],
+					[ ROTATE, {
+						prompt : () => nissyGirl.hasInsertedCartridge()
+							? "play"
+							: "browse",
+					}],
 				],
 			),
 
