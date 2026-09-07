@@ -16,7 +16,7 @@ import {
 	cartridgeY,
 } from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
 
-import { hasParams } from "$util/params.js";
+import { hasParam } from "$util/params.js";
 
 import { audio } from "./sound/audio.js";
 
@@ -71,7 +71,7 @@ export const cameraMachine = createMachine({
 			always : [
 				{
 					// Eventually we guard this around FTUE not just has url param
-					guard : () => hasParams(),
+					guard : () => hasParam("game"),
 					target : "playing",
 				},
 				{
