@@ -14,7 +14,6 @@ import { hasParam, getParam } from "$util/params.js";
 
 import { cameraMachine } from "./camera.machine.js";
 import StartupScreenComponent from "./screens/startup-screen.svelte";
-import ErrorScreen from "./screens/error-screen.svelte";
 import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
@@ -95,8 +94,6 @@ const nissyGirlMachine = createMachine({
 					actions : () => nissyGirl.togglePower(),
 					target : "off",
 				},
-
-				CARTRIDGE_ERROR : ".errant",
 			},
 
 			initial : "booting",
@@ -167,7 +164,7 @@ const nissyGirlMachine = createMachine({
 
 									on : {
 										CARTRIDGE_EJECTED : {
-											actions : raise({ type : "CARTRIDGE_ERROR" }),
+											actions : raise({ type : "POWER_TOGGLE" }),
 										},
 									},
 
@@ -200,22 +197,9 @@ const nissyGirlMachine = createMachine({
 						},
 
 						CARTRIDGE_EJECTED : {
-							actions : raise({ type : "CARTRIDGE_ERROR" }),
+							actions : raise({ type : "POWER_TOGGLE" }),
 						},
 					},
-				},
-
-				errant : {
-					meta : {
-						component : ErrorScreen,
-					},
-
-					invoke : invokePromptLayer(
-						"nissy-girl-errant",
-						[
-							[ POWER_OFF, { prompt : "be more careful?" }],
-						],
-					),
 				},
 			},
 		},
