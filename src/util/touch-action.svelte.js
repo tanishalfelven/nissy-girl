@@ -137,7 +137,7 @@ export const controls = (node, {
 	let activePointerId = $state(false);
 
 	const endInput = (e) => {
-		if(activePointerId !== e.pointerId) {
+		if(node.hasPointerCapture(activePointerId) && activePointerId !== e.pointerId) {
 			return;
 		}
 
@@ -158,6 +158,11 @@ export const controls = (node, {
 	};
 
 	const handleMove = rafThrottle((e) => {
+		if(!node.hasPointerCapture(activePointerId)) {
+			handleEnd(e);
+			return;
+		}
+
 		if(activePointerId === e.pointerId && e.buttons === 0) {
 			endInput(e);
 
