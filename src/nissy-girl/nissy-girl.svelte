@@ -112,6 +112,7 @@ let cartridgeWidth = $state(0);
 			<div class={css.screenbevelvert} data-left="true"></div>
 		</div>
 
+		{#if cartridges.isVisible}
 		<div
 			class={cartridgeCss.cartridge}
 			style="--cartridgex: {cartridgeX.progress};
@@ -165,8 +166,9 @@ let cartridgeWidth = $state(0);
 				},
 			}}
 		>
-			<Cartridge cartridge={cartridges.getCurrentCartridgeGame().id} />
+			<Cartridge cartridge={cartridges.getCurrentCartridgeId()} />
 		</div>
+		{/if}
 
 		<div class={css.panelside} data-right="true">
 			<PowerSwitch />
