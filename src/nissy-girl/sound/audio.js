@@ -8,8 +8,6 @@ import { step } from "$util/math.js";
 let _audioContext = false;
 let gainNode = false;
 
-const assetChains = new Map();
-
 const getAudioContext = () => {
 	if(!_audioContext) {
 		_audioContext = new AudioContext();
@@ -32,9 +30,13 @@ const loadAudioSet = async (audioSet) => {
 	const audioContext = getAudioContext();
 
 	return await Promise.all([ ...audioSet ].map(async ([ id, data ]) => {
-		const response = await fetch(data.url);
-
 		const audioAsset = audioSet.get(id);
+
+		if(audioAsset.src && audioAsset.gainNode) {
+			return;
+		}
+
+		const response = await fetch(data.url);
 
 		audioAsset.src = await audioContext.decodeAudioData(
 			await response.arrayBuffer(),
@@ -45,12 +47,10 @@ const loadAudioSet = async (audioSet) => {
 		audioAsset.gainNode.gain.setValueAtTime(data?.gain ?? 1, 0);
 
 		audioAsset.gainNode.connect(gainNode);
-
-		assetChains.set(id, audioAsset.gainNode);
 	}));
 };
 
-const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
+const makePlayer = (setId, audioSet) => (id, options = {}, channel = false) => {
 	if(!audioSet.has(id)) {
 		throw new Error(`Tried to play nonexistent sound with id "${id}"`);
 	}
@@ -58,7 +58,7 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 	const audioAsset = audioSet.get(id);
 
 	if(!audioAsset.src) {
-		throw new Error(`No audio src for id ${id}`);
+		return false;
 	}
 
 	const audioContext = getAudioContext();
@@ -72,15 +72,13 @@ const makePlayer = (audioSet) => (id, options = {}, channel = false) => {
 	audioAsset.gainNode.gain.setValueAtTime(audioAsset.gain ?? 1, 0);
 	gainNode.gain.setValueAtTime(volume.getGain(), 0);
 
-	const assetChain = assetChains.get(id);
-
-	sfx.connect(assetChain);
+	sfx.connect(audioAsset.gainNode);
 	sfx.start();
 
 	return sfx;
 };
 
-const nissyGirlPlay = makePlayer(nissyGirlAudio);
+const nissyGirlPlay = makePlayer("nissy-girl", nissyGirlAudio);
 
 let jumperPlay = false;
 let paintPlay = false;
@@ -98,15 +96,15 @@ export const audio = {
 	playButton : () => nissyGirlPlay("button"),
 	playDpad : () => nissyGirlPlay("dpad"),
 
-	loadNissyGirlSfx : () => loadAudioSet(nissyGirlAudio),
+	loadNissyGirlSfx : () => loadAudioSet("nissy-girl", nissyGirlAudio),
 
 	jumper : {
 		load : async () => {
 			const { audioSet } = await import("$nissy-girl/sound/jumper-audio.consts.js");
 
-			await loadAudioSet(audioSet);
+			await loadAudioSet("jumper", audioSet);
 
-			jumperPlay = makePlayer(audioSet);
+			jumperPlay = makePlayer("jumper", audioSet);
 		},
 
 		playUIBack : () => jumperPlay("back", {}),
@@ -128,9 +126,9 @@ export const audio = {
 		load : async () => {
 			const { audioSet } = await import("$nissy-girl/sound/paint-audio.consts.js");
 
-			await loadAudioSet(audioSet);
+			await loadAudioSet("paint", audioSet);
 
-			paintPlay = makePlayer(audioSet);
+			paintPlay = makePlayer("paint", audioSet);
 		},
 
 		playOink : () => paintPlay("oink", {}),
