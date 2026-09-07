@@ -180,11 +180,15 @@ export const createScene = ({
 		},
 
 		destroy() {
-			for(const destroyFunc of destroy) {
-				destroyFunc();
+			if(!isAlive) {
+				return;
 			}
 
 			isAlive = false;
+
+			for(const destroyFunc of destroy) {
+				destroyFunc();
+			}
 		},
 	};
 
