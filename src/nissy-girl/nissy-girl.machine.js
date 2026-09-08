@@ -40,7 +40,10 @@ const nissyGirlMachine = createMachine({
 			"nissy-girl",
 			[
 				[ POWER_ON, { display : () => nissyGirl.hasInsertedCartridge() && !nissyGirl.isPowered }],
-				[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() || !nissyGirl.isPowered }],
+				[ ROTATE, {
+					display : () => !nissyGirl.hasInsertedCartridge() || !nissyGirl.isPowered,
+					prompt : "swipe to cartridges",
+				}],
 			],
 		),
 	],
