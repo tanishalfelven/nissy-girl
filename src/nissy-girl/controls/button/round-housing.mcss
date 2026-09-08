@@ -11,7 +11,7 @@
 	transform-style: preserve-3d;
 
 	/* pixel offset helps make sure deadzone always is hit by mouse */
-	transform: rotate(-30deg) translateZ(1px);
+	transform: rotate(-30deg) translateZ(0.75rem);
 
 	width: deadzonesize;
 	height: facebuttondeadzoneheight;
@@ -21,7 +21,7 @@
 
 .unrotate {
 	transform-style: preserve-3d;
-	transform: rotate(30deg) translateZ(2px);
+	transform: rotate(30deg) translateZ(1.5rem);
 }
 
 .housing {
@@ -31,7 +31,7 @@
 	right: 4rem;
 	bottom: -1rem;
 	transform-style: preserve-3d;
-	transform: rotate(30deg) translateZ(-4px);
+	transform: rotate(30deg) translateZ(-2rem);
 
 	width: 60rem;
 	height: 52rem;

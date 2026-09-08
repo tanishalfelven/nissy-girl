@@ -32,7 +32,7 @@
 		transform: rotateY(90deg) translateX(20%) rotateZ(var(--rotation));
 
 		&::after {
-			transform: rotateY(180deg) translateZ(0.1px);
+			transform: rotateY(180deg) translateZ(0.01rem);
 		}
 	}
 
@@ -41,7 +41,7 @@
 		transform: rotateY(-90deg) translateX(-20%) scaleX(-1) rotateZ(var(--rotation));
 
 		&::after {
-			transform: rotateY(180deg) translateZ(0.1px);
+			transform: rotateY(180deg) translateZ(0.01rem);
 		}
 	}
 }

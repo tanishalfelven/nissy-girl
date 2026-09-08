@@ -29,7 +29,18 @@
 	transform-style: preserve-3d;
 
 	&::after {
-		transform: rotateY(180deg) translateZ(1px);
+		transform: rotateY(180deg) translateZ(0.01rem);
+		backface-visibility: hidden;
+	}
+}
+
+.secondbackface {
+	composes: beforeimg;
+	transform-style: preserve-3d;
+
+	&::before {
+		transform: rotateY(180deg) translateZ(0.01rem);
+		backface-visibility: hidden;
 	}
 }
 

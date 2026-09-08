@@ -48,7 +48,7 @@
 	position: absolute;
 	inset: 0;
 	transform-style: preserve-3d;
-	transform: translateZ(-3px);
+	transform: translateZ(-0.5rem);
 
 	display: flex;
 	flex-direction: column;
@@ -71,7 +71,7 @@
 
 	pointer-events: none;
 
-	transform-origin: center center 4px;
+	transform-origin: center center 3rem;
 	transform-style: preserve-3d;
 	transform: translateZ(var(--button-plane));
 
@@ -88,7 +88,7 @@
 .dpadface {
 	composes: face, animates from "$util/util.mcss";
 
-	transform-origin: center center 4px;
+	transform-origin: center center 3rem;
 
 	width: 30rem;
 	height: 31rem;
@@ -101,8 +101,8 @@
 
 	position: absolute;
 	inset: 0;
-	transform-origin: center center 4px;
-	transform: translateZ(-1px);
+	transform-origin: center center 3rem;
+	transform: translateZ(-0.75rem);
 
 	aspect-ratio: 33 / 32;
 	width: 31rem;

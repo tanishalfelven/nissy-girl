@@ -54,7 +54,7 @@
 		height: 18rem;
 
 		&::after {
-			transform: translateY(0.5px) translateZ(-1px);
+			transform: translateY(0.1rem) translateZ(-0.25rem);
 			width: 100%;
 			height: 100%;
 		}
@@ -100,6 +100,8 @@
 	height: 5rem;
 	margin: auto;
 
+	background-image: url("./assets/button-bean-side.png");
+
 	&::after {
 		width: 100%;
 		height: 100%;
@@ -115,12 +117,16 @@
 
 .roundside {
 	composes: face, backface from "$util/util.mcss";
-	transform: rotateY(90deg) translateX(60%) translateZ(8rem);
+
+	transform: rotateY(90deg) translateX(60%) translateZ(5rem);
+
 	width: 6rem;
 	height: 18rem;
 
+	background-image: url("./assets/button-round-side.png");
+
 	&::after {
-		transform: translateZ(-3rem);
+		transform: rotateX(180deg) translateZ(0);
 		width: 100%;
 		height: 100%;
 		background-image: url("./assets/button-round-side.png");
