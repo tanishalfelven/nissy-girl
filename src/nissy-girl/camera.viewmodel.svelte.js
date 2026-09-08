@@ -37,7 +37,7 @@ export const zoom = createProgress({
 			MAX_PROGRESS,
 		),
 	velocity : {
-		decay : 0.9,
+		decay : 1,
 		smoothing : 0.3,
 	},
 });
