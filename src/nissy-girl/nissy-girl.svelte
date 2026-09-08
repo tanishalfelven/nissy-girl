@@ -178,6 +178,7 @@ let cartridgeWidth = $state(0);
 			<VolumeWheel />
 		</div>
 
+		<div class={css.top}></div>
 		<div class={css.backupper}></div>
 		<div class={css.vent}></div>
 		<div class={css.backlower}></div>

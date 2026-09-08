@@ -199,11 +199,23 @@
 	}
 }
 
+.top {
+	composes: face from "$util/util.mcss";
+
+	top: -14.5rem;
+	transform: translateZ(10rem) rotateX(90deg);
+
+	width: 142rem;
+	height: 29rem;
+
+	background-image: url("/src/nissy-girl/assets/nissygirl-top.png");
+}
+
 .backupper {
 	composes: face from "$util/util.mcss";
 
 	top: 0;
-	transform: rotateY(180deg) translateZ(calc(width * 0.02));
+	transform: rotateY(180deg) translateZ(4rem);
 
 	aspect-ratio: 142 / 54;
 	width: 100%;
