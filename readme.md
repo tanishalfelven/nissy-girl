@@ -2,6 +2,8 @@
 
 [nissygirl.com](https://nissygirl.com)
 
+[Follow along on bsky for more dev updates](https://bsky.app/profile/nissygirl.bsky.social)
+
 ![NissyGirl Lure](/docs/assets/gifs/01-lure.gif)
 
 NissyGirl is a 3D handheld game console that is rendered with CSS/HTML and powered by Svelte/XState/Vite/m-css - What you are seeing is all HTML and CSS. The appearance of the NissyGirl is achieved through perspective tricks and usage of `translateZ()`.
@@ -10,7 +12,9 @@ NissyGirl is a 3D handheld game console that is rendered with CSS/HTML and power
 
 The NissyGirl is lovingly designed to be touch interactive first (with keyboard and mouse interactions also supported). The philosophy behind this decision hails back to the nostalgia felt when finding an old handheld console of a past age, flipping it over to inspect the cartridge, and turning it on to see what hides inside. Now you can enjoy a similar but new experience from your web browser.
 
-At the time of this writing the NissyGirl as a platform supports many types of cartridges though only the Paint cartridge is implemented.
+NissyGirl currently hosts two separate cartridge experiences:
+- Paint, a pixel editing program.
+- Jumper Redux, a remastered platformer intended to push the input capabilities of the console.
 
 ## Architecture
 
