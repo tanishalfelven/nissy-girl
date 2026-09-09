@@ -35,7 +35,7 @@ export const createInput = ({
 	// ! Input is generally wiped when input unmounts, this only works if input has not been actively handled
 	// ! Prior to taking direct control
 	inherit = false,
-}) => {
+} = false) => {
 	const inputs = new Set();
 
 	return {

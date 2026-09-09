@@ -33,7 +33,15 @@ export const createTemporalWindow = (maxTime) => {
 			return false;
 		},
 
+		getProgress() {
+			return counter / MAX_TIME;
+		},
+
 		stop,
+
+		hasProgress(progress) {
+			return this.getProgress() >= progress;
+		},
 
 		active() {
 			return running && counter > 0;
