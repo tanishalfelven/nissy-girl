@@ -9,7 +9,7 @@ export const roundHundredths = (value) => roundDigit(value, 2);
 
 export const clamp = (value, min, max) => Math.min(max, Math.max(value, min));
 
-export const wrap = (value, min, max) => {
+export const wrap = (value, min = 0, max = 1) => {
 	const range = max - min;
 
 	return ((value - min) % range + range) % range + min;
@@ -26,6 +26,12 @@ export const inRange = (value, min, max) =>
 	min <= value && value <= max;
 
 export const lerp = (value, min, max) => min + (max - min) * value;
+
+export const trapezoid = (t, bound) =>
+	Math.min(
+		1,
+		Math.min(t / bound, (1 - t) / bound),
+	);
 
 export const crossedThreshold = (from, to, threshold) =>
 	(from <= threshold && to >= threshold)

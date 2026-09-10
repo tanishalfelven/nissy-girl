@@ -2,7 +2,7 @@ import JumperPng from "./assets/jumper.png";
 import { Assets, Sprite, Container, Graphics } from "pixi.js";
 import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/screens/render.consts.js";
 
-import { lerp } from "$util/math.js";
+import { lerp, trapezoid } from "$util/math.js";
 import { FPS60 } from "$util/time.js";
 import { quadInOut } from "svelte/easing";
 
@@ -13,14 +13,7 @@ const BLUSH_DURATION = 100;
 // save it as a reference and use that to determine stop time for ending it (finish game just leaves it on indefiniteyl)
 const BLUSH_FINISH_FREEZE = BLUSH_DURATION / 2;
 
-// equal bound smooth step
-const smoothStep = (t, bound) =>
-	Math.min(
-		1,
-		Math.min(t / bound, (1 - t) / bound),
-	);
-
-const blushTime = (blush) => smoothStep((BLUSH_DURATION - blush) / BLUSH_DURATION, 0.15);
+const blushTime = (blush) => trapezoid((BLUSH_DURATION - blush) / BLUSH_DURATION, 0.15);
 
 const createFace = ({ physics, behavior }) => {
 	const pupils = new Graphics();

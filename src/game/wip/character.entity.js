@@ -1,0 +1,83 @@
+import { createSkeleton } from "./skeleton.component.js";
+import { frontSkeleton } from "./character.skeleton-data.js";
+
+import { createInput } from "$game/shared/component/input.component.js";
+
+import { createEntity } from "$game/shared/entity/entity.js";
+
+import { Container, Graphics } from "pixi.js";
+import { COLOR_BLACK, COLOR_BROWN, COLOR_WHITE } from "$nissy-girl/screens/render.consts.js";
+import { createFrontFacingRunAnimation } from "./character.animations.js";
+
+import { DPAD_DOWN } from "$game/shared/input.consts.js";
+
+const createFrontSkeleton = () => createSkeleton(frontSkeleton);
+
+export const createCharacter = () => {
+	const frontSkeleton = createFrontSkeleton();
+
+	const { head } = frontSkeleton.bones;
+
+	const eyes = new Graphics();
+	const pupils = new Graphics();
+
+	eyes.rect(3, 7, 2, 1).fill(COLOR_WHITE);
+	eyes.rect(3, 6, 2, 1).fill(COLOR_BROWN);
+	eyes.rect(7, 7, 2, 1).fill(COLOR_WHITE);
+	eyes.rect(7, 6, 2, 1).fill(COLOR_BROWN);
+	pupils.rect(4, 7, 1, 1).fill(COLOR_BLACK);
+	pupils.rect(7, 7, 1, 1).fill(COLOR_BLACK);
+
+	head.node.addChild(eyes, pupils);
+
+	const character = new Container({
+		x : 50,
+		y : 50,
+		children : [
+			frontSkeleton.container,
+		],
+	});
+
+	const ffRun = createFrontFacingRunAnimation(frontSkeleton);
+
+	let downIntent = false;
+
+	const input = createInput({
+		onInputChange(inputs) {
+			downIntent = inputs.has(DPAD_DOWN);
+
+			if(downIntent && !ffRun.active()) {
+				ffRun.start();
+			}
+		},
+	});
+
+	return createEntity({
+		id : "character",
+		components : {
+			input,
+			render : {
+				async load() {
+					await frontSkeleton.load();
+				},
+
+				hasUpdate() {
+					return true;
+				},
+
+				update(dt) {
+					if(downIntent) {
+						ffRun.update(dt);
+					} else if(ffRun.active()) {
+						ffRun.reset();
+						frontSkeleton.reset();
+					}
+				},
+
+				getRenderable() {
+					return character;
+				},
+			},
+		},
+	});
+};

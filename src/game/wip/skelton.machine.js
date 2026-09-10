@@ -5,7 +5,7 @@ import { stateLogger } from "$util/state-logger.actor.js";
 import { invokeScene } from "$game/shared/scene.actor.js";
 import { gameloop } from "$game/shared/game-loop.machine.js";
 
-import { createSkelton } from "./skelton.entity.js";
+import { createCharacter } from "./character.entity.js";
 import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
 
@@ -31,7 +31,7 @@ export const skeltonMachine = createMachine({
 				invokeScene({
 					id : "test",
 					entities : [
-						createSkelton,
+						createCharacter,
 					],
 					frameOrder : [
 						"render",
