@@ -3,9 +3,6 @@ import {
 	BONE_RIGHTHIP,
 	BONE_LEFTLEG,
 	BONE_RIGHTLEG,
-	BONE_TORSO,
-	BONE_HEAD,
-	BONE_HAIR,
 	BONE_LEFTARM,
 	BONE_RIGHTARM,
 	BONE_LEFTSHOULDER,
@@ -106,16 +103,6 @@ const createHairResolver = ({ skeleton }) => {
 		async load() {},
 	};
 };
-
-export const createPose = () => ({
-	[BONE_LEFTLEG] : { y : 0, z : 0 },
-	[BONE_RIGHTLEG] : { y : 0, z : 0 },
-	[BONE_TORSO] : { tilt : 0 },
-	[BONE_HEAD] : { y : 0 },
-	[BONE_HAIR] : { y : 0 },
-	[BONE_RIGHTARM] : { y : 0, z : 0 },
-	[BONE_LEFTARM] : { y : 0, z : 0 },
-});
 
 export const createFrontFacingResolver = (skeleton) => {
 	const leftLeg = createFrontFacingLegResolver({ isLeft : true, skeleton });

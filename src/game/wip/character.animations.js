@@ -2,20 +2,24 @@ import { createAnimation } from "./skeleton.animation.js";
 
 import { wrap } from "$util/math.js";
 
-import { createPose } from "./skeleton.resolvers.js";
+import { createPose } from "./skeleton.pose.js";
 
 const wave = (phase) => Math.sin(phase * Math.PI * 2);
 
 const createWave = (min, max) => (phase) => wave(phase) * ((max - min) / 2) + ((min + max) / 2);
 
-export const createFrontFacingRunAnimation = (skeleton) => {
+export const ANIMID_RUN = "RUN";
+
+export const createRunAnimation = (skeleton) => {
 	const pose = createPose();
 
 	const armY = createWave(0, 0.6);
 	const legY = createWave(0, 0.35);
 
 	return createAnimation({
+		id : ANIMID_RUN,
 		duration : 600,
+		looping : true,
 
 		update(phase) {
 			pose.leftLeg.z = wave(phase) * 1;
@@ -30,8 +34,14 @@ export const createFrontFacingRunAnimation = (skeleton) => {
 
 			pose.head.y = wrap(phase);
 			pose.hair.y = wrap(phase + 0.5);
+		},
 
+		apply() {
 			skeleton.update(pose);
+		},
+
+		getSample() {
+			return pose;
 		},
 	});
 };

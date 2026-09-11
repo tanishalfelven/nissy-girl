@@ -8,9 +8,10 @@ import { createEntity } from "$game/shared/entity/entity.js";
 
 import { Container, Graphics } from "pixi.js";
 import { COLOR_BLACK, COLOR_BROWN, COLOR_WHITE } from "$nissy-girl/screens/render.consts.js";
-import { createFrontFacingRunAnimation } from "./character.animations.js";
+import { ANIMID_RUN, createRunAnimation } from "./character.animations.js";
 
 import { DPAD_DOWN } from "$game/shared/input.consts.js";
+import { createAnimator } from "./animator.js";
 
 const createFrontSkeleton = () => createSkeleton(frontSkeleton, createFrontFacingResolver);
 
@@ -39,7 +40,12 @@ export const createCharacter = () => {
 		],
 	});
 
-	const ffRun = createFrontFacingRunAnimation(frontSkeleton);
+	const animator = createAnimator(
+		frontSkeleton,
+		[
+			createRunAnimation,
+		],
+	);
 
 	let downIntent = false;
 
@@ -47,8 +53,10 @@ export const createCharacter = () => {
 		onInputChange(inputs) {
 			downIntent = inputs.has(DPAD_DOWN);
 
-			if(downIntent && !ffRun.active()) {
-				ffRun.start();
+			if(downIntent && !animator.isActive(ANIMID_RUN)) {
+				animator.start(ANIMID_RUN);
+			} else if(!downIntent && animator.isActive(ANIMID_RUN)) {
+				animator.stop();
 			}
 		},
 	});
@@ -67,12 +75,7 @@ export const createCharacter = () => {
 				},
 
 				update(dt) {
-					if(downIntent) {
-						ffRun.update(dt);
-					} else if(ffRun.active()) {
-						ffRun.reset();
-						frontSkeleton.reset();
-					}
+					animator.update(dt);
 				},
 
 				getRenderable() {
