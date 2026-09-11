@@ -1,5 +1,6 @@
 import { createSkeleton } from "./skeleton.component.js";
 import { frontSkeleton } from "./character.skeleton-data.js";
+import { createFrontFacingResolver } from "./skeleton.resolvers.js";
 
 import { createInput } from "$game/shared/component/input.component.js";
 
@@ -11,7 +12,7 @@ import { createFrontFacingRunAnimation } from "./character.animations.js";
 
 import { DPAD_DOWN } from "$game/shared/input.consts.js";
 
-const createFrontSkeleton = () => createSkeleton(frontSkeleton);
+const createFrontSkeleton = () => createSkeleton(frontSkeleton, createFrontFacingResolver);
 
 export const createCharacter = () => {
 	const frontSkeleton = createFrontSkeleton();
