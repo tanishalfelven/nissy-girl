@@ -1,14 +1,5 @@
-import LeftHipPng from "./assets/lefthip.png";
-import LeftLegPng from "./assets/leftleg.png";
-import RightHipPng from "./assets/righthip.png";
-import RightLegPng from "./assets/rightleg.png";
-import HeadPng from "./assets/head.png";
-import HairPng from "./assets/hair.png";
-import TorsoPng from "./assets/torso.png";
-import LeftShoulderPng from "./assets/leftshoulder.png";
-import RightShoulderPng from "./assets/rightshoulder.png";
-import LeftArmPng from "./assets/leftarm.png";
-import RightArmPng from "./assets/rightarm.png";
+import CharacterSkeletonPng from "./assets/character-skeleton.png";
+import CharacterSkeletonAtlasData from "./assets/character-skeleton.json?aseprite-packed-atlas";
 
 import {
 	BONE_TORSO,
@@ -21,103 +12,112 @@ import {
 	BONE_LEFTSHOULDER,
 	BONE_RIGHTSHOULDER,
 	BONE_LEFTARM,
-	BONE_RIGHTARM, LAYER_BEHIND,
+	BONE_RIGHTARM,
+	LAYER_BEHIND,
 	LAYER_ABOVE,
 } from "./skeleton.consts.js";
 
-export const frontSkeleton = [
-	[ BONE_TORSO, {
-		texture : TorsoPng,
-		position : { x : 6, y : 13 },
-		pivot : { x : 4, y : 3 },
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
+export const characterSkeletonData = {
+	id : "character",
 
-	[ BONE_LEFTHIP, {
-		texture : LeftHipPng,
-		position : { x : 0, y : 5 },
-		pivot : { x : 1, y : 1 },
-		parent : "torso",
-		layer : LAYER_BEHIND,
-		display : true,
-	}],
+	sourceTexture : CharacterSkeletonPng,
+	sourceAtlasData : CharacterSkeletonAtlasData,
 
-	[ BONE_RIGHTHIP, {
-		texture : RightHipPng,
-		position : { x : 7, y : 5 },
-		pivot : { x : 2, y : 1 },
-		parent : "torso",
-		layer : LAYER_BEHIND,
-		display : true,
-	}],
+	faces : [
+		{
+			id : "front",
+			bones : [
+				{
+					id : BONE_TORSO,
+					position : { x : 6, y : 13 },
+					pivot : { x : 4, y : 3 },
+					layer : LAYER_ABOVE,
+					display : true,
+				},
 
-	[ BONE_LEFTLEG, {
-		texture : LeftLegPng,
-		position : { x : 4, y : 3 },
-		pivot : { x : 3, y : 0 },
-		parent : "leftHip",
-		layer : LAYER_ABOVE,
-	}],
+				{
+					id : BONE_LEFTHIP,
+					position : { x : 7, y : 5 },
+					pivot : { x : 2, y : 1 },
+					parent : BONE_TORSO,
+					layer : LAYER_BEHIND,
+					display : true,
+				},
+				{
+					id : BONE_LEFTLEG,
+					position : { x : 0, y : 3 },
+					pivot : { x : 0, y : 0 },
+					parent : BONE_LEFTHIP,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
 
-	[ BONE_RIGHTLEG, {
-		texture : RightLegPng,
-		position : { x : 0, y : 3 },
-		pivot : { x : 0, y : 0 },
-		parent : "rightHip",
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
+				{
+					id : BONE_RIGHTHIP,
+					position : { x : 0, y : 5 },
+					pivot : { x : 1, y : 1 },
+					parent : BONE_TORSO,
+					layer : LAYER_BEHIND,
+					display : true,
+				},
+				{
+					id : BONE_RIGHTLEG,
+					position : { x : 4, y : 3 },
+					pivot : { x : 3, y : 0 },
+					parent : BONE_RIGHTHIP,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
 
-	[ BONE_LEFTSHOULDER, {
-		texture : LeftShoulderPng,
-		position : { x : -1, y : 0 },
-		pivot : { x : 0, y : 1 },
-		parent : "torso",
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
+				{
+					id : BONE_LEFTSHOULDER,
+					position : { x : 8, y : 0 },
+					pivot : { x : 2, y : 1 },
+					parent : BONE_TORSO,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
+				{
+					id : BONE_LEFTARM,
+					position : { x : 1, y : 2 },
+					pivot : { x : 0, y : 0 },
+					parent : BONE_LEFTSHOULDER,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
 
-	[ BONE_RIGHTSHOULDER, {
-		texture : RightShoulderPng,
-		position : { x : 8, y : 0 },
-		pivot : { x : 2, y : 1 },
-		parent : "torso",
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
+				{
+					id : BONE_RIGHTSHOULDER,
+					position : { x : -1, y : 0 },
+					pivot : { x : 0, y : 1 },
+					parent : BONE_TORSO,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
+				{
+					id : BONE_RIGHTARM,
+					position : { x : 1, y : 2 },
+					pivot : { x : 1, y : 0 },
+					parent : BONE_RIGHTSHOULDER,
+					layer : LAYER_ABOVE,
+					display : true,
+				},
 
-	[ BONE_LEFTARM, {
-		texture : LeftArmPng,
-		position : { x : 1, y : 2 },
-		pivot : { x : 1, y : 0 },
-		parent : "leftShoulder",
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
-
-	[ BONE_RIGHTARM, {
-		texture : RightArmPng,
-		position : { x : 1, y : 2 },
-		pivot : { x : 0, y : 0 },
-		parent : "rightShoulder",
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
-
-	[ BONE_HEAD, {
-		texture : HeadPng,
-		position : { x : 5, y : 4 },
-		pivot : { x : 5, y : 3 },
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
-
-	[ BONE_HAIR, {
-		texture : HairPng,
-		position : { x : 2, y : 5 },
-		pivot : { x : 2, y : 3 },
-		layer : LAYER_ABOVE,
-		display : true,
-	}],
-];
+				{
+					id : BONE_HEAD,
+					position : { x : 5, y : 4 },
+					pivot : { x : 5, y : 3 },
+					layer : LAYER_ABOVE,
+					display : true,
+				},
+				{
+					id : BONE_HAIR,
+					position : { x : 2, y : 5 },
+					pivot : { x : 0, y : 4 },
+					layer : LAYER_ABOVE,
+					display : true,
+				},
+			],
+		},
+	],
+};

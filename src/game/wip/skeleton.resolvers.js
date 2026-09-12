@@ -19,8 +19,6 @@ const createFrontFacingLegResolver = ({ isLeft, skeleton }) => {
 
 	let maxLegHeight = 0;
 
-	const DIR = isLeft ? 1 : -1;
-
 	return {
 		update(values) {
 			const position = values[selfValue];
@@ -50,7 +48,7 @@ const createArmResolver = ({ isLeft, skeleton }) => {
 		[selfValue] : arm,
 	} = skeleton.bones;
 
-	const DIR = isLeft ? 1 : -1;
+	const DIR = isLeft ? -1 : 1;
 
 	return {
 		update(values) {

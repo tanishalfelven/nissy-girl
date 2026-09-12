@@ -1,6 +1,6 @@
 import { createSkeleton } from "./skeleton.component.js";
-import { frontSkeleton } from "./character.skeleton-data.js";
 import { createFrontFacingResolver } from "./skeleton.resolvers.js";
+import { characterSkeletonData } from "./character.skeleton-data.js";
 
 import { createInput } from "$game/shared/component/input.component.js";
 
@@ -13,12 +13,14 @@ import { ANIMID_RUN, createRunAnimation } from "./character.animations.js";
 import { DPAD_DOWN } from "$game/shared/input.consts.js";
 import { createAnimator } from "./animator.js";
 
-const createFrontSkeleton = () => createSkeleton(frontSkeleton, createFrontFacingResolver);
-
 export const createCharacter = () => {
-	const frontSkeleton = createFrontSkeleton();
+	const characterSkeleton = createSkeleton(
+		characterSkeletonData,
+		// this needs to somehow map to skeleton facing ids (that projection key should live somewhere)
+		createFrontFacingResolver,
+	);
 
-	const { head } = frontSkeleton.bones;
+	const { head } = characterSkeleton.faces.front.bones;
 
 	const eyes = new Graphics();
 	const pupils = new Graphics();
@@ -36,12 +38,12 @@ export const createCharacter = () => {
 		x : 50,
 		y : 50,
 		children : [
-			frontSkeleton.container,
+			characterSkeleton.container,
 		],
 	});
 
 	const animator = createAnimator(
-		frontSkeleton,
+		characterSkeleton,
 		[
 			createRunAnimation,
 		],
@@ -67,7 +69,7 @@ export const createCharacter = () => {
 			input,
 			render : {
 				async load() {
-					await frontSkeleton.load();
+					await characterSkeleton.load();
 				},
 
 				hasUpdate() {
@@ -80,6 +82,10 @@ export const createCharacter = () => {
 
 				getRenderable() {
 					return character;
+				},
+
+				destroy() {
+					characterSkeleton.destroy();
 				},
 			},
 		},

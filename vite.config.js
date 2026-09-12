@@ -9,6 +9,7 @@ import autoprefixer from "autoprefixer";
 import postcssCalc from "postcss-calc";
 
 import vitePluginAsepriteAnimation from "./build/vite-plugin-aseprite-animation.js";
+import vitePluginAsepritePackedAtlas from "./build/vite-plugin-aseprite-packed-atlas.js";
 
 const alias = {
 	"$game" : path.resolve("src/game"),
@@ -19,6 +20,7 @@ const alias = {
 export default defineConfig({
 	plugins : [
 		vitePluginAsepriteAnimation(),
+		vitePluginAsepritePackedAtlas(),
 		mcss({
 			before : [
 				nested(),
