@@ -1,11 +1,11 @@
 import { lerp } from "$util/math.js";
 import { createAnimation } from "./skeleton.animation.js";
-import { BONE_RIGHTARM, BONE_LEFTARM } from "./skeleton.consts.js";
+import { JOINT_RIGHTARM, JOINT_LEFTARM } from "./skeleton.consts.js";
 import { createPoseFrom, copyPose, POSE_ITEMS, KEYS_BY_ITEM } from "./skeleton.pose.js";
 
 const defaultPose = createPoseFrom({
-	[BONE_RIGHTARM] : { y : 0.24 },
-	[BONE_LEFTARM] : { y : 0.24 },
+	[JOINT_RIGHTARM] : { y : 0.2 },
+	[JOINT_LEFTARM] : { y : 0.2 },
 });
 
 const IDLE_STATE = "IDLE";

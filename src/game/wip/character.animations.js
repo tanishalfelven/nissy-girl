@@ -3,6 +3,7 @@ import { createAnimation } from "./skeleton.animation.js";
 import { wrap } from "$util/math.js";
 
 import { createPose } from "./skeleton.pose.js";
+import { BONE_HAIR, BONE_TORSO, JOINT_HEAD, JOINT_LEFTARM, JOINT_LEFTLEG, JOINT_RIGHTARM, JOINT_RIGHTLEG } from "./skeleton.consts.js";
 
 const wave = (phase) => Math.sin(phase * Math.PI * 2);
 
@@ -22,18 +23,18 @@ export const createRunAnimation = (skeleton) => {
 		looping : true,
 
 		update(phase) {
-			pose.leftLeg.z = wave(phase) * 1;
-			pose.leftLeg.y = legY(phase);
-			pose.leftArm.y = armY(-phase);
+			pose[JOINT_LEFTLEG].z = wave(phase) * 1;
+			pose[JOINT_LEFTLEG].y = legY(phase);
+			pose[JOINT_LEFTARM].y = armY(-phase);
 
-			pose.rightLeg.z = -wave(phase) * 1;
-			pose.rightLeg.y = legY(-phase);
-			pose.rightArm.y = armY(phase);
+			pose[JOINT_RIGHTLEG].z = -wave(phase) * 1;
+			pose[JOINT_RIGHTLEG].y = legY(-phase);
+			pose[JOINT_RIGHTARM].y = armY(phase);
 
-			pose.torso.tilt = wave(phase);
+			pose[BONE_TORSO].tilt = wave(phase);
 
-			pose.head.y = wrap(phase);
-			pose.hair.y = wrap(phase + 0.5);
+			pose[JOINT_HEAD].y = wrap(phase);
+			pose[BONE_HAIR].y = wrap(phase);
 		},
 
 		apply() {

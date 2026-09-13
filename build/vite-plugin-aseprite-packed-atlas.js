@@ -1,3 +1,5 @@
+import { normalizeFrame } from "./sprite.utils.js";
+
 const asepriteAnim = "?aseprite-packed-atlas";
 
 export default() => {
@@ -12,21 +14,7 @@ export default() => {
 				const sheetData = JSON.parse(code);
 
 				for(const frame of Object.values(sheetData.frames)) {
-					const { w, h } = frame.frame;
-
-					frame.trimmed = false;
-
-					frame.spriteSourceSize = {
-						x : 0,
-						y : 0,
-						w,
-						h,
-					};
-
-					frame.sourceSize = {
-						w,
-						h,
-					};
+					normalizeFrame(frame);
 				}
 
 				return {

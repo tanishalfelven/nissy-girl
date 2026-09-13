@@ -12,6 +12,7 @@ import { ANIMID_RUN, createRunAnimation } from "./character.animations.js";
 
 import { DPAD_DOWN } from "$game/shared/input.consts.js";
 import { createAnimator } from "./animator.js";
+import { JOINT_HEAD } from "./skeleton.consts.js";
 
 export const createCharacter = () => {
 	const characterSkeleton = createSkeleton(
@@ -20,7 +21,7 @@ export const createCharacter = () => {
 		createFrontFacingResolver,
 	);
 
-	const { head } = characterSkeleton.faces.front.bones;
+	const { [JOINT_HEAD] : headJoint } = characterSkeleton.faces.front.joints;
 
 	const eyes = new Graphics();
 	const pupils = new Graphics();
@@ -32,7 +33,7 @@ export const createCharacter = () => {
 	pupils.rect(4, 7, 1, 1).fill(COLOR_BLACK);
 	pupils.rect(7, 7, 1, 1).fill(COLOR_BLACK);
 
-	head.node.addChild(eyes, pupils);
+	headJoint.node.addChild(eyes, pupils);
 
 	const character = new Container({
 		x : 50,

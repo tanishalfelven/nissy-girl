@@ -2,42 +2,36 @@ import { Container, Sprite } from "pixi.js";
 
 import { getAtlas } from "$game/util/texture-atlas.js";
 
-import { LAYER_ABOVE, LAYER_BEHIND } from "./skeleton.consts.js";
+import { TYPE_BONE, TYPE_JOINT } from "./skeleton.consts.js";
 
-const createLayers = (bone) => {
-	const above = new Container();
-	const behind = new Container();
+const addPoint = (a, b) => ({
+	x : a.x + b.x,
+	y : a.y + b.y,
+});
 
-	bone.node.removeChild(bone.sprite);
-	bone.node.addChild(behind, bone.sprite, above);
-
-	bone.layers = {
-		[LAYER_ABOVE] : above,
-		[LAYER_BEHIND] : behind,
-	};
+const resetNode = (node, origin) => {
+	node.position.set(origin.x, origin.y);
+	node.rotation = origin.rotation;
+	node.scale.set(origin.scaleX, origin.scaleY);
+	node.skew.set(0, 0);
 };
 
-const ZERO_ZERO = { x : 0, y : 0 };
-
-const createBone = ({
-	id,
-	parent = false,
-	position = ZERO_ZERO,
-	pivot = ZERO_ZERO,
-	display = true,
-	layer = LAYER_ABOVE,
-}) => {
-	const sprite = new Sprite({ pivot, position : pivot });
-
-	if(!display) {
-		sprite.visible = false;
-	}
-
-	const node = new Container({
-		position,
+const createBone = (inputSource, modifier) => {
+	const {
+		boneId : id,
+		textureId,
+	} = inputSource;
+	const {
 		pivot,
-		children : [ sprite ],
-	});
+	} = modifier;
+
+	const position = addPoint(inputSource.position, pivot);
+
+	const node = new Sprite({ pivot, position });
+
+	if(!modifier.display) {
+		node.visible = false;
+	}
 
 	const origin = {
 		x : position.x,
@@ -50,82 +44,160 @@ const createBone = ({
 	};
 
 	return {
-		node,
-		sprite,
-
 		id,
-		parent,
 
-		z : layer,
-
+		node,
 		origin,
 
-		reset : () => {
-			node.position.set(origin.x, origin.y);
-			node.rotation = origin.rotation;
-			node.scale.set(origin.scaleX, origin.scaleY);
-			node.skew.set(0, 0);
+		setupTexture(spritesheet) {
+			node.texture = spritesheet.textures[textureId];
+		},
 
-			sprite.position.set(origin.pivot.x, origin.pivot.y);
-			sprite.rotation = origin.rotation;
-			sprite.scale.set(origin.scaleX, origin.scaleY);
-			sprite.skew.set(0, 0);
+		reset : () => resetNode(node, origin),
+	};
+};
+
+const createJoint = (inputSource, modifier) => {
+	const {
+		jointId : id,
+		boneIds,
+	} = inputSource;
+	const {
+		pivot,
+	} = modifier;
+
+	const position = addPoint(inputSource.position, pivot);
+
+	const node = new Container({
+		pivot,
+		position : position,
+	});
+
+	if(!modifier.display) {
+		node.visible = false;
+	}
+
+	const origin = {
+		x : position.x,
+		y : position.y,
+
+		rotation : node.rotation,
+		scaleX : node.scale.x,
+		scaleY : node.scale.y,
+		pivot,
+	};
+
+	const bones = {};
+
+	for(const boneId of boneIds) {
+		const bone = createBone(
+			inputSource.bones[boneId],
+			{
+				pivot,
+
+				// modifier bone data overrides joint modifier
+				...modifier.bones[boneId],
+			},
+		);
+
+		bones[boneId] = bone;
+		node.addChild(bone.node);
+	}
+
+	return {
+		id,
+		node,
+		origin,
+		boneIds,
+		bones,
+
+		setupTextures : (spritesheet) => {
+			for(const boneId of boneIds) {
+				const bone = bones[boneId];
+
+				bone.setupTexture(spritesheet);
+			}
+		},
+
+		reset : () => {
+			resetNode(node, origin);
+
+			for(const boneId of boneIds) {
+				bones[boneId].reset();
+			}
 		},
 	};
 };
 
-const toTextureId = (faceId, boneId) => `${faceId}-${boneId}`;
+const createFace = (faceInputSource, modifier) => {
+	const {
+		faceId : id,
+		children,
+	} = faceInputSource;
 
-const createFace = (id) => {
 	const container = new Container();
+	const joints = {};
+	const jointIds = [];
 	const bones = {};
-	const boneArr = [];
+	const boneIds = [];
+
+	for(const childSource of children) {
+		const { [childSource.id] : nodeInputSource } = faceInputSource[
+			// ! this is awkward
+			childSource.type === TYPE_JOINT
+				? "joints"
+				: "bones"
+		];
+		const { [childSource.id] : nodeModifier } = modifier;
+
+		let child;
+
+		if(childSource.type === TYPE_JOINT) {
+			const joint = createJoint(nodeInputSource, nodeModifier);
+
+			joints[joint.id] = joint;
+			jointIds.push(joint.id);
+
+			child = joint;
+		} else if(childSource.type === TYPE_BONE) {
+			const bone = createBone(nodeInputSource, nodeModifier);
+
+			bones[bone.id] = bone;
+			boneIds.push(bone.id);
+
+			child = bone;
+		} else {
+			throw new Error(`Unknown child "${JSON.stringify(childSource)}"`);
+		}
+
+		container.addChild(child.node);
+	}
 
 	return {
 		id,
-		bones,
-		boneArr,
 		container,
-
-		addBone : (bone) => {
-			bones[bone.id] = bone;
-			boneArr.push(bone);
-		},
-
-		resolveLayering : () => {
-			for(const bone of boneArr) {
-				if(!bone.parent) {
-					container.addChild(bone.node);
-
-					continue;
-				}
-
-				const parent = bones[bone.parent];
-
-				if(!parent.layers) {
-					createLayers(parent);
-				}
-
-				parent.layers[bone.z].addChild(bone.node);
-			}
-		},
+		joints,
+		jointIds,
+		bones,
+		boneIds,
 
 		setupTextures(spritesheet) {
-			for(const bone of boneArr) {
-				const textureId = toTextureId(id, bone.id);
-				const texture = spritesheet.textures[textureId];
+			for(const jointId of jointIds) {
+				joints[jointId].setupTextures(spritesheet);
+			}
 
-				if(!texture) {
-					throw new Error(`Missing skeleton texture: ${textureId}`);
-				}
-
-				bone.sprite.texture = texture;
+			for(const boneId of boneIds) {
+				bones[boneId].setupTexture(spritesheet);
 			}
 		},
 
 		reset : () => {
-			for(const bone of boneArr) {
-				bone.reset();
+			for(const jointId of jointIds) {
+				joints[jointId].reset();
+			}
+
+			for(const boneId of boneIds) {
+				bones[boneId].reset();
 			}
 		},
 	};
@@ -151,12 +223,6 @@ const _createSkeleton = (id) => {
 			container.addChild(face.container);
 		},
 
-		resolveLayering : () => {
-			for(const face of faceArr) {
-				face.resolveLayering();
-			}
-		},
-
 		destroy() {
 			spritesheet?.destroy();
 		},
@@ -178,21 +244,26 @@ const _createSkeleton = (id) => {
 };
 
 export const createSkeleton = (skeletonData, createResolver) => {
+	const { skeleton : sourceSkeletonData } = skeletonData.sourceAtlasData;
+	const { data : skeletonModifierData } = skeletonData;
+
 	const skeleton = _createSkeleton(skeletonData.id);
 
-	for(const faceDefinition of skeletonData.faces) {
-		const face = createFace(faceDefinition.id);
+	for(const faceId of sourceSkeletonData.faceIds) {
+		const { [faceId] : faceInputData } = sourceSkeletonData.faces;
+		const { [faceId] : faceModifiers } = skeletonModifierData.faces;
+
+		if(!faceModifiers) {
+			/* eslint-disable-next-line -- dev warning */
+			console.warn(`No modifier data provided for face "${faceId}" - skipping.`);
+
+			continue;
+		}
+
+		const face = createFace(faceInputData, faceModifiers);
 
 		skeleton.addFace(face);
-
-		for(const boneDefinition of faceDefinition.bones) {
-			const bone = createBone(boneDefinition);
-
-			face.addBone(bone);
-		}
 	}
-
-	skeleton.resolveLayering();
 
 	// this needs to sync with facings...
 	const resolver = createResolver(skeleton.faces.front);

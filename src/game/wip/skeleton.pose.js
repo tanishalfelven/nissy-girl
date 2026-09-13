@@ -1,24 +1,24 @@
 import {
-	BONE_LEFTLEG,
-	BONE_RIGHTLEG,
+	JOINT_LEFTARM,
+	JOINT_RIGHTLEG,
 	BONE_TORSO,
-	BONE_HEAD,
+	JOINT_HEAD,
 	BONE_HAIR,
-	BONE_LEFTARM,
-	BONE_RIGHTARM,
+	JOINT_LEFTLEG,
+	JOINT_RIGHTARM,
 } from "./skeleton.consts.js";
 
 // lols
 export const copyPose = (pose) => JSON.parse(JSON.stringify(pose));
 
 const SOURCE = [
-	[ BONE_LEFTLEG, { y : 0, z : 0 }],
-	[ BONE_RIGHTLEG, { y : 0, z : 0 }],
+	[ JOINT_LEFTARM, { y : 0, z : 0 }],
+	[ JOINT_RIGHTLEG, { y : 0, z : 0 }],
 	[ BONE_TORSO, { tilt : 0 }],
-	[ BONE_HEAD, { y : 0 }],
+	[ JOINT_HEAD, { y : 0 }],
 	[ BONE_HAIR, { y : 0 }],
-	[ BONE_RIGHTARM, { y : 0, z : 0 }],
-	[ BONE_LEFTARM, { y : 0, z : 0 }],
+	[ JOINT_RIGHTARM, { y : 0, z : 0 }],
+	[ JOINT_LEFTLEG, { y : 0, z : 0 }],
 ];
 
 const SOURCE_OBJECT = Object.fromEntries(SOURCE);

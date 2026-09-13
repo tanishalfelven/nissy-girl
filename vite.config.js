@@ -10,6 +10,7 @@ import postcssCalc from "postcss-calc";
 
 import vitePluginAsepriteAnimation from "./build/vite-plugin-aseprite-animation.js";
 import vitePluginAsepritePackedAtlas from "./build/vite-plugin-aseprite-packed-atlas.js";
+import vitePluginAsepriteSkeletonAtlas from "./build/vite-plugin-aseprite-skeleton-atlas.js";
 
 const alias = {
 	"$game" : path.resolve("src/game"),
@@ -21,6 +22,7 @@ export default defineConfig({
 	plugins : [
 		vitePluginAsepriteAnimation(),
 		vitePluginAsepritePackedAtlas(),
+		vitePluginAsepriteSkeletonAtlas(),
 		mcss({
 			before : [
 				nested(),

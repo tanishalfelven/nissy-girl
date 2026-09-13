@@ -1,64 +1,68 @@
 import {
-	BONE_LEFTHIP,
-	BONE_RIGHTHIP,
-	BONE_LEFTLEG,
-	BONE_RIGHTLEG,
-	BONE_LEFTARM,
-	BONE_RIGHTARM,
-	BONE_LEFTSHOULDER,
-	BONE_RIGHTSHOULDER,
+	BONE_HIP,
+	BONE_LEG,
+	JOINT_LEFTLEG,
+	JOINT_RIGHTLEG,
+	JOINT_LEFTARM,
+	JOINT_RIGHTARM,
+	JOINT_HEAD,
+	BONE_HAIR,
+	BONE_TORSO,
+	BONE_ARM,
 } from "./skeleton.consts.js";
 
 const createFrontFacingLegResolver = ({ isLeft, skeleton }) => {
-	const selfValue = isLeft ? BONE_LEFTLEG : BONE_RIGHTLEG;
+	const jointId = isLeft ? JOINT_LEFTLEG : JOINT_RIGHTLEG;
 
 	const {
-		[isLeft ? BONE_LEFTHIP : BONE_RIGHTHIP] : hip,
-		[selfValue] : leg,
-	} = skeleton.bones;
+		[jointId] : legJoint,
+	} = skeleton.joints;
+
+	const {
+		[BONE_HIP] : hipBone,
+		[BONE_LEG] : legBone,
+	} = legJoint.bones;
 
 	let maxLegHeight = 0;
 
 	return {
 		update(values) {
-			const position = values[selfValue];
+			const position = values[jointId];
 
 			const legDy = maxLegHeight * position.y;
 			const scale = 1 - position.y;
 			const legScaleX = Math.min(scale, 1);
 
-			leg.node.position.y = leg.origin.y - legDy;
-			// leg.node.position.x = leg.origin.x - legDy * -DIR;
-			leg.sprite.scale.x = legScaleX;
-			hip.sprite.scale.y = scale;
-			hip.sprite.rotation = -position.y;
+			legBone.node.position.y = legBone.origin.y - legDy;
+			legBone.node.scale.x = legScaleX;
+			hipBone.node.scale.y = scale;
+			hipBone.node.rotation = -position.y;
 		},
 
 		async load() {
-			maxLegHeight = hip.node.height;
+			maxLegHeight = legJoint.node.height;
 		},
 	};
 };
 
 const createArmResolver = ({ isLeft, skeleton }) => {
-	const selfValue = isLeft ? BONE_LEFTARM : BONE_RIGHTARM;
+	const jointId = isLeft ? JOINT_LEFTARM : JOINT_RIGHTARM;
 
+	const { [jointId] : armJoint } = skeleton.joints;
 	const {
-		[isLeft ? BONE_LEFTSHOULDER : BONE_RIGHTSHOULDER] : shoulder,
-		[selfValue] : arm,
-	} = skeleton.bones;
+		// [BONE_SHOULDER] : shoulderBone,
+		[BONE_ARM] : armBone,
+	} = armJoint.bones;
 
 	const DIR = isLeft ? -1 : 1;
 
 	return {
 		update(values) {
-			const position = values[selfValue];
+			const position = values[jointId];
 
 			// this is very lazy
-			shoulder.node.rotation = position.y * 0.8 * DIR;
-			arm.node.rotation = (position.y - 0.2) * 1.1 * DIR;
-
-			shoulder.sprite.position.y = shoulder.origin.y + Math.round(position.y);
+			armJoint.node.rotation = position.y * 0.8 * DIR;
+			armBone.node.rotation = (position.y - 0.2) * 1.1 * DIR;
 		},
 
 		async load() {},
@@ -66,11 +70,11 @@ const createArmResolver = ({ isLeft, skeleton }) => {
 };
 
 const createTorsoResolver = ({ skeleton }) => {
-	const { torso } = skeleton.bones;
+	const { [BONE_TORSO] : torsoBone } = skeleton.bones;
 
 	return {
 		update(values) {
-			torso.sprite.rotation = values.torso.tilt * 0.2;
+			torsoBone.node.rotation = values[BONE_TORSO].tilt * 0.2;
 		},
 
 		async load() {},
@@ -78,11 +82,11 @@ const createTorsoResolver = ({ skeleton }) => {
 };
 
 const createHeadResolver = ({ skeleton }) => {
-	const { head } = skeleton.bones;
+	const { [JOINT_HEAD] : headJoint } = skeleton.joints;
 
 	return {
 		update(values) {
-			head.node.position.y = head.origin.y + values.head.y;
+			headJoint.node.position.y = headJoint.origin.y + values[JOINT_HEAD].y;
 		},
 
 		async load() {},
@@ -91,25 +95,29 @@ const createHeadResolver = ({ skeleton }) => {
 
 // hair resolution probably shouldn't be a part of the skeleton resolution, like at all.
 const createHairResolver = ({ skeleton }) => {
-	const { hair } = skeleton.bones;
+	const { [JOINT_HEAD] : headJoint } = skeleton.joints;
+	const { [BONE_HAIR] : hairBone } = headJoint.bones;
 
 	return {
 		update(values) {
-			hair.node.position.y = hair.origin.y + values.head.y - values.hair.y;
+			// ! for the moment we are locking hair pos to the head
+			hairBone.node.position.y = hairBone.origin.y + values[JOINT_HEAD].y - values[BONE_HAIR].y;
 		},
 
 		async load() {},
 	};
 };
 
-export const createFrontFacingResolver = (skeleton) => {
-	const leftLeg = createFrontFacingLegResolver({ isLeft : true, skeleton });
-	const rightLeg = createFrontFacingLegResolver({ isLeft : false, skeleton });
-	const leftArm = createArmResolver({ isLeft : true, skeleton });
-	const rightArm = createArmResolver({ isLeft : false, skeleton });
-	const torso = createTorsoResolver({ skeleton });
-	const head = createHeadResolver({ skeleton });
-	const hair = createHairResolver({ skeleton });
+export const createFrontFacingResolver = (face) => {
+	// ! a skeleton in the context of a resolver is a single face
+	// ! shrug for now
+	const leftLeg = createFrontFacingLegResolver({ isLeft : true, skeleton : face });
+	const rightLeg = createFrontFacingLegResolver({ isLeft : false, skeleton : face });
+	const leftArm = createArmResolver({ isLeft : true, skeleton : face });
+	const rightArm = createArmResolver({ isLeft : false, skeleton : face });
+	const torso = createTorsoResolver({ skeleton : face });
+	const head = createHeadResolver({ skeleton : face });
+	const hair = createHairResolver({ skeleton : face });
 
 	const limbs = [
 		leftLeg,
