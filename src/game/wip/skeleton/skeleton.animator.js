@@ -1,21 +1,14 @@
 import { lerp } from "$util/math.js";
 import { createAnimation } from "./skeleton.animation.js";
-import { JOINT_RIGHTARM, JOINT_LEFTARM } from "./skeleton.consts.js";
-import { createPoseFrom, copyPose, POSE_ITEMS, KEYS_BY_ITEM } from "./skeleton.pose.js";
-
-const defaultPose = createPoseFrom({
-	[JOINT_RIGHTARM] : { y : 0.2 },
-	[JOINT_LEFTARM] : { y : 0.2 },
-});
+import { getDefaultPose } from "./skeleton.component.js";
+import { POSE_ITEMS, KEYS_BY_ITEM, copyPose } from "./skeleton.pose.js";
 
 const IDLE_STATE = "IDLE";
 const TRANSITION_DURATION = 180;
 
 export const createAnimator = (skeleton, animationArr) => {
-	let deltaPose = copyPose(defaultPose);
+	let deltaPose = getDefaultPose();
 	let targetPose = false;
-
-	skeleton.update(deltaPose);
 
 	let state = IDLE_STATE;
 	let animation = false;
@@ -59,7 +52,7 @@ export const createAnimator = (skeleton, animationArr) => {
 			state = animId;
 			animation = deltaAnimation;
 			// ! ASSUMPTION that start only occurs from a fully stopped position. That's fine for now.
-			deltaPose = copyPose(defaultPose);
+			deltaPose = getDefaultPose();
 			targetPose = animations.get(animId).sample(0);
 			animation.start();
 		},
@@ -71,8 +64,7 @@ export const createAnimator = (skeleton, animationArr) => {
 
 			deltaPose = copyPose(animation.sample());
 			animation.reset();
-			// ! reusing the target pose here, maybe a bad idea
-			targetPose = defaultPose;
+			targetPose = getDefaultPose();
 
 			animation = deltaAnimation;
 			animation.start();

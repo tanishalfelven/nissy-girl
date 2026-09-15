@@ -19,3 +19,10 @@ export const BONE_ARM = "arm";
 export const JOINT_HEAD = "head";
 export const BONE_HEAD = "head";
 export const BONE_HAIR = "hair";
+
+export const FACE_FRONT = "front";
+export const FACE_REAR = "rear";
+export const FACE_RIGHT = "right";
+export const FACE_LEFT = "left";
+
+export const FACES = [ FACE_FRONT, FACE_REAR, FACE_RIGHT, FACE_LEFT ];

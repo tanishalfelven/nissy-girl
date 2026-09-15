@@ -1,39 +1,22 @@
-import { createSkeleton } from "./skeleton.component.js";
-import { createFrontFacingResolver } from "./skeleton.resolvers.js";
+import { createSkeleton } from "./skeleton/skeleton.component.js";
+import { createSkeletonResolver } from "./skeleton/resolvers/skeleton.resolvers.js";
 import { characterSkeletonData } from "./character.skeleton-data.js";
 
 import { createInput } from "$game/shared/component/input.component.js";
 
 import { createEntity } from "$game/shared/entity/entity.js";
 
-import { Container, Graphics } from "pixi.js";
-import { COLOR_BLACK, COLOR_BROWN, COLOR_WHITE } from "$nissy-girl/screens/render.consts.js";
+import { Container } from "pixi.js";
 import { ANIMID_RUN, createRunAnimation } from "./character.animations.js";
 
-import { DPAD_DOWN } from "$game/shared/input.consts.js";
-import { createAnimator } from "./animator.js";
-import { JOINT_HEAD } from "./skeleton.consts.js";
+import { DPAD_DOWN, DPAD_RIGHT, DPAD_LEFT, DPAD_UP } from "$game/shared/input.consts.js";
+import { createAnimator } from "./skeleton/skeleton.animator.js";
 
 export const createCharacter = () => {
-	const characterSkeleton = createSkeleton(
-		characterSkeletonData,
-		// this needs to somehow map to skeleton facing ids (that projection key should live somewhere)
-		createFrontFacingResolver,
-	);
-
-	const { [JOINT_HEAD] : headJoint } = characterSkeleton.faces.front.joints;
-
-	const eyes = new Graphics();
-	const pupils = new Graphics();
-
-	eyes.rect(3, 7, 2, 1).fill(COLOR_WHITE);
-	eyes.rect(3, 6, 2, 1).fill(COLOR_BROWN);
-	eyes.rect(7, 7, 2, 1).fill(COLOR_WHITE);
-	eyes.rect(7, 6, 2, 1).fill(COLOR_BROWN);
-	pupils.rect(4, 7, 1, 1).fill(COLOR_BLACK);
-	pupils.rect(7, 7, 1, 1).fill(COLOR_BLACK);
-
-	headJoint.node.addChild(eyes, pupils);
+	const characterSkeleton = createSkeleton({
+		skeletonData : characterSkeletonData,
+		createResolver : createSkeletonResolver,
+	});
 
 	const character = new Container({
 		x : 50,
@@ -43,6 +26,7 @@ export const createCharacter = () => {
 		],
 	});
 
+	// ! this should be owned by the skeleton directly
 	const animator = createAnimator(
 		characterSkeleton,
 		[
@@ -50,15 +34,34 @@ export const createCharacter = () => {
 		],
 	);
 
-	let downIntent = false;
-
 	const input = createInput({
 		onInputChange(inputs) {
-			downIntent = inputs.has(DPAD_DOWN);
+			let leftIntent = inputs.has(DPAD_LEFT);
+			let downIntent = inputs.has(DPAD_DOWN);
+			let rightIntent = inputs.has(DPAD_RIGHT);
+			let upIntent = inputs.has(DPAD_UP);
 
-			if(downIntent && !animator.isActive(ANIMID_RUN)) {
-				animator.start(ANIMID_RUN);
-			} else if(!downIntent && animator.isActive(ANIMID_RUN)) {
+			if(inputs.size) {
+				if(!animator.isActive(ANIMID_RUN)) {
+					animator.start(ANIMID_RUN);
+				}
+
+				if(leftIntent) {
+					characterSkeleton.setFace("left");
+				}
+
+				if(downIntent) {
+					characterSkeleton.setFace("front");
+				}
+
+				if(rightIntent) {
+					characterSkeleton.setFace("right");
+				}
+
+				if(upIntent) {
+					characterSkeleton.setFace("rear");
+				}
+			} else {
 				animator.stop();
 			}
 		},

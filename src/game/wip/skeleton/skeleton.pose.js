@@ -12,12 +12,15 @@ import {
 export const copyPose = (pose) => JSON.parse(JSON.stringify(pose));
 
 const SOURCE = [
-	[ JOINT_LEFTARM, { y : 0, z : 0 }],
-	[ JOINT_RIGHTLEG, { y : 0, z : 0 }],
-	[ BONE_TORSO, { tilt : 0 }],
-	[ JOINT_HEAD, { y : 0 }],
 	[ BONE_HAIR, { y : 0 }],
+	[ JOINT_HEAD, { y : 0, z : 0 }],
+
+	[ BONE_TORSO, { tilt : 0, lean : 0 }],
+
+	[ JOINT_LEFTARM, { y : 0, z : 0 }],
 	[ JOINT_RIGHTARM, { y : 0, z : 0 }],
+
+	[ JOINT_RIGHTLEG, { y : 0, z : 0 }],
 	[ JOINT_LEFTLEG, { y : 0, z : 0 }],
 ];
 

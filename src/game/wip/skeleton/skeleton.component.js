@@ -2,7 +2,16 @@ import { Container, Sprite } from "pixi.js";
 
 import { getAtlas } from "$game/util/texture-atlas.js";
 
-import { TYPE_BONE, TYPE_JOINT } from "./skeleton.consts.js";
+import { TYPE_BONE, TYPE_JOINT, FACE_FRONT, JOINT_RIGHTARM, JOINT_LEFTARM } from "./skeleton.consts.js";
+
+import { createPoseFrom, copyPose } from "./skeleton.pose.js";
+
+const defaultPose = createPoseFrom({
+	[JOINT_RIGHTARM] : { y : 0.2 },
+	[JOINT_LEFTARM] : { y : 0.2 },
+});
+
+export const getDefaultPose = () => copyPose(defaultPose);
 
 const addPoint = (a, b) => ({
 	x : a.x + b.x,
@@ -135,11 +144,17 @@ const createFace = (faceInputSource, modifier) => {
 		children,
 	} = faceInputSource;
 
-	const container = new Container();
+	const node = new Container({
+		// disabling pivot is a useful way to see all faces of a rig in place matching spritesheet
+		// maybe should be part of a utility mode or something
+		pivot : faceInputSource.bones.torso.position,
+	});
 	const joints = {};
 	const jointIds = [];
 	const bones = {};
 	const boneIds = [];
+
+	node.visible = false;
 
 	for(const childSource of children) {
 		const { [childSource.id] : nodeInputSource } = faceInputSource[
@@ -170,12 +185,12 @@ const createFace = (faceInputSource, modifier) => {
 			throw new Error(`Unknown child "${JSON.stringify(childSource)}"`);
 		}
 
-		container.addChild(child.node);
+		node.addChild(child.node);
 	}
 
 	return {
 		id,
-		container,
+		node,
 		joints,
 		jointIds,
 		bones,
@@ -203,51 +218,21 @@ const createFace = (faceInputSource, modifier) => {
 	};
 };
 
-const _createSkeleton = (id) => {
+export const createSkeleton = ({
+	skeletonData,
+	createResolver,
+}) => {
+	const { skeleton : sourceSkeletonData } = skeletonData.sourceAtlasData;
+	const { data : skeletonModifierData } = skeletonData;
+
 	const container = new Container();
 	const faces = {};
 	const faceArr = [];
 
+	let activeFace = FACE_FRONT;
+
 	let spritesheet = false;
-
-	return {
-		id,
-		faces,
-		faceArr,
-		container,
-
-		addFace : (face) => {
-			faces[face.id] = face;
-			faceArr.push(face);
-
-			container.addChild(face.container);
-		},
-
-		destroy() {
-			spritesheet?.destroy();
-		},
-
-		setupTextures : (loadedSpritesheet) => {
-			spritesheet = loadedSpritesheet;
-
-			for(const face of faceArr) {
-				face.setupTextures(spritesheet);
-			}
-		},
-
-		reset : () => {
-			for(const face of faceArr) {
-				face.reset();
-			}
-		},
-	};
-};
-
-export const createSkeleton = (skeletonData, createResolver) => {
-	const { skeleton : sourceSkeletonData } = skeletonData.sourceAtlasData;
-	const { data : skeletonModifierData } = skeletonData;
-
-	const skeleton = _createSkeleton(skeletonData.id);
+	let resolver = false;
 
 	for(const faceId of sourceSkeletonData.faceIds) {
 		const { [faceId] : faceInputData } = sourceSkeletonData.faces;
@@ -262,24 +247,61 @@ export const createSkeleton = (skeletonData, createResolver) => {
 
 		const face = createFace(faceInputData, faceModifiers);
 
-		skeleton.addFace(face);
+		faces[face.id] = face;
+		faceArr.push(face);
+
+		container.addChild(face.node);
 	}
 
-	// this needs to sync with facings...
-	const resolver = createResolver(skeleton.faces.front);
+	faces[activeFace].node.visible = true;
 
-	skeleton.update = (pose) => {
-		resolver.update(pose);
+	return {
+		id : sourceSkeletonData.id,
+		faces,
+		faceArr,
+		container,
+
+		setFace(face) {
+			faces[activeFace].node.visible = false;
+			activeFace = face;
+			faces[activeFace].node.visible = true;
+		},
+
+		update : (pose) => {
+			if(!resolver) {
+				/* eslint-disable-next-line */
+				console.warn("Attempted skeleton.update before load, bad.");
+
+				return;
+			}
+
+			resolver.update(activeFace, pose);
+		},
+
+		load : async () => {
+			// need a destruction path for this
+			spritesheet = await getAtlas(skeletonData.sourceTexture, skeletonData.sourceAtlasData);
+
+			for(const face of faceArr) {
+				face.setupTextures(spritesheet);
+			}
+
+			// ! could this cause a timing issue with pixijs resolving sizes of textures and resolvers trying to measure them?
+			resolver = createResolver(faces);
+
+			await resolver.load();
+
+			resolver.update(activeFace, defaultPose);
+		},
+
+		reset : () => {
+			for(const face of faceArr) {
+				face.reset();
+			}
+		},
+
+		destroy() {
+			spritesheet?.destroy();
+		},
 	};
-
-	skeleton.load = async () => {
-		// need a destruction path for this
-		const spritesheet = await getAtlas(skeletonData.sourceTexture, skeletonData.sourceAtlasData);
-
-		skeleton.setupTextures(spritesheet);
-
-		await resolver.load();
-	};
-
-	return skeleton;
 };

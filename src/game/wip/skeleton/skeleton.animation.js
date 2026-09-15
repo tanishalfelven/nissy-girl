@@ -1,5 +1,6 @@
 import { FPS60 } from "$util/time.js";
 
+// ! nothing in here is actually skeleton specific, I think
 export const createAnimation = ({
 	id,
 	duration,
