@@ -9,8 +9,8 @@ import { createCharacter } from "./character.entity.js";
 import { invokeInput, invokeInputComponent } from "$game/shared/input.actor.js";
 import { withScene } from "$game/shared/scene-action.js";
 
-export const skeltonMachine = createMachine({
-	id : "skelton",
+export const combatMachine = createMachine({
+	id : "combat",
 
 	invoke : [
 		gameloop,

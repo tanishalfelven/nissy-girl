@@ -1,5 +1,5 @@
 import { lerp } from "$util/math.js";
-import { createAnimation } from "./skeleton.animation.js";
+import { createAnimation } from "../../util/animations.js";
 import { getDefaultPose } from "./skeleton.component.js";
 import { POSE_ITEMS, KEYS_BY_ITEM, copyPose } from "./skeleton.pose.js";
 

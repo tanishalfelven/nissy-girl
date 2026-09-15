@@ -22,7 +22,7 @@ import {
 	FACE_REAR,
 	FACE_LEFT,
 	FACE_RIGHT,
-} from "./skeleton/skeleton.consts.js";
+} from "$game/util/skeleton/skeleton.consts.js";
 
 const PIVOT_LEFT_ARMJOINT = { x : 0, y : 0 };
 const PIVOT_LEFT_ARMBONE = { x : 3, y : 1 };

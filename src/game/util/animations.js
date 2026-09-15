@@ -1,45 +1,67 @@
-import { Assets, Spritesheet } from "pixi.js";
+import { FPS60 } from "$util/time.js";
 
-// I hate that this is necessary but we need the textures to exist to map frame timings onto them.
+export const createAnimation = ({
+	id,
+	duration,
+	update : renderUpdate,
+	apply,
+	getSample,
+	looping = false,
+}) => {
+	const maxTime = duration / FPS60;
 
-// Note - I find pixi struggles sometimes with these, adding 1 to padding/spacing/border seems to help
+	let elapsed = 0;
+	let running = false;
 
-/**
- *
- * @param {string} spriteSheetPng resolved image path
- * @param {object} spriteSheetData resolved vite plugin spritesheet animation (using vite-plugin-aseprite-animation)
- * @returns {object} object of named animations with textures and frame speed from aseprite inserted
- */
-export const getAnimations = async (spriteSheetPng, spriteSheetData) => {
-	const spriteAsset = await Assets.load({
-		src : spriteSheetPng,
-	});
+	const getT = () => elapsed / maxTime;
 
-	const spritesheet = new Spritesheet({
-		texture : spriteAsset,
-		data : spriteSheetData,
-	});
+	return {
+		id,
 
-	await spritesheet.parse();
+		sample(t = getT()) {
+			renderUpdate(t);
 
-	return spriteSheetData.frameData.reduce(
-		(animations, frame) => {
-			if(!animations[frame.name]) {
-				animations[frame.name] = [];
+			return getSample();
+		},
+
+		active() {
+			return running;
+		},
+
+		start() {
+			running = true;
+		},
+
+		stop() {
+			running = false;
+		},
+
+		reset() {
+			elapsed = 0;
+			running = false;
+		},
+
+		update(dt) {
+			if(!running) {
+				return false;
 			}
 
-			// take frame index, map spritesheet animation texture in instead of the reference
-			animations[frame.name].push({
-				texture : spritesheet.textures[frame.texture],
-				time : frame.time,
-			});
+			elapsed += dt;
 
-			return animations;
+			if(elapsed >= maxTime) {
+				if(!looping && elapsed) {
+					this.reset();
+
+					return false;
+				}
+
+				elapsed %= maxTime;
+			}
+
+			renderUpdate(getT());
+			apply();
+
+			return true;
 		},
-		{
-			destroy : () => {
-				spritesheet.destroy();
-			},
-		},
-	);
+	};
 };

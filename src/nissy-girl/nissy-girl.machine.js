@@ -19,7 +19,7 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { audio } from "./sound/audio.js";
 import { invokePromptLayer, ROTATE, POWER_ON, POWER_OFF, MUSHROOM } from "./prompts/prompts.svelte";
-import { gameOrder } from "$game/games.js";
+import { games } from "$game/games.js";
 
 const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -63,7 +63,7 @@ const nissyGirlMachine = createMachine({
 				src : fromPromise(audio.loadNissyGirlSfx),
 				onDone : [
 					{
-						guard : () => hasParam("game") && gameOrder.includes(getParam("game")),
+						guard : () => hasParam("game") && games.has(getParam("game")),
 						target : "wait-for-force-load-game",
 					},
 					{

@@ -1,6 +1,6 @@
 import { Container, Sprite } from "pixi.js";
 
-import { getAtlas } from "$game/util/texture-atlas.js";
+import { getAtlas } from "$game/util/spritesheet/texture-atlas.js";
 
 import { TYPE_BONE, TYPE_JOINT, FACE_FRONT, JOINT_RIGHTARM, JOINT_LEFTARM } from "./skeleton.consts.js";
 

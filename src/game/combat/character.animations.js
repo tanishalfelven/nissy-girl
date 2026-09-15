@@ -1,9 +1,17 @@
-import { createAnimation } from "./skeleton/skeleton.animation.js";
+import { createAnimation } from "../util/animations.js";
 
 import { wrap } from "$util/math.js";
 
-import { createPose } from "./skeleton/skeleton.pose.js";
-import { BONE_HAIR, BONE_TORSO, JOINT_HEAD, JOINT_LEFTARM, JOINT_LEFTLEG, JOINT_RIGHTARM, JOINT_RIGHTLEG } from "./skeleton/skeleton.consts.js";
+import { createPose } from "$game/util/skeleton/skeleton.pose.js";
+import {
+	BONE_HAIR,
+	BONE_TORSO,
+	JOINT_HEAD,
+	JOINT_LEFTARM,
+	JOINT_LEFTLEG,
+	JOINT_RIGHTARM,
+	JOINT_RIGHTLEG,
+} from "$game/util/skeleton/skeleton.consts.js";
 
 const sinWave = (phase) => Math.sin(phase * Math.PI * 2);
 

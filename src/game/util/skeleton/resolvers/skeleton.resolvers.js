@@ -4,7 +4,7 @@ import {
 	FACE_LEFT,
 	FACE_RIGHT,
 	FACES,
-} from "../skeleton.consts.js";
+} from "$game/util/skeleton/skeleton.consts.js";
 
 import { createDepthResolver } from "./depth.resolver.js";
 import { createSideResolver } from "./side.resolver.js";

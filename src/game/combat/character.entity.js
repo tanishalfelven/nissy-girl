@@ -1,5 +1,5 @@
-import { createSkeleton } from "./skeleton/skeleton.component.js";
-import { createSkeletonResolver } from "./skeleton/resolvers/skeleton.resolvers.js";
+import { createSkeleton } from "$game/util/skeleton/skeleton.component.js";
+import { createSkeletonResolver } from "$game/util/skeleton/resolvers/skeleton.resolvers.js";
 import { characterSkeletonData } from "./character.skeleton-data.js";
 
 import { createInput } from "$game/shared/component/input.component.js";
@@ -10,7 +10,7 @@ import { Container } from "pixi.js";
 import { ANIMID_RUN, createRunAnimation } from "./character.animations.js";
 
 import { DPAD_DOWN, DPAD_RIGHT, DPAD_LEFT, DPAD_UP } from "$game/shared/input.consts.js";
-import { createAnimator } from "./skeleton/skeleton.animator.js";
+import { createAnimator } from "$game/util/skeleton/skeleton.animator.js";
 
 export const createCharacter = () => {
 	const characterSkeleton = createSkeleton({

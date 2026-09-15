@@ -3,7 +3,7 @@ import CoinData from "./assets/coin.json?aseprite-animation";
 
 import { Container, AnimatedSprite } from "pixi.js";
 
-import { getAnimations } from "$game/util/animations.js";
+import { getAnimations } from "$game/util/spritesheet/animations.js";
 
 export const COIN_WIDTH = 11;
 export const COIN_HEIGHT = 12;

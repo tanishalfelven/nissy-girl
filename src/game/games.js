@@ -1,9 +1,9 @@
-import { GAME_PAINT_ID, GAME_JUMPER_ID, GAME_SKELTON_ID } from "./games.consts.js";
+import { GAME_PAINT_ID, GAME_JUMPER_ID, GAME_COMBAT_ID } from "./games.consts.js";
 
 export const gameOrder = [
 	GAME_PAINT_ID,
 	GAME_JUMPER_ID,
-	GAME_SKELTON_ID,
+	// GAME_COMBAT_ID,
 ];
 
 export const games = new Map([
@@ -22,10 +22,10 @@ export const games = new Map([
 		},
 	],
 	[
-		GAME_SKELTON_ID,
+		GAME_COMBAT_ID,
 		{
-			id : GAME_SKELTON_ID,
-			machine : () => import("$game/wip/skelton.machine.js").then(({ skeltonMachine }) => skeltonMachine),
+			id : GAME_COMBAT_ID,
+			machine : () => import("$game/combat/combat.machine.js").then(({ combatMachine }) => combatMachine),
 		},
 	],
 
