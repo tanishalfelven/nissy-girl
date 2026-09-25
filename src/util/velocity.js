@@ -61,9 +61,10 @@ export const createVelocity = ({
 		},
 
 		sampleDt(delta, dt) {
-			const measured = delta * dt;
+			const measured = delta / dt;
+			const smoothed = 1 - Math.pow(1 - smoothing, dt);
 
-			value += (measured - value) * smoothing;
+			value += (measured - value) * smoothed;
 		},
 
 		sample(delta) {
