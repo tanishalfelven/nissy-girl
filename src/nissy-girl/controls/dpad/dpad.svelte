@@ -13,7 +13,7 @@ const DIRECTIONS = [
 import { controls, deadzone, handleEvent } from "$util/touch-action.svelte.js";
 
 import css from "./dpad.mcss";
-import { rotation } from "$nissy-girl/camera.viewmodel.svelte.js";
+import { rotation } from "$nissy-girl/device-camera.viewmodel.svelte.js";
 import { input } from "$nissy-girl/input.js";
 import { audio } from "$nissy-girl/sound/audio.js";
 import {

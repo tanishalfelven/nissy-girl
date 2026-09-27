@@ -2,7 +2,7 @@ import { createProgress, MIN_PROGRESS, MAX_PROGRESS } from "$util/progress.svelt
 import { clamp, crossedThreshold } from "$util/math.js";
 import { gameOrder, games, getGameIndex } from "$game/games.js";
 import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
-import { camera } from "$nissy-girl/camera.viewmodel.svelte.js";
+import { camera } from "$nissy-girl/device-camera.viewmodel.svelte.js";
 
 export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 

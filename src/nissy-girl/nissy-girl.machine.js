@@ -1,39 +1,24 @@
 import {
 	createMachine,
-	createActor,
 	raise,
 	sendTo,
 	fromPromise,
 } from "xstate";
 
 import { fromMachine } from "xstate-component-tree/from-machine";
-import { ComponentTree } from "xstate-component-tree";
-
-import { statechart } from "$util/statechart-actors.svelte.js";
 import { hasParam, getParam } from "$util/params.js";
 
-import { cameraMachine } from "./camera.machine.js";
 import StartupScreenComponent from "./screens/startup-screen.svelte";
-import NissyGirlComponent from "./nissy-girl.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 import { audio } from "./sound/audio.js";
 import { invokePromptLayer, ROTATE, POWER_ON, POWER_OFF, MUSHROOM } from "./prompts/prompts.svelte";
 import { games } from "$game/games.js";
 
-const nissyGirlMachine = createMachine({
+export const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
 
-	meta : {
-		component : NissyGirlComponent,
-	},
-
 	invoke : [
-		{
-			id : "camera",
-			systemId : "camera",
-			src : cameraMachine,
-		},
 		stateLogger,
 
 		invokePromptLayer(
@@ -210,16 +195,3 @@ const nissyGirlMachine = createMachine({
 		},
 	},
 });
-
-const nissyGirlActor = createActor(nissyGirlMachine);
-
-new ComponentTree(nissyGirlActor, (tree) => statechart.setTree(tree));
-
-const cameraActor = nissyGirlActor.system.get("camera");
-
-nissyGirlActor.start();
-
-export {
-	nissyGirlActor,
-	cameraActor,
-};

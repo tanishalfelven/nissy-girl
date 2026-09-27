@@ -1,0 +1,19 @@
+@value nissygirlheight from "$nissy-girl/nissy-girl.mcss";
+
+.camera {
+	composes: touchinteractive from "$util/util.mcss";
+
+	position: absolute;
+	z-index: 1;
+	inset: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+	margin: auto;
+
+	perspective: calc(nissygirlheight * 3);
+}

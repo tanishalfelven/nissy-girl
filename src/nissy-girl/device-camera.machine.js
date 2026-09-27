@@ -2,7 +2,6 @@ import {
 	createMachine,
 	sendTo,
 	raise,
-	sendParent,
 } from "xstate";
 
 import {
@@ -24,7 +23,7 @@ import {
 	camera,
 	rotation,
 	zoom,
-} from "./camera.viewmodel.svelte.js";
+} from "./device-camera.viewmodel.svelte.js";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 
 import { stateLogger } from "$util/state-logger.actor.js";
@@ -40,8 +39,8 @@ import {
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });
 
-export const cameraMachine = createMachine({
-	id : "camera",
+export const deviceCameraMachine = createMachine({
+	id : "device-camera",
 
 	invoke : [
 		createReleaseVelocity(ROTATE_VELOCITYID, "ROTATE_SWIPE"),
@@ -343,7 +342,7 @@ export const cameraMachine = createMachine({
 								guard : () => cartridges.isCartridgeEjected() && nissyGirl.hasInsertedCartridge(),
 								actions : [
 									() => nissyGirl.ejectCartridge(),
-									sendParent({ type : "CARTRIDGE_EJECTED" }),
+									sendTo(({ system }) => system.get("nissy-girl"), { type : "CARTRIDGE_EJECTED" }),
 								],
 							},
 							{

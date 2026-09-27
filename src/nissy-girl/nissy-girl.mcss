@@ -3,24 +3,6 @@
 @value width: 142rem;
 @value depth: 46rem;
 
-.camera {
-	composes: touchinteractive from "$util/util.mcss";
-
-	position: absolute;
-	z-index: 1;
-	inset: 0;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: 100%;
-	height: 100%;
-	margin: auto;
-
-	perspective: calc(nissygirlheight * 3);
-}
-
 .nissygirl {
 	--rotation: 0;
 	--zoom: 1;

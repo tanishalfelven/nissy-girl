@@ -1,4 +1,4 @@
-let tree = $state(false);
+let tree = $state([]);
 
 export const statechart = {
 	setTree : (treeSnapshot) => {
