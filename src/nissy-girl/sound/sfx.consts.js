@@ -1,11 +1,11 @@
-import volumeWheel from "$nissy-girl/assets/sound/volume-wheel.opus";
-import powerToggle from "$nissy-girl/assets/sound/power-flick.opus";
-import cartridgeInsertClick from "$nissy-girl/assets/sound/insert-click-2.opus";
-import cartridgeRemoveClick from "$nissy-girl/assets/sound/release-and-click-4.opus";
-import cartridgeScrape from "$nissy-girl/assets/sound/scrape-3.opus";
-import nissyGirlBoot from "$nissy-girl/assets/sound/nissygirl-boot-4.opus";
-import button from "$nissy-girl/assets/sound/bean-button.opus";
-import dpad from "$nissy-girl/assets/sound/dpad2.opus";
+import volumeWheel from "./assets/volume-wheel.opus";
+import powerToggle from "./assets/power-flick.opus";
+import cartridgeInsertClick from "./assets/insert-click-2.opus";
+import cartridgeRemoveClick from "./assets/release-and-click-4.opus";
+import cartridgeScrape from "./assets/scrape-3.opus";
+import nissyGirlBoot from "./assets/nissygirl-boot-4.opus";
+import button from "./assets/bean-button.opus";
+import dpad from "./assets/dpad2.opus";
 
 export const nissyGirlAudio = new Map([
 	[ "volumeWheel", { url : volumeWheel, gain : 1 }],

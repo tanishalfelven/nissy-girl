@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 
 import { createEntity } from "./entity.js";
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/device/screens/screen.consts.js";
 
 /** @import { Entity } from "./entity.js" */
 

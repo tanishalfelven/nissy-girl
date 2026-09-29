@@ -1,4 +1,4 @@
-@value deadzonesize from "$nissy-girl/controls/dpad/dpad.mcss";
+@value deadzonesize from "$nissy-girl/device/controls/dpad/dpad.mcss";
 
 @value facebuttondeadzoneheight: calc(deadzonesize * 0.66);
 

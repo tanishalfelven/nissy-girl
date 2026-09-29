@@ -21,7 +21,7 @@ import {
 	RGBA_ARRAY_TANNER_TAN,
 	RGBA_ARRAY_COLOR_WHITE,
 	RGBA_ARRAY_COLOR_BLACK,
-} from "$nissy-girl/screens/render.consts.js";
+} from "$nissy-girl/device/screens/render.consts.js";
 
 export {
 	RGBA_ARRAY_COLOR_BLACK as COLOR_BLACK,

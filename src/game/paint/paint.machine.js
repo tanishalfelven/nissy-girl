@@ -24,7 +24,7 @@ import {
 } from "$nissy-girl/prompts/prompts.svelte";
 
 import { createArtboard } from "./artboard.entity.js";
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "$nissy-girl/device/screens/screen.consts.js";
 
 import { inputReleased, inputTriggered } from "$game/util/input-guards.js";
 import { audio } from "$nissy-girl/sound/audio.js";

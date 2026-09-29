@@ -6,14 +6,17 @@ import {
 } from "xstate";
 
 import { fromMachine } from "xstate-component-tree/from-machine";
+
+import { stateLogger } from "$util/state-logger.actor.js";
 import { hasParam, getParam } from "$util/params.js";
+
+import { games } from "$game/games.js";
+
+import { audio } from "$nissy-girl/sound/audio.js";
+import { invokePromptLayer, ROTATE, POWER_ON, POWER_OFF, MUSHROOM } from "$nissy-girl/prompts/prompts.svelte";
 
 import StartupScreenComponent from "./screens/startup-screen.svelte";
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
-import { stateLogger } from "$util/state-logger.actor.js";
-import { audio } from "./sound/audio.js";
-import { invokePromptLayer, ROTATE, POWER_ON, POWER_OFF, MUSHROOM } from "./prompts/prompts.svelte";
-import { games } from "$game/games.js";
 
 export const nissyGirlMachine = createMachine({
 	id : "nissy-girl",
@@ -146,7 +149,7 @@ export const nissyGirlMachine = createMachine({
 
 								hasgame : {
 									entry : async () => {
-										const renderModule = await import("$nissy-girl/screens/render.js");
+										const renderModule = await import("$nissy-girl/device/screens/render.js");
 
 										// kick off render init for game but we don't need to wait for this here
 										renderModule.initRenderer();

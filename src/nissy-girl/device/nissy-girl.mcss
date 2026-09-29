@@ -10,7 +10,7 @@
 	--zoom: 1;
 	--button-plane: 3rem;
 
-	composes: cameraobject from "./camera.mcss";
+	composes: cameraobject from "$nissy-girl/camera.mcss";
 	margin-left: 2rem;
 
 	&[data-background="true"]::after {

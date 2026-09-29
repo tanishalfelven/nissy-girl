@@ -1,7 +1,9 @@
 <script module>
 import { controls } from "$util/touch-action.svelte.js";
-import { input } from "$nissy-girl/input.js";
+
+import { input } from "$nissy-girl/device/input.js";
 import { audio } from "$nissy-girl/sound/audio.js";
+
 import {
 	BUTTON_A,
 	BUTTON_B,

@@ -1,6 +1,6 @@
 import JumperPng from "./assets/jumper.png";
 import { Assets, Sprite, Container, Graphics } from "pixi.js";
-import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/screens/render.consts.js";
+import { COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_PORCELAIN_RED } from "$nissy-girl/device/screens/render.consts.js";
 
 import { lerp, trapezoid } from "$util/math.js";
 import { FPS60 } from "$util/time.js";

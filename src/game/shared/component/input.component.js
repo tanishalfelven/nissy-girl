@@ -1,5 +1,6 @@
-import { input as globalInputState } from "$nissy-girl/input.js";
 import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP } from "$game/shared/input.consts.js";
+
+import { input as globalInputState } from "$nissy-girl/device/input.js";
 
 export const ALL_AXIS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN ];
 export const VERT_AXIS = [ DPAD_UP, DPAD_DOWN ];

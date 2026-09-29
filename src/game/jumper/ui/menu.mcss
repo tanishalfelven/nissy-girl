@@ -1,4 +1,4 @@
-@value screenheight from "$nissy-girl/screens/screens.mcss";
+@value screenheight from "$nissy-girl/device/screens/screens.mcss";
 
 .platforms {
 	composes: menu from "./main.mcss";

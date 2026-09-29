@@ -1,4 +1,4 @@
-@value screenheight, screenwidth from "$nissy-girl/screens/screens.mcss";
+@value screenheight, screenwidth from "$nissy-girl/device/screens/screens.mcss";
 
 @keyframes artvoidspin {
 	0% {

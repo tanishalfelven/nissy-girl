@@ -1,4 +1,4 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/screens/screen.consts.js";
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from "$nissy-girl/device/screens/screen.consts.js";
 import { coordsDiffer } from "./position.js";
 
 import { quadInOut } from "svelte/easing";

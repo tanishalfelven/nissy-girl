@@ -1,16 +1,16 @@
 <script>
 import { touch } from "$util/touch-action.svelte.js";
+import { noopFalseFunction } from "$util/noop.js";
 
 import { gestureActor } from "$nissy-girl/gesture.machine.js";
-import Cartridges from "$nissy-girl/cartridge/cartridges.svelte";
+import Cartridges from "$nissy-girl/device/cartridge/cartridges.svelte";
 import { gesture } from "./gesture.viewmodel.svelte.js";
 
 import Prompts from "./prompts/prompts.svelte";
-import NissyGirl from "./nissy-girl.svelte";
+import NissyGirl from "./device/nissy-girl.svelte";
+import { cartridges } from "./device/cartridge/cartridge.viewmodel.svelte.js";
 
 import css from "./camera.mcss";
-import { noopFalseFunction } from "$util/noop.js";
-import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 
 let { children } = $props();
 

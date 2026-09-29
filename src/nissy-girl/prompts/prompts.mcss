@@ -1,4 +1,4 @@
-@value nissygirlheight, nissygirloffset from "$nissy-girl/nissy-girl.mcss";
+@value nissygirlheight, nissygirloffset from "$nissy-girl/device/nissy-girl.mcss";
 
 /*
 	this is a magic number determined thru testing, effectively "max extra height of the system" for

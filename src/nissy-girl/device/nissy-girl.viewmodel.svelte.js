@@ -1,7 +1,7 @@
 import { games } from "$game/games.js";
 import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
-import { nissyGirlActor } from "./gesture.machine.js";
-import { audio } from "./sound/audio.js";
+import { nissyGirlActor } from "$nissy-girl/gesture.machine.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 let isPowered = $state(false);
 let insertedCartridge = $state(false);

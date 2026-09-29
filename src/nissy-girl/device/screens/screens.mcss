@@ -1,4 +1,4 @@
-@value depth from "$nissy-girl/nissy-girl.mcss";
+@value depth from "$nissy-girl/device/nissy-girl.mcss";
 @value screenheight: 96rem;
 @value screenwidth: 120rem;
 

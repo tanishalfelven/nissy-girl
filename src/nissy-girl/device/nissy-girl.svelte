@@ -1,6 +1,7 @@
 <script>
 import { noopFalseFunction } from "$util/noop.js";
 import { touch, handleEvent } from "$util/touch-action.svelte.js";
+import { lerp, clamp } from "$util/math.js";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
@@ -9,13 +10,12 @@ import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { zoom, camera } from "./device-camera.viewmodel.svelte.js";
-import { lerp, clamp } from "$util/math.js";
+import { cartridges, cartridgeX, cartridgeY } from "./cartridge/cartridge.viewmodel.svelte.js";
+
 import { gestureActor, deviceCameraActor } from "$nissy-girl/gesture.machine.js";
+import { gesture } from "$nissy-girl/gesture.viewmodel.svelte.js";
 
 import Cartridge from "./cartridge/cartridge.svelte";
-
-import { gesture } from "./gesture.viewmodel.svelte.js";
-import { cartridges, cartridgeX, cartridgeY } from "./cartridge/cartridge.viewmodel.svelte.js";
 
 import css from "./nissy-girl.mcss";
 import cartridgeCss from "./cartridge/cartridge.mcss";

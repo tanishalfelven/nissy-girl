@@ -21,8 +21,8 @@ import {
 	COLOR_DIRT_BLUE,
 	COLOR_SILVER,
 	COLOR_GOLD,
-} from "$nissy-girl/screens/render.consts.js";
-import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
+} from "$nissy-girl/device/screens/render.consts.js";
+import { CANVAS_WIDTH } from "$nissy-girl/device/screens/screen.consts.js";
 
 const START_ZONE_COLOR = COLOR_ICY_BLUE;
 

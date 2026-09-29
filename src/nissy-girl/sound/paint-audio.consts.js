@@ -1,13 +1,13 @@
 // pig sty https://freesound.org/people/Kulanen/sounds/556788/
-import paintOink from "$nissy-girl/assets/sound/paint/oink.opus";
-import paintGrunt from "$nissy-girl/assets/sound/paint/grunt.opus";
-import paintWinnie from "$nissy-girl/assets/sound/paint/winnie.opus";
+import paintOink from "./assets/paint/oink.opus";
+import paintGrunt from "./assets/paint/grunt.opus";
+import paintWinnie from "./assets/paint/winnie.opus";
 // https://freesound.org/people/aglinder/sounds/265582/
-import paintSplash from "$nissy-girl/assets/sound/paint/splash.opus";
-import paintScribble from "$nissy-girl/assets/sound/paint/jfxr-scribble.opus";
-import paintLine from "$nissy-girl/assets/sound/paint/line.opus";
+import paintSplash from "./assets/paint/splash.opus";
+import paintScribble from "./assets/paint/jfxr-scribble.opus";
+import paintLine from "./assets/paint/line.opus";
 // pop https://freesound.org/people/musselmox/sounds/846281/
-import paintPop from "$nissy-girl/assets/sound/paint/pop.opus";
+import paintPop from "./assets/paint/pop.opus";
 
 export const audioSet = new Map([
 	[ "oink", { url : paintOink, gain : 2 }],

@@ -1,4 +1,4 @@
-@value depth from "$nissy-girl/nissy-girl.mcss";
+@value depth from "$nissy-girl/device/nissy-girl.mcss";
 
 @value xlate: 0.6rem;
 @value halfxlate: calc(xlate * 0.5);

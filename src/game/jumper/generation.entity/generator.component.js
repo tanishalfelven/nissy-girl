@@ -9,7 +9,7 @@ import {
 
 import { getDate } from "$util/time-string.js";
 
-import { CANVAS_WIDTH } from "$nissy-girl/screens/screen.consts.js";
+import { CANVAS_WIDTH } from "$nissy-girl/device/screens/screen.consts.js";
 
 import { COIN_HEIGHT, COIN_WIDTH } from "../coins.entity/coins.entity.js";
 

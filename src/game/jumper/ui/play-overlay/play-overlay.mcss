@@ -1,4 +1,4 @@
-@value screenwidth from "$nissy-girl/screens/screens.mcss";
+@value screenwidth from "$nissy-girl/device/screens/screens.mcss";
 
 .game {
 	composes: menu from "../main.mcss";

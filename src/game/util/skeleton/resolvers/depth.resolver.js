@@ -12,7 +12,7 @@ import {
 } from "../skeleton.consts.js";
 
 import { Graphics } from "pixi.js";
-import { COLOR_WHITE, COLOR_BROWN, COLOR_BLACK } from "$nissy-girl/screens/render.consts.js";
+import { COLOR_WHITE, COLOR_BROWN, COLOR_BLACK } from "$nissy-girl/device/screens/render.consts.js";
 
 import { createHairResolver } from "./resolver-utils.js";
 import { clamp } from "$util/math.js";

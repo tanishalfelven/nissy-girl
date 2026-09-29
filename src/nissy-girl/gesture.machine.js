@@ -4,13 +4,13 @@ import { ComponentTree } from "xstate-component-tree";
 
 import { statechart } from "$util/statechart-actors.svelte.js";
 import { stateLogger } from "$util/state-logger.actor.js";
+import { getAnimateProgress } from "$util/animate-progress.js";
 
 import { gesture } from "./gesture.viewmodel.svelte.js";
-import { nissyGirlMachine } from "./nissy-girl.machine.js";
 import CameraComponent from "./camera.svelte";
-import { deviceCameraMachine } from "./device-camera.machine.js";
-import { getAnimateProgress } from "$util/animate-progress.js";
-import { rotation } from "./device-camera.viewmodel.svelte.js";
+import { nissyGirlMachine } from "./device/nissy-girl.machine.js";
+import { deviceCameraMachine } from "./device/device-camera.machine.js";
+import { rotation } from "./device/device-camera.viewmodel.svelte.js";
 
 export const gestureMachine = createMachine({
 	id : "gesture",

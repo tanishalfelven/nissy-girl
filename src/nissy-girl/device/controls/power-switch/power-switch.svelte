@@ -1,8 +1,9 @@
 <script>
-import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
 import { touch } from "$util/touch-action.svelte.js";
 
 import { nissyGirlActor } from "$nissy-girl/gesture.machine.js";
+
+import { nissyGirl } from "$nissy-girl/device/nissy-girl.viewmodel.svelte.js";
 
 import css from "./power-switch.mcss";
 

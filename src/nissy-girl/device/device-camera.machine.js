@@ -14,9 +14,9 @@ import {
 	cartridges,
 	cartridgeX,
 	cartridgeY,
-} from "$nissy-girl/cartridge/cartridge.viewmodel.svelte.js";
+} from "$nissy-girl/device/cartridge/cartridge.viewmodel.svelte.js";
 
-import { audio } from "./sound/audio.js";
+import { audio } from "$nissy-girl/sound/audio.js";
 
 import {
 	camera,
@@ -32,7 +32,7 @@ import {
 	CARTRIDGE_INSERT,
 	CARTRIDGE_EJECT,
 	ROTATE,
-} from "./prompts/prompts.svelte";
+} from "$nissy-girl/prompts/prompts.svelte";
 
 const updateVelocityTarget = (target, progress) =>
 	sendTo(target, { type : "NEW_TARGET", progress });

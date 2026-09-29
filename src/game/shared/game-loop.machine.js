@@ -11,7 +11,7 @@ import { rafLooper } from "$util/time.js";
 import { stateLogger } from "$util/state-logger.actor.js";
 
 import { GAME_TICK } from "./game.consts.js";
-import { initRenderer, screen } from "$nissy-girl/screens/render.js";
+import { initRenderer, screen } from "$nissy-girl/device/screens/render.js";
 
 const MAX_SIMULATION_STEPS = 4;
 

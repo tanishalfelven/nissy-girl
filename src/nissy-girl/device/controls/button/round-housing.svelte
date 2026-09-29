@@ -1,6 +1,7 @@
 <script>
 import { deadzone, handleEvent } from "$util/touch-action.svelte.js";
-import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
+
+import { nissyGirl } from "$nissy-girl/device/nissy-girl.viewmodel.svelte.js";
 
 import css from "./round-housing.mcss";
 

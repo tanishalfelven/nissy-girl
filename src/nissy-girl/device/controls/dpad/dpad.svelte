@@ -12,10 +12,6 @@ const DIRECTIONS = [
 <script>
 import { controls, deadzone, handleEvent } from "$util/touch-action.svelte.js";
 
-import css from "./dpad.mcss";
-import { rotation } from "$nissy-girl/device-camera.viewmodel.svelte.js";
-import { input } from "$nissy-girl/input.js";
-import { audio } from "$nissy-girl/sound/audio.js";
 import {
 	DPAD_DOWN,
 	DPAD_LEFT,
@@ -25,7 +21,13 @@ import {
 	RELEASED,
 } from "$game/shared/input.consts.js";
 
-import { nissyGirl } from "$nissy-girl/nissy-girl.viewmodel.svelte.js";
+import { audio } from "$nissy-girl/sound/audio.js";
+
+import { input } from "$nissy-girl/device/input.js";
+import { rotation } from "$nissy-girl/device/device-camera.viewmodel.svelte.js";
+import { nissyGirl } from "$nissy-girl/device/nissy-girl.viewmodel.svelte.js";
+
+import css from "./dpad.mcss";
 
 const MAX_TILT = 3;
 const DEADZONE = 0.15;

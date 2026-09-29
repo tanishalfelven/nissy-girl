@@ -1,6 +1,8 @@
 import { fromCallback } from "xstate";
-import { input } from "$nissy-girl/input.js";
+
 import { isActorAlive } from "$util/is-actor-alive.js";
+
+import { input } from "$nissy-girl/device/input.js";
 
 export const invokeInput = {
 	systemId : "input",
