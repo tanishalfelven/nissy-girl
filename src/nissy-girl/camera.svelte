@@ -1,13 +1,16 @@
 <script>
 import { touch } from "$util/touch-action.svelte.js";
+
+import { gestureActor } from "$nissy-girl/gesture.machine.js";
 import Cartridges from "$nissy-girl/cartridge/cartridges.svelte";
+import { gesture } from "./gesture.viewmodel.svelte.js";
 
 import Prompts from "./prompts/prompts.svelte";
 import NissyGirl from "./nissy-girl.svelte";
 
-import { gestureActor } from "$nissy-girl/gesture.machine.js";
-
 import css from "./camera.mcss";
+import { noopFalseFunction } from "$util/noop.js";
+import { cartridges } from "./cartridge/cartridge.viewmodel.svelte.js";
 
 let { children } = $props();
 
@@ -46,4 +49,23 @@ let nissyGirlWidth = $state(false);
 	<NissyGirl bind:nissyGirlWidth>
 		{@render children?.()}
 	</NissyGirl>
+
+	<div
+		class={css.manual}
+		data-hide={cartridges.isVisible}
+		data-background={gesture.isDeviceFocused}
+		data-animate={gesture.shouldAnimate}
+		use:touch={{
+			start : () => {
+				if(gesture.isDeviceFocused) {
+					// manual must pass a request due to complicated entry conditions
+					gestureActor.send({ type : "REQUEST_MANUAL" });
+
+					return;
+				}
+			},
+			move : noopFalseFunction,
+			end : noopFalseFunction,
+		}}
+	></div>
 </div>

@@ -1,6 +1,8 @@
-@value nissygirlheight: 224rem;
-@value nissygirloffset: 20rem;
-@value width: 142rem;
+@value objectheight, objectoffset, objectwidth from "$nissy-girl/camera.mcss";
+
+@value nissygirlheight: objectheight;
+@value nissygirloffset: objectoffset;
+@value nissygirlwidth: objectwidth;
 @value depth: 46rem;
 
 .nissygirl {
@@ -8,15 +10,12 @@
 	--zoom: 1;
 	--button-plane: 3rem;
 
-	composes: animates from "$util/util.mcss";
-
-	position: absolute;
-	bottom: nissygirloffset;
-	transform-style: preserve-3d;
-
-	width: width;
-	height: nissygirlheight;
+	composes: cameraobject from "./camera.mcss";
 	margin-left: 2rem;
+
+	&[data-background="true"]::after {
+		transform: translateZ(calc(depth + 1rem));
+	}
 }
 
 .screenbevelvert {
@@ -166,7 +165,7 @@
 	composes: face from "$util/util.mcss";
 
 	transform-style: preserve-3d;
-	transform: rotateY(90deg) translateZ(calc(width - depth / 2));
+	transform: rotateY(90deg) translateZ(calc(nissygirlwidth - depth / 2));
 
 	aspect-ratio: 46 / 224;
 	height: 100%;
@@ -178,6 +177,10 @@
 
 	&[data-left="true"] {
 		transform: rotateY(-90deg) scaleX(-1) translateZ(calc(depth / 2));
+	}
+
+	&[data-display="false"] {
+		opacity: 0;
 	}
 }
 
@@ -211,7 +214,7 @@
 	top: 2.1%;
 	right: 0;
 	left: 0;
-	transform: rotateY(180deg) translateZ(calc(width * 0.055));
+	transform: rotateY(180deg) translateZ(calc(nissygirlwidth * 0.055));
 
 	aspect-ratio: 142 / 36;
 	width: 100%;
@@ -224,7 +227,7 @@
 	composes: face from "$util/util.mcss";
 
 	bottom: 0.4%;
-	transform: rotateY(180deg) translateY(-4%) translateZ(calc(width / 7.395));
+	transform: rotateY(180deg) translateY(-4%) translateZ(calc(nissygirlwidth / 7.395));
 
 	aspect-ratio: 142 / 124;
 	width: 100%;
@@ -236,7 +239,7 @@
 	composes: face from "$util/util.mcss";
 
 	bottom: 1.256%;
-	transform: rotateY(180deg) translateZ(calc(width * 0.07));
+	transform: rotateY(180deg) translateZ(calc(nissygirlwidth * 0.07));
 
 	aspect-ratio: 149 / 9;
 	width: 100%;
@@ -245,7 +248,7 @@
 
 	&[data-inner="true"] {
 		bottom: 0.4%;
-		transform: rotateY(180deg) translateZ(calc(width * 0.023));
+		transform: rotateY(180deg) translateZ(calc(nissygirlwidth * 0.023));
 	}
 }
 
@@ -253,7 +256,7 @@
 	composes: face from "$util/util.mcss";
 
 	top: 21.5%;
-	transform: rotateY(180deg) translateZ(calc(width / 6.2));
+	transform: rotateY(180deg) translateZ(calc(nissygirlwidth / 6.2));
 
 	aspect-ratio: 142 / 59;
 	width: 100%;

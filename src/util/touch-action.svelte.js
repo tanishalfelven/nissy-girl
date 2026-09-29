@@ -4,6 +4,15 @@ import { subscribers, domListenerSub } from "./listeners.js";
 
 import { noopFalseFunction } from "./noop.js";
 
+const _handleEvent = (e) => {
+	e.stopPropagation();
+	e.preventDefault();
+};
+
+export {
+	_handleEvent as handleEvent,
+};
+
 /**
  * Svelte action for touch delta controls
  * @param {HTMLElement} node svelte action node
@@ -11,11 +20,13 @@ import { noopFalseFunction } from "./noop.js";
  * @param {(e: PointerEvent) => void} options.move triggered on move
  * @param {(e: PointerEvent) => void} [options.start] triggered on pointerdown
  * @param {(e: PointerEvent) => void} options.end triggered on cancel/up
+ * @param {(e: PointerEvent) => void} options.handleEvent
  */
 export const touch = (node, {
 	move,
 	start = move,
 	end,
+	handleEvent = _handleEvent,
 }) => {
 	let activePointerId = $state(false);
 	let isDown = $state(false);
@@ -25,25 +36,28 @@ export const touch = (node, {
 
 	const sub = subscribers();
 
+	const endInput = () => {
+		activePointerId = false;
+
+		isDown = false;
+
+		sub.removeAll();
+	};
+
 	const handleEnd = (e) => {
 		if(activePointerId !== e.pointerId) {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
+		handleEvent(e);
 
 		if(!isDown) {
 			return;
 		}
 
-		activePointerId = false;
-
-		isDown = false;
+		endInput();
 
 		end(e);
-
-		sub.removeAll();
 	};
 
 	const handleMove = rafThrottle((e) => {
@@ -69,8 +83,7 @@ export const touch = (node, {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
+		handleEvent(e);
 
 		isDown = true;
 
@@ -83,8 +96,7 @@ export const touch = (node, {
 				return;
 			}
 
-			e.preventDefault();
-			e.stopPropagation();
+			handleEvent(e);
 
 			handleMove(e);
 		}));
@@ -92,6 +104,8 @@ export const touch = (node, {
 		sub.add("dblclick", domListenerSub(node, "dblclick", (e) => e.preventDefault()));
 		sub.add("pointerup", domListenerSub(node, "pointerup", handleEnd));
 		sub.add("pointercancel", domListenerSub(node, "pointercancel", handleEnd));
+		sub.add("pointerleave", domListenerSub(node, "pointerleave", handleEnd));
+		sub.add("lostpointercapture", domListenerSub(node, "lostpointercapture", endInput));
 
 		lastX = e.clientX;
 		lastY = e.clientY;
@@ -107,15 +121,6 @@ export const touch = (node, {
 			sub.removeAll();
 		};
 	});
-};
-
-const _handleEvent = (e) => {
-	e.stopPropagation();
-	e.preventDefault();
-};
-
-export {
-	_handleEvent as handleEvent,
 };
 
 /**

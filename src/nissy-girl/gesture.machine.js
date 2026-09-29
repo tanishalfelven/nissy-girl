@@ -1,12 +1,16 @@
 import { createMachine, createActor, sendTo } from "xstate";
 
 import { ComponentTree } from "xstate-component-tree";
-import { statechart } from "$util/statechart-actors.svelte.js";
 
+import { statechart } from "$util/statechart-actors.svelte.js";
+import { stateLogger } from "$util/state-logger.actor.js";
+
+import { gesture } from "./gesture.viewmodel.svelte.js";
+import { nissyGirlMachine } from "./nissy-girl.machine.js";
 import CameraComponent from "./camera.svelte";
 import { deviceCameraMachine } from "./device-camera.machine.js";
-import { nissyGirlMachine } from "./nissy-girl.machine.js";
-import { stateLogger } from "$util/state-logger.actor.js";
+import { getAnimateProgress } from "$util/animate-progress.js";
+import { rotation } from "./device-camera.viewmodel.svelte.js";
 
 export const gestureMachine = createMachine({
 	id : "gesture",
@@ -29,6 +33,15 @@ export const gestureMachine = createMachine({
 		stateLogger,
 	],
 
+	on : {
+		FOCUS_DEVICE : ".manual out",
+		FOCUS_MANUAL : ".device camera out",
+
+		REQUEST_MANUAL : {
+			actions : sendTo("device-camera", { type : "REQUEST_MANUAL" }),
+		},
+	},
+
 	initial : "device camera",
 
 	states : {
@@ -45,6 +58,62 @@ export const gestureMachine = createMachine({
 				DRAG_DELTA : {
 					actions : sendTo("device-camera", ({ event }) => event),
 				},
+			},
+
+			initial : "lure",
+
+			states : {
+				lure : {
+					invoke : {
+						id : "rotation-lure",
+						src : getAnimateProgress({
+							duration : 4000,
+							steps : [ 0, -0.2, 0.1, -0.05, 0.022, 0 ],
+							// reverse direction each time we play
+							modify : (steps) => steps.map((step) => -step),
+							progress : rotation,
+						}),
+					},
+
+					after : {
+						6500 : {
+							reenter : true,
+							target : "lure",
+						},
+					},
+
+					on : {
+						DRAG_START : "interacting",
+					},
+				},
+
+				interacting : {},
+			},
+		},
+
+		"manual" : {},
+
+		"device camera out" : {
+			entry : () => {
+				gesture.focusManual();
+				gesture.enableAnimate();
+			},
+			exit : () => gesture.disableAnimate(),
+
+			after : {
+				500 : "manual",
+			},
+		},
+
+		"manual out" : {
+			entry : () => {
+				gesture.focusDevice();
+				gesture.enableAnimate();
+			},
+			exit : () => gesture.disableAnimate(),
+
+			after : {
+				500 : "device camera.interacting",
 			},
 		},
 	},

@@ -1,4 +1,6 @@
-@value nissygirlheight from "$nissy-girl/nissy-girl.mcss";
+@value objectheight: 224rem;
+@value objectoffset: 20rem;
+@value objectwidth: 142rem;
 
 .camera {
 	composes: touchinteractive from "$util/util.mcss";
@@ -15,5 +17,61 @@
 	height: 100%;
 	margin: auto;
 
-	perspective: calc(nissygirlheight * 3);
+	perspective: calc(objectheight * 3);
+}
+
+.cameraobject {
+	--rotation: 0deg;
+	--translatez: 0;
+	--translatey: 0;
+
+	composes: animates from "$util/util.mcss";
+
+	position: absolute;
+	bottom: objectoffset;
+	transform-style: preserve-3d;
+	transform:
+		rotateY(var(--rotation))
+		translateZ(var(--translatez))
+		translateY(var(--translatey));
+
+	width: objectwidth;
+	height: objectheight;
+
+	&[data-background="true"] {
+		z-index: -1;
+		transform: translateX(50%) translateY(-45.5vh) scale3d(0.06, 0.06, 0.06);
+		transition: transform 500ms ease-in-out;
+
+		/* this after overlay is the effective hit area for swapping */
+		&::after {
+			/* this is essentially the touchinteractive css shoved into this after specifically */
+			touch-action: none;
+			content: "";
+			user-select: none;
+
+			position: absolute;
+			z-index: 1;
+			inset: 0;
+
+			overscroll-behavior: none;
+
+			-webkit-tap-highlight-color: transparent;
+		}
+	}
+
+	&[data-hide="true"] {
+		transform: translateX(50%) translateY(-60vh) scale3d(0.06, 0.06, 0.06);
+	}
+
+	&[data-background="true"],
+	&[data-animate="true"] {
+		transition: transform 500ms ease-in-out;
+	}
+}
+
+.manual {
+	composes: touchinteractive from "$util/util.mcss";
+	composes: cameraobject;
+	background-color: white;
 }

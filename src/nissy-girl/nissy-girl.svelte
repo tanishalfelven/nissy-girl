@@ -1,5 +1,6 @@
 <script>
-import { touch } from "$util/touch-action.svelte.js";
+import { noopFalseFunction } from "$util/noop.js";
+import { touch, handleEvent } from "$util/touch-action.svelte.js";
 
 import FaceControls from "./controls/front-controls.svelte";
 import PowerSwitch from "./controls/power-switch/power-switch.svelte";
@@ -7,12 +8,13 @@ import VolumeWheel from "./controls/volume/volume-wheel.svelte";
 import Screen from "./screens/screen.svelte";
 
 import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
-import { camera, zoom } from "./device-camera.viewmodel.svelte.js";
+import { zoom, camera } from "./device-camera.viewmodel.svelte.js";
 import { lerp, clamp } from "$util/math.js";
-import { deviceCameraActor } from "$nissy-girl/gesture.machine.js";
+import { gestureActor, deviceCameraActor } from "$nissy-girl/gesture.machine.js";
 
 import Cartridge from "./cartridge/cartridge.svelte";
 
+import { gesture } from "./gesture.viewmodel.svelte.js";
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge/cartridge.viewmodel.svelte.js";
 
 import css from "./nissy-girl.mcss";
@@ -46,15 +48,34 @@ const displayCartridgeRot = $derived.by(() => {
 
 let cartridgeHeight = $state(0);
 let cartridgeWidth = $state(0);
+
+const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 </script>
 
 <div
 	class={css.nissygirl}
 	bind:clientWidth={nissyGirlWidth}
-	style="transform:
-		rotateY({camera.displayRotation}deg)
-			translateZ(calc({displayZoom} * 12rem))
-			translateY(calc({displayZoom} * 12rem));"
+	style="--rotation: {camera.displayRotation}deg;
+	--translatez: {displayZoom * 12}rem;
+	--translatey: {displayZoom * 12}rem;"
+	data-background={!gesture.isDeviceFocused}
+	data-animate={gesture.shouldAnimate}
+	use:touch={{
+		start : () => {
+			if(!gesture.isDeviceFocused) {
+				gestureActor.send({ type : "FOCUS_DEVICE" });
+
+				return;
+			}
+		},
+		move : noopFalseFunction,
+		end : noopFalseFunction,
+		handleEvent : (e) => {
+			if(!gesture.isDeviceFocused) {
+				handleEvent(e);
+			}
+		},
+	}}
 >
 	<Screen>
 		{@render children?.()}
@@ -101,7 +122,6 @@ let cartridgeWidth = $state(0);
 			move : (distX, distY) => {
 				const deltaX = distX / cartridgeWidth;
 				const deltaY = distY / cartridgeHeight;
-
 				const horzAxis = Math.abs(deltaX) > Math.abs(deltaY);
 
 				if(distY !== 0 && cartridgeHeight > 0) {
@@ -137,11 +157,11 @@ let cartridgeWidth = $state(0);
 	</div>
 	{/if}
 
-	<div class={css.panelside} data-right="true">
+	<div class={css.panelside} data-right="true" data-display={displaySides}>
 		<PowerSwitch />
 	</div>
 
-	<div class={css.panelside} data-left="true">
+	<div class={css.panelside} data-left="true" data-display={displaySides}>
 		<VolumeWheel />
 	</div>
 
