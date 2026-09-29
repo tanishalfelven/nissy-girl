@@ -12,7 +12,7 @@ import { nissyGirl } from "./nissy-girl.viewmodel.svelte.js";
 import { zoom, camera } from "./device-camera.viewmodel.svelte.js";
 import { cartridges, cartridgeX, cartridgeY } from "./cartridge/cartridge.viewmodel.svelte.js";
 
-import { gestureActor, deviceCameraActor } from "$nissy-girl/gesture.machine.js";
+import { gestureActor } from "$nissy-girl/gesture.machine.js";
 import { gesture } from "$nissy-girl/gesture.viewmodel.svelte.js";
 
 import Cartridge from "./cartridge/cartridge.svelte";
@@ -111,11 +111,11 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 		bind:clientWidth={cartridgeWidth}
 		use:touch={{
 			start : () => {
-				deviceCameraActor.send({
+				gestureActor.send({
 					type : "CART_DRAG_START",
 				});
 
-				deviceCameraActor.send({
+				gestureActor.send({
 					type : "CART_XDRAG_START",
 				});
 			},
@@ -125,7 +125,7 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 				const horzAxis = Math.abs(deltaX) > Math.abs(deltaY);
 
 				if(distY !== 0 && cartridgeHeight > 0) {
-					deviceCameraActor.send({
+					gestureActor.send({
 						type : "CART_DRAG_DELTA",
 						delta : deltaY,
 						deltaX,
@@ -134,7 +134,7 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 				}
 
 				if(distX !== 0 && cartridgeWidth > 0) {
-					deviceCameraActor.send({
+					gestureActor.send({
 						type : "CART_XDRAG_DELTA",
 						delta : deltaX,
 						deltaY,
@@ -143,11 +143,11 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 				}
 			},
 			end : () => {
-				deviceCameraActor.send({
+				gestureActor.send({
 					type : "CART_DRAG_END",
 				});
 
-				deviceCameraActor.send({
+				gestureActor.send({
 					type : "CART_XDRAG_END",
 				});
 			},

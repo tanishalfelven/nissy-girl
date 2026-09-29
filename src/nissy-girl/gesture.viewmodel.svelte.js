@@ -10,6 +10,10 @@ export const gesture = {
 		return deviceFocused;
 	},
 
+	get isManualFocused() {
+		return !deviceFocused;
+	},
+
 	enableAnimate() {
 		doAnimate = true;
 	},

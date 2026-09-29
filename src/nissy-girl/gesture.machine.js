@@ -11,6 +11,7 @@ import CameraComponent from "./camera.svelte";
 import { nissyGirlMachine } from "./device/nissy-girl.machine.js";
 import { deviceCameraMachine } from "./device/device-camera.machine.js";
 import { rotation } from "./device/device-camera.viewmodel.svelte.js";
+import { manualMachine } from "./manual/manual.machine.js";
 
 export const gestureMachine = createMachine({
 	id : "gesture",
@@ -20,11 +21,6 @@ export const gestureMachine = createMachine({
 	},
 
 	invoke : [
-		{
-			id : "device-camera",
-			systemId : "device-camera",
-			src : deviceCameraMachine,
-		},
 		{
 			id : "nissy-girl",
 			systemId : "nissy-girl",
@@ -36,10 +32,6 @@ export const gestureMachine = createMachine({
 	on : {
 		FOCUS_DEVICE : ".manual out",
 		FOCUS_MANUAL : ".device camera out",
-
-		REQUEST_MANUAL : {
-			actions : sendTo("device-camera", { type : "REQUEST_MANUAL" }),
-		},
 	},
 
 	initial : "device camera",
@@ -47,6 +39,8 @@ export const gestureMachine = createMachine({
 	states : {
 		"device camera" : {
 			on : {
+				// Wow this is obnoxious - but since device-camera doesn't always exist it's easier to route
+				// here than export a sometimes-alive actor
 				DRAG_START : {
 					actions : sendTo("device-camera", { type : "DRAG_START" }),
 				},
@@ -58,7 +52,43 @@ export const gestureMachine = createMachine({
 				DRAG_DELTA : {
 					actions : sendTo("device-camera", ({ event }) => event),
 				},
+
+				CART_DRAG_START : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				CART_XDRAG_START : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				CART_DRAG_DELTA : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				CART_XDRAG_DELTA : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				CART_DRAG_END : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				CART_XDRAG_END : {
+					actions : sendTo("device-camera", ({ event }) => event),
+				},
+
+				REQUEST_MANUAL : {
+					actions : sendTo("device-camera", { type : "REQUEST_MANUAL" }),
+				},
 			},
+
+			invoke : [
+				{
+					id : "device-camera",
+					systemId : "device-camera",
+					src : deviceCameraMachine,
+				},
+			],
 
 			initial : "lure",
 
@@ -91,7 +121,29 @@ export const gestureMachine = createMachine({
 			},
 		},
 
-		"manual" : {},
+		"manual" : {
+			on : {
+				DRAG_START : {
+					actions : sendTo("manual", { type : "DRAG_START" }),
+				},
+
+				DRAG_END : {
+					actions : sendTo("manual", { type : "DRAG_END" }),
+				},
+
+				DRAG_DELTA : {
+					actions : sendTo("manual", ({ event }) => event),
+				},
+			},
+
+			invoke : [
+				{
+					id : "manual",
+					systemId : "manual",
+					src : manualMachine,
+				},
+			],
+		},
 
 		"device camera out" : {
 			entry : () => {
@@ -99,6 +151,11 @@ export const gestureMachine = createMachine({
 				gesture.enableAnimate();
 			},
 			exit : () => gesture.disableAnimate(),
+
+			on : {
+				// device camera state is irrelevant (it doesn't exist)
+				REQUEST_MANUAL : "manual out",
+			},
 
 			after : {
 				500 : "manual",
@@ -123,13 +180,11 @@ const gestureActor = createActor(gestureMachine);
 
 new ComponentTree(gestureActor, (tree) => statechart.setTree(tree));
 
-const deviceCameraActor = gestureActor.system.get("device-camera");
 const nissyGirlActor = gestureActor.system.get("nissy-girl");
 
 gestureActor.start();
 
 export {
 	gestureActor,
-	deviceCameraActor,
 	nissyGirlActor,
 };
