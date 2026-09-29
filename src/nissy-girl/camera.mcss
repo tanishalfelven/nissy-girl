@@ -40,7 +40,7 @@
 
 	&[data-background="true"] {
 		z-index: -1;
-		transform: translateX(50%) translateY(-45.5vh) scale3d(0.06, 0.06, 0.06);
+		transform: translateX(50%) translateY(-57%) scale3d(0.06, 0.06, 0.06);
 		transition: transform 500ms ease-in-out;
 
 		/* this after overlay is the effective hit area for swapping */
@@ -61,7 +61,8 @@
 	}
 
 	&[data-hide="true"] {
-		transform: translateX(50%) translateY(-60vh) scale3d(0.06, 0.06, 0.06);
+		/* this can still be viewed on really tall displays... a can is kicked down a raod */
+		transform: translateX(50%) translateY(-160%) scale3d(0.06, 0.06, 0.06);
 	}
 
 	&[data-background="true"],
