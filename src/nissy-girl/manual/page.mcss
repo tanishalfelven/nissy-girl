@@ -1,0 +1,50 @@
+@value objectheight, objectwidth from "$nissy-girl/camera.mcss";
+@value foldreach from "./manual.mcss";
+
+.page {
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	width: objectwidth;
+	height: objectheight;
+	border: 1px solid black;
+
+	background-color: white;
+
+	&[data-folding="false"] {
+		z-index: var(--zindex);
+	}
+
+	&[data-folding="true"] {
+		will-change: transform;
+		right: auto;
+		left: foldreach;
+		transform-origin: 0 0;
+	}
+}
+
+.tempidentifier {
+	transform: rotate(-45deg);
+	font-size: 60rem;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.pagenumber {
+	position: absolute;
+	right: 2rem;
+	bottom: 0;
+	font-size: 20rem;
+
+	&[data-side="left"] {
+		right: auto;
+		left: 2rem;
+	}
+}

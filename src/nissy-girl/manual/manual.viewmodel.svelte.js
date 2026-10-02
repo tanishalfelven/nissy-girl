@@ -2,10 +2,10 @@ import { SIDE_LEFT, SIDE_RIGHT } from "./manual.consts.js";
 import { manualContentPages } from "./manual.data.js";
 
 let currentPageIndex = $state(0);
-let curlX = $state(0);
-let curlY = $state(0);
+let dragX = $state(0);
+let dragY = $state(0);
 
-const hasNextPage = () => currentPageIndex < manualContentPages - 1;
+const hasNextPage = () => currentPageIndex < manualContentPages.length - 1;
 const hasPrevPage = () => currentPageIndex > 0;
 
 export const manual = {
@@ -13,12 +13,24 @@ export const manual = {
 		return currentPageIndex;
 	},
 
-	get curlX() {
-		return curlX;
+	get curlPageIndex() {
+		if(hasNextPage() && dragX < 0) {
+			return currentPageIndex + 1;
+		}
+
+		if(hasPrevPage() && dragX > 0) {
+			return currentPageIndex - 1;
+		}
+
+		return false;
 	},
 
-	get curlY() {
-		return curlY;
+	get dragX() {
+		return dragX;
+	},
+
+	get dragY() {
+		return dragY;
 	},
 
 	getCurrentPageFacing() {
@@ -42,22 +54,19 @@ export const manual = {
 	hasPrevPage : hasPrevPage,
 	hasNextpage : hasNextPage,
 
-	projectCurlX(deltaX) {
-		return curlX + deltaX;
+	multiplyDrag(deltaMultiply) {
+		dragX *= deltaMultiply;
+		dragY *= deltaMultiply;
 	},
 
-	projectCurlY(deltaY) {
-		return curlY + deltaY;
+	accumulateDrag(deltaX, deltaY) {
+		dragX += deltaX;
+		dragY += deltaY;
 	},
 
-	accumulateCurl(deltaX, deltaY) {
-		curlX += deltaX;
-		curlY += deltaY;
-	},
-
-	clearCurl() {
-		curlX = 0;
-		curlY = 0;
+	clearDrag() {
+		dragX = 0;
+		dragY = 0;
 	},
 
 	nextPage() {

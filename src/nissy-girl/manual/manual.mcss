@@ -1,47 +1,71 @@
 @value objectheight, objectwidth from "$nissy-girl/camera.mcss";
 
+@value foldreach: calc(objectwidth + objectheight);
+
 .manual {
 	composes: cameraobject from "$nissy-girl/camera.mcss";
 	position: absolute;
+	width: calc(objectwidth * 2);
+}
+
+.manualpages {
+	position: absolute;
+	inset: 0;
 	overflow: hidden;
 }
 
-.page {
+.foldplane {
+	composes: animates from "$util/util.mcss";
+
 	position: absolute;
 	top: 0;
-	left: 0;
 
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-
-	width: objectwidth;
-	height: objectheight;
-	border: 1px solid black;
-
-	background-color: white;
+	/* TODO baked assumption for right turn only */
+	right: objectwidth;
+	transform-origin: 0 0;
 }
 
-.tempidentifier {
-	transform: rotate(-45deg);
-	font-size: 60rem;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.pagenumber {
-	composes: touchinteractive from "$util/util.mcss";
-
+.foldpage {
 	position: absolute;
-	right: 0;
-	bottom: 0;
+	top: 0;
+	left: calc(-1 * foldreach);
 
-	font-size: 20rem;
+	overflow: clip;
 
-	&[data-side="left"] {
-		right: auto;
+	width: calc(foldreach * 2);
+	height: foldreach;
+
+	&[data-folded="true"] {
+		transform-origin: 0 0;
+		transform: scaleY(-1);
+	}
+
+	/* this is purely the visible fold */
+	&[data-stationary="true"]::after {
+		content: "";
+
+		position: absolute;
+		top: 0;
 		left: 0;
+
+		width: 100%;
+		height: 1rem;
+
+		/* TODO this is WIP */
+		background:
+			linear-gradient(
+				to bottom,
+				rgb(0 0 0 / 18%),
+				transparent
+			);
+
+		mask-image:
+			linear-gradient(
+				to right,
+				transparent,
+				black 25%,
+				black 75%,
+				transparent
+			);
 	}
 }
