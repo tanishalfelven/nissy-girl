@@ -6,7 +6,6 @@ import Cartridges from "$nissy-girl/device/cartridge/cartridges.svelte";
 
 import Prompts from "./prompts/prompts.svelte";
 import NissyGirl from "./device/nissy-girl.svelte";
-import Manual from "./manual/manual.svelte";
 
 import css from "./camera.mcss";
 
@@ -48,5 +47,6 @@ let nissyGirlWidth = $state(false);
 		{@render children?.()}
 	</NissyGirl>
 
-	<Manual />
+	<!-- ! manual not publicly available yet -->
+	<!-- <Manual /> -->
 </div>
