@@ -69,6 +69,9 @@ owns the screen concept.
 - `docs/agents/patterns.md` - a living catalog of reusable idioms found in this
   codebase. Scan it before implementing something non-trivial, and **add to it**
   when you discover or reuse a pattern worth remembering.
+- `docs/agents/testing.md` - required reading before working on tests. Testing
+  uses large Playwright E2E models whose paths are generated with `xstate/graph`;
+  these test models are deliberately separate from production `*.machine.js`.
 
 ### AGENTS.md map
 
@@ -95,6 +98,8 @@ owns the screen concept.
 - `*.actor.js` - a standalone XState actor (e.g. `fromCallback`).
 - `*.consts.js` - constants / IDs / enums.
 - `*.svelte` + co-located `*.mcss` - component + its scoped styles.
+- `*/tests/*.spec.js` - Playwright E2E test models. These may use XState, but
+  they are NOT production `*.machine.js` files. See `docs/agents/testing.md`.
 
 ### Path aliases
 
@@ -190,6 +195,12 @@ High performance is a primary design constraint, especially **game frametime**.
   *semantically* exists. This is primarily about correctness; dropping the
   offscreen DOM is a secondary bonus. (See "Semantic branching" below for why
   the cartridge is a `{#if}`, not a state.)
+
+### Testing
+
+Testing has its own architecture and conventions. If modifying or creating tests,
+read the nearest test-specific `AGENTS.md` before proceeding. Do not load testing
+documentation for unrelated work.
 
 ### CSS & DOM
 
@@ -312,9 +323,25 @@ This repo reorganizes structurally (both the device tree and the game runtime
 have been reshaped). Prefer re-reading the relevant subtree over trusting
 remembered structure.
 
-When you discover a reusable idiom (or a successful approach worth repeating),
-record it in `docs/agents/patterns.md` so neither of us has to re-scan the
-codebase to rediscover it.
+### Documentation maintenance
+
+Agent documentation is part of the repository and should evolve with the code.
+
+When making a change, update the nearest relevant `AGENTS.md` or `docs/agents`
+document if the change:
+
+- makes an existing statement false or materially misleading
+- changes an architectural invariant, ownership boundary, lifecycle, or convention
+- establishes or removes a reusable pattern
+- changes an operator-owned constraint agents need to know
+- changes the canonical example for an established pattern
+
+Do not document implementation trivia or facts cheaply discoverable from nearby
+code. Prefer updating the narrowest relevant document rather than adding detail
+to the root guide.
+
+If uncertain whether something is a durable convention, leave it undocumented
+until repeated use establishes it.
 
 ## Writing these docs (meta-convention)
 
