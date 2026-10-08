@@ -88,7 +88,7 @@
 
 .text {
 	transform: translateY(-0.08em);
-	font-family: Cairopixel;
+	font-family: Cairopixel, serif;
 	font-size: 8em;
 	color: #293428;
 }
