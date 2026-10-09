@@ -64,10 +64,14 @@ hit testing, so taps on side or back controls miss. Treat `mobile-webkit`
 failures on Windows as environment limits, not product evidence.
 
 Linux WebKit (CI on `ubuntu-latest`, or locally under WSL2) renders and hit
-tests in 3D. Run WebKit there from a Linux-side copy of the repo with its own
-`node_modules`; native toolchain binaries are per-platform. Under WSL, many
-parallel WebKit launches can time out at `browserType.launch`, so pass fewer
-workers (e.g. `--workers=4`).
+tests in 3D. `npm run test` runs only `desktop-chromium`. `npm run test:all`
+runs every project with `playwright.wsl.js`, which starts a Playwright browser
+server in WSL (this checkout's Playwright, run via `/mnt/c`) and connects every
+browser to it. Specs and the dev server stay on Windows, so no Linux-side copy
+of the repo is needed. One-time WSL setup: `node` on the path of an interactive
+shell (nvm via `.bashrc` works), and the browsers (`npx playwright install
+--with-deps chromium webkit`, run from the repo under `/mnt/c`). If parallel WebKit runs fail under WSL, retry with
+fewer workers (e.g. `--workers=4`).
 
 ## Mocks
 

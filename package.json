@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "lint": "eslint ./src && stylelint \"./src/**/*.mcss\"",
-    "test": "playwright test",
+    "test:chrome": "playwright test --project=desktop-chromium",
+    "test:all": "playwright test --config playwright.wsl.js",
     "convert-sound": "for %f in (source-assets\\sound\\*) do ffmpeg -i \"%f\" -c:a libopus -b:a 64k \"src\\nissy-girl\\assets\\sound\\%~nf.opus\""
   },
   "browserslist": [

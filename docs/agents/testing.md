@@ -194,7 +194,9 @@ convention here.
 
 ## Playwright configuration is operator-owned
 
-`/playwright.config.js` is shared testing infrastructure.
+`/playwright.config.js` is shared testing infrastructure, as is
+`/playwright.wsl.js`, which extends it for `npm run test:all` (every browser in
+WSL). CI runs `npx playwright test` with the default config.
 
 Do NOT modify it as part of implementing or repairing an individual test.
 

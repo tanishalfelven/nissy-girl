@@ -332,7 +332,9 @@ analytics path above.
 - `npm run preview` - preview the build.
 - `npm run lint` - ESLint (`./src`) + Stylelint (`./src/**/*.mcss`). Run before
   considering a change done.
-- `npm run test` - Run playwright e2e tests.
+- `npm run test:chrome` - Run playwright e2e tests on desktop Chromium only.
+- `npm run test:all` - Run every browser project in WSL via
+  `playwright.wsl.js` (see `src/nissy-girl/tests/AGENTS.md`).
 
 ## Completion criteria
 
