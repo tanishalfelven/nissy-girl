@@ -4,7 +4,6 @@ import { createTestModel } from "xstate/graph";
 import { MS } from "$util/time-string.js";
 
 import { expect, test } from "../../test/fixtures.js";
-import { filterModelPaths } from "./filter-model-paths.js";
 import {
 	alignLure,
 	DIRECTION,
@@ -375,24 +374,56 @@ const nissyGirlTestMachine = createMachine({
 	},
 });
 
-const events = [
-	{ type : "ALIGN_LURE" },
-	{ type : "GESTURE_POWER_TOGGLE" },
-	{ type : "GESTURE_CARTRIDGE_DOWN" },
-	{ type : "GESTURE_CARTRIDGE_UP" },
-	{ type : "ROTATE_LEFT" },
-	{ type : "ROTATE_RIGHT" },
-	{ type : "ENTER_BACK_LEFT" },
-	{ type : "ENTER_BACK_RIGHT" },
-	{ type : "EXIT_LEFT" },
-	{ type : "EXIT_RIGHT" },
-	{ type : "BROWSE_LEFT" },
-	{ type : "BROWSE_RIGHT" },
-	{ type : "BOOT_COMPLETE" },
-	{ type : "START_GAME" },
+const EVENT = {
+	ALIGN_LURE : { type : "ALIGN_LURE" },
+	GESTURE_POWER_TOGGLE : { type : "GESTURE_POWER_TOGGLE" },
+	GESTURE_CARTRIDGE_DOWN : { type : "GESTURE_CARTRIDGE_DOWN" },
+	GESTURE_CARTRIDGE_UP : { type : "GESTURE_CARTRIDGE_UP" },
+	ROTATE_LEFT : { type : "ROTATE_LEFT" },
+	ROTATE_RIGHT : { type : "ROTATE_RIGHT" },
+	ENTER_BACK_LEFT : { type : "ENTER_BACK_LEFT" },
+	ENTER_BACK_RIGHT : { type : "ENTER_BACK_RIGHT" },
+	EXIT_LEFT : { type : "EXIT_LEFT" },
+	EXIT_RIGHT : { type : "EXIT_RIGHT" },
+	BROWSE_LEFT : { type : "BROWSE_LEFT" },
+	BROWSE_RIGHT : { type : "BROWSE_RIGHT" },
+	BOOT_COMPLETE : { type : "BOOT_COMPLETE" },
+	START_GAME : { type : "START_GAME" },
+};
+
+const events = Object.values(EVENT);
+
+// Journeys that return to a state shortest paths already reach by a shorter
+// route, so state coverage alone never takes them.
+const scenarios = [
+	// Pulling a running game's cartridge powers the device off.
+	[
+		EVENT.ALIGN_LURE,
+		EVENT.ROTATE_LEFT,
+		EVENT.ENTER_BACK_LEFT,
+		EVENT.GESTURE_CARTRIDGE_DOWN,
+		EVENT.EXIT_LEFT,
+		EVENT.GESTURE_POWER_TOGGLE,
+		EVENT.ENTER_BACK_RIGHT,
+		EVENT.BOOT_COMPLETE,
+		EVENT.START_GAME,
+		EVENT.GESTURE_CARTRIDGE_UP,
+	],
 ];
 
-const paths = filterModelPaths(createTestModel(nissyGirlTestMachine).getShortestPaths({ events }));
+// A state is its value and context. The default also keys by incoming transition,
+// which multiplies paths across the parallel regions and admits unhandled events.
+const serializeState = (state) => {
+	return JSON.stringify([ state.value, state.context ]);
+};
+
+const model = createTestModel(nissyGirlTestMachine);
+
+const paths = model.getShortestPaths({ events, serializeState });
+
+for(const scenario of scenarios) {
+	paths.push(...model.getPathsFromEvents(scenario, { serializeState }));
+}
 
 test.describe("NissyGirl model-based integration paths", () => {
 	for(const path of paths) {

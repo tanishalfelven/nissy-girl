@@ -153,22 +153,25 @@ flows with wall time, making timer order depend on machine load), and Web Audio
 is replaced by the `audio` fixture. Playwright config cannot run per-page
 setup, so fixtures are the shared install point. Test-only mocks live in
 `src/test/mocks/`; each is a factory creating an instance with nanospy spies.
-With parallel regions, keep the integrated model for traversal but choose shortest
-representative paths by meaningful projections when the full Cartesian product
-is too large. State coverage alone does not guarantee transition coverage:
-report which projected transitions are exercised separately, and add shortest
-witnesses for missing meaningful edges rather than restoring the Cartesian
-product. `xstate/graph` can generate paths containing unhandled events that
-leave both model state and context unchanged; exclude those paths when choosing
-representative witnesses, rather than implementing a no-op browser gesture.
+Shortest paths are generated with a `serializeState` of value + context, giving
+one path per model state. The `createTestModel` default also keys states by
+incoming transition, which multiplies paths across parallel regions and admits
+unhandled events (steps that leave state and context unchanged); do not use it.
+
+State coverage alone does not guarantee transition coverage: a journey that ends
+in a state some shorter path already reaches is never generated. Name such
+journeys as `scenarios` - sequences of the same event objects `events` lists -
+and add them with `getPathsFromEvents`, which validates each step against the
+model. Keep scenarios to meaningful edges (e.g. ejecting a running game);
+everything else stays derived by the graph.
 
 ## Prototype
 
 `src/nissy-girl/tests/nissy-girl.spec.js` is the canonical prototype for this
 testing architecture. Its gesture-driving conventions live in
 `src/nissy-girl/tests/AGENTS.md`. Helpers sit beside it by concern:
-`filter-model-paths.js` (representative path selection), `gesture-helpers.js`
-(physical gestures and angles), `sfx-helpers.js` (sound assertions).
+`gesture-helpers.js` (physical gestures and angles), `sfx-helpers.js` (sound
+assertions).
 
 Test helpers take `(page, { ...options })`, or `({ ...options })` when they do
 not touch the page. Never add positional parameters beyond `page`: positional
