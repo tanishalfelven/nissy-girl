@@ -11,6 +11,10 @@ export const nissyGirl = {
 		return isPowered;
 	},
 
+	getInsertedCartridgeId() {
+		return insertedCartridge;
+	},
+
 	getGame() {
 		if(!games.has(insertedCartridge)) {
 			return false;

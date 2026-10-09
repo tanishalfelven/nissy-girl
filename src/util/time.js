@@ -1,6 +1,6 @@
 export const FPS60 = 1000 / 60;
 
-const MAX_DT = 4;
+export const MAX_DT = 4;
 
 export const calcDt = (prev, now) => {
 	if(prev === false) {

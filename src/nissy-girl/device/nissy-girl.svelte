@@ -60,6 +60,8 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 	--translatey: {displayZoom * 12}rem;"
 	data-background={!gesture.isDeviceFocused}
 	data-animate={gesture.shouldAnimate}
+	data-cartridge={nissyGirl.getInsertedCartridgeId()}
+	data-testid="device"
 	use:touch={{
 		start : () => {
 			if(!gesture.isDeviceFocused) {
@@ -107,6 +109,7 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 		--cartridgey: {cartridgeY.progress};
 		--rotatey: {displayCartridgeRot}deg;"
 		data-visibility={cartridges.isVisible}
+		data-testid="active-cartridge"
 		bind:clientHeight={cartridgeHeight}
 		bind:clientWidth={cartridgeWidth}
 		use:touch={{

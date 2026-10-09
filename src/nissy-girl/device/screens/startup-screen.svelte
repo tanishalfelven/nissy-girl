@@ -18,4 +18,4 @@ onMount(() => {
 const time = Date.now();
 </script>
 
-<img src={`${StartupScreenGif}?t=${time}`} alt="startup gif" class={css.startupscreen} />
+<img src={`${StartupScreenGif}?t=${time}`} alt="startup gif" class={css.startupscreen} data-testid="startup-screen" />
