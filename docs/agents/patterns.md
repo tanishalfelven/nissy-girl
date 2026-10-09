@@ -138,3 +138,12 @@ Entry template:
   (`cartridges.isVisible` gated by `camera.backfaceHidden`).
 - Gotcha: deliberate structural composition inside a component (not everything is
   machine/`meta`-driven).
+
+### Module order: helpers, then exports
+- Intent: Read a module top-down. Constants and non-exported helpers come first,
+  exports last, and nothing is referenced above its definition.
+- Reference: `src/nissy-girl/tests/gesture-helpers.js`.
+- Gotcha: `no-use-before-define` is linted everywhere; `import-x/exports-last`
+  only in test files, since production modules predate it. Follow it in new
+  production code where an export does not have to come first (e.g. a helper
+  that reads an exported constant).

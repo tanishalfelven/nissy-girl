@@ -18,6 +18,9 @@ modifying, or reorganizing tests.
 - XState 5 defines behavioral test models.
 - `xstate/graph` generates paths directly from those models.
 - The installed package versions in `package.json` are authoritative.
+- Production elements referenced by E2E tests use unique `data-testid`
+  attributes. Tests should use Playwright's `getByTestId` locator for these
+  stable contracts rather than generated CSS-module selectors.
 
 Do not substitute another XState testing package or introduce a second model/path
 framework without consulting the operator.
@@ -103,14 +106,23 @@ Do not pre-emptively split models for organizational neatness.
 States represent durable externally observable conditions.
 
 State assertions describe invariants that should be true whenever a generated
-path reaches that state.
+path reaches that state. Assert required prompts by their visible occurrence,
+not by polling and sorting the entire prompt set: other layers may contribute
+additional prompts. An assertion tied to a leaf must hold regardless of other
+parallel regions. If a prompt is replaced by a later overriding layer, do not
+guess its expected value from a generic parent snapshot or attach it to an
+unrelated leaf; refine the modeled phase before asserting it.
 
 Transitions represent real user/environment operations.
 
 Transition implementations:
 
+- encode one physical operation per event without branching on source or
+  destination model state; use separate named events when the browser actions
+  differ
 - use Playwright to perform real browser interaction
-- may verify transient effects caused by that operation
+- may wait for a browser condition needed to perform the input; assert durable
+  results in the owning state callback, not in the event executor
 - should not directly manipulate production application state
 
 Examples:
@@ -134,11 +146,36 @@ Additional traversal strategies should be introduced deliberately when they add
 meaningful behavioral coverage without pathological path growth.
 
 A generated path is executed against a fresh real browser application.
+Specs import `test` / `expect` from `src/test/fixtures.js`, not
+`@playwright/test` directly. Its fixtures prepare every page before the spec
+navigates: the clock is installed and paused (an installed clock otherwise
+flows with wall time, making timer order depend on machine load), and Web Audio
+is replaced by the `audio` fixture. Playwright config cannot run per-page
+setup, so fixtures are the shared install point. Test-only mocks live in
+`src/test/mocks/`; each is a factory creating an instance with nanospy spies.
+With parallel regions, keep the integrated model for traversal but choose shortest
+representative paths by meaningful projections when the full Cartesian product
+is too large. State coverage alone does not guarantee transition coverage:
+report which projected transitions are exercised separately, and add shortest
+witnesses for missing meaningful edges rather than restoring the Cartesian
+product. `xstate/graph` can generate paths containing unhandled events that
+leave both model state and context unchanged; exclude those paths when choosing
+representative witnesses, rather than implementing a no-op browser gesture.
 
 ## Prototype
 
 `src/nissy-girl/tests/nissy-girl.spec.js` is the canonical prototype for this
-testing architecture.
+testing architecture. Its gesture-driving conventions live in
+`src/nissy-girl/tests/AGENTS.md`. Helpers sit beside it by concern:
+`filter-model-paths.js` (representative path selection), `gesture-helpers.js`
+(physical gestures and angles), `sfx-helpers.js` (sound assertions).
+
+Test helpers take `(page, { ...options })`, or `({ ...options })` when they do
+not touch the page. Never add positional parameters beyond `page`: positional
+arguments lose their meaning fast at call sites (`drag(page, 0, 1.6, 0.15)`).
+Optional options default to `false`, which destructures like an empty object.
+Name magic numbers as constants by what they mean (`FRAME_MS`, `DEG_90`), and
+name helpers for what they do in full (`movePointerOverFrames`, not `glide`).
 
 Before creating another model or abstraction:
 

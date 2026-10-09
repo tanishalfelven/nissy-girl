@@ -64,6 +64,13 @@ Two pieces:
   `rafLooper` that projects the active progress toward its anchors, emitting
   `eventName` deltas until it settles on an anchor.
 
+Anchors are hard stops. A delta that lands on or crosses an anchor snaps the
+progress to it (the rest of that delta is discarded), and release velocity stops
+immediately once it reaches one. Leaving an anchor is unrestricted. The
+`update` function runs before the snap, so crossing logic there still sees the
+crossing - e.g. `cartridgeX` latches its browse direction on the release glide
+that first carries a cartridge onto its center anchor.
+
 How the machine drives it:
 
 - At root it `invoke`s `createReleaseVelocity(ROTATE_VELOCITYID, "ROTATE_SWIPE")`

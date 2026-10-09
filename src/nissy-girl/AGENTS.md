@@ -97,6 +97,20 @@ viewport-relative `min(calc(80dvh / 224), calc(91vw / 142))`, so `1rem` scales
 with the viewport and the entire device (and all prompts/controls) scale
 uniformly. **Size everything in `rem`**, not px, so layouts hold across screens.
 
+## Pointer input: opt-in hit areas
+
+Hit testing is opt-in, a pattern settled through real iPhone testing. `#root`
+and `body` set `pointer-events: none`; elements that take input compose
+`touchinteractive` (`$util/util.mcss`), which restores `pointer-events: auto`
+and pairs with the global `touch-action` / `user-select` / tap-highlight
+resets.
+
+`pointer-events` is inherited, so opting in also opts in every descendant.
+Interactive parts that wrap decoration opt their children back out (the button
+`.face` and `.dpad` set `pointer-events: none`). The camera surface opts in for
+drags, so the console faces under it (back plates, side panels, decals) are hit
+targets too unless they opt out.
+
 ## Sound
 
 `sound/` is a self-contained Web Audio system (NOT a viewmodel), app-wide but

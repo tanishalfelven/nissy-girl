@@ -52,7 +52,10 @@ render runes and attach listeners that send events back into machines.
   **skeleton atlas** builder. The skeleton builder is complex and tied to
   `src/game/combat/`: it compiles a dynamic skeleton resolver for a 2D character
   with **4 cardinal facings** and a set of bones resolved per facing. New
-  asset->engine bridges belong here as Vite plugins.
+  asset->engine bridges belong here as Vite plugins. Custom ESLint rules live
+  in `build/lint/`.
+- `src/test/` - shared Playwright test infrastructure: `fixtures.js` (the
+  `test` / `expect` every spec imports) and `mocks/`.
 
 Device-level systems worth knowing early (each is its own world; nested guides
 to come): **`src/nissy-girl/device/input.js`** (device input, distinct from
@@ -83,6 +86,8 @@ owns the screen concept.
 - `/src/nissy-girl/device/controls/AGENTS.md` - shared control patterns (buttons,
   dpad, touch-action, input middleware).
 - `/src/nissy-girl/manual/AGENTS.md` - the manual mode (stub; not yet mounted).
+- `/src/nissy-girl/tests/AGENTS.md` - device gesture model tests (physical
+  events, test time, state verification).
 - `/src/game/shared/AGENTS.md` - gameloop, scene/ECS, simulate-vs-frame orders.
 - `/src/game/{paint,jumper,combat}/AGENTS.md` - individual cartridges.
 
@@ -124,6 +129,7 @@ Do not introduce TypeScript or type-driven refactors.
 - Tabs for indent; Unix line endings; double quotes; semicolons.
 - **Spaces around object-literal colons**: `{ id : foo }`, `{ type : "X" }`.
 - Arrow parens always: `(x) => ...`.
+- Use `_` for intentionally unused or empty callback parameters instead of `{}`.
 - Array bracket spacing: `[ A, B ]` (but not for arrays-in-arrays /
   objects-in-arrays).
 - `operator-linebreak` before (except `=` after); `1tbs` braces.
@@ -131,6 +137,20 @@ Do not introduce TypeScript or type-driven refactors.
   write `if(...)`, `for(...)`, `while(...)`. `return `/`else ` keep a trailing
   space. This is enforced - don't fight it.
 - No unused imports (auto-fixable).
+- Variable declarations form their own group: a blank line before and after a
+  run of `const` / `let` (auto-fixable).
+- Value changes (assignments, `++` / `--`) form their own group the same way
+  (`build/lint/padded-assignments.js`, auto-fixable).
+- Comments sit on their own line above the code, after a blank line (no
+  trailing `code(); // comment`).
+- No `!!`; write `Boolean(x)`.
+- Define before use: anything referenced must be declared above the reference
+  (`no-use-before-define`).
+- In test files, multiline object properties are separated by a blank line
+  (`build/lint/padded-multiline-properties.js`, auto-fixable), a call
+  computes at most one arithmetic argument inline, and exports come last
+  (`import-x/exports-last`; see `docs/agents/patterns.md`).
+- No IIFEs, always prefer a named extracted function if an inline scope is necessary.
 
 ### Core patterns (prescriptive)
 
@@ -169,6 +189,7 @@ Other load-bearing patterns:
   contract is implemented by both the in-game cursor and the UI navigator.
 - **Hand-driven animation** via a generalized `progress` rune + a single
   velocity source (`release-velocity.actor.js`) rather than a keyframe library.
+- **No IIFEs**. Prefer exposed named functions.
 
 Framework-specific shapes (runes, machines, actors, component-tree wiring) live
 in `docs/agents/frameworks.md`. Prefer copying a golden file over recalling API.
@@ -310,6 +331,20 @@ analytics path above.
 - `npm run preview` - preview the build.
 - `npm run lint` - ESLint (`./src`) + Stylelint (`./src/**/*.mcss`). Run before
   considering a change done.
+- `npm run test` - Run playwright e2e tests.
+
+## Completion criteria
+
+Before reporting a task complete:
+
+- run the narrowest relevant validation for the change
+- run `npm run lint`
+- fix failures introduced by the change
+- do not weaken, skip, or modify checks merely to make validation pass
+- if pre-existing failures prevent a clean run, report them explicitly and
+  distinguish them from failures introduced by the current change
+
+Do not report a task complete while lint is failing because of your changes.
 
 ## Grounding rule for agents
 
