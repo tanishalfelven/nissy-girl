@@ -38,7 +38,7 @@ export default defineConfig({
 		},
 		{
 			name : "mobile-webkit",
-			use : { ...devices["iPhone 12"] },
+			use : { ...devices["iPhone 15"] },
 		},
 	],
 
