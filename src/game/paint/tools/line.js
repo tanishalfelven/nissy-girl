@@ -17,6 +17,7 @@ export const createLine = ({ pixels, movement }) => {
 
 		begin() {
 			isDrawing = true;
+
 			audio.paint.playLineStart();
 		},
 
@@ -51,6 +52,7 @@ export const createLine = ({ pixels, movement }) => {
 				startPos = false;
 				snapshot = false;
 				endPos = false;
+
 				return;
 			}
 

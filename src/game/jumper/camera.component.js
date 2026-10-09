@@ -18,11 +18,13 @@ export const createJumperCamera = ({
 
 	const camera = createCamera({
 		world,
+
 		config : cameraConfig({
 			zoom : 1,
 			style : CAMERA_STYLE_PAN_PADDED,
 			interpolateY : true,
 		}),
+
 		leftPadding : -5,
 		rightPadding : -5,
 		topPadding : 50,

@@ -76,8 +76,10 @@ $effect(() => {
 				return;
 			}
 		},
+
 		move : noopFalseFunction,
 		end : noopFalseFunction,
+
 		handleEvent : (e) => {
 			if(gesture.isDeviceFocused) {
 				handleEvent(e);

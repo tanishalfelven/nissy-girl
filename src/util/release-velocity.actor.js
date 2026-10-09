@@ -20,6 +20,7 @@ export const VERT_VELOCITYID = "vert-velocity";
  */
 export const createReleaseVelocity = (id, eventName = "SWIPE") => ({
 	id,
+
 	src : fromCallback(({ sendBack, receive }) => {
 		const velocity = createVelocity();
 

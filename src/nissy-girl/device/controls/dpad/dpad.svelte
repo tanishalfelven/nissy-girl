@@ -1,4 +1,13 @@
 <script module>
+import {
+	DPAD_DOWN,
+	DPAD_LEFT,
+	DPAD_RIGHT,
+	DPAD_UP,
+	TRIGGERED,
+	RELEASED,
+} from "$game/shared/input.consts.js";
+
 // normalize to -1 to 1, no clamp because ACTUALLY we need that data
 const normalize = (pos, max) => (pos / max) * 2 - 1;
 
@@ -11,15 +20,6 @@ const DIRECTIONS = [
 </script>
 <script>
 import { controls, deadzone, handleEvent } from "$util/touch-action.svelte.js";
-
-import {
-	DPAD_DOWN,
-	DPAD_LEFT,
-	DPAD_RIGHT,
-	DPAD_UP,
-	TRIGGERED,
-	RELEASED,
-} from "$game/shared/input.consts.js";
 
 import { audio } from "$nissy-girl/sound/audio.js";
 
@@ -130,6 +130,7 @@ $effect(() =>
 				storeDpadState(e);
 				handleInput();
 			},
+
 			end : () => {
 				pointerX = 0;
 				pointerY = 0;

@@ -15,6 +15,7 @@ export const invokeScene = ({
 	systemId : "scene",
 	id,
 	input : ({ self, context }) => ({ notifyGame : self.send, context }),
+
 	src : fromCallback(({ system, input, sendBack }) => {
 		let cancelled = false;
 		const gameloop = system.get("gameloop");

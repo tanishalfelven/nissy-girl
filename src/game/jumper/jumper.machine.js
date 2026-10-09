@@ -88,11 +88,14 @@ export const jumperMachine = createMachine({
 		load : {
 			invoke : invokeScene({
 				id : "simulate",
+
 				entities : [
 					createGeneration,
+
 					// force preload of ui by including in lifecycle
 					createJumperUI,
 				],
+
 				simulateOrder : [
 					"ui",
 					"capabilities",
@@ -146,14 +149,17 @@ export const jumperMachine = createMachine({
 					invoke : [
 						invokeScene({
 							id : "mainmenu",
+
 							entities : [
 								createJumperUI,
 							],
+
 							simulateOrder : [
 								"world",
 								"input",
 								"movement",
 							],
+
 							frameOrder : [
 								"ui",
 							],
@@ -195,6 +201,7 @@ export const jumperMachine = createMachine({
 
 									return ui.ui.getMenuOption() === SEED_OPTION;
 								}),
+
 								target : "seed",
 								actions : () => audio.jumper.playUIConfirm(),
 							},
@@ -218,14 +225,17 @@ export const jumperMachine = createMachine({
 					invoke : [
 						invokeScene({
 							id : "seed",
+
 							entities : [
 								createSeedUI,
 							],
+
 							simulateOrder : [
 								"world",
 								"input",
 								"movement",
 							],
+
 							frameOrder : [
 								"ui",
 							],
@@ -283,9 +293,11 @@ export const jumperMachine = createMachine({
 		generate : {
 			invoke : invokeScene({
 				id : "generate",
+
 				entities : [
 					createGeneration,
 				],
+
 				simulateOrder : [
 					"generator",
 				],
@@ -313,20 +325,24 @@ export const jumperMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "play",
+
 					world : () => createWorld({
 						components : {
 							camera : createJumperCamera,
 							particles : createParticles,
 						},
 					}),
+
 					entities : [
 						// entity ordering dictates component order as well
 						createPlatforms,
 						createCoins,
+
 						// player needs to be after platforms so when player attempts to collide we have good positions
 						createJumper,
 						createJumperUI,
 					],
+
 					simulateOrder : [
 						// dynamic ordering comping in clutch here
 						"world",
@@ -336,6 +352,7 @@ export const jumperMachine = createMachine({
 						"behavior",
 						"coins",
 					],
+
 					frameOrder : [
 						"camera",
 						"render",

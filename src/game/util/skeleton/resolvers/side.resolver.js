@@ -46,8 +46,10 @@ const createLegResolver = ({ isLeft, skeleton }) => {
 			legJoint.node.x = legJoint.origin.x - values[BONE_TORSO].lean * FACING * 4;
 
 			legBone.node.position.y = legBone.origin.y + -Math.abs(position.z) * 4.1;
+
 			legBone.node.scale.set(Math.abs(position.z) * -0.15 + 1);
-			hipBone.node.rotaton = position.z * 1.8 * -FACING;
+
+			hipBone.node.rotation = position.z * 1.8 * -FACING;
 			legBone.node.rotation = position.z * 1.8 * -FACING;
 		},
 
@@ -95,7 +97,7 @@ const createTorsoResolver = ({ skeleton }) => {
 	};
 };
 
-export const createHeadResolver = ({ skeleton }) => {
+const createHeadResolver = ({ skeleton }) => {
 	const { [JOINT_HEAD] : headJoint } = skeleton.joints;
 
 	const isFacingRight = skeleton.id === FACE_RIGHT;

@@ -54,10 +54,12 @@ export const createCursor = ({
 
 	return createEntity({
 		id : "cursor",
+
 		components : {
 			input,
 			movement,
 			tool,
+
 			render : {
 				update(dt) {
 					tool.render(dt);

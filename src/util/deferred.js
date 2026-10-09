@@ -1,6 +1,6 @@
 export const createDeferred = () => {
 	let resolve;
-	let reject; ;
+	let reject;
 
 	const deferred = new Promise((_resolve, _reject) => {
 		resolve = _resolve;

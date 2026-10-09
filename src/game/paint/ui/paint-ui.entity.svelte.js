@@ -119,9 +119,11 @@ export const createPaintUI = ({
 
 	return createEntity({
 		id : "ui",
+
 		components : {
 			input,
 			movement : navComponent,
+
 			ui : {
 				hasUpdate() {
 					return camera.hasUpdate() || cursor.movement.isMoving();
@@ -169,6 +171,7 @@ export const createPaintUI = ({
 
 				openPaletteMenu() {
 					showPalette = true;
+
 					navComponent.setActiveNav("palette");
 				},
 
@@ -178,11 +181,13 @@ export const createPaintUI = ({
 					}
 
 					showPalette = false;
+
 					navComponent.clearActiveNav();
 				},
 
 				openToolsMenu() {
 					const toolNav = navComponent.getNav("tool");
+
 					toolNav.setActive(getActiveTool());
 
 					navComponent.setActiveNav("tool");

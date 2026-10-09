@@ -70,8 +70,10 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 				return;
 			}
 		},
+
 		move : noopFalseFunction,
 		end : noopFalseFunction,
+
 		handleEvent : (e) => {
 			if(!gesture.isDeviceFocused) {
 				handleEvent(e);
@@ -122,6 +124,7 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 					type : "CART_XDRAG_START",
 				});
 			},
+
 			move : (distX, distY) => {
 				const deltaX = distX / cartridgeWidth;
 				const deltaY = distY / cartridgeHeight;
@@ -145,6 +148,7 @@ const displaySides = $derived(gesture.isDeviceFocused || gesture.shouldAnimate);
 					});
 				}
 			},
+
 			end : () => {
 				gestureActor.send({
 					type : "CART_DRAG_END",

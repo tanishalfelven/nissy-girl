@@ -1,6 +1,6 @@
-export const channels = new Map();
-
 const FADE_TIME = 0.03;
+
+export const channels = new Map();
 
 export const stopChannel = (channel) => {
 	const channelSound = channels.get(channel);

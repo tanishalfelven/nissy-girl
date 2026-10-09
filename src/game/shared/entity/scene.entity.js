@@ -114,6 +114,7 @@ export const createScene = ({
 	];
 	const simulateUpdate = simulateMap.get("update");
 	const frameUpdate = frameMap.get("update");
+
 	// We clearly aren't really ECS but we're going to try and model that direction with room to grow!
 
 	const scene = {

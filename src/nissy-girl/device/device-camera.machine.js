@@ -76,6 +76,7 @@ export const deviceCameraMachine = createMachine({
 
 							return camera.enteringZoomAngle(event.delta);
 						},
+
 						target : "zooming",
 					},
 					{
@@ -166,6 +167,7 @@ export const deviceCameraMachine = createMachine({
 			on : {
 				BACK_TO_ZOOM : {
 					target : "zooming",
+
 					actions : () => {
 						if(!nissyGirl.hasInsertedCartridge()) {
 							cartridges.hide();
@@ -288,6 +290,7 @@ export const deviceCameraMachine = createMachine({
 
 						CART_SWIPE : {
 							guard : ({ event }) => event.bias !== false,
+
 							actions : [
 								({ event }) => {
 									if(
@@ -306,6 +309,7 @@ export const deviceCameraMachine = createMachine({
 						CARTRIDGE_POSITION : [
 							{
 								guard : () => cartridges.isCartridgeEjected() && nissyGirl.hasInsertedCartridge(),
+
 								actions : [
 									() => nissyGirl.ejectCartridge(),
 									sendTo(({ system }) => system.get("nissy-girl"), { type : "CARTRIDGE_EJECTED" }),

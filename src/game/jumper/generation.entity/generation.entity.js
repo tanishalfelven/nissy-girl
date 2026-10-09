@@ -7,6 +7,7 @@ export const createGeneration = ({ world }) => {
 
 	return createEntity({
 		id : "generation",
+
 		components : {
 			capabilities,
 			generator : createGenerator({ world, capabilities }),

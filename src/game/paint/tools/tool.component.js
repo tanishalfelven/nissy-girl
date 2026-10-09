@@ -38,6 +38,7 @@ export const createTool = ({ artboard, movement }) => {
 			if(tools[tool]) {
 				audio.paint.playOinkConfirm();
 				tools[currentTool].stop();
+
 				currentTool = tool;
 			}
 		},

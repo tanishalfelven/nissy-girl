@@ -65,6 +65,7 @@ $effect(() =>
 	input.subscribe(({ type, state }) => {
 		if(type === button) {
 			const prevPressed = isPressed;
+
 			isPressed = state === TRIGGERED;
 
 			if(prevPressed !== isPressed) {
@@ -86,6 +87,7 @@ $effect(() =>
 
 			isPressed = true;
 		},
+
 		end : () => {
 			if(!isPressed) {
 				return;

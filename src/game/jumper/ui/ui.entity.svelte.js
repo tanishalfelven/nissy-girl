@@ -76,15 +76,18 @@ export const createJumperUI = ({
 		startGame : () => {
 			isPlaying = true;
 			startTime = performance.now();
+
 			world.world.notifyGame({ type : "START_PLAY" });
 		},
 	};
 
 	return createEntity({
 		id : "ui",
+
 		components : {
 			input,
 			movement : navComponent,
+
 			ui : {
 				async load() {
 					await document.fonts.load("12rem Pixelzone");
@@ -93,6 +96,7 @@ export const createJumperUI = ({
 
 				collectCoin() {
 					collectedCoins++;
+
 					audio.jumper.playCoin(collectedCoins);
 				},
 
@@ -118,6 +122,7 @@ export const createJumperUI = ({
 
 				stopPlay() {
 					isPlaying = false;
+
 					// store off final time
 					elapsedTime = performance.now() - startTime;
 
@@ -141,6 +146,7 @@ export const createJumperUI = ({
 
 				exitPlay() {
 					navComponent.clearActiveNav();
+
 					startTime = false;
 					elapsedTime = 0;
 					collectedCoins = 0;

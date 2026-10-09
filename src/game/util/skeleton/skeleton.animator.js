@@ -23,6 +23,7 @@ export const createAnimator = (skeleton, animationArr) => {
 		// not reported outwardly as our animation
 		id : "_delta",
 		duration : TRANSITION_DURATION,
+
 		update(phase) {
 			for(const boneId of POSE_ITEMS) {
 				for(const key of KEYS_BY_ITEM[boneId]) {
@@ -31,9 +32,11 @@ export const createAnimator = (skeleton, animationArr) => {
 				}
 			}
 		},
+
 		getSample() {
 			return deltaPose;
 		},
+
 		apply() {
 			skeleton.update(deltaPose);
 		},
@@ -51,9 +54,11 @@ export const createAnimator = (skeleton, animationArr) => {
 
 			state = animId;
 			animation = deltaAnimation;
+
 			// ! ASSUMPTION that start only occurs from a fully stopped position. That's fine for now.
 			deltaPose = getDefaultPose();
 			targetPose = animations.get(animId).sample(0);
+
 			animation.start();
 		},
 
@@ -63,10 +68,13 @@ export const createAnimator = (skeleton, animationArr) => {
 			state = IDLE_STATE;
 
 			deltaPose = copyPose(animation.sample());
+
 			animation.reset();
+
 			targetPose = getDefaultPose();
 
 			animation = deltaAnimation;
+
 			animation.start();
 		},
 
@@ -87,6 +95,7 @@ export const createAnimator = (skeleton, animationArr) => {
 					} else {
 					// if we're not idle immediately start next anim
 						animation = animations.get(state);
+
 						animation.start();
 					}
 				}

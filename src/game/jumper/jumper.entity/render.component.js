@@ -101,11 +101,13 @@ const createFace = ({ physics, behavior }) => {
 			pupils.position.set(dirX * 1.6, eyeOffsetY + dirY);
 
 			mouth.visible = panic > 0;
+
 			if(mouth.visible) {
 				mouth.scale.y = panic;
 			}
 
 			tongue.visible = panic > 0.5;
+
 			if(tongue.visible) {
 				tongue.position.x = dirX * -1.2;
 			}
@@ -114,6 +116,7 @@ const createFace = ({ physics, behavior }) => {
 
 			if(blush.visible) {
 				blush.alpha = blushT * 0.8;
+
 				blush.position.set(0, dirY * 0.5);
 
 				face.updateTransform({ scaleY : 1 - blushT * 0.4 });
@@ -178,6 +181,7 @@ const createJumper = ({
 	behavior,
 	enabled = true,
 	world,
+
 	// offset used for mirrored jumper
 	offset = 0,
 }) => {
@@ -345,6 +349,7 @@ export const createJumperRender = ({
 		finishGame() {
 			blushDuration = BLUSH_DURATION;
 			isGameFinished = true;
+
 			jumper.stageLights();
 		},
 

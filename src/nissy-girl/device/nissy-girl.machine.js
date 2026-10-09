@@ -49,6 +49,7 @@ export const nissyGirlMachine = createMachine({
 			invoke : {
 				id : "load-audio",
 				src : fromPromise(audio.loadNissyGirlSfx),
+
 				onDone : [
 					{
 						guard : () => hasParam("game") && games.has(getParam("game")),
@@ -141,6 +142,7 @@ export const nissyGirlMachine = createMachine({
 										"nissy-girl",
 										[
 											[ ROTATE, { display : () => !nissyGirl.hasInsertedCartridge() }],
+
 											// if the user is staring at a hanging screen, recommend a power cycle (I'm *so* nice`)
 											[ POWER_OFF, { display : () => nissyGirl.hasInsertedCartridge(), prompt : "try rebooting?" }],
 										],

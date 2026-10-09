@@ -36,9 +36,11 @@ let switchHeight = $state(0);
 		start : (e) => {
 			startY = e.clientY;
 		},
+
 		move : (_distX, _distY, e) => {
 			candidateY = (e.clientY - startY) / switchHeight;
 		},
+
 		end : (e) => {
 			const percentY = (e.clientY - startY) / switchHeight;
 

@@ -187,6 +187,7 @@ export const controls = (node, {
 		handleEvent(e);
 
 		activePointerId = e.pointerId;
+
 		node.setPointerCapture(e.pointerId);
 
 		fire(e);

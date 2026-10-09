@@ -26,6 +26,7 @@ const createRenderer = async (canvas, { width = CANVAS_WIDTH, height = CANVAS_HE
 		height,
 		backgroundAlpha : 1,
 		backgroundColor : COLOR_OFF_BLACK,
+
 		// have you heard of pixel art
 		antialias : false,
 

@@ -8,14 +8,17 @@ export const track = (event, data = {}) => {
 
 		fetch("/analytics", {
 			method : "POST",
+
 			headers : {
 				"content-type" : "application/json",
 			},
+
 			body : JSON.stringify({
 				event,
 				sessionId,
 				...data,
 			}),
+
 			keepalive : true,
 		});
 	} catch (e) {

@@ -1,5 +1,7 @@
 import { Color } from "pixi.js";
 
+const arrayAsPixiColor = ([ r, g, b, a ]) => new Color({ r, g, b, a });
+
 export const COLOR_BLACK = 0x000000;
 export const COLOR_OFF_BLACK = 0x0a0a0a;
 export const COLOR_WHITE = 0xffffff;
@@ -35,8 +37,6 @@ export const RGBA_ARRAY_LIGHT_TAN = [ 238, 195, 154, 255 ];
 export const RGBA_ARRAY_TANNER_TAN = [ 217, 160, 102, 255 ];
 export const RGBA_ARRAY_COLOR_WHITE = [ 255, 255, 255, 255 ];
 export const RGBA_ARRAY_COLOR_BLACK = [ 0, 0, 0, 255 ];
-
-const arrayAsPixiColor = ([ r, g, b, a ]) => new Color({ r, g, b, a });
 
 export const COLOR_PORCELAIN_RED = arrayAsPixiColor(RGBA_ARRAY_PORCELAIN_RED);
 export const COLOR_SOUP_RED = arrayAsPixiColor(RGBA_ARRAY_SOUP_RED);

@@ -9,6 +9,16 @@ import unusedImports from "eslint-plugin-unused-imports";
 import { importX } from "eslint-plugin-import-x";
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 
+import { paddedAssignments } from "./build/lint/padded-assignments.js";
+import { paddedMultilineProperties } from "./build/lint/padded-multiline-properties.js";
+
+const local = {
+	rules : {
+		"padded-assignments" : paddedAssignments,
+		"padded-multiline-properties" : paddedMultilineProperties,
+	},
+};
+
 const plugins = {
 	js,
 	"@stylistic" : stylistic,
@@ -24,20 +34,45 @@ export default defineConfig([
 		files : [ "**/*.{js,mjs,cjs}" ],
 		plugins,
 		extends : [ "js/recommended" ],
+
 		languageOptions : {
 			globals : globals.browser,
 		},
 	},
 	{
+		files : [ "**/test/**/*.js", "**/tests/**/*.js" ],
+
+		languageOptions : {
+			globals : globals.node,
+		},
+
+		rules : {
+			"import-x/exports-last" : "error",
+
+			"no-restricted-syntax" : [
+				"error",
+				{
+					selector : "CallExpression > BinaryExpression ~ BinaryExpression",
+					message : "Compute at most one argument inline; name the others first.",
+				},
+			],
+		},
+	},
+	{
 		files : [ "**/*.svelte", "**/*.svelte.js" ],
 		plugins,
+
 		languageOptions : {
 			globals : globals.browser,
 			parser : svelteParser,
 		},
 	},
 	{
+		plugins : { local },
+
 		rules : {
+			"local/padded-multiline-properties" : "error",
+
 			"@stylistic/linebreak-style" : [ "error", "unix" ],
 			"svelte/prefer-svelte-reactivity" : "off",
 			"svelte/indent" : [ "off" ],
@@ -51,16 +86,48 @@ export default defineConfig([
 			"@stylistic/semi" : [ "error", "always" ],
 			"@stylistic/key-spacing" : [ "error", { beforeColon : true, afterColon : true }],
 			"@stylistic/brace-style" : [ "error", "1tbs" ],
+
 			"@stylistic/array-bracket-spacing" : [
 				"error", "always",
 				{ arraysInArrays : false, objectsInArrays : false },
 			],
+
 			"@stylistic/eol-last" : [ "error", "always" ],
+
+			// Variable declarations sit in their own blank-line-separated group.
+			"@stylistic/padding-line-between-statements" : [
+				"error",
+				{ blankLine : "always", prev : "*", next : [ "const", "let", "var" ] },
+				{ blankLine : "always", prev : [ "const", "let", "var" ], next : "*" },
+				{ blankLine : "any", prev : [ "const", "let", "var" ], next : [ "const", "let", "var" ] },
+			],
+
+			"local/padded-assignments" : "error",
+			"no-use-before-define" : "error",
+			"no-implicit-coercion" : [ "error", { boolean : true, number : false, string : false }],
+
+			// Comments sit on their own line, after a blank line.
+			"no-inline-comments" : "error",
+			"@stylistic/line-comment-position" : [ "error", { position : "above" }],
+
+			"@stylistic/lines-around-comment" : [
+				"error",
+				{
+					beforeLineComment : true,
+					beforeBlockComment : true,
+					allowBlockStart : true,
+					allowObjectStart : true,
+					allowArrayStart : true,
+					allowClassStart : true,
+				},
+			],
+
 			"@stylistic/keyword-spacing" : [
 				"error",
 				{
 					before : true,
 					after : false,
+
 					overrides : {
 						return : { after : true },
 						import : { after : true },
@@ -72,8 +139,10 @@ export default defineConfig([
 					},
 				},
 			],
+
 			"no-unused-vars" : "off",
 			"unused-imports/no-unused-imports" : "error",
+
 			"unused-imports/no-unused-vars" : [
 				"warn",
 				{
@@ -83,6 +152,7 @@ export default defineConfig([
 					argsIgnorePattern : "^_",
 				},
 			],
+
 			"import-x/extensions" : [ "error", "ignorePackages", { fix : true }],
 			"jsdoc/require-param-description" : "off",
 			"jsdoc/require-returns-description" : "off",
@@ -95,6 +165,7 @@ export default defineConfig([
 				"espree" : [ ".js" ],
 				"svelte-eslint-parser" : [ ".svelte", ".svelte.js" ],
 			},
+
 			"import-x/resolver-next" : [
 				createTypeScriptImportResolver({
 					project : "jsconfig.json",

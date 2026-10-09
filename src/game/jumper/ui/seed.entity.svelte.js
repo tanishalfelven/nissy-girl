@@ -21,10 +21,18 @@ export const createSeedUI = () => {
 	let seedNav;
 	let yHeldDir = 0;
 
+	// It's really awkward to recreate UI repeat inputs for a dpad direction
+	// I am choosing to not infect ui navigation with this
+	// A custom number input IS weird, choosing to keep the weird here
+	// Not opposed to something that wraps this behavior better if it
+	// becomes more commonly needed :)
+	const repeatWindow = createTemporalWindow(150);
+
 	const fire = () => {
 		if(!yHeldDir) {
 			increment = false;
 			decrement = false;
+
 			repeatWindow.stop();
 
 			return;
@@ -43,13 +51,6 @@ export const createSeedUI = () => {
 
 		seed[seedNav.active] = wrap(seed[seedNav.active] + yHeldDir, 0, 10);
 	};
-
-	// It's really awkward to recreate UI repeat inputs for a dpad direction
-	// I am choosing to not infect ui navigation with this
-	// A custom number input IS weird, choosing to keep the weird here
-	// Not opposed to something that wraps this behavior better if it
-	// becomes more commonly needed :)
-	const repeatWindow = createTemporalWindow(150);
 
 	const input = createInput({
 		onInputChange(inputs) {
@@ -90,9 +91,11 @@ export const createSeedUI = () => {
 
 	return createEntity({
 		id : "ui",
+
 		components : {
 			input,
 			movement : navComponent,
+
 			ui : {
 				getModel() {
 					return model;

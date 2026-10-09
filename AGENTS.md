@@ -90,6 +90,7 @@ owns the screen concept.
   events, test time, state verification).
 - `/src/game/shared/AGENTS.md` - gameloop, scene/ECS, simulate-vs-frame orders.
 - `/src/game/{paint,jumper,combat}/AGENTS.md` - individual cartridges.
+- `/build/lint/AGENTS.md` - local ESLint rules (every rule must autofix).
 
 ## Conventions
 
@@ -146,10 +147,10 @@ Do not introduce TypeScript or type-driven refactors.
 - No `!!`; write `Boolean(x)`.
 - Define before use: anything referenced must be declared above the reference
   (`no-use-before-define`).
-- In test files, multiline object properties are separated by a blank line
-  (`build/lint/padded-multiline-properties.js`, auto-fixable), a call
-  computes at most one arithmetic argument inline, and exports come last
-  (`import-x/exports-last`; see `docs/agents/patterns.md`).
+- Multiline object properties are separated by a blank line
+  (`build/lint/padded-multiline-properties.js`, auto-fixable).
+- In test files, a call computes at most one arithmetic argument inline, and
+  exports come last (`import-x/exports-last`; see `docs/agents/patterns.md`).
 - No IIFEs, always prefer a named extracted function if an inline scope is necessary.
 
 ### Core patterns (prescriptive)

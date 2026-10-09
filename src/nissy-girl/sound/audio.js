@@ -19,6 +19,7 @@ const getAudioContext = () => {
 
 	if(!gainNode) {
 		gainNode = _audioContext.createGain();
+
 		gainNode.gain.setValueAtTime(volume.getGain(), 0);
 		gainNode.connect(_audioContext.destination);
 	}
@@ -139,6 +140,7 @@ export const audio = {
 		playGrunt : () => paintPlay("grunt", {}),
 		playSplash : () => paintPlay("splash", {}),
 		playPop : () => paintPlay("pop", {}),
+
 		playScribble : () => {
 			if(channelActive("scribble")) {
 				return;
@@ -146,7 +148,9 @@ export const audio = {
 
 			paintPlay("scribble", { detune : detune() - 200 }, "scribble");
 		},
+
 		playLineStart : () => paintPlay("line", { detune : detune(100) + 100 }, "line"),
+
 		playLineEnd : () => {
 			if(channelActive("lineend")) {
 				return;
@@ -154,6 +158,7 @@ export const audio = {
 
 			paintPlay("line", { detune : detune(100) + 100 }, "lineend");
 		},
+
 		playLineContinue : () => {
 			if(channelActive("line")) {
 				return;

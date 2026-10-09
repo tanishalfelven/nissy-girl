@@ -81,6 +81,7 @@ export const invokePromptLayer = (layer, promptLayerData) => {
 
 	return {
 		id : layer,
+
 		src : fromCallback(() => {
 			const promptLayerMap = $state(new Map(get(promptLayerData)));
 

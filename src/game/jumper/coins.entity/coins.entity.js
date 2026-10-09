@@ -2,13 +2,13 @@ import { createEntity } from "$game/shared/entity/entity.js";
 
 import { createRender } from "./render.component.js";
 
-export const COIN_WIDTH = 11;
-export const COIN_HEIGHT = 12;
-
 const mapCoinToCoin = (coin) => ({
 	...coin,
 	isAlive : true,
 });
+
+export const COIN_WIDTH = 11;
+export const COIN_HEIGHT = 12;
 
 export const createCoins = ({
 	world,
@@ -26,6 +26,7 @@ export const createCoins = ({
 
 	return createEntity({
 		id : "coins",
+
 		components : {
 			coins : {
 				getMaxCoins : () => coins.length,
@@ -53,6 +54,7 @@ export const createCoins = ({
 								jumper.render.reactToCollect();
 
 								coin.isAlive = false;
+
 								render.outroCoin(i);
 								ui.collectCoin();
 							}

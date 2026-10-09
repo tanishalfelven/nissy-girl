@@ -15,6 +15,7 @@ export const createPencil = ({ pixels, movement }) => {
 
 		begin() {
 			audio.paint.playScribble();
+
 			isDrawing = true;
 		},
 
@@ -22,6 +23,7 @@ export const createPencil = ({ pixels, movement }) => {
 		stop() {
 			isDrawing = false;
 			pos.length = 0;
+
 			deadStack.clear();
 		},
 

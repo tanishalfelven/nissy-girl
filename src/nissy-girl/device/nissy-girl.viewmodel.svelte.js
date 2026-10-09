@@ -59,6 +59,7 @@ export const nissyGirl = {
 		}
 
 		insertedCartridge = false;
+
 		audio.playCartridgeRemove();
 	},
 };

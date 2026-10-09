@@ -39,6 +39,7 @@ const getHopOdds = (difficulty) => lerp(difficulty, 0.8, 0.5);
 const getMinXDistance = (difficulty, maxDistance) => lerp(difficulty, MIN_PLATFORM_X_GAP, maxDistance);
 const isHop = (difficulty, getRandom) => odds(getHopOdds(difficulty), getRandom);
 const selectHardJump = (difficulty, getRandom) => odds(difficulty, getRandom);
+
 // platform min steadily decreases
 const getMaxPlatformSize = (difficulty) =>
 	lerp(
@@ -98,7 +99,7 @@ const coinFromPlatform = (platform, getRandom) => {
 
 const START_PLATFORM = platform(0, 90, CANVAS_WIDTH, START_ZONE);
 
-export const DEV_PLATFORMS = [
+const DEV_PLATFORMS = [
 	START_PLATFORM,
 	platform(20, 70),
 	platform(40, 50),
@@ -301,8 +302,10 @@ const generateZone = ({
 			&& isEasyJump({
 				capabilities,
 				candidate,
+
 				// use all platforms but the from we generated against to determine if this is "hard"
 				platforms : platforms.length > 1
+
 					// accounting for history in entry to zone seems like enough but watching this closely
 					? platforms.slice(0, -1)
 					: history,

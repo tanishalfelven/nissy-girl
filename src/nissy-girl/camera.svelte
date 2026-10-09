@@ -24,6 +24,7 @@ let nissyGirlWidth = $state(false);
 			gestureActor.send({
 				type : "DRAG_START",
 			}),
+
 		move : (distX, distY) => {
 			if(distX === 0 || nissyGirlWidth <= 0) {
 				return;
@@ -31,12 +32,15 @@ let nissyGirlWidth = $state(false);
 
 			gestureActor.send({
 				type : "DRAG_DELTA",
+
 				// X is our main axis
 				delta : distX / nissyGirlWidth,
+
 				// Y is supplementary, some actions ignore it
 				deltaY : distY / nissyGirlWidth,
 			});
 		},
+
 		end : () =>
 			gestureActor.send({
 				type : "DRAG_END",

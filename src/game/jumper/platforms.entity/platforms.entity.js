@@ -20,6 +20,7 @@ export const createPlatforms = ({
 
 	return createEntity({
 		id : "platforms",
+
 		components : {
 			bounds,
 			render : createRender({ platforms, bounds, world, worldBounds }),

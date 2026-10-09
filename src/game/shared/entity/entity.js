@@ -27,17 +27,22 @@ export const createEntity = ({ id, components = {} }) => {
 	const entity = ({
 		id,
 		components,
+
 		getComponents() {
 			return componentMap;
 		},
+
 		hasComponent(id) {
 			return componentMap.has(id);
 		},
+
 		getComponent(id) {
 			return componentMap.get(id);
 		},
+
 		addComponent(id, factory) {
 			entity[id] = factory();
+
 			componentMap.set(id, entity[id]);
 		},
 	});

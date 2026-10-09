@@ -7,6 +7,7 @@ import { input } from "$nissy-girl/device/input.js";
 export const invokeInput = {
 	systemId : "input",
 	id : "input",
+
 	src : fromCallback(({ sendBack, system, receive }) => {
 		const gameloop = system.get("gameloop");
 
@@ -74,6 +75,7 @@ export const invokeInput = {
 
 export const invokeInputComponent = (id, func) => ({
 	id : `component-input-listener-${id}`,
+
 	src : fromCallback((all) => {
 		const { system } = all;
 

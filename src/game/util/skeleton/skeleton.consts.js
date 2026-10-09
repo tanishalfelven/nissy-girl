@@ -12,6 +12,7 @@ export const JOINT_RIGHTARM = "rightArm";
 // leg joint -> has hip bone / leg bone
 export const BONE_HIP = "hip";
 export const BONE_LEG = "leg";
+
 // arm join -> has shoulder bone / arm bone
 export const BONE_SHOULDER = "shoulder";
 export const BONE_ARM = "arm";

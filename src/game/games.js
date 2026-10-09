@@ -3,6 +3,7 @@ import { GAME_PAINT_ID, GAME_JUMPER_ID, GAME_COMBAT_ID } from "./games.consts.js
 export const gameOrder = [
 	GAME_PAINT_ID,
 	GAME_JUMPER_ID,
+
 	// GAME_COMBAT_ID,
 ];
 

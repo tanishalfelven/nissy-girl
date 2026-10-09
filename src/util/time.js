@@ -30,8 +30,10 @@ export const rafThrottle = (func) => {
 		};
 
 		scheduled = true;
+
 		requestAnimationFrame(() => {
 			scheduled = false;
+
 			func(...lastArgs);
 		});
 	};
@@ -80,11 +82,13 @@ export const rafLooper = (func) => {
 	return {
 		start,
 		stop,
+
 		updateSession(loopSession) {
 			if(isActive) {
 				session = loopSession;
 			}
 		},
+
 		isActive() {
 			return isActive;
 		},

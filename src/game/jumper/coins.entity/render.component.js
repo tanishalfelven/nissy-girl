@@ -5,9 +5,10 @@ import { Container, AnimatedSprite } from "pixi.js";
 
 import { getAnimations } from "$game/util/spritesheet/animations.js";
 
+const OUT_ALPHA_STEP = 0.15;
+
 export const COIN_WIDTH = 11;
 export const COIN_HEIGHT = 12;
-const OUT_ALPHA_STEP = 0.15;
 
 export const createRender = ({
 	coins,
@@ -24,6 +25,7 @@ export const createRender = ({
 			sprite.textures = coinAnims.explode;
 			sprite.loop = false;
 			sprite.animationSpeed = 1.25;
+
 			sprite.play();
 		},
 

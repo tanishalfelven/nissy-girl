@@ -43,6 +43,7 @@ export const createSwirl = ({
 
 	return createEntity({
 		id : "swirl",
+
 		components : {
 			render : {
 				hasUpdate() {

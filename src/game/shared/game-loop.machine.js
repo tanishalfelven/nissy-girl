@@ -19,6 +19,7 @@ const MAX_SIMULATION_STEPS = 4;
 export const gameloop = {
 	id : "gameloop",
 	systemId : "gameloop",
+
 	src : createMachine({
 		id : "gameloop",
 
@@ -58,6 +59,7 @@ export const gameloop = {
 
 					return endFrameState;
 				}),
+
 				scene : false,
 				input : false,
 			});
@@ -85,6 +87,7 @@ export const gameloop = {
 				invoke : [
 					{
 						id : "gameloop-lifecycle",
+
 						src : fromCallback(({ context }) => {
 							// machine exit lifecycle is more safely stored in an actor
 							return () => {
@@ -163,6 +166,7 @@ export const gameloop = {
 										screen.clear();
 									},
 								],
+
 								target : ".paused",
 							},
 						},
@@ -189,9 +193,11 @@ export const gameloop = {
 									REGISTER_SCENE : {
 										actions : raise({ type : "UPDATE_SESSION" }),
 									},
+
 									REGISTER_INPUT : {
 										actions : raise({ type : "UPDATE_SESSION" }),
 									},
+
 									REMOVE_INPUT : {
 										actions : raise({ type : "UPDATE_SESSION" }),
 									},

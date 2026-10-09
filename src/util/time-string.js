@@ -1,7 +1,9 @@
+const padStart = (n, len) => String(n).padStart(len, "0");
+
+const todayMT = () => new Date(new Date().toLocaleString("en-US", { timeZone : "America/Denver" }));
+
 export const MS = 1000;
 export const MINUTE_MS = 60 * MS;
-
-const padStart = (n, len) => String(n).padStart(len, "0");
 
 /**
  * given time input return 00:00.0
@@ -15,8 +17,6 @@ export const toString = (time) => {
 
 	return `${padStart(min, 2)}:${padStart(s, 2)}.${padStart(ms, 1)}`;
 };
-
-const todayMT = () => new Date(new Date().toLocaleString("en-US", { timeZone : "America/Denver" }));
 
 export const getDate = () => {
 	const today = todayMT();

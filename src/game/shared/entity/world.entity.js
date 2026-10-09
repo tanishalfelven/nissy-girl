@@ -115,6 +115,7 @@ export const createWorld = ({
 } = false) => {
 	const worldEntity = createEntity({
 		id,
+
 		components : {
 			world : createContainerComponent({ width, height }),
 		},

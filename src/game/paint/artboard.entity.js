@@ -31,6 +31,7 @@ const createArtboardRender = ({ pixels }) => {
 		update() {
 			pixels.update();
 		},
+
 		getRenderable() {
 			return pixels.sprite;
 		},
@@ -49,6 +50,7 @@ export const createArtboard = ({ world }) => {
 
 	const artboard = createEntity({
 		id : "artboard",
+
 		components : {
 			artboard : createArtboardComponent({ pixels }),
 			render : createArtboardRender({ pixels }),

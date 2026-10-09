@@ -21,6 +21,7 @@ export const createCharacter = () => {
 	const character = new Container({
 		x : 50,
 		y : 50,
+
 		children : [
 			characterSkeleton.container,
 		],
@@ -69,8 +70,10 @@ export const createCharacter = () => {
 
 	return createEntity({
 		id : "character",
+
 		components : {
 			input,
+
 			render : {
 				async load() {
 					await characterSkeleton.load();

@@ -39,15 +39,18 @@ export const manualMachine = createMachine({
 					target : "viewing",
 					actions : () => manual.clearDrag(),
 				},
+
 				DRAG_START : "curling",
 			},
 
 			invoke : {
 				id : "settle-page",
+
 				src : getAnimateProgress({
 					duration : 800,
 					steps : [ 1, 0 ],
 					ease : (a) => a,
+
 					progress : {
 						set(value) {
 							// TODO this is not actually linear

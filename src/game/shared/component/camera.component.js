@@ -36,6 +36,7 @@ export const createCamera = ({
 
 	// active movement component
 	let target = false;
+
 	// { x, y } of target postion
 	let lastFollow = false;
 

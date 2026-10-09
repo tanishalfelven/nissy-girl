@@ -36,6 +36,7 @@ const createSim = () => {
 
 	return {
 		groundedResolve : () => groundedResolve(),
+
 		intersectionResolve : (
 			startX,
 			startY,
@@ -50,6 +51,7 @@ const createSim = () => {
 			intersectionResolve = isLanding;
 			groundedResolve = isOnPlatform;
 		},
+
 		airborne : () => {
 			intersectionResolve = isAirborne;
 			groundedResolve = isOffPlatform;
@@ -84,6 +86,7 @@ const startHop = (sim, jumper) => {
 
 	// first tick gets us in the jumping state
 	tick(jumper);
+
 	// have to wait a second tick for intersection code to catch up
 	tick(jumper);
 
@@ -118,6 +121,7 @@ const measureHop = ({ holdJump, holdCrouch, maxAttempts = 500 }) => (name, sim, 
 
 	do{
 		lastHopY = jumper.movement.getY();
+
 		tick(jumper);
 
 		iterations++;
@@ -128,6 +132,7 @@ const measureHop = ({ holdJump, holdCrouch, maxAttempts = 500 }) => (name, sim, 
 
 	do{
 		lastHopY = jumper.movement.getY();
+
 		tick(jumper);
 
 		iterations++;
@@ -162,6 +167,7 @@ export const createCapabilities = ({
 	// add a simulated platform contract to test against jumper
 	world.world.add(createEntity({
 		id : "platforms",
+
 		components : {
 			bounds : {
 				getSpawn : () => SIMULATE_SPAWN,

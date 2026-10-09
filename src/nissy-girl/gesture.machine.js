@@ -13,7 +13,7 @@ import { deviceCameraMachine } from "./device/device-camera.machine.js";
 import { rotation } from "./device/device-camera.viewmodel.svelte.js";
 import { manualMachine } from "./manual/manual.machine.js";
 
-export const gestureMachine = createMachine({
+const gestureMachine = createMachine({
 	id : "gesture",
 
 	meta : {
@@ -96,9 +96,11 @@ export const gestureMachine = createMachine({
 				lure : {
 					invoke : {
 						id : "rotation-lure",
+
 						src : getAnimateProgress({
 							duration : 4000,
 							steps : [ 0, -0.2, 0.1, -0.05, 0.022, 0 ],
+
 							// reverse direction each time we play
 							modify : (steps) => steps.map((step) => -step),
 							progress : rotation,
@@ -150,6 +152,7 @@ export const gestureMachine = createMachine({
 				gesture.focusManual();
 				gesture.enableAnimate();
 			},
+
 			exit : () => gesture.disableAnimate(),
 
 			on : {
@@ -167,6 +170,7 @@ export const gestureMachine = createMachine({
 				gesture.focusDevice();
 				gesture.enableAnimate();
 			},
+
 			exit : () => gesture.disableAnimate(),
 
 			after : {
@@ -185,6 +189,7 @@ const nissyGirlActor = gestureActor.system.get("nissy-girl");
 gestureActor.start();
 
 export {
+	gestureMachine,
 	gestureActor,
 	nissyGirlActor,
 };

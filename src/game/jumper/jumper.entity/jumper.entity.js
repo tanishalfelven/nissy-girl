@@ -67,6 +67,7 @@ export const createJumper = ({
 		// explicitly allowing inputs buffered during startup
 		inherit : true,
 		observedInputs : JUMPER_INPUTS,
+
 		onInputChange : (inputs) => {
 			const xDir = resolveDirectionX(inputs);
 
@@ -79,6 +80,7 @@ export const createJumper = ({
 
 	return createEntity({
 		id : "jumper",
+
 		components : {
 			input,
 			movement,

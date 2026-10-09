@@ -87,9 +87,11 @@ export const paintMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "titlescreen",
+
 					entities : [
 						createSwirl,
 					],
+
 					frameOrder : [
 						"render",
 					],
@@ -125,18 +127,22 @@ export const paintMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "artboard",
+
 					world : () => createWorld({
 						width : CANVAS_WIDTH,
 						height : CANVAS_HEIGHT,
+
 						components : {
 							camera : createPaintCamera,
 						},
 					}),
+
 					entities : [
 						createArtboard,
 						createCursor,
 						createPaintUI,
 					],
+
 					frameOrder : [
 						"world",
 						"input",
@@ -203,6 +209,7 @@ export const paintMachine = createMachine({
 
 						[BUTTON_SELECT] : {
 							guard : inputTriggered,
+
 							actions : sceneAction((_, { world }) => {
 								const cameraIdx = world.camera.stepZoom();
 
@@ -213,6 +220,7 @@ export const paintMachine = createMachine({
 						[BUTTON_A] : [
 							{
 								guard : inputTriggered,
+
 								actions : sceneAction((_, { world }) => {
 									const cursor = world.world.get("cursor");
 
@@ -221,6 +229,7 @@ export const paintMachine = createMachine({
 							},
 							{
 								guard : inputReleased,
+
 								actions : sceneAction((_, { world }) => {
 									const cursor = world.world.get("cursor");
 
@@ -231,6 +240,7 @@ export const paintMachine = createMachine({
 
 						[BUTTON_B] : {
 							guard : inputTriggered,
+
 							actions : sceneAction((_, { world }) => {
 								const artboard = world.world.get("artboard");
 
@@ -272,6 +282,7 @@ export const paintMachine = createMachine({
 						palette : {
 							entry : sceneAction((_, { world }) => {
 								const ui = world.world.get("ui");
+
 								audio.paint.playGrunt();
 								ui.ui.openPaletteMenu();
 							}),
@@ -288,6 +299,7 @@ export const paintMachine = createMachine({
 							on : {
 								[BUTTON_B] : {
 									guard : inputTriggered,
+
 									actions : [
 										sceneAction((_, { world }) => {
 											const ui = world.world.get("ui");
@@ -300,6 +312,7 @@ export const paintMachine = createMachine({
 
 								[BUTTON_A] : {
 									guard : inputTriggered,
+
 									actions : [
 										sceneAction((_, { world }) => {
 											const ui = world.world.get("ui");
@@ -312,11 +325,13 @@ export const paintMachine = createMachine({
 
 								[BUTTON_START] : {
 									guard : inputTriggered,
+
 									actions : sceneAction((_, { world }) => {
 										const ui = world.world.get("ui");
 
 										ui.ui.closePaletteMenu({ saveColor : true });
 									}),
+
 									target : "tools",
 								},
 							},
@@ -325,6 +340,7 @@ export const paintMachine = createMachine({
 						tools : {
 							entry : sceneAction((_, { world }) => {
 								const ui = world.world.get("ui");
+
 								audio.paint.playGrunt();
 								ui.ui.openToolsMenu();
 							}),
@@ -360,6 +376,7 @@ export const paintMachine = createMachine({
 
 								[BUTTON_A] : {
 									guard : inputTriggered,
+
 									actions : [
 										sceneAction((_, { world }) => {
 											const ui = world.world.get("ui");

@@ -8,9 +8,6 @@ import {
 	JOINT_RIGHTARM,
 } from "./skeleton.consts.js";
 
-// lols
-export const copyPose = (pose) => JSON.parse(JSON.stringify(pose));
-
 const SOURCE = [
 	[ BONE_HAIR, { y : 0 }],
 	[ JOINT_HEAD, { y : 0, z : 0 }],
@@ -25,6 +22,9 @@ const SOURCE = [
 ];
 
 const SOURCE_OBJECT = Object.fromEntries(SOURCE);
+
+// lols
+export const copyPose = (pose) => JSON.parse(JSON.stringify(pose));
 
 export const POSE_ITEMS = SOURCE.map(([ boneId ]) => boneId);
 export const KEYS_BY_ITEM = SOURCE.reduce((acc, [ boneId, values ]) => {

@@ -30,9 +30,11 @@ export const combatMachine = createMachine({
 			invoke : [
 				invokeScene({
 					id : "test",
+
 					entities : [
 						createCharacter,
 					],
+
 					frameOrder : [
 						"render",
 					],

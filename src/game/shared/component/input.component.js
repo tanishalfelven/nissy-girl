@@ -2,11 +2,11 @@ import { DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP } from "$game/shared/input.co
 
 import { input as globalInputState } from "$nissy-girl/device/input.js";
 
-export const ALL_AXIS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN ];
-export const VERT_AXIS = [ DPAD_UP, DPAD_DOWN ];
-export const HORZ_AXIS = [ DPAD_LEFT, DPAD_RIGHT ];
+const ALL_AXIS = [ DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN ];
+const VERT_AXIS = [ DPAD_UP, DPAD_DOWN ];
+const HORZ_AXIS = [ DPAD_LEFT, DPAD_RIGHT ];
 
-export const DIRECTION = new Map([
+const DIRECTION = new Map([
 	[ DPAD_LEFT, -1 ],
 	[ DPAD_RIGHT, 1 ],
 	[ DPAD_UP, -1 ],

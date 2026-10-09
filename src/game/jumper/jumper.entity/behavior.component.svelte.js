@@ -204,13 +204,17 @@ export const createBehavior = ({
 			JUMP : [
 				{
 					guard : () => crouchIntent,
+
 					actions : () => {
 						physics.addY(HIGH_JUMP);
 						movement.setSpeed(blastAirSpeed);
 						spawnLateralDust();
+
 						isHighJump = true;
+
 						audio.blast();
 					},
+
 					target : ".airborne.jumping",
 				},
 				{
@@ -218,6 +222,7 @@ export const createBehavior = ({
 						audio.jump();
 						physics.addY(INITIAL_JUMP);
 					},
+
 					target : ".airborne.jumping",
 				},
 			],
@@ -244,13 +249,16 @@ export const createBehavior = ({
 					TICK_X : [
 						{
 							guard : () => !stillOnPlatform(),
+
 							actions : [
 								() => {
 									lastPlatformIndex = -1;
+
 									coyoteJumpWindow.start();
 								},
 								raise({ type : "PROCESS_HORZ" }),
 							],
+
 							target : "airborne.falling",
 						},
 						{
@@ -261,6 +269,7 @@ export const createBehavior = ({
 
 					TICK_Y : {
 						guard : () => jumpIntent || jumpBufferWindow.active(),
+
 						actions : [
 							raise({ type : "JUMP" }),
 							() => jumpBufferWindow.stop(),
@@ -333,6 +342,7 @@ export const createBehavior = ({
 
 				exit : () => {
 					fallTime = 0;
+
 					updatePanic();
 				},
 
@@ -362,6 +372,7 @@ export const createBehavior = ({
 
 							if(targetY !== result.y) {
 								lastPlatformIndex = result.index;
+
 								updateGrounded(true);
 
 								if(platforms.bounds.getIsFinishPlatform(lastPlatformIndex)) {
@@ -384,6 +395,7 @@ export const createBehavior = ({
 							isJumping = true;
 							consecutiveJumps = 0;
 						},
+
 						exit : () => {
 							isJumping = false;
 							isHighJump = false;
@@ -394,9 +406,11 @@ export const createBehavior = ({
 							TICK_Y : [
 								{
 									guard : () => jumpIntent && consecutiveJumps < NUM_CONSECUTIVE_JUMPS,
+
 									actions : [
 										() => {
 											physics.addY(CONSECUTIVE_JUMP);
+
 											consecutiveJumps++;
 
 											if(((consecutiveJumps % 6) === 0) && isHighJump) {
@@ -430,6 +444,7 @@ export const createBehavior = ({
 
 						exit : () => {
 							runeIsFalling = false;
+
 							coyoteJumpWindow.stop();
 						},
 
@@ -437,6 +452,7 @@ export const createBehavior = ({
 							TICK_Y : [
 								{
 									guard : () => isGrounded && fallTime > IMPACT_FALL,
+
 									actions : [
 										() => {
 											impactFallTime = fallTime;
@@ -447,6 +463,7 @@ export const createBehavior = ({
 								},
 								{
 									guard : () => isGrounded,
+
 									actions : [
 										raise({ type : "LAND" }),
 										raise({ type : "PROCESS_VERT" }),
@@ -526,6 +543,7 @@ export const createBehavior = ({
 			return movement.isMoving()
 				|| physics.isMoving()
 				|| isJumping
+
 				// they should not have given gay people boolean operators
 				|| (isGrounded
 					&& (jumpIntent

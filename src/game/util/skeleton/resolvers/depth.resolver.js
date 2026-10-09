@@ -67,6 +67,7 @@ const createArmResolver = ({ isLeft, skeleton }) => {
 
 			armJoint.node.rotation = position.z * 2.6 * DIR * FACEDIR;
 			armBone.node.rotation = position.y * 0.6 * DIR * -FACEDIR;
+
 			// as the hand gets further from the camera, shrink it
 			armBone.node.scale.x = ((FACING_FRONT && position.z < 0) || (!FACING_FRONT && position.z > 0))
 				? 1 - (Math.abs(position.z) * 1.5)

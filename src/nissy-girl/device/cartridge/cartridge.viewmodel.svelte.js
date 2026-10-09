@@ -6,16 +6,20 @@ import { gameOrder, games, getGameIndex } from "$game/games.js";
 import { nissyGirl } from "$nissy-girl/device/nissy-girl.viewmodel.svelte.js";
 import { camera } from "$nissy-girl/device/device-camera.viewmodel.svelte.js";
 
-export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
-
 let hasPassedFirstCartridgeAnchor = $state(false);
 let cartridgeDir = $state(1);
+let index = $state(0);
+let isVisible = $state(false);
+let finishedIteratingCartridge = $state(false);
+
+export const CARTRIDGE_SELECTION_THRESHOLD = 0.5;
 
 export const cartridgeX = createProgress({
 	start : 0,
 	speed : -0.9,
 	anchors : [ CARTRIDGE_SELECTION_THRESHOLD ],
 	engageY : true,
+
 	update : (cur, movement) => {
 		const absMove = Math.abs(movement);
 
@@ -30,6 +34,7 @@ export const cartridgeX = createProgress({
 			MAX_PROGRESS,
 		);
 	},
+
 	velocity : {
 		decay : 1,
 		smoothing : 0.3,
@@ -41,22 +46,20 @@ export const cartridgeY = createProgress({
 	start : 0,
 	speed : 0.7,
 	anchors : [ 0, 1 ],
+
 	update : (cur, movement) =>
 		clamp(
 			cur + movement,
 			MIN_PROGRESS,
 			MAX_PROGRESS,
 		),
+
 	velocity : {
 		smoothing : 0.3,
 		decay : 1.2,
 		min : 0.0001,
 	},
 });
-
-let index = $state(0);
-let isVisible = $state(false);
-let finishedIteratingCartridge = $state(false);
 
 export const cartridges = {
 	get isVisible() {

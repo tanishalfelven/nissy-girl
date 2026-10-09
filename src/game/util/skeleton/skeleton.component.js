@@ -11,8 +11,6 @@ const defaultPose = createPoseFrom({
 	[JOINT_LEFTARM] : { y : 0.2 },
 });
 
-export const getDefaultPose = () => copyPose(defaultPose);
-
 const addPoint = (a, b) => ({
 	x : a.x + b.x,
 	y : a.y + b.y,
@@ -20,7 +18,9 @@ const addPoint = (a, b) => ({
 
 const resetNode = (node, origin) => {
 	node.position.set(origin.x, origin.y);
+
 	node.rotation = origin.rotation;
+
 	node.scale.set(origin.scaleX, origin.scaleY);
 	node.skew.set(0, 0);
 };
@@ -110,6 +110,7 @@ const createJoint = (inputSource, modifier) => {
 		);
 
 		bones[boneId] = bone;
+
 		node.addChild(bone.node);
 	}
 
@@ -157,8 +158,8 @@ const createFace = (faceInputSource, modifier) => {
 	node.visible = false;
 
 	for(const childSource of children) {
+		// ! this is awkward
 		const { [childSource.id] : nodeInputSource } = faceInputSource[
-			// ! this is awkward
 			childSource.type === TYPE_JOINT
 				? "joints"
 				: "bones"
@@ -171,6 +172,7 @@ const createFace = (faceInputSource, modifier) => {
 			const joint = createJoint(nodeInputSource, nodeModifier);
 
 			joints[joint.id] = joint;
+
 			jointIds.push(joint.id);
 
 			child = joint;
@@ -178,6 +180,7 @@ const createFace = (faceInputSource, modifier) => {
 			const bone = createBone(nodeInputSource, nodeModifier);
 
 			bones[bone.id] = bone;
+
 			boneIds.push(bone.id);
 
 			child = bone;
@@ -218,6 +221,8 @@ const createFace = (faceInputSource, modifier) => {
 	};
 };
 
+export const getDefaultPose = () => copyPose(defaultPose);
+
 export const createSkeleton = ({
 	skeletonData,
 	createResolver,
@@ -248,6 +253,7 @@ export const createSkeleton = ({
 		const face = createFace(faceInputData, faceModifiers);
 
 		faces[face.id] = face;
+
 		faceArr.push(face);
 
 		container.addChild(face.node);

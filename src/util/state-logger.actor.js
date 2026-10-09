@@ -7,6 +7,7 @@ const toState = ({ value }) => JSON.stringify(value);
 export const stateLogger = {
 	id : "state-logger",
 	input : { analytics : true },
+
 	src : fromCallback(({ self, input }) => {
 		let prevState;
 
